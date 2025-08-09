@@ -18,7 +18,6 @@
             color: #333;
             overflow-x: hidden;
         }
-
         /* Header */
         header {
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
@@ -1022,3 +1021,10 @@
 
         console.log('M & E Interior Supplies Trading - Homepage loaded successfully!');
         console.log('This is a demo homepage. Full functionality will be implemented in the complete system.');
+=======
+<h2>Welcome to our homepage!</h2>
+<p>We sell office, school, and sanitary supplies.</p>
+<p>Testing the PR!</p>
+<?php
+include('includes/footer.php');
+ ?>
