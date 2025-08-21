@@ -1,16 +1,20 @@
 <?php
 include('includes/header.php');
+session_start();
 
+if (!isset($_SESSION["id"])) {
+    header("Location: auth/overlaylogin.php");
+    exit();
+}
 ?>
-
-<h2>Welcome to our homepage!</h2>
+<h2>Welcome to our homepage! <?php  echo "{$_SESSION["user"]}"?></h2>
 <p>We sell office, school, and sanitary supplies.</p>
-<<<<<<< HEAD
-
-=======
 <p>Testing the PR!</p>
 <p>Testing the Pulling and merging!</p>
->>>>>>> 4b7553741b3c11a619b129623c74d0bbe0456714
+  <form action="auth/logout.php" method="post">
+    <button type="submit">Logout</button>
+  </form>
+
 <?php
 include('includes/footer.php');
  ?>
