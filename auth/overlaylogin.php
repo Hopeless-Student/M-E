@@ -1,39 +1,32 @@
 <?php
   session_start();
   include("..\includes\database.php");
-  $conn = connect();
+  $pdo = connect();
   $loginFailed ="";
   $showModal = false;
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST["username"];
         $password = $_POST["password"];
 
+        $sql = "SELECT id, users, password FROM users WHERE users = :username";
+        $stmt = $pdo->prepare($sql);
+        $stmt-> execute(["username"=>$username]);
 
-        $stmt = $conn->prepare("SELECT id, users, password FROM users WHERE users = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows === 1) {
-
-          $stmt->bind_result($user_id, $db_username, $hashed_password);
-          $stmt->fetch();
-
-          if (password_verify($password, $hashed_password)) {
-            $_SESSION["id"] = $user_id;
-            $_SESSION["user"] = $db_username;
-            header("Location: ..\index.php");
-            exit();
-          } else {
-            $loginFailed = "Incorrect password";
-            $showModal = true;
-          }
+        $user = $stmt->fetch(PDO::FETCH_ASSOC); // nagiging assoc array siya
+        if($user){
+            if($user && password_verify($password, $user["password"])){
+              $_SESSION["id"] = $user["id"];
+              $_SESSION["user"] = $user["users"];
+              header("Location: ..\index.php");
+              exit();
+            } else {
+              $loginFailed = "Incorrect password";
+              $showModal = true;
+            }
         } else {
-          $loginFailed ="Username not found.";
-          $showModal = true;
+            $loginFailed = "User not found";
+            $showModal = true;
         }
-
-        $stmt->close();
       }
 ?>
 <!DOCTYPE html>
@@ -188,8 +181,3 @@
 
 </body>
 </html>
-<?php
-
-
-$conn->close();
-?>
