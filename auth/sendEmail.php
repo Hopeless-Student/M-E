@@ -3,8 +3,10 @@ require __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use Dotenv\Dotenv;
+
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
+
   function sendVerificationToEmail($email, $fname, $lname, $token){
       try {
         $mail = new PHPMailer(true);
