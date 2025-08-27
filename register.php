@@ -2,13 +2,16 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <title>Register User</title>
   </head>
   <body>
     <div class="form-container">
       <form id="userForm" action="auth/register_process.php" method="post">
-        <h2>User Info</h2>
+        <div class="logo">
+          <img src="assets/images/M&E_LOGO_transparent.png" alt="M&E Logo">
+        </div>
+        <h2>Create your account</h2>
         <div class="form-group">
           <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
         </div>
@@ -22,6 +25,6 @@
         <p id="message"></p>
       </form>
     </div>
-    <script src="assets/script.js"></script>
+    <script src="assets/js/script.js"></script>
   </body>
 </html>
