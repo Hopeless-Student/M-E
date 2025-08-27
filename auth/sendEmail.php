@@ -19,13 +19,13 @@ $dotenv->load();
         $mail->Username   = $_ENV['SMTP_USER'];
         $mail->Password   = $_ENV['SMTP_PASS'];
 
-        $mail->SMTPOptions = [
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-          ]
-        ];
+        // $mail->SMTPOptions = [
+        // 'ssl' => [
+        //     'verify_peer' => false,
+        //     'verify_peer_name' => false,
+        //     'allow_self_signed' => true
+        //   ]
+        // ];
 
         $mail->setFrom($_ENV['SMTP_USER'], 'M&E Interior Supplies Trading');
         $mail->addAddress($email,$fname.' '.$lname);
