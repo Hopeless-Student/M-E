@@ -1,65 +1,48 @@
 <?php
-require 'dompdf_folder/dompdf/autoload.inc.php';
+  session_start();
+  include('includes/database.php');
+  $pdo = connect();
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
+  if(isset($_GET["email"],$_GET['token'])){
+    $email = $_GET['email'];
+    $token = $_GET['token'];
 
-// Example order details (you would get these from your database or form POST)
-$customerName = "Juan Dela Cruz";
-$productName = "Office Chair";
-$quantity = 2;
-$pricePerItem = 1500;
-$totalPrice = $quantity * $pricePerItem;
+    try {
+      $sql = "SELECT email, verification_token, token_created_at FROM users
+              WHERE email=:email AND verification_token=:token
+              AND is_verified=0 AND token_created_at >= NOW() - INTERVAL 2 MINUTE LIMIT 1";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute([':email'=>$email, ':token'=>$token]);
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// DOMPDF setup
-$options = new Options();
-$options->set('isHtml5ParserEnabled', true);
-$options->set('isRemoteEnabled', true);
-$dompdf = new Dompdf($options);
-
-// HTML receipt
-$html = "
-<html>
-<head>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        h1 { text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .total { font-weight: bold; }
-    </style>
-</head>
-<body>
-    <h1>Receipt</h1>
-    <p><strong>Customer:</strong> {$customerName}</p>
-    <table>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price (₱)</th>
-            <th>Total (₱)</th>
-        </tr>
-        <tr>
-            <td>{$productName}</td>
-            <td>{$quantity}</td>
-            <td>{$pricePerItem}</td>
-            <td>{$totalPrice}</td>
-        </tr>
-    </table>
-    <p class='total'>Grand Total: ₱{$totalPrice}</p>
-</body>
+        if($user){
+          // $update = $pdo->prepare("UPDATE users SET is_verified=1, verification_token=NULL, token_created_at=NULL WHERE email=:email");
+          // $update->execute([':email' => $email]);
+          // header('Location: ../testing.php');
+          $$delete = $pdo->prepare("DELETE FROM users WHERE email=:email
+              AND verification_token=:token
+              AND token_created_at < NOW() - INTERVAL 2 MINUTE");
+          $delete->execute([':email'=>$email, ':token'=>$token]);
+            echo "Deleted the record in db";
+        } else {
+          echo "Invalid or expired verification link.";
+        }
+    } catch (PDOException $e) {
+      echo "Error connection: " . $e->getMessage();
+    }
+  }
+ ?>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <form class="" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+      <label>
+        Delete Record in DB: <input type="submit" name="delete" value="Delete">
+      </label>
+    </form>
+  </body>
 </html>
-";
-
-// Load HTML to DOMPDF
-$dompdf->loadHtml($html);
-
-// Set paper size
-$dompdf->setPaper('A4', 'portrait');
-
-// Render PDF
-$dompdf->render();
-
-// Output PDF for download
-$dompdf->stream("receipt.pdf", ["Attachment" => true]);

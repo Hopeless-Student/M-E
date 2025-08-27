@@ -1,7 +1,8 @@
 <?php
 // Correct the path to the cacert.pem file
+$expires_at = date("Y-m-d h:i:s", strtotime("+30 minutes"));
+echo "{$expires_at} <br>";
 $cacert_path = "C:/xampp/php/cacert.pem";  // Update this path accordingly
-
 // Check OpenSSL version
 echo "OpenSSL version: " . OPENSSL_VERSION_TEXT . "\n";
 
