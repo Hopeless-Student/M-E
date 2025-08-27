@@ -3,7 +3,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use Dotenv\Dotenv;
-
+if(isset($_SESSION['email'])){
+  $email = $_SESSION['email'];
+} else {
+  header("Location: ../register.php");
+  exit;
+}
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 

@@ -1023,5 +1023,11 @@
         console.log('This is a demo homepage. Full functionality will be implemented in the complete system.');
 >>>>>>> 30650e3 (testing switching branch)
 <?php
-echo "HELLO INDEX!"
+
+if(isset($_SESSION['email'])){
+  $email = $_SESSION['email'];
+} else {
+  header("Location: register.php");
+  exit;
+}
  ?>
