@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('../includes/database.php');
   $pdo = connect();
   if(isset($_GET['email'],$_GET['token'])){
@@ -23,7 +24,6 @@ include('../includes/database.php');
             header('Location: ../order_form.php');
           } else {
             echo "Token expired or invalid. Deleting user...";
-
             $delete = $pdo->prepare("DELETE FROM users
                 WHERE email=:email
                 AND is_verified=0
@@ -37,5 +37,7 @@ include('../includes/database.php');
 
   } else {
     echo "No verification parameters provided!";
+    header("Location: ../register.php");
+    exit;
   }
  ?>

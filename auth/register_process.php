@@ -3,13 +3,6 @@
   include('../includes/database.php');
   require 'sendEmail.php';
   $pdo = connect();
-
-  if(isset($_SESSION['email'])){
-    $email = $_SESSION['email'];
-  } else {
-    header("Location: ../register.php");
-    exit;
-  }
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fname = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_SPECIAL_CHARS);
     $lname = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -42,7 +35,7 @@
             ]);
             if(sendVerificationToEmail($email,$fname,$lname,$token)){
               header("Location: ../checkyouremail.php");
-              echo "Registration successful! Check your email to verify your account.";
+              exit;
             } else {
               echo "Registration successful, but failed to send verification email.";
             }
@@ -52,5 +45,8 @@
       }
   } else {
     echo "Invalid input data!";
+      header("Location: ../register.php");
+      exit;
+
   }
  ?>
