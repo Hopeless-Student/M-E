@@ -4,6 +4,12 @@
   require 'sendEmail.php';
   $pdo = connect();
 
+  if(isset($_SESSION['email'])){
+    $email = $_SESSION['email'];
+  } else {
+    header("Location: ../register.php");
+    exit;
+  }
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fname = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_SPECIAL_CHARS);
     $lname = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -13,6 +19,16 @@
         $_SESSION["first_name"] = $fname;
         $_SESSION["last_name"] = $lname;
         $_SESSION["email"] = $email;
+
+        try {
+          $deleteUnverified = "DELETE FROM users WHERE is_verified=0
+          AND token_created_at < NOW() - INTERVAL 2 MINUTE";
+          $cleanup = $pdo->prepare($deleteUnverified);
+          $cleanup->execute();
+        } catch (PDOException $e) {
+          echo "Error on cleaning up";
+        }
+
 
           try {
             $sql = "INSERT INTO users(first_name, last_name, email, verification_token)
@@ -25,6 +41,7 @@
               ":token"=>$token
             ]);
             if(sendVerificationToEmail($email,$fname,$lname,$token)){
+              header("Location: ../checkyouremail.php");
               echo "Registration successful! Check your email to verify your account.";
             } else {
               echo "Registration successful, but failed to send verification email.";

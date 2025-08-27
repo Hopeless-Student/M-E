@@ -3,7 +3,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use Dotenv\Dotenv;
-
+if(isset($_SESSION['email'])){
+  $email = $_SESSION['email'];
+} else {
+  header("Location: ../register.php");
+  exit;
+}
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
@@ -11,7 +16,7 @@ $dotenv->load();
       try {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;
         $mail->Host       = $_ENV['SMTP_HOST'];
         $mail->Port       = $_ENV['SMTP_PORT'];
         $mail->SMTPSecure = $_ENV['SMTP_SECURE'];

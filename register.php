@@ -7,10 +7,10 @@
   </head>
   <body>
     <div class="form-container">
+      <div class="logo">
+        <img src="assets/images/M&E_LOGO_transparent.png" alt="M&E Logo">
+      </div>
       <form id="userForm" action="auth/register_process.php" method="post">
-        <div class="logo">
-          <img src="assets/images/M&E_LOGO_transparent.png" alt="M&E Logo">
-        </div>
         <h2>Create your account</h2>
         <div class="form-group">
           <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
