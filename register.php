@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -22,7 +23,14 @@
           <input type="email" id="email" name="email" placeholder="Email" required>
         </div>
         <button type="submit" id="verifyBtn">Verify Email</button>
-        <p id="message"></p>
+        <p id="message" style="text-align: center; margin-top: 10px;">
+          <?php
+            if (isset($_SESSION['error'])) {
+              echo "<span style='color: red; font-size: 14px;'>".$_SESSION['error']."</span>";
+              unset($_SESSION['error']);
+            }
+          ?>
+       </p>
       </form>
     </div>
     <script src="assets/js/script.js"></script>

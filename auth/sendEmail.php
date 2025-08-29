@@ -5,12 +5,6 @@ use PHPMailer\PHPMailer\SMTP;
 use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-if(isset($_SESSION['email'])){
-  $email = $_SESSION['email'];
-} else {
-  header("Location: ../register.php");
-  exit;
-}
   function sendVerificationToEmail($email, $fname, $lname, $token){
       try {
         $mail = new PHPMailer(true);
