@@ -1,52 +1,80 @@
 <?php
-  session_start();
-  include('../includes/database.php');
-  require 'sendEmail.php';
-  $pdo = connect();
-  if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $fname = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_SPECIAL_CHARS);
-    $lname = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_SPECIAL_CHARS);
-    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-    $token = bin2hex(random_bytes(32));
-      if(!empty($fname) && !empty($lname) && !empty($email)){
-        $_SESSION["first_name"] = $fname;
-        $_SESSION["last_name"] = $lname;
-        $_SESSION["email"] = $email;
+session_start();
+include('../includes/database.php');
+require 'sendEmail.php';
 
-        try {
-          $deleteUnverified = "DELETE FROM users WHERE is_verified=0
-          AND token_created_at < NOW() - INTERVAL 2 MINUTE";
-          $cleanup = $pdo->prepare($deleteUnverified);
-          $cleanup->execute();
-        } catch (PDOException $e) {
-          echo "Error on cleaning up";
+$pdo = connect();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $fname = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_SPECIAL_CHARS);
+  $lname = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_SPECIAL_CHARS);
+  $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+  $token = bin2hex(random_bytes(32));
+
+  if (!empty($fname) && !empty($lname) && !empty($email)) {
+    $_SESSION["first_name"] = $fname;
+    $_SESSION["last_name"] = $lname;
+    $_SESSION["email"] = $email;
+
+    try {
+      /*Register testing
+      1st: Kapag nag register ka ng new account:
+        1a. Delete unverified accounts longer than 2 mins -->
+        2a. C-check kung duplicate email, if meron at verified, error message = Email is taken/registered ||
+            if meron at hindi pa verified within 2 minutes error message = Email pending verification. Kapag wala at bago -->
+        3a. Redirect sa checkyouremail.php
+      2nd: Makalipas ang 2 mins pataas at nag register using same email account:
+        1b. Delete emails longer than 2 mins including your previous registered email-->
+        2b. Unverified? --> Redirect sa checkyouremail.php
+      */
+      $deleteUnverified = "DELETE FROM users WHERE is_verified = 0 AND token_created_at < NOW() - INTERVAL 2 MINUTE";
+      $cleanup = $pdo->prepare($deleteUnverified);
+      $cleanup->execute();
+
+      $findDuplicate = "SELECT * FROM users WHERE email = :email LIMIT 1";
+      $stmt = $pdo->prepare($findDuplicate);
+      $stmt->execute([':email' => $email]);
+      $duplicate = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($duplicate) {
+        if ($duplicate['is_verified']) {
+          $_SESSION['error'] = "Email is already registered or taken.";
+        } else {
+          $_SESSION['error'] = "Email is already pending verification.";
         }
-
-
-          try {
-            $sql = "INSERT INTO users(first_name, last_name, email, verification_token)
-                    VALUES(:fname, :lname, :email, :token)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-              ":fname"=>$fname,
-              ":lname"=>$lname,
-              ":email"=>$email,
-              ":token"=>$token
-            ]);
-            if(sendVerificationToEmail($email,$fname,$lname,$token)){
-              header("Location: ../checkyouremail.php");
-              exit;
-            } else {
-              echo "Registration successful, but failed to send verification email.";
-            }
-          } catch (PDOException $e) {
-            echo "Error connection: " . $e->getMessage();
-          }
+        header("Location: ../register.php");
+        exit;
       }
-  } else {
-    echo "Invalid input data!";
-      header("Location: ../register.php");
-      exit;
 
+      $sql = "INSERT INTO users (first_name, last_name, email, verification_token, token_created_at)
+              VALUES (:fname, :lname, :email, :token, NOW())";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute([
+        ":fname" => $fname,
+        ":lname" => $lname,
+        ":email" => $email,
+        ":token" => $token
+      ]);
+
+      if (sendVerificationToEmail($email, $fname, $lname, $token)) {
+        $_SESSION['success'] = "Verification email sent!";
+        header("Location: ../checkyouremail.php");
+        exit;
+      } else {
+        echo "Registration successful, but failed to send verification email.";
+      }
+
+    } catch (PDOException $e) {
+      echo "Database error: " . $e->getMessage();
+    }
+  } else {
+    $_SESSION['error'] = "Invalid input data!";
+    header("Location: ../register.php");
+    exit;
   }
- ?>
+} else {
+  $_SESSION['error'] = "Invalid request method!";
+  header("Location: ../register.php");
+  exit;
+}
+?>
