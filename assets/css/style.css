@@ -1,0 +1,116 @@
+/*Para sa register*/
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+
+}
+
+.form-container {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+form h2 {
+  margin-top: 0px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+.logo img{
+  width: 30%;
+  height: auto;
+}
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fafafa;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #333;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4169E1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #033AA8;
+}
+
+#message {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #008000;
+  text-align: center;
+}
+/*Para sa check your email*/
+ .check-email-container {
+   text-align: center;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+ }
+
+ #confirmEmail {
+   color: #555;
+  margin-bottom: 20px;
+ }
+
+ .timer {
+     color: #888;
+     font-size: 14px;
+ }
+
+ .resendBtn{
+   padding: 10px 20px;
+   background-color: #007bff;
+   color: white;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 16px;
+ }
+
+ .resendBtn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
