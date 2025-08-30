@@ -61,7 +61,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: ../checkyouremail.php");
         exit;
       } else {
-        echo "Registration successful, but failed to send verification email.";
+        $pdo->prepare("DELETE FROM users WHERE email = :email")->execute([":email" => $email]);
+        $_SESSION['error'] = "Failed to send verification email. Please try again.";
+        header("Location: ../register.php");
+        exit;
       }
 
     } catch (PDOException $e) {
