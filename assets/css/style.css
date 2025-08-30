@@ -1,4 +1,9 @@
 /*Para sa register*/
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
 body {
   font-family: 'Montserrat', sans-serif;
   background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);

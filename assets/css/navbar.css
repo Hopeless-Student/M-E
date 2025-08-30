@@ -1,0 +1,59 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      /* background-image: linear-gradient(to bottom, #4169E1, #C6D7FF); */
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: white;
+      padding: 2rem 4rem;
+      z-index: 1000;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      position: absolute;
+      left: 2rem;
+      color: #333;
+    }
+    .m-e-logo{
+      padding-top: 20px;
+      width: 20%;
+      height: auto; /* Maintain aspect ratio */
+      max-width: 600px;
+    }
+
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-size: 15px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #007BFF;
+    }
+
+    .content {
+      height: 2000px;
+      padding: 2rem;
+    }
