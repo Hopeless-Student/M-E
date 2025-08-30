@@ -4,11 +4,6 @@
       box-sizing: border-box;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      /* background-image: linear-gradient(to bottom, #4169E1, #C6D7FF); */
-    }
-
     .navbar {
       position: sticky;
       top: 0;
