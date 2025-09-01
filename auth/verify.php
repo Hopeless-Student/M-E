@@ -5,7 +5,6 @@ include('../includes/database.php');
   if(isset($_GET['email'],$_GET['token'])){
     $email = $_GET['email'];
     $token = $_GET['token'];
-    echo "{$email} == {$token}";
       try {
         $sql = "SELECT email, verification_token, token_created_at FROM users
                 WHERE email=:email AND verification_token=:token
@@ -21,7 +20,8 @@ include('../includes/database.php');
               token_created_at=NULL
               WHERE email=:email");
             $update->execute([':email' => $email]);
-            header('Location: ../order_form.php');
+            header('Location: ../user/profile.php');
+            exit;
           } else {
             echo "Token expired or invalid. Deleting user...";
             $delete = $pdo->prepare("DELETE FROM users
@@ -30,6 +30,8 @@ include('../includes/database.php');
                 AND verification_token=:token
                 AND token_created_at < NOW() - INTERVAL 2 MINUTE");
             $delete->execute([':email'=>$email, ':token'=>$token]);
+            header('Location: ../test.php?status=expired');
+            exit;
           }
       } catch (PDOException $e) {
         echo "Error connection: " . $e->getMessage();
