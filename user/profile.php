@@ -182,6 +182,78 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
                    value="<?php echo date("M d, Y h:i A", strtotime($user['updated_at'])); ?>" readonly>
           </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+
+    <script>
+      const profilePicInput = document.getElementById('profilePicInput');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const profilePreview = document.getElementById('profilePreview');
+      const edit = document.getElementById('edit');
+      const cancel = document.getElementById('cancel');
+      const headerText = document.getElementById('header-text');
+      const saveBtn = document.querySelector("form button[type='submit']");
+      const inputs = document.querySelectorAll("form input");
+      cancel.style.display = 'none';
+      saveBtn.style.display = 'none';
+      uploadBtn.style.display = 'none';
+      uploadBtn.disabled = true;
+
+      uploadBtn.addEventListener('click', () => {
+        profilePicInput.click();
+      });
+
+      // Preview the selected image
+      profilePicInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            profilePreview.src = e.target.result;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.querySelector("form").addEventListener("submit", function(e) {
+        const pass = document.getElementById("inputPassword").value;
+        const confirm = document.getElementById("inputConfirmPassword").value;
+        if (pass !== confirm) {
+          e.preventDefault();
+          alert("Passwords do not match!");
+        }
+      });
+
+      edit.addEventListener('click', ()=>{
+        edit.style.display = 'none';
+        cancel.style.display = '';
+        saveBtn.style.display = '';
+        uploadBtn.style.display = '';
+        headerText.textContent = "Edit Profile";
+        uploadBtn.disabled = false;
+
+        inputs.forEach(input => {
+          if(input.hasAttribute('readonly')){
+            input.removeAttribute('readonly');
+            }
+          });
+      });
+      cancel.addEventListener('click', ()=>{
+        edit.style.display = '';
+        cancel.style.display = 'none';
+        saveBtn.style.display = 'none';
+        uploadBtn.style.display = 'none';
+        headerText.textContent = "Profile Info";
+        uploadBtn.disabled = true;
+
+        inputs.forEach(input => {
+          input.setAttribute('readonly', true);
+          input.value = "";
+          });
+      });
+
+      </script>
 
           <!-- Submit -->
           <div class="col-12 text-center">
