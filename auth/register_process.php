@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($duplicate['is_verified']) {
           $_SESSION['error'] = "Email is already registered or taken.";
         } else {
-          $_SESSION['error'] = "Email is already pending verification.";
+          $_SESSION['error'] = "Email is already pending verification. Please check your inbox or register again after 2 minutes.";
         }
         header("Location: ../register.php");
         exit;

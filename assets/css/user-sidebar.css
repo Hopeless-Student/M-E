@@ -1,11 +1,11 @@
 /* Sidebar Styling */
 .sidebar {
-width: 220px;
+width: 260px;
 min-height: 100vh;
-background-color: #f8f9fa; /* light gray */
+background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
 padding: 20px;
 box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-position: fixed; /* stays on the left */
+position: fixed;
 }
 
 .sidebar .profile {
@@ -24,12 +24,12 @@ margin-bottom: 10px;
 .sidebar .username {
 font-size: 1.2rem;
 margin: 0;
-color: #333;
+color: black;
 }
 
 .sidebar .role {
 font-size: 0.85rem;
-color: #777;
+color: black;
 }
 
 .sidebar-nav ul {
@@ -44,7 +44,7 @@ margin-bottom: 15px;
 
 .sidebar-nav a {
 text-decoration: none;
-color: #333;
+color: black;
 font-weight: 500;
 display: block;
 padding: 8px 12px;
@@ -53,14 +53,27 @@ transition: background 0.2s;
 }
 
 .sidebar-nav a:hover {
-background-color: #e0e7ff; /* subtle royal blue hover */
-color: #1e40af; /* royal blue text */
+background-color: #e0e7ff;
+color: #1e40af;
 }
 
 /* For main content spacing */
 .main-content {
-margin-left: 240px; /* slightly larger than sidebar width */
-padding: 20px;
-background-color: lightgray;
-border-radius: 10px;
+  margin-left: 240px;        /* push aside for sidebar */
+  padding: 40px 20px;        /* spacing */
+  display: flex;             /* enable flexbox */
+  justify-content: center;   /* center horizontally */
+}
+
+.profile-card {
+  width: 100%;    /* let it shrink on small screens */
+  max-width: 1000px;   /* limit on big screens */
+  border-radius: 12px;
+}
+
+.profile-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
 }
