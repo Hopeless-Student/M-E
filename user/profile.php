@@ -1,3 +1,6 @@
+<?php
+
+ ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -29,46 +32,46 @@
           <!-- Email -->
           <div class="col-md-6">
             <label for="inputEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="inputEmail" name="email" readonly>
+            <input type="email" class="form-control" id="inputEmail" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly>
           </div>
 
           <!-- Username -->
           <div class="col-md-6">
             <label for="inputUsername" class="form-label">Username</label>
-            <input type="text" class="form-control" id="inputUsername" name="username" readonly>
+            <input type="text" class="form-control" id="inputUsername" name="username" value="<?php echo htmlspecialchars($user['username'].' id='.$user['id']); ?>" readonly>
           </div>
 
           <!-- Password -->
           <div class="col-md-6">
             <label for="inputPassword" class="form-label">Password</label>
-            <input type="password" class="form-control" id="inputPassword" name="password" readonly>
+            <input type="password" class="form-control" id="inputPassword" name="password" value="" readonly>
           </div>
 
           <!-- Confirm Password -->
           <div class="col-md-6">
             <label for="inputConfirmPassword" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="inputConfirmPassword" name="confirm-password"readonly>
+            <input type="password" class="form-control" id="inputConfirmPassword" name="confirm-password" value=""readonly>
           </div>
 
           <!-- Address -->
           <div class="col-12">
             <label for="inputAddress" class="form-label">Address</label>
-            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" readonly>
+            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly>
           </div>
 
           <div class="col-12">
             <label for="inputAddress2" class="form-label">Address 2 (optional)</label>
-            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" readonly>
+            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" value="" readonly>
           </div>
 
           <!-- City / Contact no. / Zip -->
           <div class="col-md-6">
             <label for="inputCity" class="form-label">City</label>
-            <input type="text" class="form-control" id="inputCity" name="city" readonly>
+            <input type="text" class="form-control" id="inputCity" name="city" value="<?php echo htmlspecialchars($user['city']); ?>" readonly>
           </div>
           <div class="col-md-4">
             <label for="inputContact" class="form-label">Contact No.</label>
-            <input type="text" name="contact-no" class="form-control" placeholder="+63" name="contact-no" readonly>
+            <input type="text" name="contact-no" class="form-control" placeholder="+63" name="contact-no" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly>
           </div>
 
           <!-- Submit -->

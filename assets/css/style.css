@@ -47,7 +47,8 @@ form h2 {
   height: auto;
 }
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="password"] {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ccc;
@@ -84,6 +85,20 @@ button:hover {
   font-size: 13px;
   color: #008000;
   text-align: center;
+}
+.extra {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+.extra a {
+  color: royalblue;
+  text-decoration: none;
+}
+
+.extra a:hover {
+  text-decoration: underline;
 }
 /*Para sa check your email*/
  .check-email-container {
