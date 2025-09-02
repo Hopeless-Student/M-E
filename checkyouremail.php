@@ -5,7 +5,6 @@
   if(isset($_SESSION['email'])){
     $email = $_SESSION['email'];
   } else {
-    echo "hehe";
     header("Location: register.php");
     exit;
   }
