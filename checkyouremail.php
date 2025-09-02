@@ -1,11 +1,10 @@
 <?php
   session_start();
-  include('includes/database.php');
+  require_once __DIR__ . '/includes/database.php';
 
   if(isset($_SESSION['email'])){
     $email = $_SESSION['email'];
   } else {
-    echo "hehe";
     header("Location: register.php");
     exit;
   }

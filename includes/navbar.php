@@ -1,4 +1,5 @@
-
+<?php
+ ?>
     <nav class="navbar">
       <div class="logo"> <a href="../register.php">
         <img class="m-e-logo "src="../assets/images/M&E_LOGO_transparent.png" alt="m&e logo">

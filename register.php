@@ -1,4 +1,6 @@
-<?php session_start(); ?>
+<?php session_start();
+
+?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -23,6 +25,9 @@
           <input type="email" id="email" name="email" placeholder="Email" required>
         </div>
         <button type="submit" id="verifyBtn">Verify Email</button>
+        <div class="extra">
+          <p>Already have an account? <a href="login.php">Sign up</a></p>
+        </div>
         <p id="message" style="text-align: center; margin-top: 10px;">
           <?php
             if (isset($_SESSION['error'])) {

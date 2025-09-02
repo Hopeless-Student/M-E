@@ -2,33 +2,32 @@
   session_start();
   include("..\includes\database.php");
   $pdo = connect();
-  $loginFailed ="";
-  $showModal = false;
+  // $loginFailed ="";
+  // $showModal = false;
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST["username"];
         $password = $_POST["password"];
 
         try {
-            $sql = "SELECT id, users, password FROM users WHERE users = :username";
+            $sql = "SELECT * FROM users WHERE username=:username LIMIT 1";
             $stmt = $pdo->prepare($sql);
-            $stmt-> execute(["username"=>$username]);
+            $stmt-> execute([":username"=>$username]);
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC); // nagiging assoc array siya
             if($user){
-              if($user && password_verify($password, $user["password"])){
+              if($user && $user['password'] == $password){
 
-                $_SESSION["id"] = $user["id"];
-                $_SESSION["user"] = $user["users"];
+                $_SESSION["user_id"] = $user["id"];
 
-                header("Location: ../index.php");
-                exit();
+                header("Location: ../user/profile.php");
+                exit;
               } else {
                 $loginFailed = "Incorrect password";
-                $showModal = true;
+                // $showModal = true;
               }
             } else {
               $loginFailed = "User not found";
-              $showModal = true;
+              // $showModal = true;
             }
         } catch (PDOException $e) {
           echo "Database failed: " . $e->getMessage();
@@ -36,4 +35,6 @@
           return null;
         }
       }
+      // header('Location: ../test.php');
+      // exit;
 ?>

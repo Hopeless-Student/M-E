@@ -17,6 +17,7 @@
 // } else {
 //     echo "Error loading cacert.pem.\n";
 // }
+// echo __DIR__;
 ?>
 <!DOCTYPE html>
 <html lang="en">
