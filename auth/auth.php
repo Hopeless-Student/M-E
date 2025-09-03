@@ -17,5 +17,7 @@
       if (!$user) {
           echo "User not found!";
           exit;
+      } else {
+        $_SESSION['isActive'] = $user['isActive'];
       }
 ?>

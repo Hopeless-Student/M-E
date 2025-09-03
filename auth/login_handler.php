@@ -15,13 +15,17 @@
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC); // nagiging assoc array siya
             if($user){
-              if($user && $user['password'] == $password){
+              if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION["user_id"] = $user["id"];
 
-                $_SESSION["user_id"] = $user["id"];
+                    if ($user['isActive'] == 0) {
+                        header("Location: ../user/profile.php");
+                        exit;
+                    }
 
-                header("Location: ../user/profile.php");
-                exit;
-              } else {
+                    header("Location: ../pages/index.php");
+                    exit;
+                } else {
                 $loginFailed = "Incorrect password";
                 // $showModal = true;
               }

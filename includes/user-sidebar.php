@@ -10,7 +10,7 @@
           <ul>
               <li><a href="dashboard.php">Dashboard</a></li>
               <li><a href="profile.php">Profile</a></li>
-              <li><a href="edit-profile.php">Settings</a></li>
+              <li><a href="../pages/index.php">Settings</a></li>
               <li><a href="../auth/logout.php">Logout</a></li>
           </ul>
       </nav>

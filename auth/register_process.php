@@ -9,12 +9,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $fname = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_SPECIAL_CHARS);
   $lname = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_SPECIAL_CHARS);
   $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+  $password        = $_POST['password'] ?? '';
+  $confirmPassword = $_POST['confirm-password'] ?? '';
+
   $token = bin2hex(random_bytes(32));
 
   if (!empty($fname) && !empty($lname) && !empty($email)) {
     $_SESSION["first_name"] = $fname;
     $_SESSION["last_name"] = $lname;
     $_SESSION["email"] = $email;
+
+    if ($password !== $confirmPassword) {
+      die("Passwords do not match!");
+    }
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     try {
       /*Register testing
@@ -46,14 +54,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
       }
 
-      $sql = "INSERT INTO users (first_name, last_name, email, verification_token, token_created_at)
-              VALUES (:fname, :lname, :email, :token, NOW())";
+      $sql = "INSERT INTO users (first_name, last_name, email, verification_token, password, token_created_at)
+              VALUES (:fname, :lname, :email, :token, :password, NOW())";
       $stmt = $pdo->prepare($sql);
       $stmt->execute([
         ":fname" => $fname,
         ":lname" => $lname,
         ":email" => $email,
-        ":token" => $token
+        ":token" => $token,
+        ":password" => $hashedPassword
       ]);
 
       if (sendVerificationToEmail($email, $fname, $lname, $token)) {
