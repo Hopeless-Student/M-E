@@ -174,6 +174,20 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
             <input type="text" class="form-control readonly-fixed"
                    value="<?php echo date("M d, Y h:i A", strtotime($user['created_at'])); ?>" readonly>
           </div>
+          <!-- Created At -->
+          <div class="col-md-3">
+            <label class="form-label">Created At</label>
+            <input type="text" class="form-control readonly-fixed"
+                   value="<?php echo date("M d, Y h:i A", strtotime($user['created_at'])); ?>" readonly>
+          </div>
+
+          <!-- Updated At -->
+          <div class="col-md-3">
+            <label class="form-label">Updated At</label>
+            <input type="text" class="form-control readonly-fixed"
+                   value="<?php echo date("M d, Y h:i A", strtotime($user['updated_at'])); ?>" readonly>
+          </div>
+
 
           <!-- Updated At -->
           <div class="col-md-3">
@@ -187,6 +201,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
     crossorigin="anonymous"></script>
 
     <script>
+
       const profilePicInput = document.getElementById('profilePicInput');
       const uploadBtn = document.getElementById('uploadBtn');
       const profilePreview = document.getElementById('profilePreview');
@@ -195,6 +210,10 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
       const headerText = document.getElementById('header-text');
       const saveBtn = document.querySelector("form button[type='submit']");
       const inputs = document.querySelectorAll("form input");
+      const password = document.getElementById('pass');
+      const confirmPassword = document.getElementById('confirmPass');
+      password.style.display = 'none';
+      confirmPassword.style.display = 'none';
       cancel.style.display = 'none';
       saveBtn.style.display = 'none';
       uploadBtn.style.display = 'none';
@@ -217,11 +236,19 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
       });
 
       document.querySelector("form").addEventListener("submit", function(e) {
-        const pass = document.getElementById("inputPassword").value;
-        const confirm = document.getElementById("inputConfirmPassword").value;
+          const pass = document.getElementById('inputPassword').value;
+          const confirm = document.getElementById('inputConfirmPassword').value;
+          const errorBox = document.getElementById("passwordError");
         if (pass !== confirm) {
           e.preventDefault();
-          alert("Passwords do not match!");
+          errorBox.classList.remove("d-none");
+          document.getElementById("inputPassword").classList.add("is-invalid");
+          document.getElementById("inputConfirmPassword").classList.add("is-invalid");
+          //alert("Passwords do not match!");
+        } else {
+          errorBox.classList.add("d-none");
+          document.getElementById("inputPassword").classList.remove("is-invalid");
+          document.getElementById("inputConfirmPassword").classList.remove("is-invalid");
         }
       });
 
@@ -230,15 +257,18 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
         cancel.style.display = '';
         saveBtn.style.display = '';
         uploadBtn.style.display = '';
+        password.style.display = '';
+        confirmPass.style.display = '';
         headerText.textContent = "Edit Profile";
         uploadBtn.disabled = false;
 
         inputs.forEach(input => {
-          if(input.hasAttribute('readonly')){
+          if (input.hasAttribute('readonly') && !input.classList.contains('readonly-fixed')) {
             input.removeAttribute('readonly');
-            }
-          });
+          }
+        });
       });
+
       cancel.addEventListener('click', ()=>{
         edit.style.display = '';
         cancel.style.display = 'none';
@@ -248,10 +278,13 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
         uploadBtn.disabled = true;
 
         inputs.forEach(input => {
-          input.setAttribute('readonly', true);
-          input.value = "";
-          });
+          if (!input.classList.contains('readonly-fixed')) {
+            input.setAttribute('readonly', true);
+          }
+        });
+        window.location.reload();
       });
+
 
       </script>
 

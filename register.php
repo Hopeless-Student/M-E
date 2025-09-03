@@ -48,6 +48,11 @@
             }
           ?>
        </p>
+       <!-- <div id="passwordError"
+       class="alert alert-danger mt-3 d-none"
+       role="alert">
+       Passwords do not match!
+     </div> -->
       </form>
     </div>
     <script src="assets/js/script.js"></script>
