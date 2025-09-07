@@ -14,26 +14,34 @@
   <body>
     <?php include('../includes/user-sidebar.php'); ?>
 
-    <?php if(!isset($_SESSION['update_status']) && $_SESSION['isActive'] == 0): ?>
-    <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 shadow"
-     role="alert" style="z-index: 1050; max-width: 600px;">
-      <strong>⚠️ Please complete your profile!</strong> before proceeding.
+    <div class="main-content">
+      <div class="card shadow-sm p-4 profile-card position-relative">
+        <?php if(!isset($_SESSION['update_status']) && $_SESSION['isActive'] == 0): ?>
+          <div class="alert alert-warning alert-dismissible fade show mx-auto text-center"
+          role="alert" style="max-width: 600px;">
+          <strong>⚠️ Please complete your profile!</strong> before proceeding.
+          <?php unset($_SESSION['update_status']); ?>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <?php elseif(!empty($_SESSION['update_status'])): ?>
+        <div class="alert alert-success alert-dismissible fade show mx-auto text-center"
+        role="alert" style="max-width: 600px;">
+        ✅ <?php echo htmlspecialchars($_SESSION['update_status']);
+        unset($_SESSION['update_status']); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['error'])): ?>
+      <div class="alert alert-danger alert-dismissible fade show mx-auto text-center"
+      role="alert" style="max-width: 600px;">
+      ❌ <?php
+      echo htmlspecialchars($_SESSION['error']);
+      unset($_SESSION['error']);
+      ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   <?php endif; ?>
-  <?php if (!empty($_SESSION['error'])): ?>
-        <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 shadow"
-         role="alert" style="z-index: 1050; max-width: 600px;">
-         <?php
-             echo htmlspecialchars($_SESSION['error']);
-             unset($_SESSION['error']);
-          ?>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-  <?php endif; ?>
-
-    <div class="main-content">
-      <div class="card shadow-sm p-4 profile-card">
         <h3 class="mb-4 text-center" id="header-text">Profile Info</h3>
         <form class="row g-3" method="POST" action="../auth/complete-profile.php" enctype="multipart/form-data">
 
