@@ -29,11 +29,44 @@
             isActive= 1";
             if(!empty($password) && !empty($confirmPassword)){
               if ($password !== $confirmPassword) {
-                die("Passwords do not match!");
+                $_SESSION['update_status'] = "Passwords do not match!";
+                header("Location: ../user/profile.php");
+                exit;
+                //die("Passwords do not match!");
               }
               $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
               $sql .= ", password=:password";
               $updateFields['password'] = $hashedPassword;
+            }
+            if(isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK){
+              $fileSize = $_FILES['profile_pic']['size'];
+              $maxSize = 2 * 1024 *1024;
+
+              if($fileSize >$maxSize){
+                $_SESSION['error'] = "File is too large! Max size allowed is 2MB.";
+                header("Location: ../user/profile.php");
+                exit;
+              }
+
+               $fileTmp  = $_FILES['profile_pic']['tmp_name'];
+               $fileName = $_FILES['profile_pic']['name'];
+               $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+               $allowed  = ['jpg','jpeg','png','gif'];
+
+               if(in_array($fileExt,$allowed)){
+                 $newName = "user_" . $_SESSION['user_id'] . "_" . time() . "." . $fileExt;
+                 $uploadDir = __DIR__ . '/../assets/profile-pics/';
+                 $uploadFile = $uploadDir . $newName;
+
+                 if(move_uploaded_file($fileTmp, $uploadFile)){
+                   $sql .= ", profile_image=:profile_image";
+                   $updateFields['profile_image'] = $newName;
+                 }
+               } else {
+                 $_SESSION['error'] = "Invalid file type. Please upload JPG, or PNG.";
+                 header('Location: ../user/profile.php');
+                 exit;
+               }
             }
             $sql .= " WHERE id=:id";
             $stmt = $pdo->prepare($sql);

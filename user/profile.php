@@ -13,6 +13,7 @@
   </head>
   <body>
     <?php include('../includes/user-sidebar.php'); ?>
+
     <?php if(!isset($_SESSION['update_status']) && $_SESSION['isActive'] == 0): ?>
     <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 shadow"
      role="alert" style="z-index: 1050; max-width: 600px;">
@@ -20,6 +21,17 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   <?php endif; ?>
+  <?php if (!empty($_SESSION['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 shadow"
+         role="alert" style="z-index: 1050; max-width: 600px;">
+         <?php
+             echo htmlspecialchars($_SESSION['error']);
+             unset($_SESSION['error']);
+          ?>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+  <?php endif; ?>
+
     <div class="main-content">
       <div class="card shadow-sm p-4 profile-card">
         <h3 class="mb-4 text-center" id="header-text">Profile Info</h3>
@@ -27,10 +39,16 @@
 
           <!-- Profile Picture -->
           <div class="col-12 text-center">
-            <img id="profilePreview" src="../assets/images/reirei.jpg"
-               class="profile-img mb-2 rounded-circle img-thumbnail">
+            <?php
+              $profileImage = !empty($user['profile_image'])
+                  ? "../assets/profile-pics/" . htmlspecialchars($user['profile_image'])
+                  : "../assets/images/default.png";
+              ?>
+              <img id="profilePreview" src="<?php echo $profileImage; ?>"
+                class="profile-img mb-2 rounded-circle">
                <br>
             <input type="file" name="profile_pic" id="profilePicInput" accept="image/*" style="display: none;">
+
             <button type="button" class="btn btn-outline-primary" id="uploadBtn">Upload New Photo</button>
             <button type="button" class="btn btn-primary px-4" id="edit">Edit</button>
             <button type="button" class="btn btn-primary px-4" id="cancel">Cancel</button>
