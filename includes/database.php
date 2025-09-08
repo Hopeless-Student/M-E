@@ -18,6 +18,5 @@
         echo "Connection failed: " . $e->getMessage();
         return null;
       }
-
   }
  ?>

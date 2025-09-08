@@ -1,8 +1,13 @@
-<?php session_start(); ?>
+<?php session_start();
+
+?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Register User</title>
   </head>
@@ -22,7 +27,21 @@
         <div class="form-group">
           <input type="email" id="email" name="email" placeholder="Email" required>
         </div>
+        <div class="form-group">
+          <input type="password" id="password" name="password" placeholder="Password" required>
+          <div class="invalid-feedback"><small>Passwords do not match.</small></div>
+        </div>
+        <div class="form-group">
+          <input type="password" id="confirm" name="confirm-password" placeholder="Confirm Password" required>
+          <div class="invalid-feedback"><small>Passwords do not match.</small></div>
+        </div>
+        <div class="extra">
+          <input type="checkbox" name="checkbox" required><label>Confirm agree to our <a href="pages/terms-of-service.php" target="_blank">terms and conditions</a></label>
+        </div>
         <button type="submit" id="verifyBtn">Verify Email</button>
+        <div class="extra">
+          <p>Already have an account? <a href="login.php">Log in</a></p>
+        </div>
         <p id="message" style="text-align: center; margin-top: 10px;">
           <?php
             if (isset($_SESSION['error'])) {
