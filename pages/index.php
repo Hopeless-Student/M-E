@@ -18,10 +18,6 @@
     <?php include('../includes/navbar.php');
           include('../includes/header.php');
     ?>
-    <center>
-    <h5>HELLO MOMMI REI</h5>
-    <img src="../assets/images/reirei.jpg" alt="">
-  </center>
   </body>
   <?php include('../includes/footer.php') ?>
 </html>
