@@ -1,43 +1,9 @@
+
 <?php
-  include("database.php");
-  $conn = connect();
-  $loginFailed ="";
-  $showModal = false;
-      if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST["username"];
-        $password = $_POST["password"];
-
-
-        $stmt = $conn->prepare("SELECT password FROM users WHERE users = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows === 1) {
-
-          $stmt->bind_result($hashed_password);
-          $stmt->fetch();
-
-          if (password_verify($password, $hashed_password)) {
-            header("Location: regForm.php");
-            exit();
-          } else {
-            $loginFailed = "Incorrect password";
-            $showModal = true;
-          }
-        } else {
-          $loginFailed ="Username not found.";
-          $showModal = true;
-        }
-
-        $stmt->close();
-      }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Login Modal</title>
+  include("login_handler.php");
+  if (!isset($loginFailed)) $loginFailed = "";
+  if (!isset($showModal)) $showModal = false;
+ ?>
   <style>
     * {
       box-sizing: border-box;
@@ -139,11 +105,8 @@
       cursor: pointer;
     }
   </style>
-</head>
-<body>
 
   <button class="open-login-btn" onclick="showLogin()">Log in</button>
-
   <!-- Login Overlay -->
   <div id="loginOverlay" class="overlay">
     <div class="formbox">
@@ -182,11 +145,3 @@
         });
       <?php endif; ?>
   </script>
-
-</body>
-</html>
-<?php
-
-
-$conn->close();
-?>
