@@ -1,4 +1,9 @@
 /*Para sa register*/
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
 body {
   font-family: 'Montserrat', sans-serif;
   background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
@@ -42,7 +47,8 @@ form h2 {
   height: auto;
 }
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="password"] {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ccc;
@@ -80,6 +86,23 @@ button:hover {
   color: #008000;
   text-align: center;
 }
+.extra {
+  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.extra a {
+  color: royalblue;
+  text-decoration: none;
+}
+
+.extra a:hover {
+  text-decoration: underline;
+}
 /*Para sa check your email*/
  .check-email-container {
    text-align: center;
@@ -87,7 +110,7 @@ button:hover {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 30%;
  }
 
  #confirmEmail {
@@ -95,7 +118,12 @@ button:hover {
   margin-bottom: 20px;
  }
 
+ .form-check h1{
+   margin-top: 2%;
+   margin-bottom: 2%;
+ }
  .timer {
+     margin-top: 2%;
      color: #888;
      font-size: 14px;
  }
