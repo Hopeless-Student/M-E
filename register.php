@@ -35,6 +35,9 @@
           <input type="password" id="confirm" name="confirm-password" placeholder="Confirm Password" required>
           <div class="invalid-feedback"><small>Passwords do not match.</small></div>
         </div>
+        <div class="extra">
+          <input type="checkbox" name="checkbox" required><label>Confirm agree to our <a href="pages/terms-of-service.php" target="_blank">terms and conditions</a></label>
+        </div>
         <button type="submit" id="verifyBtn">Verify Email</button>
         <div class="extra">
           <p>Already have an account? <a href="login.php">Log in</a></p>
@@ -47,11 +50,6 @@
             }
           ?>
        </p>
-       <!-- <div id="passwordError"
-       class="alert alert-danger mt-3 d-none"
-       role="alert">
-       Passwords do not match!
-     </div> -->
       </form>
     </div>
     <script src="assets/js/script.js"></script>

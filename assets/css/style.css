@@ -87,8 +87,11 @@ button:hover {
   text-align: center;
 }
 .extra {
-  text-align: center;
-  margin-top: 1rem;
+  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 0.85rem;
 }
 
