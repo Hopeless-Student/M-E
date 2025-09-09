@@ -309,6 +309,12 @@
 </head>
 <body>
     <div class="dashboard">
+          <!-- <?php
+          $currentPage = 'index.php';
+          $basePath = '../';
+          include './includes/sidebar.php';
+
+           ?> -->
 
         <nav class="sidebar">
             <div class="logo">
@@ -369,7 +375,7 @@
                     <div class="stat-title">Total Revenue</div>
                     <div class="stat-value">₱48,750</div>
                     <div class="stat-change positive">
-                        ↑ +12.5% from last month
+                        ↗ +12.5% from last month
                     </div>
                 </div>
                 <div class="stat-card">

@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+</body>
+</html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -63,6 +65,12 @@
             line-height: 1.2;
             margin-bottom: 75px;
             margin-top: 30px;
+        }
+
+        .logo img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 1rem;
         }
 
         .logo h1 {
@@ -758,9 +766,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .inventory-controls {
-                flex-direction: column;
-                align-items: stretch;
+            .sidebar.show {
+                transform: translateX(0);
             }
 
             .search-filter {
@@ -845,6 +852,63 @@
                 width: 40px;
                 height: 40px;
                 font-size: 1.2rem;
+            }
+
+            .inventory-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-filter {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .search-box input {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .filter-select {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header h2 {
+                font-size: 1.5rem;
+            }
+
+            .quick-actions {
+                justify-content: center;
+            }
+
+            .pagination {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -1024,10 +1088,38 @@
                         <button class="page-btn active" onclick="changePage(1)">1</button>
                         <button class="page-btn" onclick="changePage('next')">Next →</button>
                     </div>
+                    <form id="bulkUpdateForm">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-input" id="bulkCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="office">Office Supplies</option>
+                                <option value="school">School Supplies</option>
+                                <option value="sanitary">Sanitary Supplies</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Action</label>
+                            <select class="form-input" id="bulkAction" required>
+                                <option value="increase">Increase by Percentage</option>
+                                <option value="decrease">Decrease by Percentage</option>
+                                <option value="setMin">Set Minimum Stock</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Value</label>
+                            <input type="number" class="form-input" id="bulkValue" min="0" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('bulkUpdateModal')">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Apply Update</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </main>
-    </div>
+<script>
+      // Initialize Lucide icons
+      lucide.createIcons();
 
     <!-- Bulk Update Modal -->
     <div id="bulkUpdateModal" class="modal">

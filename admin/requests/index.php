@@ -1285,5 +1285,6 @@ M & E Team`
             loadMessageDetail(1);
         });
     </script>
-</body>
-</html>
+
+  </body>
+  </html>
