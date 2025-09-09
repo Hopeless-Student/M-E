@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #INV-001 - M & E Supply</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
@@ -199,34 +200,49 @@
         }
 
         .print-controls {
-            text-align: center;
-            margin-bottom: 2rem;
+          display: flex;
+          justify-content: center; /* Center horizontally */
+          align-items: center;
+          gap: 1rem; /* Space between buttons */
+          margin-bottom: 2rem;
         }
 
         .print-btn {
-            padding: 0.75rem 2rem;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            margin: 0 0.5rem;
-            text-decoration: none;
-            display: inline-block;
+          padding: 0.75rem 2rem;
+          background: linear-gradient(135deg, #1e40af, #3b82f6); /* Primary gradient */
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 1rem;
+          text-decoration: none;
+          display: inline-flex; /* Icon + text in a row */
+          align-items: center;
+          transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+       .lucide{
+          margin-right: 1rem;
+          width: 20px;
+          height: 20px;
         }
 
         .print-btn:hover {
-            transform: translateY(-1px);
+          transform: translateY(-1px);
+          opacity: 0.9;
         }
 
         .print-btn.secondary {
-            background-color: #64748b;
+            background: linear-gradient(135deg, #64748b, #94a3b8); /* Gray gradient */
         }
 
         .print-btn.secondary:hover {
-            background-color: #475569;
+            background: linear-gradient(135deg, #475569, #64748b);
+        }
+        .print-btn i {
+            margin-right: 0.5rem;
+            width: 20px;
+            height: 20px;
         }
 
         @media print {
@@ -275,8 +291,8 @@
 </head>
 <body>
     <div class="print-controls">
-        <button class="print-btn" onclick="window.print()">🖨️ Print Invoice</button>
-        <button class="print-btn secondary" onclick="downloadPDF()">📄 Download PDF</button>
+        <button class="print-btn" onclick="window.print()"><i data-lucide="printer"></i> Print Invoice</button>
+        <button class="print-btn secondary" onclick="downloadPDF()"><i data-lucide="file-text"></i> Download PDF</button>
         <a href="./index.php" class="print-btn secondary">← Back to Orders</a>
     </div>
 
@@ -438,6 +454,7 @@
     </div>
 
     <script>
+      lucide.createIcons();
         function downloadPDF() {
 
             document.querySelector('.print-controls').style.display = 'none';
@@ -519,7 +536,7 @@
                     `;
                 });
 
-              
+
                 const tax = subtotal * 0.12;
                 const deliveryFee = 50;
                 const discount = 25;
