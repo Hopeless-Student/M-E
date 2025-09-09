@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customers - M & E Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
@@ -18,9 +19,8 @@
             line-height: 1.6;
         }
         img {
-
-          width: 200px;
-          height: 200px;
+            width: 200px;
+            height: 200px;
         }
 
         .dashboard {
@@ -35,7 +35,6 @@
             color: white;
             padding: 2rem 0;
             box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-            flex-shrink: 0;
         }
 
         .logo {
@@ -79,9 +78,10 @@
             border-left-color: #60a5fa;
         }
 
-        .nav-link i {
+        .nav-link .lucide {
             margin-right: 1rem;
             width: 20px;
+            height: 20px;
         }
 
         /* Main Content */
@@ -201,6 +201,22 @@
             min-width: 150px;
         }
 
+        .add-customer-btn {
+            background-color: #1e40af;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .add-customer-btn:hover {
+            background-color: #1e3a8a;
+        }
+
         /* Customers Table */
         .customers-section {
             background: white;
@@ -296,6 +312,9 @@
             font-size: 0.8rem;
             transition: background-color 0.2s ease;
             white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
 
         .action-btn:hover {
@@ -308,6 +327,14 @@
 
         .action-btn.secondary:hover {
             background-color: #475569;
+        }
+
+        .action-btn.orders {
+            background-color: #059669;
+        }
+
+        .action-btn.orders:hover {
+            background-color: #047857;
         }
 
         .actions {
@@ -359,6 +386,121 @@
             border-color: #1e40af;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: #1e40af;
+            font-size: 1.3rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0.25rem;
+        }
+
+        .close-btn:hover {
+            color: #1e40af;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #1e40af;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e3a8a;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
         /* Mobile Styles */
         @media (max-width: 1024px) {
             .dashboard {
@@ -398,6 +540,10 @@
                 width: 100%;
             }
 
+            .add-customer-btn {
+                width: 100%;
+            }
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -430,54 +576,59 @@
                 width: 100%;
                 text-align: center;
             }
+
+            .modal-content {
+                padding: 1rem;
+                width: 95%;
+            }
         }
     </style>
 </head>
 <body>
-  <div class="dashboard">
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="M-E_logo.png" alt="">
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.php" class="nav-link">
+                        <i data-lucide="bar-chart-3"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../orders/index.php" class="nav-link">
+                        <i data-lucide="package"></i> Orders
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../products/index.php" class="nav-link">
+                        <i data-lucide="shopping-cart"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.php" class="nav-link active">
+                        <i data-lucide="users"></i> Customers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../inventory/index.php" class="nav-link">
+                        <i data-lucide="clipboard-list"></i> Inventory
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../requests/index.php" class="nav-link">
+                        <i data-lucide="message-circle"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../settings/index.php" class="nav-link">
+                        <i data-lucide="settings"></i> Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-      <nav class="sidebar">
-          <div class="logo">
-              <img src="M-E_logo.png" alt="">
-          </div>
-          <ul class="nav-menu">
-              <li class="nav-item">
-                  <a href="../index.php" class="nav-link">
-                      <i>📊</i> Dashboard
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="../orders/index.php" class="nav-link">
-                      <i>📦</i> Orders
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="../products/index.php" class="nav-link">
-                      <i>🛍️</i> Products
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="./users/index.php" class="nav-link active">
-                      <i>👥</i> Customers
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="../inventory/index.php" class="nav-link">
-                      <i>📋</i> Inventory
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="../requests/index.php" class="nav-link">
-                      <i>💬</i> Messages
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="../settings/index.php" class="nav-link">
-                      <i>⚙️</i> Settings
-                  </a>
-              </li>
-          </ul>
-      </nav>
         <!-- Main Content -->
         <main class="main-content">
             <div class="header">
@@ -521,6 +672,7 @@
                         <option value="new">New</option>
                     </select>
                 </div>
+                <button class="add-customer-btn" onclick="showAddCustomerModal()">+ Add Customer</button>
             </div>
 
             <!-- Customers Table -->
@@ -558,8 +710,9 @@
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=1" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=1" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=1" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -581,8 +734,9 @@
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=2" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=2" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=2" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -604,8 +758,9 @@
                                 <td><span class="status-badge new">New</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=3" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=3" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=3" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -627,8 +782,9 @@
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=4" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=4" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=4" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -650,8 +806,9 @@
                                 <td><span class="status-badge inactive">Inactive</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=5" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=5" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=5" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -673,8 +830,9 @@
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=6" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=6" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=6" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -696,8 +854,9 @@
                                 <td><span class="status-badge new">New</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=7" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=7" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=7" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -719,8 +878,9 @@
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="actions">
-                                        <button class="action-btn">View</button>
-                                        <button class="action-btn secondary">Message</button>
+                                        <a href="user-details.php?id=8" class="action-btn">View</a>
+                                        <a href="user-orders.php?id=8" class="action-btn orders">Orders</a>
+                                        <a href="edit-user.php?id=8" class="action-btn secondary">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -745,7 +905,52 @@
         </main>
     </div>
 
+    <!-- Add Customer Modal -->
+    <div id="addCustomerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Customer</h3>
+                <button class="close-btn" onclick="closeAddCustomerModal()">&times;</button>
+            </div>
+            <form id="addCustomerForm">
+                <div class="form-group">
+                    <label class="form-label">First Name *</label>
+                    <input type="text" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name *</label>
+                    <input type="text" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" placeholder="City, Province">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Customer Type</label>
+                    <select class="form-input">
+                        <option value="regular">Regular</option>
+                        <option value="vip">VIP</option>
+                        <option value="wholesale">Wholesale</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddCustomerModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        lucide.createIcons();
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
@@ -772,13 +977,41 @@
             updatePaginationInfo();
         });
 
-        // Action button functionality
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('action-btn')) {
-                const action = e.target.textContent;
-                const customerName = e.target.closest('tr').querySelector('.customer-details h4').textContent;
-                alert(`${action} action for customer: ${customerName}`);
+        // Modal functions
+        function showAddCustomerModal() {
+            document.getElementById('addCustomerModal').classList.add('show');
+        }
+
+        function closeAddCustomerModal() {
+            document.getElementById('addCustomerModal').classList.remove('show');
+            document.getElementById('addCustomerForm').reset();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('addCustomerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddCustomerModal();
             }
+        });
+
+        // Add customer form submission
+        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading state
+            const submitBtn = this.querySelector('.btn-primary');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Adding...';
+            submitBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                alert('Customer added successfully!');
+                closeAddCustomerModal();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                // In a real app, you would refresh the table or add the new row
+            }, 1500);
         });
 
         // Update pagination info based on visible rows
@@ -800,6 +1033,24 @@
                     this.classList.add('active');
                 }
             });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // ESC to close modal
+            if (e.key === 'Escape') {
+                closeAddCustomerModal();
+            }
+            // Ctrl+K to focus search
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            // Ctrl+N to add customer
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                showAddCustomerModal();
+            }
         });
     </script>
 </body>
