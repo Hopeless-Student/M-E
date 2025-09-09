@@ -3,15 +3,13 @@ require __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use Dotenv\Dotenv;
-
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-
   function sendVerificationToEmail($email, $fname, $lname, $token){
       try {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;
         $mail->Host       = $_ENV['SMTP_HOST'];
         $mail->Port       = $_ENV['SMTP_PORT'];
         $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
@@ -19,13 +17,13 @@ $dotenv->load();
         $mail->Username   = $_ENV['SMTP_USER'];
         $mail->Password   = $_ENV['SMTP_PASS'];
 
-        $mail->SMTPOptions = [
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-          ]
-        ];
+        // $mail->SMTPOptions = [
+        // 'ssl' => [
+        //     'verify_peer' => false,
+        //     'verify_peer_name' => false,
+        //     'allow_self_signed' => true
+        //   ]
+        // ];
 
         $mail->setFrom($_ENV['SMTP_USER'], 'M&E Interior Supplies Trading');
         $mail->addAddress($email,$fname.' '.$lname);
