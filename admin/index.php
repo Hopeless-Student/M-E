@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M & E Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
@@ -79,9 +81,10 @@
             border-left-color: #60a5fa;
         }
 
-        .nav-link i {
+        .nav-link .lucide {
             margin-right: 1rem;
             width: 20px;
+            height: 20px;
         }
 
         /* Main Content */
@@ -296,6 +299,12 @@
 </head>
 <body>
     <div class="dashboard">
+          <!-- <?php
+          $currentPage = 'index.php';
+          $basePath = '../';
+          include './includes/sidebar.php';
+
+           ?> -->
 
         <nav class="sidebar">
             <div class="logo">
@@ -304,37 +313,37 @@
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="./index.php" class="nav-link active">
-                        <i>📊</i> Dashboard
+                        <i data-lucide="bar-chart-3"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../admin/orders/index.php" class="nav-link">
-                        <i>📦</i> Orders
+                        <i data-lucide="package"></i> Orders
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../admin/products/index.php" class="nav-link">
-                        <i>🛍️</i> Products
+                        <i data-lucide="shopping-cart"></i> Products
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../admin/users/index.php" class="nav-link">
-                        <i>👥</i> Customers
+                        <i data-lucide="users"></i> Customers
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../admin/inventory/index.php" class="nav-link">
-                        <i>📋</i> Inventory
+                        <i data-lucide="clipboard-list"></i> Inventory
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../admin/requests/index.php" class="nav-link">
-                        <i>💬</i> Messages
+                        <i data-lucide="message-circle"></i> Messages
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../admin/settings/index.php" class="nav-link">
-                        <i>⚙️</i> Settings
+                        <i data-lucide="settings"></i> Settings
                     </a>
                 </li>
             </ul>
@@ -356,28 +365,28 @@
                     <div class="stat-title">Total Revenue</div>
                     <div class="stat-value">₱48,750</div>
                     <div class="stat-change positive">
-                        ↑ +12.5% from last month
+                        ↗ +12.5% from last month
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Total Orders</div>
                     <div class="stat-value">267</div>
                     <div class="stat-change positive">
-                        ↑ +8.2% from last month
+                        ↗ +8.2% from last month
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">New Customers</div>
                     <div class="stat-value">52</div>
                     <div class="stat-change positive">
-                        ↑ +15.3% from last month
+                        ↗ +15.3% from last month
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Avg. Order Value</div>
                     <div class="stat-value">₱825</div>
                     <div class="stat-change negative">
-                        ↓ -2.1% from last month
+                        ↘ -2.1% from last month
                     </div>
                 </div>
             </div>
@@ -463,6 +472,9 @@
     </div>
 
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
         // Sales Chart
         const salesCtx = document.getElementById('salesChart').getContext('2d');
         new Chart(salesCtx, {

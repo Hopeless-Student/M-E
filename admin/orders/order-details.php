@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details - M & E Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
@@ -73,12 +74,11 @@
             border-left-color: #60a5fa;
         }
 
-        .nav-link i {
+        .nav-link .lucide {
             margin-right: 1rem;
             width: 20px;
-            font-size: 1.2rem;
+            height: 20px;
         }
-
         /* Main Content */
         .main-content {
             flex: 1;
@@ -357,37 +357,37 @@
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="../index.php" class="nav-link">
-                        <i>📊</i> Dashboard
+                        <i data-lucide="bar-chart-3"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="./index.php" class="nav-link active">
-                        <i>📦</i> Orders
+                        <i data-lucide="package"></i> Orders
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../products/index.php" class="nav-link">
-                        <i>🛍️</i> Products
+                        <i data-lucide="shopping-cart"></i> Products
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../users/index.php" class="nav-link">
-                        <i>👥</i> Customers
+                        <i data-lucide="users"></i> Customers
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../inventory/index.php" class="nav-link">
-                        <i>📋</i> Inventory
+                        <i data-lucide="clipboard-list"></i> Inventory
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../requests/index.php" class="nav-link">
-                        <i>💬</i> Messages
+                        <i data-lucide="message-circle"></i> Messages
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="../settings/index.php" class="nav-link">
-                        <i>⚙️</i> Settings
+                        <i data-lucide="settings"></i> Settings
                     </a>
                 </li>
             </ul>
@@ -411,7 +411,7 @@
                 <div class="main-details">
                     <div class="card">
                         <h3 class="card-title">
-                            <span>📋</span> Order Information
+                            <span data-lucide = "clipboard-list"></span> Order Information
                         </h3>
 
                         <div class="order-info">
@@ -509,7 +509,7 @@
                 <div class="customer-details">
                     <div class="card customer-card">
                         <h3 class="card-title">
-                            <span>👤</span> Customer Information
+                            <span data-lucide = "circle-user-round"></span> Customer Information
                         </h3>
 
                         <div class="info-item">
@@ -536,7 +536,7 @@
 
                     <div class="card">
                         <h3 class="card-title">
-                            <span>🚚</span> Delivery Information
+                            <span data-lucide="truck"></span> Delivery Information
                         </h3>
 
                         <div class="info-item">
@@ -563,7 +563,7 @@
 
                     <div class="card">
                         <h3 class="card-title">
-                            <span>💳</span> Payment Information
+                            <span data-lucide="credit-card"></span> Payment Information
                         </h3>
 
                         <div class="info-item">
@@ -589,6 +589,7 @@
     </div>
 
     <script>
+    lucide.createIcons();
         function saveNotes() {
             const notes = document.querySelector('.notes-textarea').value;
 
