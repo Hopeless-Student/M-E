@@ -22,6 +22,10 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+        img {
+            width: 250px;
+            height: 250px;
+        }
 
         img {
             width: 250px;
@@ -1116,6 +1120,10 @@
                         </div>
                     </form>
                 </div>
+            </div>
+
+            <div id="viewDetailsModal"class="modal">
+
             </div>
 <script>
       // Initialize Lucide icons

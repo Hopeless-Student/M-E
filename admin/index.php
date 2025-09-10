@@ -309,12 +309,6 @@
 </head>
 <body>
     <div class="dashboard">
-          <!-- <?php
-          $currentPage = 'index.php';
-          $basePath = '../';
-          include './includes/sidebar.php';
-
-           ?> -->
 
         <nav class="sidebar">
             <div class="logo">
