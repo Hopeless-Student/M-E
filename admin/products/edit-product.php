@@ -18,6 +18,10 @@
             color: #334155;
             line-height: 1.6;
         }
+        img{
+          width: 250px;
+          height: 250px;
+        }
 
         .dashboard {
             display: flex;
@@ -41,17 +45,27 @@
         }
 
         .logo {
-            padding: 0 2rem 2rem;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
+            line-height: 1.2;
+            margin-bottom: 75px;
+            margin-top: 30px;
         }
 
-        .logo img {
+        /* .logo img {
             width: 200px;
             height: auto;
             margin-bottom: 1rem;
-        }
+        } */
 
         .logo h1 {
             font-size: 1.5rem;
@@ -98,6 +112,7 @@
         .main-content {
             flex: 1;
             padding: 2rem;
+            margin-left: 280px;
         }
 
         .header {
@@ -385,6 +400,7 @@
             }
 
             .main-content {
+                margin-left: 0;
                 padding: 1rem;
             }
         }
@@ -395,8 +411,7 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="logo">
-                <h1>M & E</h1>
-                <p>Admin Dashboard</p>
+              <img src="../../assets/images/logo/ME logo.png" alt="">
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -449,7 +464,7 @@
 
             <div class="breadcrumb">
                 <a href="./index.php">Products</a>
-                <span>></span>
+                <span></span>
                 <span>Edit Product</span>
             </div>
 

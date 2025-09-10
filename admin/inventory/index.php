@@ -22,6 +22,10 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+        img {
+            width: 250px;
+            height: 250px;
+        }
 
         .dashboard {
             display: flex;
@@ -46,16 +50,20 @@
         }
 
         .logo {
-            padding: 0 2rem 2rem;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .logo img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 1rem;
+            line-height: 1.2;
+            margin-bottom: 75px;
+            margin-top: 30px;
         }
 
         .logo h1 {
@@ -835,19 +843,16 @@
 </head>
 <body>
     <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+    <!-- <button class="mobile-menu-toggle" onclick="toggleSidebar()">
         <i data-lucide="menu"></i>
-    </button>
+    </button> -->
 
     <div class="dashboard" id="dashboard">
         <!-- Sidebar -->
         <nav class="sidebar" id="sidebar">
             <div class="logo">
-                <!-- <div style="width: 200px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-weight: bold;">
-                    M&E Logo
-                </div> -->
-                <h1>M & E Inventory</h1>
-                <p>Management System</p>
+                <img src="../../assets/images/logo/ME logo.png" alt="">
+
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -1048,6 +1053,10 @@
                     </form>
                 </div>
             </div>
+
+            <div id="viewDetailsModal"class="modal">
+
+            </div>
 <script>
       // Initialize Lucide icons
       lucide.createIcons();
@@ -1208,7 +1217,7 @@
                   <td>₱${item.price.toLocaleString()}</td>
                   <td>₱${totalValue.toLocaleString()}</td>
                   <td>
-                      <button class="action-btn" onclick="openAdjustStockModal(${item.id})">Adjust</button>
+                      <button class="action-btn" onclick="window.location.href='./adjust-stock.php'">Adjust</button>
                       <button class="action-btn secondary" onclick="viewDetails(${item.id})">Details</button>
                       <button class="action-btn danger" onclick="deleteItem(${item.id})">Delete</button>
                   </td>
