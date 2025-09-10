@@ -19,12 +19,12 @@
             color: #334155;
             line-height: 1.6;
         }
-
-        .logo img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 1rem;
+        img {
+            width: 250px;
+            height: 250px;
         }
+
+
 
         .dashboard {
             display: flex;
@@ -48,17 +48,22 @@
         }
 
         .logo {
-            padding: 0 2rem 2rem;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
+            line-height: 1.2;
+            margin-bottom: 75px;
+            margin-top: 30px;
         }
 
-        .logo img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 1rem;
-        }
 
         .logo h1 {
             font-size: 1.5rem;
@@ -543,9 +548,8 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="logo">
-                <img src="../M-E_logo.png" alt="M&E Logo">
-                <h1>M & E Inventory</h1>
-                <p>Management System</p>
+                <img src="../../assets/images/logo/ME logo.png" alt="">
+
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
