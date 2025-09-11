@@ -4,6 +4,8 @@
   $pdo = connect();
 
   if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $fname = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_SPECIAL_CHARS);
+    $lname = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_SPECIAL_CHARS);
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
     $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS);
     $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -11,6 +13,8 @@
     $password        = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm-password'] ?? '';
     $updateFields = [
+      'first_name'     => $fname,
+      'last_name'      => $lname,
       'username'       => $username,
       'address'        => $address,
       'city'           => $city,
@@ -21,7 +25,9 @@
 
     try {
         $sql = "UPDATE users
-        SET username=:username,
+        SET first_name=:first_name,
+            last_name=:last_name,
+            username=:username,
             address=:address,
             city=:city,
             contact_number=:contact_number,
@@ -68,7 +74,7 @@
                  exit;
                }
             }
-            $sql .= " WHERE id=:id";
+            $sql .= " WHERE user_id=:id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($updateFields);
 

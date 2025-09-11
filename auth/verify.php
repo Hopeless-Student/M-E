@@ -6,7 +6,7 @@ require_once __DIR__ .'/../includes/database.php';
     $email = $_GET['email'];
     $token = $_GET['token'];
       try {
-        $sql = "SELECT id,email, verification_token, token_created_at FROM users
+        $sql = "SELECT user_id,email, verification_token, token_created_at FROM users
                 WHERE email=:email AND verification_token=:token
                 AND is_verified=0 AND token_created_at >= NOW() - INTERVAL 2 MINUTE LIMIT 1";
         $stmt = $pdo->prepare($sql);
