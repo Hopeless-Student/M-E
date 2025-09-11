@@ -20,8 +20,8 @@
         }
 
         img {
-            width: 200px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
         }
 
         .dashboard {
@@ -39,10 +39,20 @@
         }
 
         .logo {
-            padding: 0 2rem 2rem;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
+            line-height: 1.2;
+            margin-bottom: 75px;
+            margin-top: 30px;
         }
 
         .logo h1 {
@@ -482,7 +492,7 @@
     <div class="dashboard">
         <nav class="sidebar">
             <div class="logo">
-                <img src="../M-E_logo.png" alt="">
+                <img src="../../assets/images/logo/ME logo.png" alt="">
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -527,7 +537,7 @@
             <div class="breadcrumb">
                 <a href="../index.php">Dashboard</a>
                 <span>›</span>
-                <a href="index.php">Customers</a>
+                <a href="./index.php">Customers</a>
                 <span>›</span>
                 <span>Juan Dela Cruz</span>
             </div>
