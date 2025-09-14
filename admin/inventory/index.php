@@ -1,6 +1,4 @@
-
-</body>
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,6 +20,7 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+
         img {
             width: 250px;
             height: 250px;
@@ -816,7 +815,7 @@
             }
 
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
 
             .header {
@@ -881,6 +880,7 @@
             .header {
                 flex-direction: column;
                 text-align: center;
+                padding: 1rem;
             }
 
             .header h2 {
@@ -889,6 +889,7 @@
 
             .quick-actions {
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .pagination {
@@ -897,11 +898,25 @@
             }
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
             .main-content {
                 padding: 0.5rem;
             }
 
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
             .modal-content {
                 padding: 1rem;
                 margin: 0.5rem;
@@ -913,6 +928,22 @@
 
             .btn {
                 width: 100%;
+            }
+
+            .inventory-table th,
+            .inventory-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .product-info-cell {
+                min-width: 200px;
+            }
+
+            .product-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -1092,38 +1123,17 @@
                         <button class="page-btn active" onclick="changePage(1)">1</button>
                         <button class="page-btn" onclick="changePage('next')">Next →</button>
                     </div>
-                    <form id="bulkUpdateForm">
-                        <div class="form-group">
-                            <label class="form-label">Category</label>
-                            <select class="form-input" id="bulkCategory" required>
-                                <option value="">Select Category</option>
-                                <option value="office">Office Supplies</option>
-                                <option value="school">School Supplies</option>
-                                <option value="sanitary">Sanitary Supplies</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Action</label>
-                            <select class="form-input" id="bulkAction" required>
-                                <option value="increase">Increase by Percentage</option>
-                                <option value="decrease">Decrease by Percentage</option>
-                                <option value="setMin">Set Minimum Stock</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Value</label>
-                            <input type="number" class="form-input" id="bulkValue" min="0" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="closeModal('bulkUpdateModal')">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Apply Update</button>
-                        </div>
-                    </form>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <div id="viewDetailsModal"class="modal">
-
+    <!-- Bulk Update Modal -->
+    <div id="bulkUpdateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Bulk Stock Update</h3>
+                <button class="close-btn" onclick="closeModal('bulkUpdateModal')">&times;</button>
             </div>
 <script>
       // Initialize Lucide icons
