@@ -1,312 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>M&E: Your One-Stop Shop for Office, School, and Sanitary Supplies</title>
-  <link rel="stylesheet" href="homepage.css">
-</head>
-<body>
+    <head>
+        <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <link href="homepage.css" rel="stylesheet"/>
+        <title>M&E: Your One-stop Shop for Office, School, and Sanitary Supplies</title>
+    </head>
 
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="logo" href="#">
-        <!-- Replace with actual SVG or image -->
-        <div class="logo-mark">M&E</div>
-        <div class="logo-text">Interior Supplies Trading</div>
-      </a>
+    <body>
+        <header>
+            <div class="logo">
+                <img alt="M&amp;E Logo" src="Assets/logo.png"/>
+            </div>
 
-      <nav class="main-nav" aria-label="Primary">
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li class="has-dropdown">
-            <a href="#">Shop</a>
-            <ul class="dropdown">
-              <li><a href="catalog-school.html">School</a></li>
-              <li><a href="catalog-office.html">Office</a></li>
-              <li><a href="catalog-sanitary.html">Sanitary</a></li>
-            </ul>
-          </li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
+            <nav>
+                <a href="homepage-sample.html">Home</a>
+                <a href="#">Products</a>
+                <a href="#">About Us</a>
+            </nav>
 
-      <div class="header-actions">
-        <form class="search" role="search" action="#" method="get">
-          <label for="site-search" class="visually-hidden">Search products</label>
-          <input id="site-search" name="q" placeholder="Search products..." />
-        </form>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <img alt="search" class="search-icon" src="Assets/search.svg"/>
+                    <input placeholder="Search products..." type="text"/>
+                </div>
 
-        <a class="icon-btn" href="#" aria-label="Wishlist">♡</a>
-        <a class="icon-btn cart" href="#" aria-label="Cart">🛒<span class="cart-count">2</span></a>
-      </div>
-    </div>
-  </header>
+                <div class="cart">
+                    <a href="#">
+                        <img alt="cart" class="cart-img" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <div class="hero-text">
-        <h1>Your One-Stop Shop for School, Office & Sanitary Supplies</h1>
-        <p class="lead">Affordable, reliable, and fast delivery — perfect for schools and offices.</p>
-        <div class="hero-ctas">
-          <a class="btn primary" href="catalog-school.html">Shop Now</a>
-          <a class="btn ghost" href="#categories">Browse Categories</a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <!-- Replace with actual hero image -->
-        <div class="image-placeholder">Hero image</div>
-      </div>
-    </div>
-  </section>
+                <div class="btn-login">
+                    <a href="#">Log in</a>
+                </div>
+            </div>
+        </header>
 
-  <!-- CATEGORIES -->
-  <section id="categories" class="categories container">
-    <h2 class="section-title">Shop by Category</h2>
-    <div class="category-grid">
-      <a class="category-card" href="catalog-school.html">
-        <div class="cat-img">📚</div>
-        <h3>School Supplies</h3>
-        <p>Notebooks, pens, arts & crafts — everything for students.</p>
-      </a>
 
-      <a class="category-card" href="catalog-office.html">
-        <div class="cat-img">🖇️</div>
-        <h3>Office Supplies</h3>
-        <p>Desk essentials, organisers, printing paper & more.</p>
-      </a>
 
-      <a class="category-card" href="catalog-sanitary.html">
-        <div class="cat-img">🧴</div>
-        <h3>Sanitary Essentials</h3>
-        <p>Hand sanitizers, tissues, disinfectants & cleaning supplies.</p>
-      </a>
-    </div>
-  </section>
+        <section class="hero">
+                <div class="hero-content">
+                    <h1>Your One-stop Shop for Office, School, and Sanitary Supplies</h1>
+                    <p>Fast, reliable, and hassle-free ordering - delivered straight to your door.</p>
+                    <a href="#">Shop Now</a>
+                </div>
+        </section>
 
-  <!-- FEATURED PRODUCTS -->
-  <section class="featured container">
-    <h2 class="section-title">Featured Products</h2>
-    <div class="product-grid">
-      <!-- Example product card (repeat/replace with dynamic content) -->
-      <article class="product-card">
-        <div class="product-media">Product image</div>
-        <h4 class="product-title">Notebook — A4 (80pp)</h4>
-        <p class="price">₱60.00</p>
-        <div class="product-actions">
-          <button class="btn small">Quick View</button>
-          <button class="btn outline small">Add to Cart</button>
-        </div>
-      </article>
 
-      <!-- Duplicate or generate more product-cards -->
-      <article class="product-card"> ... </article>
-      <article class="product-card"> ... </article>
-      <article class="product-card"> ... </article>
-    </div>
-    <div class="center">
-      <a class="btn ghost" href="catalog.html">View All Products</a>
-    </div>
-  </section>
 
-  <!-- PROMOTIONAL BANNER -->
-  <section class="promo container">
-    <div class="promo-banner">
-      <h3>Back-to-School Specials — Up to 30% OFF selected items</h3>
-      <a class="btn primary" href="catalog-school.html">Shop Deals</a>
-    </div>
-  </section>
+        <section class="products">
+            <div class="products-header">
+                <h2>Top Ordered Products</h2>
 
-  <!-- WHY CHOOSE US -->
-  <section class="why container">
-    <h2 class="section-title">Why Choose Us</h2>
-    <ul class="why-list">
-      <li><strong>Competitive Prices</strong><span>Trusted brands at affordable rates.</span></li>
-      <li><strong>Bulk Orders</strong><span>Special pricing for schools & offices.</span></li>
-      <li><strong>Fast Delivery</strong><span>Timely shipping across the city.</span></li>
-      <li><strong>Quality Guarantee</strong><span>Products you can rely on.</span></li>
-    </ul>
-  </section>
+                <div class="products-actions">
+                <p>See products</p>
 
-  <!-- ABOUT (mini) -->
-  <section id="about" class="about container">
-    <div class="about-inner">
-      <div class="about-image">Image</div>
-      <div class="about-text">
-        <h2>About M&E Interior Supplies Trading</h2>
-        <p>
-          We supply quality school, office, and sanitary essentials to local customers.
-          Our focus is reliable service and value—perfect for students, teachers, and offices.
-        </p>
-        <a class="btn ghost" href="about.html">Read More</a>
-      </div>
-    </div>
-  </section>
+                    <div class="right-btn">
+                        <a href="#">
+                            <img alt="right" class="right-icon" src="Assets/right-icon.svg"/>
+                        </a>
+                    </div>
+                </div>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials container">
-    <h2 class="section-title">What Customers Say</h2>
-    <div class="test-slider">
-      <!-- Replace with actual testimonials -->
-      <blockquote class="testimonial">"Great service and fast delivery!"<cite>— Maria, School Admin</cite></blockquote>
-      <blockquote class="testimonial">"Excellent bulk order discount."<cite>— Office Manager</cite></blockquote>
-    </div>
-  </section>
+            </div>
 
-  <!-- CONTACT (includes contact form + quick info) -->
-  <section id="contact" class="contact container">
-    <h2 class="section-title">Contact Us</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
 
-    <div class="contact-grid">
-      <!-- CONTACT FORM -->
-      <form class="contact-form" action="#" method="post" aria-label="Contact form">
-        <div class="field">
-          <label for="name">Full name</label>
-          <input id="name" name="name" required />
-        </div>
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
 
-        <div class="field">
-          <label for="email">Email address</label>
-          <input id="email" type="email" name="email" required />
-        </div>
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
 
-        <div class="field">
-          <label for="phone">Phone number (optional)</label>
-          <input id="phone" name="phone" />
-        </div>
+            <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
 
-        <div class="field">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-        </div>
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
 
-        <div class="form-actions">
-          <button class="btn primary" type="submit">Send Message</button>
-          <a class="btn outline" href="mailto:elbarcoma@gmail.com">Email Us</a>
-        </div>
-      </form>
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
 
-      <!-- QUICK INFO -->
-      <aside class="contact-info" aria-label="Store details">
-        <div class="info-block">
-          <div class="info-icon">📍</div>
-          <div>
-            <h4>Store Address</h4>
-            <p>Purok 4 Banaba St, Bo. Barretto, Olongapo City</p>
-          </div>
-        </div>
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
 
-        <div class="info-block">
-          <div class="info-icon">☎</div>
-          <div>
-            <h4>Contact</h4>
-            <p>+63 916 635 1911</p>
-          </div>
-        </div>
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
 
-        <div class="info-block">
-          <div class="info-icon">✉</div>
-          <div>
-            <h4>Email</h4>
-            <p>elbarcoma@gmail.com</p>
-          </div>
-        </div>
+            <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
 
-        <div class="map-placeholder">Map embed here (replace with iframe)</div>
-      </aside>
-    </div>
-  </section>
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
 
-  <!-- FAQs (accordion style) -->
-  <section class="faqs container">
-    <h2 class="section-title">Frequently Asked Questions</h2>
-    <div class="accordion">
-      <details>
-        <summary>Do you accept bulk or wholesale orders?</summary>
-        <div class="content">Yes — contact us for pricing. We offer discounts for schools and offices.</div>
-      </details>
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
 
-      <details>
-        <summary>What are your delivery options?</summary>
-        <div class="content">We provide local delivery within Olongapo City and pick-up from the store. Shipping rates vary.</div>
-      </details>
+            <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
 
-      <details>
-        <summary>Can I return or exchange items?</summary>
-        <div class="content">Returns accepted within 7 days if product is unopened and receipt is presented. See full Return Policy.</div>
-      </details>
-    </div>
-  </section>
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
 
-  <!-- NEWSLETTER -->
-  <section class="newsletter container">
-    <h3>Subscribe for exclusive deals</h3>
-    <form class="newsletter-form" action="#" method="post" aria-label="Newsletter signup">
-      <label for="nl-email" class="visually-hidden">Email for newsletter</label>
-      <input id="nl-email" name="email" type="email" placeholder="Your email address" required />
-      <button class="btn primary" type="submit">Subscribe</button>
-    </form>
-  </section>
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <div class="logo-mark small">M&E</div>
-        <div class="brand-name">Interior Supplies Trading</div>
-      </div>
+            <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
 
-      <nav class="footer-nav">
-        <div class="col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="catalog-school.html">School</a></li>
-            <li><a href="catalog-office.html">Office</a></li>
-            <li><a href="catalog-sanitary.html">Sanitary</a></li>
-          </ul>
-        </div>
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
 
-        <div class="col">
-          <h4>Customer Support</h4>
-          <ul>
-            <li><a href="faq.html">FAQs</a></li>
-            <li><a href="shipping.html">Shipping</a></li>
-            <li><a href="#contact">Contact Us</a></li>
-          </ul>
-        </div>
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>    
+        </section>
 
-        <div class="col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="returns.html">Return & Refund Policy</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-          </ul>
-        </div>
-      </nav>
+        <section class="categories">
+            <div class="categ-header">
+                <h2>Shop by Category</h2>
+            </div>
 
-      <div class="stay-connected">
-        <h4>Stay Connected</h4>
-        <p class="tagline">Follow us for promos & updates</p>
+            <div class="categ-grid">
+                <div class="categ-card">
+                    <a href="#">
+                        <img alt="School Supplies" src="Assets/school-supplies.png"/>
 
-        <!-- Primary social: Facebook -->
-        <a class="social-btn" href="https://facebook.com" target="_blank" rel="noopener">
-          <!-- Simple enriched button with text so single icon doesn't look lonely -->
-          <span class="social-icon">f</span> Follow us on Facebook
-        </a>
+                        <div class="overlay">
+                            <span>School Supplies</span>
+                        </div>
+                    </a>
+                </div>
+                            
+                <div class="categ-card">
+                    <a href="#">
+                        <img alt="Office Supplies" src="Assets/office-supplies.png"/>
+                        
+                        <div class="overlay">
+                            <span>Office Supplies</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="categ-card">
+                    <a href="#">
+                        <img alt="Sanitary Supplies" src="Assets/sanitary-supplies.png"/>
+                        
+                        <div class="overlay">
+                            <span>Sanitary Supplies</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- small legal row -->
-        <p class="copyright">© 2025 M&E Interior Supplies Trading. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
 
-  <!-- small script for UI niceties (accordion fallback) -->
-  <script>
-    // nothing required here — keep minimal. You can add JS for form handling, product quick view, etc.
-  </script>
-</body>
+        
+        <section class="trust">
+            <div class="trust-content">
+                <h2>Why Choose Us?</h2>
+                <p>We are committed to providing the best service and quality products to our customers.</p>
+            </div>
+
+            <div class="trust-grid">
+                <div class="trust-card">
+
+                    <div class="icon-circle">
+                        <img alt="Affordable Prices" src="Assets/price-tag.svg"/>
+                    </div>
+
+                    <h3>Affordable & Competitive Prices</h3>
+                </div>
+
+                <div class="trust-card">
+                    <div class="icon-circle">
+                        <img alt="Bulk Orders" src="Assets/order-approve-rounded.svg"/>
+                    </div>
+
+                    <h3>Bulk Orders for Schools & Offices</h3>
+                </div>
+
+                <div class="trust-card">
+                    <div class="icon-circle">
+                        <img alt="Quality Trust" src="Assets/workspace-trusted.svg"/>
+                    </div>
+
+                    <h3>Trusted Quality Supplies</h3>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="about-us">
+            <div class="about-us-grid">
+                <div class="about-us-image">
+                    <img alt="About Us Image" src="Assets/about-us-image.jpg"/>
+                </div>
+
+                <div class="about-us-text">
+                    <h2>About Us</h2>
+                    <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
+                    
+                    <a class="about-btn" href="#">Read more About Us</a>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="contact">
+            <div class="contact-content">
+                <h2>Contact Us</h2>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <img alt="Store Address" src="Assets/location.svg"/>
+
+                    <div>
+                        <h3>Store Address:</h3>
+                        <p>Purok 4 Banaba St Bo.<br/>Barretto Olongapo City</p>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <img alt="Contact No" src="Assets/phone.svg"/>
+
+                    <div>
+                        <h3>Contact No.:</h3>
+                        <p>+63 916 635 1911</p>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <img alt="Email" src="Assets/email.svg"/>
+
+                <div>
+                    <h3>Email:</h3>
+                    <p>elbarcoma@gmail.com</p>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="faqs">
+            <div class="faqs-content">
+                <h2>FAQs</h2>
+            </div>
+
+            <div class="faqs-list">
+                <div class="faq-item">
+                    <p class="faq-question"><strong>Q:</strong>Do you accept bulk orders?</p>
+                    <p class="faq-answer">Yes, we accept bulk orders for schools, offices, and organizations.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question"><strong>Q:</strong>What are delivery options?</p>
+                    <p class="faq-answer">We offer same-day delivery within Olongapo City.</p>
+                </div>
+
+                <div class="faq-item">
+                    <p class="faq-question"><strong>Q:</strong>Returns & refunds?</p>
+                    <p class="faq-answer">Items cannot be returned after checking out or after the product request. Items must ensure before checking out.</p>
+                </div>
+            </div>
+
+            <div class="faqs-more">
+                <a href="#">More about FAQs
+                    <img alt="More" src="Assets/right-arrow.svg"/>
+                </a>
+            </div>
+        </section>
+
+
+
+        <footer>
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="brand-top">
+                        <img alt="M&E Logo" class="footer-logo" src="Assets/logo.png"/>
+                        <h3>Interior Supplies Trading</h3>
+                    </div>
+
+                    <div class="footer-tagline">
+                        <img alt="Your Online Shopping" src="Assets/fb-coverphoto_footer-tagline.png"/>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <table>
+                        <tr>
+                            <th><h4>Navigation</h4></th>
+                            <th><h4>Customer Support</h4></th>
+                            <th><h4>Company Info</h4></th>
+                        </tr>
+                        <tr>
+                            <td><a href="#">School</a></td>
+                            <td><a href="#">FAQs</a></td>
+                            <td><a href="#">About Us</a></td></tr>
+                        
+                        <tr>
+                            <td><a href="#">Office</a></td>
+                            <td><a href="#">Shipping</a></td>
+                            <td><a href="#">Our Store</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">Sanitary</a></td>
+                            <td><a href="#">Contact Us</a></td>
+                            <td><a href="#">Bulk Orders</a></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><a href="#">Return & Refund Policy</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <hr class="footer-divider"/>
+
+            <div class="footer-socials">
+                <h4>Stay Connected</h4>
+                <p>Follow us for the latest deals & updates!</p>
+                
+                <a class="fb-btn" href="https://www.facebook.com/youronlineshooping" target="_blank">
+                    <img alt="Facebook Link" src="Assets/Facebook_Logo_2023.png"/>
+                    <span>Follow us on Facebook</span>
+                </a>
+            </div>
+
+            <div class="footer-copy">
+                <p>© Copyright 2025 M&E Interior Supplies Trading, All rights reserved.</p>
+            </div>
+        </footer>
+    </body>
 </html>
