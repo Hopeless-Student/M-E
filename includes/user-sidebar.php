@@ -18,7 +18,8 @@
             <ul>
                 <li><a href="../pages/index.php">Home</a></li>
                 <li><a href="profile.php">Profile</a></li>
-                <li><a href="../pages/index.php">Orders</a></li>
+                <li><a href="../user/order-history.php">Orders</a></li>
+                <li><a href="../user/request.php">Request</a></li>
                 <li><a href="../auth/logout.php">Logout</a></li>
             </ul>
         </nav>

@@ -16,7 +16,7 @@
             $user = $stmt->fetch(PDO::FETCH_ASSOC); // nagiging assoc array siya
             if($user){
               if ($user && password_verify($password, $user['password'])) {
-                    $_SESSION["user_id"] = $user["id"];
+                    $_SESSION["user_id"] = $user["user_id"];
 
                     if ($user['isActive'] == 0) {
                         header("Location: ../user/profile.php");
