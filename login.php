@@ -3,6 +3,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  <link href="bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <title>Login</title>
 </head>

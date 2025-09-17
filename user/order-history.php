@@ -6,9 +6,7 @@
   <head>
     <meta charset="utf-8">
     <title>Order History</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-    rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-    crossorigin="anonymous">
+    <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/user-sidebar.css">
     <style media="screen">
       .order-content{
@@ -108,7 +106,7 @@
                   <sub>PHP 800 x 1</sub>
                 </div>
                 <button type="button" name="button" class="btn btn-primary">Order Details</button>
-                <div class="modal-dialog modal-dialog-centered"> 
+                <div class="modal-dialog modal-dialog-centered">
                 </div>
               </div>
             </div>
@@ -162,5 +160,6 @@
             </div>
           </div>
         </div>
+        <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"> </script>
   </body>
 </html>
