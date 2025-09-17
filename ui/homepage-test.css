@@ -1,0 +1,219 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: #222;
+      background-color: #f9f9f9;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /*sa header*/
+    header {
+      background-color: #f2f2f2;
+      padding: 10px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    nav a {
+      font-size: 16px;
+      font-weight: 500;
+      color: #222;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #3467eb;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .search-bar {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #3467eb;
+      border-radius: 20px;
+      padding: 5px 12px;
+      background: #fff;
+    }
+
+    .search-bar:hover input {
+      width: 400px;
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      padding: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      width: 150px;
+      transition: 0.8s;
+      background: transparent;
+    }
+
+    .box a .fas {
+      color: #3467eb;
+      font-size: 16px;
+    }
+
+    .search-bar button {
+      background: none;
+      border: none;
+      color: #3467eb;
+      cursor: pointer;
+    }
+
+    .cart {
+      font-size: 20px;
+      color: #3467eb;
+      cursor: pointer;
+    }
+
+    .login-btn {
+      background-color: #3467eb;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #274db8;
+    }
+
+    /*hero section*/
+    .hero {
+      height: 500px;
+      background: linear-gradient(to bottom, #e6f0ff, #99b3ff);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #222;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 25px;
+      max-width: 600px;
+      color: #444;
+    }
+
+    .hero button {
+      background-color: #3467eb;
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .hero button:hover {
+      background-color: #274db8;
+    }
+
+    /*footer section*/
+    footer {
+      background-color: #0b2a66;
+      color: #fff;
+      padding: 40px 20px;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: auto;
+      gap: 40px;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .footer-section ul li a {
+      color: #ddd;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section ul li a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #bbb;
+    }
+
+    /* responsive para sa mobile view */
+    @media (max-width: 768px) {
+      nav {
+        display: none; /* placeholder for hamburger menu */
+      }
+      .search-bar input {
+        width: 100px;
+      }
+      .hero h1 {
+        font-size: 24px;
+      }
+      .hero p {
+        font-size: 16px;
+      }
+    }
