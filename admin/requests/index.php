@@ -155,10 +155,19 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
 
         .action-button:hover {
             background-color: #1e3a8a;
+        }
+
+        .action-button.secondary {
+            background-color: #10b981;
+        }
+
+        .action-button.secondary:hover {
+            background-color: #059669;
         }
 
         .user-info {
@@ -706,6 +715,10 @@
                         <i data-lucide="search" class="search-icon"></i>
                         <input type="text" class="search-input" placeholder="Search messages...">
                     </div>
+                    <a href="./respond-request.php" class="action-button secondary">
+                        <i data-lucide="file-text" width="16" height="16"></i>
+                        Templates
+                    </a>
                     <button class="action-button" onclick="window.location.href='./archive-request.php'">
                         <i data-lucide="archive" width="16" height="16"></i>
                         Archive
@@ -822,7 +835,7 @@
                             <div class="customer-avatar">JD</div>
                             <div class="customer-details">
                                 <h3>Juan Dela Cruz</h3>
-                                <p>juan.delacruz@email.com • +63 917 123 4567</p>
+                                <p>juan.delacruz@email.com â€¢ +63 917 123 4567</p>
                             </div>
                         </div>
                         <div class="message-actions">
@@ -1047,7 +1060,7 @@ Maria Santos`
             // Update customer info
             document.querySelector('.customer-avatar').textContent = data.avatar;
             document.querySelector('.customer-details h3').textContent = data.customer;
-            document.querySelector('.customer-details p').textContent = `${data.email} • ${data.phone}`;
+            document.querySelector('.customer-details p').textContent = `${data.email} â€¢ ${data.phone}`;
 
             // Update message info
             document.querySelector('.message-detail-header .message-type').textContent = data.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -1177,10 +1190,10 @@ Maria Santos`
 Thank you for your inquiry about our ballpoint pens. Yes, we have the quantity you need available in stock. For bulk orders of 200+ pieces, we offer a 15% discount.
 
 Here are the details:
-- Regular price: ₱25 per pack (12 pieces)
-- Bulk price: ₱21.25 per pack
-- Total for 17 packs: ₱361.25
-- Delivery to Olongapo City: ₱150
+- Regular price: â‚±25 per pack (12 pieces)
+- Bulk price: â‚±21.25 per pack
+- Total for 17 packs: â‚±361.25
+- Delivery to Olongapo City: â‚±150
 
 Would you like to proceed with this order?
 
@@ -1227,9 +1240,9 @@ M & E Team`,
 Thank you for your inquiry about delivery options.
 
 Our delivery information:
-- Metro Manila: 1-2 business days (₱100)
-- Provincial areas: 2-3 business days (₱150-200)
-- Free delivery for orders above ₱1,500
+- Metro Manila: 1-2 business days (â‚±100)
+- Provincial areas: 2-3 business days (â‚±150-200)
+- Free delivery for orders above â‚±1,500
 
 You can track your order through our website using your order number.
 
