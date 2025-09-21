@@ -2,45 +2,52 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <link href="homepage.css" rel="stylesheet"/>
+        <link href="../assets/css/homepage.css" rel="stylesheet"/>
         <title>M&E: Your One-stop Shop for Office, School, and Sanitary Supplies</title>
     </head>
-
+    
     <body>
         <header>
             <div class="logo">
-                <img alt="M&amp;E Logo" src="Assets/logo.png"/>
+                <img alt="M&E Logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
+            </div>
+
+            <div class="hamburger">
+                <img src="../assets/svg/hamburger-menu.svg" alt="Menu" class="hamburger-icon"/>
             </div>
 
             <nav>
-                <a href="homepage-sample.html">Home</a>
+                <a href="homepage.html">Home</a>
                 <a href="#">Products</a>
                 <a href="#">About Us</a>
             </nav>
 
             <div class="header-actions">
                 <div class="search-bar">
-                    <img alt="search" class="search-icon" src="Assets/search.svg"/>
-                    <input placeholder="Search products..." type="text"/>
+                    <img alt="search" class="search-icon" src="../assets/svg/search.svg"/>
+                    <input placeholder="Search products..." type="text" id="search-input"/>
+                    <div class="search-suggestions"></div>
                 </div>
 
                 <div class="cart">
                     <a href="#">
-                        <img alt="cart" class="cart-img" src="Assets/cart-button_default.svg"/>
+                        <img alt="cart" class="cart-img" src="../assets/svg/cart-button_default.svg"/>
                     </a>
                 </div>
 
                 <div class="btn-login">
-                    <a href="#">Log in</a>
+                    <a href="../login.php">Log in</a>
                 </div>
             </div>
         </header>
-
+        
 
 
         <section class="hero">
                 <div class="hero-content">
-                    <h1>Your One-stop Shop for Office, School, and Sanitary Supplies</h1>
+                    <h1>
+                        Your One-stop Shop for <span class="highlight">Office, School,</span> and <span class="highlight">Sanitary Supplies</span>
+                    </h1>
                     <p>Fast, reliable, and hassle-free ordering - delivered straight to your door.</p>
                     <a href="#">Shop Now</a>
                 </div>
@@ -57,117 +64,119 @@
 
                     <div class="right-btn">
                         <a href="#">
-                            <img alt="right" class="right-icon" src="Assets/right-icon.svg"/>
+                            <img alt="right" class="right-icon" src="../assets/svg/right-icon.svg"/>
                         </a>
                     </div>
                 </div>
-
+                
             </div>
-
+            
             <div class="product-grid">
                 <div class="product-card">
                     <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
-
+                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                        
                         <div class="product-info">
                             <h3>Scotch Tape Roll</h3>
                             <p>PHP 50.00</p>
                         </div>
                     </a>
-
+                    
                 <div class="cart-btn">
                     <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
                     </a>
                 </div>
             </div>
 
             <div class="product-card">
                     <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
+                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
 
                         <div class="product-info">
                             <h3>Scotch Tape Roll</h3>
                             <p>PHP 50.00</p>
                         </div>
                     </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
-                    </a>
+                    
+                    <div class="cart-btn">
+                        <a href="#">
+                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="product-card">
+                
+                <div class="product-card">
                     <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
-
+                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                        
                         <div class="product-info">
                             <h3>Scotch Tape Roll</h3>
                             <p>PHP 50.00</p>
                         </div>
                     </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
-                    </a>
+                    
+                    <div class="cart-btn">
+                        <a href="#">
+                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                        </a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="product-card">
+                
+                <div class="product-card">
                     <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
-
+                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                        
                         <div class="product-info">
                             <h3>Scotch Tape Roll</h3>
                             <p>PHP 50.00</p>
                         </div>
                     </a>
 
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
-                    </a>
-                </div>
-            </div>
-
-            <div class="product-card">
-                    <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
-
-                        <div class="product-info">
-                            <h3>Scotch Tape Roll</h3>
-                            <p>PHP 50.00</p>
-                        </div>
-                    </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                    <div class="cart-btn">
+                        <a href="#">
+                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
                     </a>
                 </div>
             </div>
 
             <div class="product-card">
                     <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
+                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
 
                         <div class="product-info">
                             <h3>Scotch Tape Roll</h3>
                             <p>PHP 50.00</p>
                         </div>
                     </a>
-
-                <div class="cart-btn">
+                    
+                    <div class="cart-btn">
+                        <a href="#">
+                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <a class="card-link" href="#">
+                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                        
+                        <div class="product-info">
+                            <h3>Scotch Tape Roll</h3>
+                            <p>PHP 50.00</p>
+                        </div>
+                    </a>
+                    
+                    <div class="cart-btn">
                     <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
                     </a>
                 </div>
             </div>    
         </section>
-
+        
+        
+        
         <section class="categories">
             <div class="categ-header">
                 <h2>Shop by Category</h2>
@@ -176,17 +185,17 @@
             <div class="categ-grid">
                 <div class="categ-card">
                     <a href="#">
-                        <img alt="School Supplies" src="Assets/school-supplies.png"/>
-
+                        <img alt="School Supplies" src="../assets/images/school-supplies.png"/>
+                        
                         <div class="overlay">
                             <span>School Supplies</span>
                         </div>
                     </a>
                 </div>
-                            
+                
                 <div class="categ-card">
                     <a href="#">
-                        <img alt="Office Supplies" src="Assets/office-supplies.png"/>
+                        <img alt="Office Supplies" src="../assets/images/office-supplies.png"/>
                         
                         <div class="overlay">
                             <span>Office Supplies</span>
@@ -196,7 +205,7 @@
                 
                 <div class="categ-card">
                     <a href="#">
-                        <img alt="Sanitary Supplies" src="Assets/sanitary-supplies.png"/>
+                        <img alt="Sanitary Supplies" src="../assets/images/sanitary-supplies.png"/>
                         
                         <div class="overlay">
                             <span>Sanitary Supplies</span>
@@ -206,50 +215,50 @@
             </div>
         </section>
 
-
+        
         
         <section class="trust">
             <div class="trust-content">
                 <h2>Why Choose Us?</h2>
                 <p>We are committed to providing the best service and quality products to our customers.</p>
             </div>
-
+            
             <div class="trust-grid">
                 <div class="trust-card">
 
                     <div class="icon-circle">
-                        <img alt="Affordable Prices" src="Assets/price-tag.svg"/>
+                        <img alt="Affordable Prices" src="../assets/svg/price-tag.svg"/>
                     </div>
 
                     <h3>Affordable & Competitive Prices</h3>
                 </div>
-
+                
                 <div class="trust-card">
                     <div class="icon-circle">
-                        <img alt="Bulk Orders" src="Assets/order-approve-rounded.svg"/>
+                        <img alt="Bulk Orders" src="../assets/svg/order-approve-rounded.svg"/>
                     </div>
-
+                    
                     <h3>Bulk Orders for Schools & Offices</h3>
                 </div>
-
+                
                 <div class="trust-card">
                     <div class="icon-circle">
-                        <img alt="Quality Trust" src="Assets/workspace-trusted.svg"/>
+                        <img alt="Quality Trust" src="../assets/svg/workspace-trusted.svg"/>
                     </div>
-
+                    
                     <h3>Trusted Quality Supplies</h3>
                 </div>
             </div>
         </section>
+        
 
-
-
+        
         <section class="about-us">
             <div class="about-us-grid">
                 <div class="about-us-image">
-                    <img alt="About Us Image" src="Assets/about-us-image.jpg"/>
+                    <img alt="About Us Image" src="../assets/images/about-us-image.jpg"/>
                 </div>
-
+                
                 <div class="about-us-text">
                     <h2>About Us</h2>
                     <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
@@ -268,125 +277,127 @@
 
             <div class="contact-grid">
                 <div class="contact-card">
-                    <img alt="Store Address" src="Assets/location.svg"/>
+                    <img alt="Store Address" src="../assets/svg/location.svg"/>
 
                     <div>
                         <h3>Store Address:</h3>
                         <p>Purok 4 Banaba St Bo.<br/>Barretto Olongapo City</p>
                     </div>
                 </div>
-
+                
                 <div class="contact-card">
-                    <img alt="Contact No" src="Assets/phone.svg"/>
-
+                    <img alt="Contact No" src="../assets/svg/phone.svg"/>
+                    
                     <div>
                         <h3>Contact No.:</h3>
                         <p>+63 916 635 1911</p>
                     </div>
                 </div>
-
+                
                 <div class="contact-card">
-                    <img alt="Email" src="Assets/email.svg"/>
-
+                    <img alt="Email" src="../assets/svg/email.svg"/>
+                    
                 <div>
                     <h3>Email:</h3>
                     <p>elbarcoma@gmail.com</p>
                 </div>
             </div>
         </section>
+        
 
-
-
+        
         <section class="faqs">
             <div class="faqs-content">
                 <h2>FAQs</h2>
             </div>
-
+            
             <div class="faqs-list">
                 <div class="faq-item">
-                    <p class="faq-question"><strong>Q:</strong>Do you accept bulk orders?</p>
+                    <p class="faq-question"><strong>Q:</strong> Do you accept bulk orders?</p>
                     <p class="faq-answer">Yes, we accept bulk orders for schools, offices, and organizations.</p>
                 </div>
 
                 <div class="faq-item">
-                    <p class="faq-question"><strong>Q:</strong>What are delivery options?</p>
+                    <p class="faq-question"><strong>Q:</strong> What are delivery options?</p>
                     <p class="faq-answer">We offer same-day delivery within Olongapo City.</p>
                 </div>
-
+                
                 <div class="faq-item">
-                    <p class="faq-question"><strong>Q:</strong>Returns & refunds?</p>
+                    <p class="faq-question"><strong>Q:</strong> Returns & refunds?</p>
                     <p class="faq-answer">Items cannot be returned after checking out or after the product request. Items must ensure before checking out.</p>
                 </div>
             </div>
-
+            
             <div class="faqs-more">
                 <a href="#">More about FAQs
-                    <img alt="More" src="Assets/right-arrow.svg"/>
+                    <img alt="More" src="../assets/svg/right-arrow.svg"/>
                 </a>
             </div>
         </section>
 
-
-
+        
+        
         <footer>
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="brand-top">
-                        <img alt="M&E Logo" class="footer-logo" src="Assets/logo.png"/>
+                        <img alt="M&E Logo" class="footer-logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
                         <h3>Interior Supplies Trading</h3>
                     </div>
-
+                    
                     <div class="footer-tagline">
-                        <img alt="Your Online Shopping" src="Assets/fb-coverphoto_footer-tagline.png"/>
+                        <img alt="Your Online Shopping" src="../assets/images/fb-coverphoto_footer-tagline.png"/>
                     </div>
                 </div>
-
+                
                 <div class="footer-links">
-                    <table>
-                        <tr>
-                            <th><h4>Navigation</h4></th>
-                            <th><h4>Customer Support</h4></th>
-                            <th><h4>Company Info</h4></th>
-                        </tr>
-                        <tr>
-                            <td><a href="#">School</a></td>
-                            <td><a href="#">FAQs</a></td>
-                            <td><a href="#">About Us</a></td></tr>
-                        
-                        <tr>
-                            <td><a href="#">Office</a></td>
-                            <td><a href="#">Shipping</a></td>
-                            <td><a href="#">Our Store</a></td>
-                        </tr>
-                        <tr>
-                            <td><a href="#">Sanitary</a></td>
-                            <td><a href="#">Contact Us</a></td>
-                            <td><a href="#">Bulk Orders</a></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td><a href="#">Return & Refund Policy</a></td>
-                        </tr>
-                    </table>
+                    <div class="footer-column">
+                        <h4>Navigation</h4>
+                        <ul>
+                            <li><a href="#">School</a></li>
+                            <li><a href="#">Office</a></li>
+                            <li><a href="#">Sanitary</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Customer Support</h4>
+                        <ul>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Shipping</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Company Info</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Our Store</a></li>
+                            <li><a href="#">Bulk Orders</a></li>
+                            <li><a href="#">Return & Refund Policy</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-
+            
             <hr class="footer-divider"/>
-
+            
             <div class="footer-socials">
                 <h4>Stay Connected</h4>
                 <p>Follow us for the latest deals & updates!</p>
                 
                 <a class="fb-btn" href="https://www.facebook.com/youronlineshooping" target="_blank">
-                    <img alt="Facebook Link" src="Assets/Facebook_Logo_2023.png"/>
+                    <img alt="Facebook Link" src="../assets/images/Facebook_Logo_2023.png"/>
                     <span>Follow us on Facebook</span>
                 </a>
             </div>
-
+            
             <div class="footer-copy">
                 <p>© Copyright 2025 M&E Interior Supplies Trading, All rights reserved.</p>
             </div>
         </footer>
+        <script src="../assets/js/homepage.js"></script>
     </body>
-</html>
+    </html>
+    
