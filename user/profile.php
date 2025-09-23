@@ -1,5 +1,10 @@
 <?php
-
+include('../includes/user-sidebar.php');
+require_once __DIR__ . '/../includes/database.php';
+$pdo = connect();
+$provinces = $pdo->query("SELECT province_id, province_name FROM provinces ORDER BY province_name")->fetchAll(PDO::FETCH_ASSOC);
+$cities = $pdo->query("SELECT city_id, city_name, province_id FROM cities ORDER BY city_name")->fetchAll(PDO::FETCH_ASSOC);
+$barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barangays ORDER BY barangay_name")->fetchAll(PDO::FETCH_ASSOC);
  ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -10,7 +15,6 @@
     <link rel="stylesheet" href="../assets/css/user-sidebar.css">
   </head>
   <body>
-    <?php include('../includes/user-sidebar.php'); ?>
 
     <div class="main-content">
       <div class="card shadow-sm p-4 profile-card position-relative">
@@ -60,17 +64,42 @@
             <button type="button" class="btn btn-primary px-4" id="cancel">Cancel</button>
           </div>
           <!-- First Name -->
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label for="firstName" class="form-label">First Name</label>
             <input type="text" class="form-control" id="firstName" name="first_name"
                    value="<?php echo htmlspecialchars($user['first_name']); ?>" readonly>
           </div>
+          <div class="col-md-4">
+            <label for="middleName" class="form-label">Middle Name</label>
+            <input type="text" class="form-control" id="middleName" name="middle_name"
+                   value="<?php echo htmlspecialchars($user['middle_name']); ?>" readonly>
+          </div>
 
           <!-- Last Name -->
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label for="lastName" class="form-label">Last Name</label>
             <input type="text" class="form-control" id="lastName" name="last_name"
                    value="<?php echo htmlspecialchars($user['last_name']); ?>" readonly>
+          </div>
+          <!-- Gender  -->
+          <div class="col-md-4">
+            <label for="gender" class="form-label">Genders</label>
+            <select id="gender" name="genders" class="form-select" required>
+              <option value="option1">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+          <!-- DOB -->
+          <div class="col-md-4">
+            <label for="dob" class="form-label">Date of Birth</label>
+            <input type="date" id="dob" name="dob" class="form-control" required>
+          </div>
+          <!-- Contact no -->
+          <div class="col-md-4">
+            <label for="inputContact" class="form-label">Contact No.</label>
+            <input type="text" name="contact-no" class="form-control" placeholder="+63" name="contact-no" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required>
           </div>
           <!-- Email -->
           <div class="col-md-6">
@@ -83,7 +112,6 @@
             <label for="inputUsername" class="form-label">Username</label>
             <input type="text" class="form-control" id="inputUsername" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" readonly required>
           </div>
-
           <!-- Password -->
           <div class="col-md-6" id="pass">
             <label for="inputPassword" class="form-label">Password</label>
@@ -96,8 +124,34 @@
             <input type="password" class="form-control" id="inputConfirmPassword" name="confirm-password" value=""readonly>
           </div>
 
+          <!-- Province -->
+          <div class="col-4">
+            <label for="inputProvince" class="form-label">Province</label>
+            <select class="form-select" id="inputProvince" name="province" required>
+              <option value="">Select Province</option>
+              <?php foreach ($provinces as $province): ?>
+                <option value="<?= $province['province_id'] ?>"><?= htmlspecialchars($province['province_name']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <!-- City -->
+          <div class="col-md-4">
+            <label for="inputCity" class="form-label">City</label>
+            <select class="form-select" id="inputCity" name="city" required>
+              <option value="">Select City</option>
+
+            </select>
+          </div>
+          <!-- Barangays -->
+          <div class="col-md-4">
+            <label for="inputBarangay" class="form-label">Barangay</label>
+            <select class="form-select" id="inputBarangay" name="barangay" required>
+              <option value="">Select Barangay</option>
+
+            </select>
+          </div>
           <!-- Address -->
-          <div class="col-12">
+          <div class="col-4">
             <label for="inputAddress" class="form-label">Address</label>
             <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly required>
           </div>
@@ -108,14 +162,6 @@
           </div> -->
 
           <!-- City / Contact no. / Zip -->
-          <div class="col-md-2">
-            <label for="inputCity" class="form-label">City</label>
-            <input type="text" class="form-control" id="inputCity" name="city" value="<?php echo htmlspecialchars($user['city']); ?>" readonly required>
-          </div>
-          <div class="col-md-4">
-            <label for="inputContact" class="form-label">Contact No.</label>
-            <input type="text" name="contact-no" class="form-control" placeholder="+63" name="contact-no" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required>
-          </div>
           <!-- Created At -->
           <div class="col-md-3">
             <label class="form-label">Created At</label>
@@ -146,95 +192,14 @@
     <!-- <script src="bootstrap-5.3.8-dist\js\bootstrap.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script> -->
-    <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
-
     <script>
+    window.appData = {
+      cities: <?= json_encode($cities) ?>,
+      barangays: <?= json_encode($barangays) ?>
+    };
+    </script>
+    <script src="../assets/js/profile.js"></script>
 
-      const profilePicInput = document.getElementById('profilePicInput');
-      const uploadBtn = document.getElementById('uploadBtn');
-      const profilePreview = document.getElementById('profilePreview');
-      const edit = document.getElementById('edit');
-      const cancel = document.getElementById('cancel');
-      const headerText = document.getElementById('header-text');
-      const saveBtn = document.querySelector("form button[type='submit']");
-      const inputs = document.querySelectorAll("form input");
-      const password = document.getElementById('pass');
-      const confirmPassword = document.getElementById('confirmPass');
-      password.style.display = 'none';
-      confirmPassword.style.display = 'none';
-      cancel.style.display = 'none';
-      saveBtn.style.display = 'none';
-      uploadBtn.style.display = 'none';
-      uploadBtn.disabled = true;
-
-      uploadBtn.addEventListener('click', () => {
-        profilePicInput.click();
-      });
-
-      // Preview the selected image
-      profilePicInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            profilePreview.src = e.target.result;
-          }
-          reader.readAsDataURL(file);
-        }
-      });
-
-      document.querySelector("form").addEventListener("submit", function(e) {
-          const pass = document.getElementById('inputPassword').value;
-          const confirm = document.getElementById('inputConfirmPassword').value;
-          const errorBox = document.getElementById("passwordError");
-        if (pass !== confirm) {
-          e.preventDefault();
-          errorBox.classList.remove("d-none");
-          document.getElementById("inputPassword").classList.add("is-invalid");
-          document.getElementById("inputConfirmPassword").classList.add("is-invalid");
-          //alert("Passwords do not match!");
-        } else {
-          errorBox.classList.add("d-none");
-          document.getElementById("inputPassword").classList.remove("is-invalid");
-          document.getElementById("inputConfirmPassword").classList.remove("is-invalid");
-        }
-      });
-
-      edit.addEventListener('click', ()=>{
-        edit.style.display = 'none';
-        cancel.style.display = '';
-        saveBtn.style.display = '';
-        uploadBtn.style.display = '';
-        password.style.display = '';
-        confirmPass.style.display = '';
-        headerText.textContent = "Edit Profile";
-        uploadBtn.disabled = false;
-
-        inputs.forEach(input => {
-          if (input.hasAttribute('readonly') && !input.classList.contains('readonly-fixed')) {
-            input.removeAttribute('readonly');
-          }
-        });
-      });
-
-      cancel.addEventListener('click', ()=>{
-        edit.style.display = '';
-        cancel.style.display = 'none';
-        saveBtn.style.display = 'none';
-        uploadBtn.style.display = 'none';
-        headerText.textContent = "Profile Info";
-        uploadBtn.disabled = true;
-
-        inputs.forEach(input => {
-          if (!input.classList.contains('readonly-fixed')) {
-            input.setAttribute('readonly', true);
-          }
-        });
-        window.location.reload();
-      });
-
-
-      </script>
-
+    <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
   </body>
 </html>

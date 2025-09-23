@@ -26,188 +26,177 @@ try {
     echo "Database Error: " . $e->getMessage();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-    <link href="../bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
-    <link href="../ui/homepage.css" rel="stylesheet"/>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link href="../bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
+  <link href="../ui/homepage.css" rel="stylesheet"/>
+  <style>
     body {
         background-color: #f4f7fa;
         font-family: 'Segoe UI', sans-serif;
     }
-
     h2, h5 {
         color: #002366; /* Royal Blue */
+        font-weight: 700;
     }
-
     .cart-container {
         display: flex;
         justify-content: space-between;
         margin-top: 50px;
         gap: 30px;
     }
-
     .cart-items, .cart-summary {
         background-color: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     }
-
-    .cart-items {
-        flex: 0 0 65%;
-    }
-
-    .cart-summary {
-        flex: 0 0 30%;
-    }
+    .cart-items { flex: 0 0 65%; }
+    .cart-summary { flex: 0 0 30%; }
 
     .cart-product {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-bottom: 1px solid #eaeaea;
-        padding: 15px 0;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        transition: all 0.2s ease-in-out;
     }
-
+    .cart-product:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
     .product-img {
         width: 80px;
         height: 80px;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 10px;
         margin-right: 20px;
     }
-
     .product-info {
         flex-grow: 1;
     }
-
     .product-title {
         font-weight: 600;
+        font-size: 1.05rem;
         color: #222;
     }
-
     .product-price {
-        color: #888;
+        color: #666;
+        font-size: 0.9rem;
     }
-
     .quantity-control {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        margin-top: 8px;
     }
-
     .quantity-btn {
-        border: 1px solid #ccc;
-        padding: 2px 8px;
-        border-radius: 4px;
-        background: none;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-size: 16px;
+        background-color: #e6ebf5;
         color: #002366;
         cursor: pointer;
+        transition: background 0.2s;
     }
-
+    .quantity-btn:hover {
+        background-color: #cbd5e9;
+    }
     .btn-remove {
-        font-size: 12px;
-        color: red;
+        font-size: 13px;
+        color: #dc3545;
         background: none;
         border: none;
         margin-top: 5px;
         cursor: pointer;
     }
-
+    .product-subtotal {
+        font-weight: 600;
+        color: #002366;
+    }
     .summary-line {
         display: flex;
         justify-content: space-between;
-        margin: 10px 0;
+        margin: 12px 0;
+        font-size: 0.95rem;
     }
-
     .btn-checkout {
         background-color: #002366;
         color: white;
         font-weight: 500;
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         margin-top: 20px;
+        transition: 0.2s;
     }
-
     .btn-checkout:hover {
-        background-color: #001f4d;
+        background-color: #001c4d;
     }
-
-    .payment-options img {
-        width: 35px;
-        margin-right: 10px;
-        margin-top: 10px;
-    }
-</style>
-
+  </style>
 </head>
 <body>
   <header>
       <div class="logo">
           <img alt="M&amp;E Logo" src="../ui/Assets/logo.png"/>
       </div>
-
       <nav>
           <a href="homepage-sample.html">Home</a>
           <a href="#">Products</a>
           <a href="#">About Us</a>
       </nav>
-
       <div class="header-actions">
           <div class="search-bar">
               <img alt="search" class="search-icon" src="../ui/Assets/search.svg"/>
               <input placeholder="Search products..." type="text"/>
           </div>
-
           <div class="cart">
               <a href="#">
                   <img alt="cart" class="cart-img" src="../ui/Assets/cart-button_default.svg"/>
               </a>
           </div>
-
           <div class="btn-login">
               <a href="#">Log in</a>
           </div>
       </div>
   </header>
+
   <div class="container cart-container">
-      <!-- Cart Items Section -->
+      <!-- Cart Items -->
       <div class="cart-items">
           <h2>Your Shopping Cart</h2>
-
-          <?php
-          $grandTotal = 0;
-          foreach ($cartItems as $item):
-              $grandTotal += $item['subtotal'];
-          ?>
-          <div class="cart-product">
-              <img src="../assets/images/Hard-Copy.jpg" alt="Product Image" class="product-img">
-              <div class="product-info">
-                  <div class="product-title"><?= htmlspecialchars($item['product_name']) ?></div>
-                  <div class="product-price">₱<?= number_format($item['price'], 2) ?></div>
-                  <div class="quantity-control mt-2">
-                      <button class="quantity-btn">-</button>
-                       <?= $item['quantity'] ?>
-                      <button class="quantity-btn">+</button>
+          <?php $grandTotal = 0; ?>
+          <?php foreach ($cartItems as $item):
+              $grandTotal += $item['subtotal']; ?>
+              <div class="cart-product">
+                  <img src="../assets/images/Hard-Copy.jpg" alt="Product Image" class="product-img">
+                  <div class="product-info">
+                      <div class="product-title"><?= htmlspecialchars($item['product_name']) ?></div>
+                      <div class="product-price">₱<?= number_format($item['price'], 2) ?></div>
+                      <div class="quantity-control">
+                          <button class="quantity-btn">-</button>
+                          <?= $item['quantity'] ?>
+                          <button class="quantity-btn">+</button>
+                      </div>
+                      <button class="btn-remove">Remove</button>
                   </div>
-                  <button class="btn-remove">Remove</button>
+                  <div class="product-subtotal">
+                      ₱<?= number_format($item['subtotal'], 2) ?>
+                  </div>
               </div>
-              <div class="product-subtotal">
-                  ₱<?= number_format($item['subtotal'], 2) ?>
-              </div>
-          </div>
           <?php endforeach; ?>
       </div>
 
-      <!-- Cart Summary Section -->
+      <!-- Cart Summary -->
       <div class="cart-summary">
           <h5>Order Summary</h5>
           <div class="summary-line">
@@ -223,27 +212,14 @@ try {
               <span>Total:</span>
               <span>₱<?= number_format($grandTotal, 2) ?></span>
           </div>
-          <button class="btn-checkout">Checkout</button>
-
-          <div class="mt-4 text-center ">
-            <p>Enjoy our product and happy shopping!</p>
+          <button class="btn-checkout">Proceed to Checkout</button>
+          <div class="mt-4 text-center">
+              <p class="text-muted">Enjoy your shopping with us 💙</p>
           </div>
-          <!-- <div class="mt-4">
-              <small class="text-muted">We Accept:</small>
-              <div class="payment-options">
-                  <img src="path/to/paypal-icon.png" alt="PayPal">
-                  <img src="path/to/stripe-icon.png" alt="Stripe">
-                  <img src="path/to/visa-icon.png" alt="Visa">
-                  <img src="path/to/mastercard-icon.png" alt="MasterCard">
-              </div>
-          </div> -->
       </div>
   </div>
 
-
-    <script>
-
-    </script>
-    <script src="../bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+  <script src="../bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+  
