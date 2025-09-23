@@ -9,6 +9,10 @@
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
     $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS);
     $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_SPECIAL_CHARS);
+    $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_SPECIAL_CHARS);
+    $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_SPECIAL_CHARS);
+    $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_SPECIAL_CHARS);
+
     $contact_no = filter_input(INPUT_POST, 'contact-no', FILTER_SANITIZE_NUMBER_INT);
     $password        = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm-password'] ?? '';
