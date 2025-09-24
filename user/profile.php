@@ -83,23 +83,29 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           </div>
           <!-- Gender  -->
           <div class="col-md-4">
-            <label for="gender" class="form-label">Genders</label>
-            <select id="gender" name="genders" class="form-select" required>
-              <option value="option1">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="prefer_not_to_say">Prefer not to say</option>
+            <label for="gender" class="form-label">Gender</label>
+            <select id="gender" name="genders" class="form-select">
+              <option value="">Select gender</option>
+              <option value="Male"   <?php echo ($user['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
+              <option value="Female" <?php echo ($user['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
+              <option value="Prefer not to say" <?php echo ($user['gender'] === 'Prefer not to say') ? 'selected' : ''; ?>>Prefer not to say</option>
             </select>
           </div>
+
           <!-- DOB -->
           <div class="col-md-4">
             <label for="dob" class="form-label">Date of Birth</label>
-            <input type="date" id="dob" name="dob" class="form-control" required>
+            <input type="date" id="dob" name="dob" class="form-control" value="<?php echo htmlspecialchars($user['date_of_birth']); ?>" required readonly>
           </div>
           <!-- Contact no -->
           <div class="col-md-4">
             <label for="inputContact" class="form-label">Contact No.</label>
-            <input type="text" name="contact-no" class="form-control" placeholder="+63" name="contact-no" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required>
+            <input type="tel" class="form-control"
+            maxlength="13"
+            placeholder="+639123456789"
+            name="contact-no" pattern="^(\+63|0)\d{10}$"
+            value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required>
+            <!-- <small class="form-text text-muted">Format: +639xxxxxxxxx or 09xxxxxxxxx</small> -->
           </div>
           <!-- Email -->
           <div class="col-md-6">
@@ -138,7 +144,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           <div class="col-md-4">
             <label for="inputCity" class="form-label">City</label>
             <select class="form-select" id="inputCity" name="city" required>
-              <option value="">Select City</option>
+              <option value="<?php echo htmlspecialchars($user['city_id']) ?>">Select City</option>
 
             </select>
           </div>
@@ -195,7 +201,10 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
     <script>
     window.appData = {
       cities: <?= json_encode($cities) ?>,
-      barangays: <?= json_encode($barangays) ?>
+      barangays: <?= json_encode($barangays)?>,
+      userProvince: <?= (int)$user['province_id'] ?>,
+      userCity: <?= (int)$user['city_id'] ?>,
+      userBarangay: <?= (int)$user['barangay_id'] ?>
     };
     </script>
     <script src="../assets/js/profile.js"></script>

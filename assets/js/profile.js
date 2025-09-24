@@ -9,6 +9,16 @@
     const inputs = document.querySelectorAll("form input");
     const password = document.getElementById('pass');
     const confirmPassword = document.getElementById('confirmPass');
+    const gender = document.getElementById('gender');
+    const dob = document.getElementById('dob');
+    const province = document.getElementById('inputProvince');
+    const city = document.getElementById('inputCity');
+    const barangay = document.getElementById('inputBarangay');
+    gender.disabled = true;
+    dob.disabled = true;
+    province.disabled = true;
+    city.disabled = true;
+    barangay.disabled = true;
 
     password.style.display = 'none';
     confirmPassword.style.display = 'none';
@@ -21,7 +31,6 @@
         profilePicInput.click();
       });
 
-      // Preview the selected image
       profilePicInput.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
@@ -59,6 +68,11 @@
         confirmPass.style.display = '';
         headerText.textContent = "Edit Profile";
         uploadBtn.disabled = false;
+        gender.disabled = false;
+        dob.disabled = false;
+        province.disabled = false;
+        city.disabled = false;
+        barangay.disabled = false;
 
         inputs.forEach(input => {
           if (input.hasAttribute('readonly') && !input.classList.contains('readonly-fixed')) {
@@ -74,7 +88,11 @@
         uploadBtn.style.display = 'none';
         headerText.textContent = "Profile Info";
         uploadBtn.disabled = true;
-
+        gender.disabled = true;
+        dob.disabled = true;
+        province.disabled = true;
+        city.disabled = true;
+        barangay.disabled = true;
         inputs.forEach(input => {
           if (!input.classList.contains('readonly-fixed')) {
             input.setAttribute('readonly', true);
@@ -84,40 +102,60 @@
       });
 
       const cities = window.appData.cities;
-      const barangay = window.appData.barangays;
+      const barangays = window.appData.barangays;
       const provinceSelect = document.getElementById('inputProvince');
       const citySelect = document.getElementById('inputCity');
       const barangaySelect = document.getElementById("inputBarangay");
 
-      provinceSelect.addEventListener('change', function () {
-       let provinceId = this.value;
-
-       // reset city dropdown
-       citySelect.innerHTML = '<option value="">Select City</option>';
-       barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-
-       if (provinceId) {
-         cities.filter(city => city.province_id == provinceId)
-           .forEach(city => {
-             let option = document.createElement('option');
-             option.value = city.city_id;
-             option.textContent = city.city_name;
-             citySelect.appendChild(option);
-           });
-       }
-     });
-
-    citySelect.addEventListener("change", function () {
-      const cityId = this.value;
-
+      function populateCities(provinceId, selectedCityId = null) {
+      citySelect.innerHTML = '<option value="">Select City</option>';
       barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
 
-      window.appData.barangays
-        .filter(b => b.city_id == cityId)
+      cities.filter(city => city.province_id == provinceId)
+        .forEach(city => {
+          let option = document.createElement('option');
+          option.value = city.city_id;
+          option.textContent = city.city_name;
+          if (city.city_id == selectedCityId) {
+            option.selected = true;
+          }
+          citySelect.appendChild(option);
+        });
+    }
+
+    function populateBarangays(cityId, selectedBarangayId = null) {
+      barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+      barangays.filter(b => b.city_id == cityId)
         .forEach(b => {
-          const opt = document.createElement("option");
+          let opt = document.createElement("option");
           opt.value = b.barangay_id;
           opt.textContent = b.barangay_name;
+          if (b.barangay_id == selectedBarangayId) {
+            opt.selected = true;
+          }
           barangaySelect.appendChild(opt);
         });
+    }
+
+    // --- Event listeners ---
+    provinceSelect.addEventListener('change', function () {
+      populateCities(this.value);
     });
+
+    citySelect.addEventListener("change", function () {
+      populateBarangays(this.value);
+    });
+
+    // --- Auto-select user values on load ---
+    if (window.appData.userProvince) {
+      provinceSelect.value = window.appData.userProvince;
+      populateCities(window.appData.userProvince, window.appData.userCity);
+
+      if (window.appData.userCity) {
+        populateBarangays(window.appData.userCity, window.appData.userBarangay);
+      }
+      // if (window.appData.userCity) {
+      //   populateBarangays(window.appData.userCity, window.appData.userBarangay);
+      // }
+    }
