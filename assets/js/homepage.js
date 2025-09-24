@@ -10,6 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroCTA = document.querySelector(".hero-cta");
   const faqQuestions = document.querySelectorAll(".faq-question");
   const header = document.querySelector("header");
+  const loginModal = document.getElementById('loginModal');
+  const btnLogin = document.querySelector('.btn-login a');
+  const closeBtn = document.getElementById('closeLoginModal');
+  const loginForm = document.getElementById('loginForm');
+  const signupModal = document.getElementById('signupModal');
+  const openSignupModalLink = document.getElementById('openSignupModal');
+  const closeSignupModal = document.getElementById('closeSignupModal');
+  const signupForm = document.getElementById('signupForm');
+  const openLoginModalLink = document.getElementById('openLoginModal');
 
   // Hamburger toggle
   if (hamburger && nav && hamburgerIcon) {
@@ -36,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Mobile search toggle
   if (searchBar && searchIcon) {
     searchIcon.addEventListener("click", (e) => {
-      // On mobile, toggle search bar expand
-      if (window.innerWidth <= 768) {
+      
+      if (window.innerWidth <= 768) { // On mobile, toggle search bar expand
         e.preventDefault();
         searchBar.classList.toggle("active");
 
@@ -176,6 +185,86 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+    // Open modal when login button clicked
+    btnLogin.addEventListener('click', (event) => {
+      event.preventDefault(); // prevent default link behavior
+      loginModal.style.display = 'block';
+    });
+
+    // Close modal when close button clicked
+    closeBtn.addEventListener('click', () => {
+      loginModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside modal content
+    window.addEventListener('click', (event) => {
+      if (event.target === loginModal) {
+        loginModal.style.display = 'none';
+      }
+    });
+
+    // Handle login form submission
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value.trim();
+
+      if (username && password) {
+        alert(`Logging in as ${username}`); // Replace with actual login logic
+        loginModal.style.display = 'none'; // Close modal on submit
+        loginForm.reset();
+      } else {
+        alert('Please fill out all fields.');
+      }
+    });
+
+      openSignupModalLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      loginModal.style.display = 'none';
+      signupModal.style.display = 'block';
+    });
+
+    closeSignupModal.addEventListener('click', () => {
+      signupModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === signupModal) {
+        signupModal.style.display = 'none';
+      }
+    });
+
+    signupForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const email = signupForm.email.value.trim();
+      const username = signupForm.username.value.trim();
+      const password = signupForm.password.value.trim();
+      const confirmPassword = signupForm.confirmPassword.value.trim();
+
+      if (!email || !username || !password || !confirmPassword) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      alert(`Account created for ${username} with email ${email}`);
+
+      signupForm.reset();
+      signupModal.style.display = 'none';
+    });
+
+    openLoginModalLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      signupModal.style.display = 'none';
+      loginModal.style.display = 'block';
+    });
 
   // Footer year auto-update
   const footerCopy = document.querySelector(".footer-copy p");

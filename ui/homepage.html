@@ -5,7 +5,7 @@
         <link href="../assets/css/homepage.css" rel="stylesheet"/>
         <title>M&E: Your One-stop Shop for Office, School, and Sanitary Supplies</title>
     </head>
-    
+
     <body>
         <header>
             <div class="logo">
@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="btn-login">
-                    <a href="../login.php">Log in</a>
+                    <a href="#">Log in</a>
                 </div>
             </div>
         </header>
@@ -397,8 +397,59 @@
                 <p>© Copyright 2025 M&E Interior Supplies Trading, All rights reserved.</p>
             </div>
         </footer>
+
+
+
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="closeLoginModal">&times;</span>
+                <h2>Login</h2>
+
+                <form id="loginForm">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" required/>
+                    
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required/>
+                    
+                    <button type="submit">Log In</button>
+
+                    <p class="modal-switch-text">
+                        Don't have an account? 
+                        <a href="#" id="openSignupModal">Sign Up here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div id="signupModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="closeSignupModal">&times;</span>
+                <h2>Sign Up</h2>
+
+                <form id="signupForm">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" name="email" required/>
+
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" name="username" required/>
+
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" name="password" required/>
+
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" name="confirmPassword" required/>
+                    
+                    <button type="submit">Sign Up</button>
+
+                    <p class="modal-switch-text">
+                        Already have an account? 
+                        <a href="#" id="openLoginModal">Log in here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
         
         <script src="../assets/js/homepage.js"></script>
     </body>
 </html>
-    
