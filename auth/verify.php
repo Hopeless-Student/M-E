@@ -6,7 +6,7 @@ require_once __DIR__ .'/../includes/database.php';
     $email = $_GET['email'];
     $token = $_GET['token'];
       try {
-        $sql = "SELECT id,email, verification_token, token_created_at FROM users
+        $sql = "SELECT user_id,email, verification_token, token_created_at FROM users
                 WHERE email=:email AND verification_token=:token
                 AND is_verified=0 AND token_created_at >= NOW() - INTERVAL 2 MINUTE LIMIT 1";
         $stmt = $pdo->prepare($sql);
@@ -14,7 +14,7 @@ require_once __DIR__ .'/../includes/database.php';
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
           if($user){
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['user_id'];
             unset($_SESSION['fname'], $_SESSION['lname'], $_SESSION['email']);
 
             $update = $pdo->prepare("UPDATE users
@@ -26,7 +26,6 @@ require_once __DIR__ .'/../includes/database.php';
             header('Location: ../user/profile.php');
             exit;
           } else {
-            echo "Token expired or invalid. Deleting user...";
             $delete = $pdo->prepare("DELETE FROM users
                 WHERE email=:email
                 AND is_verified=0
@@ -40,7 +39,8 @@ require_once __DIR__ .'/../includes/database.php';
         echo "Error connection: " . $e->getMessage();
       }
 
-  } else {
+  }
+   else {
     echo "No verification parameters provided!";
     header("Location: ../register.php");
     exit;

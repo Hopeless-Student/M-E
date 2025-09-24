@@ -3,6 +3,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  <link href="bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <title>Login</title>
 </head>
@@ -14,7 +15,7 @@
     <form id="loginForm" action="auth/login_handler.php" method="post">
       <h2>Log In</h2>
       <div class="form-group">
-        <input type="text" id="username" name="username" placeholder="Username" required>
+        <input type="text" id="login_id" name="login_id" placeholder="Username or Email" required>
       </div>
       <div class="form-group">
         <input type="password" id="password" name="password" placeholder="Password" required>
