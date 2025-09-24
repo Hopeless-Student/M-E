@@ -1,0 +1,150 @@
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+    }
+    .custom-navbar .nav-link {
+      color: black;
+      display: flex;
+      align-items: center; /* vertical centering */
+      padding: 0.5rem 1rem;
+    }
+    .navbar-nav .nav-link.active {
+      font-weight: bold;
+      color: #4169e1;
+    }
+    .navbar-nav .nav-link:hover {
+    color: #4169e1;
+    }
+    /* Ensure the navbar content is vertically centered */
+    .custom-navbar .navbar-nav {
+      align-items: center;   /* vertically center nav links */
+      gap: 2rem;
+    }
+
+    .modal-content {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        background: #fff;
+      }
+      .modal-header h5.modal-title {
+          margin-top: 0;
+          margin-bottom: 5px;
+          top: 10px; right: 10px;
+      }
+      .navbar-brand img {
+        height: 100px;
+        width: auto;
+      }
+      /* Cart icon hover */
+      .cart-icon img {
+        width: 25px;
+        height: auto;
+        transition: transform 0.2s, filter 0.2s;
+      }
+
+      .cart-icon:hover img {
+        transform: scale(1.1);
+        filter: brightness(0.8);
+      }
+
+      /* Login icon */
+      .btn-primary .login-icon {
+        width: 20px;
+        height: 20px;
+        filter: brightness(0) invert(1); /* makes it white */
+      }
+
+      /* Optional: add hover effect for login button */
+      .btn-primary:hover .login-icon {
+        filter: brightness(0) invert(0.9); /* slightly change on hover */
+      }
+
+    .bg-royal {
+      background-color: #002366;
+      color: white;
+    }
+    .hero {
+      background-color: #002366;
+      color: white;
+      padding: 120px 20px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    .category-card {
+      height: 100%;  /* full column height */
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+      .category-card:hover {
+        transform: scale(1.05);      /* zoom entire card */
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      }
+      .category-img {
+         width: 100%;
+         min-height: 200px;  /* can grow if card is taller */
+         object-fit: cover;
+         border-radius: 12px;
+         transition: transform 0.3s;
+      }
+      .category-card img {
+        height: 100%;  /* fill the card */
+        object-fit: cover;
+      }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card-img-top {
+      height: 200px;      /* fixed height */
+      object-fit: cover;  /* maintain aspect ratio and cover */
+      border-radius: 12px; /* optional for rounded edges */
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .footer {
+      background-color: #001f4d;
+      color: #ccc;
+      padding: 40px 0;
+    }
+    .footer a {
+      color: #ccc;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      color: white;
+    }
+    .btn-primary {
+      background-color: #4169e1;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #001a59;
+    }
+    .accordion-button {
+      font-weight: 500;
+    }
+    /* Make login button full width on mobile */
+    @media (max-width: 991px) {
+      .login-btn {
+        width: 100%;
+        justify-content: center; /* center icon & text */
+      }
+
+      .cart-icon {
+        margin-bottom: 1rem;
+      }
+    }
