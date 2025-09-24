@@ -5,18 +5,22 @@
   // $loginFailed ="";
   // $showModal = false;
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST["username"];
+        $login_id = trim($_POST["login_id"]);
         $password = $_POST["password"];
 
         try {
-            $sql = "SELECT * FROM users WHERE username=:username LIMIT 1";
+            // $sql = "SELECT * FROM users WHERE (username=:login_id OR email=:login_id) LIMIT 1";
+            // $stmt = $pdo->prepare($sql);
+            // $stmt-> execute(["login_id"=>$login_id]);
+            $sql = "SELECT * FROM users WHERE (username= :login_id_username OR email= :login_id_email) LIMIT 1";
             $stmt = $pdo->prepare($sql);
-            $stmt-> execute([":username"=>$username]);
+            $stmt->execute(['login_id_username' => $login_id,'login_id_email' => $login_id]);
+
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC); // nagiging assoc array siya
             if($user){
-              if ($user && password_verify($password, $user['password'])) {
-                    $_SESSION["user_id"] = $user["id"];
+              if (password_verify($password, $user['password'])) {
+                    $_SESSION["user_id"] = $user["user_id"];
 
                     if ($user['isActive'] == 0) {
                         header("Location: ../user/profile.php");
@@ -39,6 +43,4 @@
           return null;
         }
       }
-      // header('Location: ../test.php');
-      // exit;
 ?>

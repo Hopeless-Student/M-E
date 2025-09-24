@@ -43,7 +43,7 @@ form h2 {
   margin-bottom: 5px;
 }
 .logo img{
-  width: 30%;
+  width: 40%;
   height: auto;
 }
 input[type="text"],
@@ -102,6 +102,11 @@ button:hover {
 .extra a:hover {
   text-decoration: underline;
 }
+/* .modal-content {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: #fff;
+  } */
 /*Para sa check your email*/
  .check-email-container {
    text-align: center;
@@ -127,7 +132,7 @@ button:hover {
      font-size: 14px;
  }
 
- .resendBtn{  
+ .resendBtn{
    padding: 10px 20px;
    background-color: #007bff;
    color: white;
