@@ -12,12 +12,6 @@ body {
     overflow-x: hidden;
 }
 
-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
 .dashboard {
     display: flex;
     min-height: 100vh;
@@ -30,7 +24,7 @@ img {
   margin-left: 272px; /* Exact match to sidebar width */
   padding: 1.5rem;
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 1s ease;
   width: calc(100vw - 272px); /* Changed from 100% to 100vw for absolute viewport width */
   max-width: calc(100vw - 272px);
   box-sizing: border-box;
@@ -44,7 +38,7 @@ img {
     align-items: center;
     margin-bottom: 1.5rem;
     background: white;
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem 0rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     flex-wrap: wrap;

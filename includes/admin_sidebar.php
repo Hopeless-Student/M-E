@@ -57,15 +57,19 @@
         }
 
         .logo-container {
-            width: 100px;
-            height: 100px;
-            background-color: #475569;
-            border-radius: 8px;
+            width: 120px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 0;
+            margin: 1rem auto;
             margin-bottom: 16px;
+        }
+
+        .logo-container img {
+            width: 150px;
+            height: auto;
+            object-fit: contain;
         }
 
         .logo-text {
@@ -196,11 +200,22 @@
     <aside class="sidebar" id="sidebar" aria-hidden="true">
         <div class="sidebar-header">
             <div class="logo-container">
-                <img src="" alt="">
+              <?php
+              // Get the current page to set active state
+              $current_page = basename($_SERVER['REQUEST_URI']);
+              $current_dir = basename(dirname($_SERVER['REQUEST_URI']));
+
+              // Define the base path - adjust this based on where your files are located
+              $base_path = '';
+
+              // If we're in a subdirectory, we need to go back to admin root
+              if ($current_dir !== 'admin') {
+                  $base_path = '../';
+              }
+              ?>
+                <img src="<?php echo $base_path ?>../assets/images/logo/ME logo.png" alt="">
             </div>
-            <div class="panel-title">
-                <span>ADMIN PANEL</span>
-            </div>
+
         </div>
 
         <!-- Navigation Links -->

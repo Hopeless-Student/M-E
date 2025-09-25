@@ -12,11 +12,7 @@
         line-height: 1.6;
     }
 
-    img {
-
-      width: 250px;
-      height: 250px;
-    }
+    
 
     ..dashboard {
         display: flex;
