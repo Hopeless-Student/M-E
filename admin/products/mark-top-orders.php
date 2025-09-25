@@ -111,30 +111,36 @@
                 <p class="modal-subtitle">Automatically feature products based on performance criteria</p>
             </div>
             <form id="autoFeatureForm">
-                <div class="form-group">
-                    <label class="form-label">Minimum Sales Count</label>
-                    <input type="number" class="form-input" id="minSales" value="50" min="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Maximum Featured Products</label>
-                    <input type="number" class="form-input" id="maxFeatured" value="15" min="1" max="20">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category Priority</label>
-                    <select class="form-select" id="categoryPriority">
-                        <option value="all">All Categories</option>
-                        <option value="office">Office Supplies First</option>
-                        <option value="school">School Supplies First</option>
-                        <option value="hygiene">Hygiene Products First</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Stock Requirement</label>
-                    <select class="form-select" id="stockRequirement">
-                        <option value="any">Any Stock Level</option>
-                        <option value="in-stock">In Stock Only</option>
-                        <option value="high-stock">High Stock Only</option>
-                    </select>
+                <div class="form-grid">
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label class="form-label">Minimum Sales Count</label>
+                            <input type="number" class="form-input" id="minSales" value="50" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Maximum Featured Products</label>
+                            <input type="number" class="form-input" id="maxFeatured" value="15" min="1" max="20">
+                        </div>
+                    </div>
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label class="form-label">Category Priority</label>
+                            <select class="form-select" id="categoryPriority">
+                                <option value="all">All Categories</option>
+                                <option value="office">Office Supplies First</option>
+                                <option value="school">School Supplies First</option>
+                                <option value="hygiene">Hygiene Products First</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stock Requirement</label>
+                            <select class="form-select" id="stockRequirement">
+                                <option value="any">Any Stock Level</option>
+                                <option value="in-stock">In Stock Only</option>
+                                <option value="high-stock">High Stock Only</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Additional Criteria</label>
@@ -272,7 +278,7 @@
         function setupEventListeners() {
             document.getElementById('autoFeatureForm').addEventListener('submit', handleAutoFeature);
             document.getElementById('categoryFilter').addEventListener('change', filterProducts);
-            document.getElementById('sortBy').addEventListener('change', sortProducts);
+            document.getElementById('sortBy').addEventListener('change', filterProducts); // Changed from sortProducts to filterProducts
         }
 
         function renderProducts(filteredProducts = products) {
@@ -436,36 +442,35 @@
         }
 
         function filterProducts() {
-            const category = document.getElementById('categoryFilter').value;
-            let filtered = products;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
 
-            if (category !== 'all') {
-                filtered = products.filter(product => product.category === category);
+            let filteredProducts = products.filter(product => {
+                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                return matchesCategory;
+            });
+
+            // Apply sorting
+            switch (sortBy) {
+                case 'sales':
+                    filteredProducts.sort((a, b) => b.sales - a.sales);
+                    break;
+                case 'price':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'stock':
+                    filteredProducts.sort((a, b) => b.stock - a.stock);
+                    break;
+                case 'name':
+                    filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
             }
 
-            renderProducts(filtered);
+            renderProducts(filteredProducts);
         }
 
         function sortProducts() {
-            const sortBy = document.getElementById('sortBy').value;
-            let sorted = [...products];
-
-            switch (sortBy) {
-                case 'sales':
-                    sorted.sort((a, b) => b.sales - a.sales);
-                    break;
-                case 'price':
-                    sorted.sort((a, b) => b.price - a.price);
-                    break;
-                case 'stock':
-                    sorted.sort((a, b) => b.stock - a.stock);
-                    break;
-                case 'name':
-                    sorted.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-            }
-
-            renderProducts(sorted);
+            filterProducts();
         }
 
         function openAutoMarkModal() {
@@ -488,31 +493,34 @@
             products.forEach(product => product.featured = false);
 
             // Filter products based on criteria
-            let eligible = products.filter(product => {
-                if (product.sales < minSales) return false;
+            let eligibleProducts = products.filter(product => {
+                const meetsSalesReq = product.sales >= minSales;
 
-                if (stockRequirement === 'in-stock' && product.stock === 0) return false;
-                if (stockRequirement === 'high-stock' && product.stock < 50) return false;
+                let meetsStockReq = true;
+                if (stockRequirement === 'in-stock') {
+                    meetsStockReq = product.stock > 0;
+                } else if (stockRequirement === 'high-stock') {
+                    meetsStockReq = product.stock >= 50;
+                }
 
-                return true;
+                let meetsCategoryReq = true;
+                if (categoryPriority !== 'all') {
+                    meetsCategoryReq = product.category === categoryPriority;
+                }
+
+                return meetsSalesReq && meetsStockReq && meetsCategoryReq;
             });
 
-            // Sort by priority
-            if (categoryPriority !== 'all') {
-                eligible.sort((a, b) => {
-                    if (a.category === categoryPriority && b.category !== categoryPriority) return -1;
-                    if (a.category !== categoryPriority && b.category === categoryPriority) return 1;
-                    return b.sales - a.sales;
-                });
-            } else {
-                eligible.sort((a, b) => b.sales - a.sales);
-            }
+            // Sort eligible products by sales (descending)
+            eligibleProducts.sort((a, b) => b.sales - a.sales);
 
-            // Mark top products as featured
-            const toFeature = eligible.slice(0, maxFeatured);
-            toFeature.forEach(product => product.featured = true);
+            // Mark top products as featured (up to maxFeatured limit)
+            const toFeature = eligibleProducts.slice(0, maxFeatured);
+            toFeature.forEach(product => {
+                product.featured = true;
+            });
 
-            showAlert(`Auto-featured ${toFeature.length} products based on criteria!`, 'success');
+            showAlert(`Auto-featured ${toFeature.length} products based on your criteria!`, 'success');
             closeModal();
             renderProducts();
             updateStats();
