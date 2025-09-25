@@ -24,20 +24,36 @@
             <!-- Customer Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
+                  <div class="stat-header">
                     <div class="stat-title">Total Customers</div>
-                    <div class="stat-value">142</div>
+                    <i data-lucide="users" class="stat-icon"></i>
+                  </div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-change neutral">Total registered customers</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">New This Month</div>
-                    <div class="stat-value">23</div>
-                </div>
-                <div class="stat-card">
+                  <div class="stat-header">
                     <div class="stat-title">Active Customers</div>
-                    <div class="stat-value">127</div>
+                    <i data-lucide="user-round-check" class="stat-icon"></i>
+                  </div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-change neutral">Customers with orders from the past 1–2 months</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Repeat Customers</div>
-                    <div class="stat-value">89</div>
+                  <div class="stat-header">
+                    <div class="stat-title">Inactive Customers</div>
+                    <i data-lucide="user-round-minus" class="stat-icon"></i>
+                  </div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-change neutral">Customers without orders from the past 1–2 months</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-header">
+                    <div class="stat-title">New Customers</div>
+                    <i data-lucide="user-round-minus" class="stat-icon"></i>
+                  </div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-change neutral">Registered within this month</div>
                 </div>
             </div>
 
@@ -45,6 +61,7 @@
             <div class="customer-controls">
                 <div class="search-filter">
                     <div class="search-box">
+                        <i data-lucide="search" class="search-icon"></i>
                         <input type="text" placeholder="Search customers..." id="searchInput">
                     </div>
                     <select class="filter-select" id="statusFilter">

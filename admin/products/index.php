@@ -80,6 +80,10 @@
                         <i data-lucide="plus"></i>
                         Add Product
                     </a>
+                    <a href="./mark-top-orders.php" class="btn btn-accent">
+                        <i data-lucide="trending-up"></i>
+                        Top Orders
+                    </a>
                     <a href="./bulk-actions.php" class="btn btn-secondary">
                         <i data-lucide="settings"></i>
                         Bulk Actions
@@ -130,9 +134,10 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn modal-btn-secondary" onclick="closeProductModal()">Close</button>
-                <a href="#" class="modal-btn modal-btn-edit" id="modalEditBtn">
-                    <i data-lucide="pencil"></i> Edit Product
-                </a>
+                <button class="modal-btn modal-btn-secondary" onclick="closeEditModal()">Edit</button>
+                <!-- <a class="modal-btn modal-btn-edit" id="modalEditBtn" onclick="openEditProd()">
+                    <i data-lucide="pencil"></i> Edit
+                </a> -->
                 <button class="modal-btn modal-btn-delete" id="modalDeleteBtn">
                     <i data-lucide="trash-2"></i> Delete Product
                 </button>
@@ -177,6 +182,8 @@
     <!-- Alert Container -->
     <div class="alert" id="alertContainer"></div>
 
+    <?php include 'edit-product.php'; ?>
+
     <script>
         lucide.createIcons();
 
@@ -220,7 +227,7 @@
                     category: "flooring",
                     price: 1250,
                     stock: 150,
-                    image: "./images/laminate-flooring.png"
+                    // image: ""
                 },
                 {
                     id: 2,
@@ -229,7 +236,7 @@
                     category: "tiles",
                     price: 850,
                     stock: 75,
-                    image: "./images/ceramic-tiles.png"
+                    // image: ""
                 },
                 {
                     id: 3,
@@ -238,7 +245,7 @@
                     category: "fixtures",
                     price: 2200,
                     stock: 8,
-                    image: "./images/led-fixture.png"
+                    // image: ""
                 },
                 {
                     id: 4,
@@ -247,7 +254,7 @@
                     category: "flooring",
                     price: 980,
                     stock: 200,
-                    image: "./images/vinyl-plank.png"
+                    // image: ""
                 },
                 {
                     id: 5,
@@ -256,7 +263,7 @@
                     category: "tiles",
                     price: 1450,
                     stock: 120,
-                    image: "./images/porcelain-tiles.png"
+                    // image: ""
                 },
                 {
                     id: 6,
@@ -265,7 +272,7 @@
                     category: "fixtures",
                     price: 650,
                     stock: 0,
-                    image: "./images/cabinet-handles.png"
+                    // image: ""
                 },
                 {
                     id: 7,
@@ -274,7 +281,7 @@
                     category: "flooring",
                     price: 3200,
                     stock: 45,
-                    image: "./images/hardwood-oak.png"
+                    // image: ""
                 },
                 {
                     id: 8,
@@ -283,7 +290,7 @@
                     category: "tiles",
                     price: 420,
                     stock: 180,
-                    image: "./images/subway-tiles.png"
+                    // image: ""
                 },
                 {
                     id: 9,
@@ -292,7 +299,7 @@
                     category: "fixtures",
                     price: 1100,
                     stock: 25,
-                    image: "./images/pendant-light.png"
+                    // image: ""
                 },
                 {
                     id: 10,
@@ -301,7 +308,7 @@
                     category: "flooring",
                     price: 1680,
                     stock: 12,
-                    image: "./images/bamboo-flooring.png"
+                    // image: ""
                 },
                 {
                     id: 11,
@@ -310,7 +317,7 @@
                     category: "tiles",
                     price: 890,
                     stock: 65,
-                    image: "./images/mosaic-tiles.png"
+                    // image: ""
                 },
                 {
                     id: 12,
@@ -319,7 +326,7 @@
                     category: "fixtures",
                     price: 750,
                     stock: 38,
-                    image: "./images/wall-sconces.png"
+                    // image: ""
                 }
             ];
 
@@ -396,11 +403,11 @@
             grid.innerHTML = pageProducts.map(product => {
                 const stockStatus = getStockStatus(product.stock);
                 const stockLabel = getStockLabel(product.stock);
-
+// <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" onerror="this.src='./images/placeholder.png'">
                 return `
                     <div class="product-card" data-category="${product.category}">
                         <div class="product-image-container">
-                            <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" onerror="this.src='./images/placeholder.png'">
+
                             <div class="stock-status ${stockStatus}">${stockLabel}</div>
                         </div>
                         <div class="product-info">
@@ -413,7 +420,7 @@
                             </div>
                             <div class="product-actions">
                                 <button class="action-btn" onclick="viewProduct(${product.id})">View</button>
-                                <a href="./edit-product.php?id=${product.id}" class="action-btn primary">Edit</a>
+                                <button class="action-btn primary" onclick="openEditProd(${product.id})">Edit</button>
                                 <button class="action-btn danger" onclick="showDeleteModal(${product.id})">Delete</button>
                             </div>
                         </div>
@@ -424,6 +431,131 @@
             lucide.createIcons();
         }
 
+        function openEditProd(id) {
+                const product = allProducts.find(p => p.id === id);
+
+                if (!product) {
+                    alert('Product not found');
+                    return;
+                }
+
+                // Populate the form fields with product data
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productCategory').value = product.category;
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productDescription').value = product.description;
+
+                // Set current image if exists
+                const currentImage = document.getElementById('currentImage');
+                if (product.image) {
+                    currentImage.src = product.image;
+                    currentImage.style.display = 'block';
+                    document.getElementById('currentImageContainer').style.display = 'block';
+                } else {
+                    currentImage.src = './images/placeholder.png';
+                }
+
+                // Show the modal
+                document.getElementById('editModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                // Store the product ID for later use in form submission
+                document.getElementById('editProductForm').dataset.productId = productId;
+
+                // Initialize Lucide icons after modal is shown
+                setTimeout(() => {
+                    lucide.createIcons();
+                }, 100);
+            }
+
+            // Also add these supporting functions for the edit modal:
+
+            function closeEditModal() {
+                document.getElementById('editModal').classList.remove('active');
+                document.body.style.overflow = '';
+
+                // Reset the form
+                document.getElementById('editProductForm').reset();
+
+                // Hide image preview
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+
+            function closeModal(event) {
+                if (event && event.target !== document.getElementById('editModal')) {
+                    return;
+                }
+                closeEditModal();
+            }
+
+            // Add image preview functionality
+            document.getElementById('productImage').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById('imagePreview');
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.style.display = 'none';
+                }
+            });
+
+            // Handle form submission
+            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const productId = parseInt(this.dataset.productId);
+                const productIndex = allProducts.findIndex(p => p.id === productId);
+
+                if (productIndex === -1) {
+                    showAlert('Product not found', 'error');
+                    return;
+                }
+
+                // Update product data
+                const formData = new FormData(this);
+                const updatedProduct = {
+                    ...allProducts[productIndex],
+                    name: formData.get('product_name'),
+                    category: formData.get('category'),
+                    price: parseFloat(formData.get('price')),
+                    description: formData.get('description')
+                };
+
+                // Handle image update if new image was selected
+                const imageFile = formData.get('product_image');
+                if (imageFile && imageFile.size > 0) {
+                    // In a real application, you'd upload the image to server
+                    // For demo purposes, we'll use the preview URL
+                    const preview = document.getElementById('imagePreview');
+                    if (preview.src && preview.src !== window.location.href) {
+                        updatedProduct.image = preview.src;
+                    }
+                }
+
+                // Update the product in the array
+                allProducts[productIndex] = updatedProduct;
+
+                // Refresh the display
+                applyFilters();
+                updateStats();
+
+                // Close modal and show success message
+                closeEditModal();
+                showAlert(`Product "${updatedProduct.name}" updated successfully!`, 'success');
+            });
+
+            // Add ESC key support for closing modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeEditModal();
+                }
+            });
         function renderPagination() {
             const paginationInfo = document.getElementById('paginationInfo');
             const paginationControls = document.getElementById('paginationControls');
@@ -495,18 +627,20 @@
             const stockLabel = getStockLabel(product.stock);
 
             const modalContent = `
-                <div class="modal-image-section">
+                <div class="modal-header-section">
+                    <div class="modal-image-section">
                     <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" class="modal-product-image" onerror="this.src='./images/placeholder.png'">
-                    <div class="modal-category-badge">${categoryLabels[product.category]}</div>
-                </div>
-                <div class="modal-details-section">
-                    <h3>${product.name}</h3>
-
-                    <div class="modal-description">
-                        <h4>Description</h4>
-                        <p>${product.description}</p>
                     </div>
+                    <div class="modal-basic-info">
+                        <div class="modal-category-badge">${categoryLabels[product.category]}</div>
+                        <h3>${product.name}</h3>
+                        <div class="modal-description">
+                            <p>${product.description}</p>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="modal-details-section">
                     <div class="product-detail-row">
                         <span class="detail-label">Product ID</span>
                         <span class="detail-value">#${String(product.id).padStart(4, '0')}</span>
@@ -535,7 +669,12 @@
             `;
 
             document.getElementById('modalContent').innerHTML = modalContent;
-            document.getElementById('modalEditBtn').href = `./edit-product.php?id=${product.id}`;
+
+            const editbtn = document.getElementById("updateModal");
+            if(editbtn){
+              editbtn.onclick = () => openUpdateModal(orderId);
+            }
+
             document.getElementById('modalDeleteBtn').onclick = function() {
                 showDeleteModal(product.id);
             };
