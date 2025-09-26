@@ -23,24 +23,27 @@
 
 
     /* Main Content - Fixed margin and width calculations */
+    /* Main Content - Fixed margin and width calculations */
     .main-content {
-        flex: 1;
-        margin-left: 280px;
-        padding: 2rem;
-        min-height: 100vh;
-        transition: margin-left 0.3s ease;
-        width: calc(100% - 280px);
-        max-width: calc(100vw - 280px);
-        box-sizing: border-box;
+      flex: 1;
+      margin-left: 230px; /* Exact match to sidebar width */
+      padding: 1.5rem;
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+      width: calc(100vw - 230px); /* Changed from 100% to 100vw for absolute viewport width */
+      max-width: calc(100vw - 230px);
+      box-sizing: border-box;
+      position: relative; /* Ensure proper positioning */
+      overflow-x: hidden; /* Prevent horizontal scroll */
     }
 
     .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
-        background: white;
-        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        background: none;
+        padding: 1.25rem 0rem;
         border-radius: 12px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         flex-wrap: wrap;
@@ -48,10 +51,35 @@
     }
 
     .header h2 {
-        font-size: 2rem;
+        padding-left: 0.3rem;
+        font-size: 1.75rem;
         font-weight: 600;
         color: #1e40af;
+
     }
+    .user-info {
+        display: flex;
+        align-items: center;
+        padding-right: 0.3rem;
+        gap: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #475569;
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
 
     .header-actions {
         display: flex;
@@ -94,24 +122,6 @@
         justify-content: center;
         font-size: 0.75rem;
         font-weight: bold;
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #1e40af, #3b82f6);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
     }
 
     /* Quick Actions Bar */
