@@ -26,6 +26,11 @@
             height: 250px;
         }
 
+        img {
+            width: 250px;
+            height: 250px;
+        }
+
         .dashboard {
             display: flex;
             min-height: 100vh;
@@ -63,6 +68,12 @@
             line-height: 1.2;
             margin-bottom: 75px;
             margin-top: 30px;
+        }
+
+        .logo img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 1rem;
         }
 
         .logo h1 {
@@ -758,6 +769,94 @@
                 grid-template-columns: 1fr;
             }
 
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .search-filter {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .search-box input {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .filter-select {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .header h2 {
+                font-size: 1.5rem;
+            }
+
+            .quick-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .pagination {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .inventory-table th,
+            .inventory-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .product-info-cell {
+                min-width: 200px;
+            }
+
+            .product-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
             .inventory-controls {
                 flex-direction: column;
                 align-items: stretch;
@@ -1028,6 +1127,17 @@
             </div>
         </main>
     </div>
+
+    <!-- Bulk Update Modal -->
+    <div id="bulkUpdateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Bulk Stock Update</h3>
+                <button class="close-btn" onclick="closeModal('bulkUpdateModal')">&times;</button>
+            </div>
+<script>
+      // Initialize Lucide icons
+      lucide.createIcons();
 
     <!-- Bulk Update Modal -->
     <div id="bulkUpdateModal" class="modal">
