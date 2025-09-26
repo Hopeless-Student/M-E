@@ -24,33 +24,6 @@ header {
 
 }
 
-header.scrolled {
-    background-color: #ffffff;
-    transition: background-color 400ms ease-in;
-}
-
-header.scrolled nav a {
-    color: #4169E1;
-}
-
-header.scrolled nav a:hover {
-    color: #002366;
-}
-
-header.scrolled .btn-login a {
-    transition: 400ms;
-    background-color: #4169E1;
-    color: #fff;
-}
-
-header.scrolled .btn-login a:hover {
-    background-color: #FFFFFF;
-    color: #4169E1;
-}
-
-header.scrolled .search-bar, .cart {
-    border: 1px solid #4169E1;
-}
 
 header .logo img {
     height: 70px;
@@ -72,21 +45,20 @@ header nav a {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: #FFFFFF;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 15px;
     text-decoration: none;
-
 }
 
 header nav a:hover {
+    transition: 400ms;
     color: #C6D7FF;
     text-decoration: underline;
     text-underline-offset: 5px;
-    transition: 400ms;
 
 }
 
 header nav a:active {
-    color: #ffffff;
+    color: #002366;
 
 }
 
@@ -230,12 +202,12 @@ header .header-actions {
 .header-actions .cart:active {
     background-color: #4169E1;
     transition: 400ms;
-
+    
 }
 
 .header-actions .btn-login {
     border-radius: 25px;
-
+    
 }
 
 .header-actions .btn-login a {
@@ -248,14 +220,14 @@ header .header-actions {
     font-family: 'Poppins', sans-serif;
     font-weight: bold;
     text-decoration: none;
-
+    
 }
 
 .header-actions .btn-login a:hover {
     background-color: #4169E1;
     color: #FFFFFF;
     transition: 400ms;
-
+    
 }
 
 .header-actions .btn-login a:active {
@@ -264,6 +236,40 @@ header .header-actions {
     transition: 400ms;
 
 }
+
+header.scrolled {
+    background-color: #ffffff;
+    transition: background-color 400ms ease;
+}
+
+header.scrolled nav a {
+    transition: 400ms ease;
+    color: #4169E1;
+}
+
+header.scrolled nav a:hover {
+    color: #A6BAFF;
+}
+
+header.scrolled nav a:active {
+    color: #E8E8E8;
+}
+
+header.scrolled .btn-login a {
+    transition: 400ms ease;
+    background-color: #4169E1;
+    color: #fff;
+}
+
+header.scrolled .btn-login a:hover {
+    background-color: #FFFFFF;
+    color: #4169E1;
+}
+
+header.scrolled .search-bar, .cart {
+    border: 1px solid #4169E1;
+}
+
 
 /* ===== Sidebar Styles ===== */
 .sidebar {
@@ -277,7 +283,7 @@ header .header-actions {
     display: flex;
     flex-direction: column;
     padding: 80px 20px;
-    transition: right 0.3s ease;
+    transition: right 400ms ease;
     z-index: 1100;
 }
 
@@ -317,8 +323,8 @@ header .header-actions {
 section {
     background-color: #ffffff;
     margin-bottom: 90px;
-    padding: 60px 100px 100px 100px;
-
+    padding: 50px 90px 90px 90px;
+    
 }
 
 
@@ -331,7 +337,7 @@ section {
     align-items: center;
     text-align: center;
     background: linear-gradient(to bottom, #4169E1, rgba(65, 105, 225, 0)), url('../images/hero-bg-image.jpg') no-repeat center center/cover;
-
+    
 }
 
 .hero .hero-content {
@@ -354,7 +360,7 @@ section {
 .hero .hero-content p {
     margin-bottom: 100px;
     font-size: 20px;
-    color: #FFFFFF;
+    color: #FFFFFFC9;
 
 }
 
@@ -389,7 +395,7 @@ section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 35px 20px 35px;
+    padding: 10px 35px 10px 35px;
 
 }
 
@@ -458,8 +464,8 @@ section {
 .products .product-grid {
     display: flex;
     justify-content: center;
-    gap: 90px;
-    padding: 40px 130px;
+    gap: 40px;
+    padding: 40px 30px;
     flex-wrap: wrap;
 
 }
@@ -467,8 +473,8 @@ section {
 .products .product-card {
     background-color: #4169E1;
     border-radius: 15px;
-    max-width: 250px;
-    max-height: 290px;
+    max-width: 230px;
+    max-height: 260px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -491,8 +497,8 @@ section {
 }
 
 .products .product-card img {
-    height: 200px;
-    width: 220px;
+    height: 170px;
+    width: 190px;
     object-fit: contain;
     background-color: #fff;
     border-radius: 10px;
@@ -526,11 +532,11 @@ section {
 .products .cart-btn {
     position: absolute;
     right: 15px;
-    bottom: 15px;
+    bottom: 18px;
     background-color: #ffffff;
     border-radius: 50%;
-    height: 50px;
-    width: 50px;
+    height: 45px;
+    width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -550,7 +556,7 @@ section {
 
 .products .cart-btn img {
     background: transparent;
-    height: 30px;
+    height: 27px;
     margin-top: 5px;
     object-fit: contain;
 
@@ -591,15 +597,14 @@ section {
 .categ-grid {
     display: flex;
     justify-content: center;
-    gap: 150px;
+    gap: 60px;
     flex-wrap: wrap;
 
 }
 
 .categ-card {
-    border-radius: 20px;
-    height: 300px;
-    width: 350px;
+    height: 450px;
+    width: 300px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -612,7 +617,6 @@ section {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    border-radius: 20px;
     display: block;
     transition: transform 400ms;
 
@@ -625,7 +629,6 @@ section {
     height: 100%;
     width: 100%;
     background-color: #00236660;
-    border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -644,18 +647,12 @@ section {
 }
 
 .categ-card:hover img {
-    transform: scale(1.05);
+    transform: scale(1.10);
 
 }
 
 .categ-card:hover .overlay {
     background-color: rgba(0, 0, 0, 0);
-
-}
-
-.categ-card:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    transform: scale(1.05);
 
 }
 
@@ -689,12 +686,11 @@ section {
 }
 
 .trust-grid {
-    padding-top: 60px;
+    padding-top: 30px;
     display: flex;
     justify-content: center;
     gap: 120px;
     flex-wrap: wrap;
-
 }
 
 .trust-card {
@@ -703,7 +699,6 @@ section {
     flex-direction: column;
     align-items: center;
     text-align: center;
-
 }
 
 .icon-circle {
@@ -716,7 +711,7 @@ section {
     justify-content: center;
     margin-bottom: 25px;
     box-shadow: 5px 5px 0px #00236650;
-
+    transition: transform 400ms ease, background-color 400ms ease, box-shadow 400ms ease;
 }
 
 .icon-circle img {
@@ -724,6 +719,12 @@ section {
     width: 40px;
     object-fit: contain;
 
+}
+
+.icon-circle:hover {
+    background-color: #FFFFFF;
+    transform: translateY(-20px) scale(1.20);
+    box-shadow: 20px 20px 20px #00236650;
 }
 
 .trust-card h3 {
@@ -803,13 +804,18 @@ section {
 
 
 .contact {
-    text-align: center;
-
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    padding: 60px 20px;
 }
 
 .contact-content {
-    padding-bottom: 60px;
-
+    flex: 1;
+    max-width: 400px;
+    text-align: left;
 }
 
 .contact-content h2 {
@@ -822,10 +828,10 @@ section {
 }
 
 .contact-grid {
+    flex: 1.5;
     display: flex;
-    justify-content: center;
-    gap: 80px;
-    flex-wrap: wrap;
+    flex-direction: column; /* stack cards vertically */
+    gap: 30px;
 
 }
 
@@ -840,7 +846,13 @@ section {
     gap: 20px;
     text-align: left;
     box-shadow: 0px 20px 20px #6A6FBF60;
+    transition: transform 400ms ease, box-shadow 400ms ease, background-color 400ms ease;
+}
 
+.contact-card:hover {
+    transform: translateY(-20px);
+    box-shadow: 0 40px 40px #6A6FBF60;
+    background-color: #FFFFFF;
 }
 
 .contact-card img {
@@ -873,17 +885,45 @@ section {
 
 
 .faqs {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 80px;
+    padding: 60px 20px;
+}
 
+.faqs-content {
+    flex: 1;
+    max-width: 400px;
+}
+
+.faqs-column {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.faqs-highlight {
+    color: #4169E1;
+    font-size: 59px;
 }
 
 .faqs-content h2 {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 49px;
     font-weight: bold;
-    color: #4169E1;
+    color: #303030;
     margin-bottom: 60px;
+    margin-left: 60px;
+    text-align: left;
+    line-height: 1.7;
+    letter-spacing: 5px;
+}
 
+.faqs-column {
+    align-items: center;
 }
 
 .faqs-list {
@@ -1016,11 +1056,6 @@ footer {
     letter-spacing: 5px;
 }
 
-.footer-tagline img {
-    height: 200px;
-}
-
-
 .footer-links {
     display: flex;
     justify-content: space-between;
@@ -1110,33 +1145,33 @@ footer {
 }
 
 .footer-copy p {
-    margin-top: 150px;
+    margin-top: 60px;
     font-size: 14px;
     color: #A6BAFF;
-    text-align: left;
+    text-align: center;
 
 }
 
 
 
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed; 
-    z-index: 2000; /* Above everything */
+    z-index: 2000;
     left: 0;
     top: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%; 
     overflow: auto; 
-    background-color: rgba(0, 0, 0, 0.5); /* Black overlay */
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
     background-color: #fff;
-    margin: 10% auto; /* Center the modal */
+    margin: 10% auto;
     padding: 30px;
     border-radius: 10px;
-    max-width: 400px;
+    max-width: 500px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     font-family: 'Poppins', sans-serif;
 }
@@ -1154,8 +1189,16 @@ footer {
     color: #002366;
 }
 
+.modal-content img {
+    height: 150px;
+    margin: 30px 147px 15px;
+    display: block;
+}
+
 .modal-content h2 {
-    margin-bottom: 20px;
+    text-align: center;
+    font-size: 32px;
+    margin: 20px 0;
     color: #4169E1;
 }
 
@@ -1207,6 +1250,61 @@ footer {
 
 .modal-switch-text a:hover {
     text-decoration: underline;
+}
+
+#signupModal input {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+#signupModal .terms {
+    margin: 10px 0;
+    font-size: 13px;
+}
+
+#signupModal .terms-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #303030;
+}
+
+#signupModal .terms-label input[type="checkbox"] {
+    width: auto;
+    height: auto;
+    margin: 0;
+}
+
+#signupModal .terms-label a {
+    color: #4169E1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#signupModal .terms-label a:hover {
+    transition: 400ms;
+    text-decoration: underline;
+    color: #002366;
+}
+
+
+#verifyEmailBtn[disabled] {
+    background: #D1D1D1;
+    cursor: not-allowed;
+}
+
+#termsModal .modal-content { 
+    max-width: 60%;
+    margin: auto;
+    padding: 20px 40px;
+}
+
+#termsModal ol li {
+    color: #4169E1;
+    font-weight: bold;
 }
 
 
@@ -1417,22 +1515,69 @@ footer {
 
     .products .product-grid {
         gap: 30px;
-        padding: 20px;
+        padding: 20px 5px;
     }
 
     .products .product-card {
         background-color: #4169E1;
         border-radius: 15px;
-        max-width: 250px;
-        max-height: 290px;
+        width: 180px;
+        height: 220px;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         position: relative;
         overflow: hidden;
         padding: 15px;
         cursor: pointer;
+    }
 
+    .products .product-card img {
+        height: 140px;
+        width: 155px;
+        object-fit: contain;
+        background-color: #fff;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .products .product-info {
+        width: 100%;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        text-align: left;
+        margin-bottom: 35px;
+        padding: 0;
+    }
+
+    .products .product-info h3 {
+        font-size: 14px;
+        margin-bottom: 5px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .products .product-info p {
+        font-size: 14px;
+    }
+
+    .products .cart-btn {
+        position: absolute;
+        right: 10px;
+        bottom: 15px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        height: 38px;
+        width: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .products .cart-btn img {
+        height: 24px;
+        margin: 0;
+        background: transparent;
     }
 
 
@@ -1443,8 +1588,8 @@ footer {
 
     .categ-card {
         width: 100%;
-        max-height: 220px;
-        max-width: 250px;
+        max-height: 350px;
+        max-width: 200px;
     }
 
     .categ-card .overlay span {
@@ -1546,10 +1691,6 @@ footer {
     .brand-top h3 {
         white-space: nowrap;
         direction: ltr;
-    }
-
-    .footer-tagline img {
-        height: max-content;
     }
 
 

@@ -1,39 +1,68 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Header & nav elements
   const hamburger = document.querySelector(".hamburger");
   const hamburgerIcon = document.querySelector(".hamburger-icon");
   const nav = document.querySelector("header nav");
+
+  // Search elements
   const searchBar = document.querySelector(".header-actions .search-bar");
   const searchInput = document.querySelector("#search-input");
   const searchIcon = document.querySelector(".search-bar .search-icon");
   const suggestionsBox = document.querySelector(".search-suggestions");
+
+  // Other UI
   const cart = document.querySelector(".cart");
   const heroCTA = document.querySelector(".hero-cta");
   const faqQuestions = document.querySelectorAll(".faq-question");
   const header = document.querySelector("header");
-  const loginModal = document.getElementById('loginModal');
-  const btnLogin = document.querySelector('.btn-login a');
-  const closeBtn = document.getElementById('closeLoginModal');
-  const loginForm = document.getElementById('loginForm');
-  const signupModal = document.getElementById('signupModal');
-  const openSignupModalLink = document.getElementById('openSignupModal');
-  const closeSignupModal = document.getElementById('closeSignupModal');
-  const signupForm = document.getElementById('signupForm');
-  const openLoginModalLink = document.getElementById('openLoginModal');
 
-  // Hamburger toggle
+  // Login modal elements (if present)
+  const loginModal = document.getElementById("loginModal");
+  const btnLogin = document.querySelector(".btn-login a");
+  const closeBtn = document.getElementById("closeLoginModal");
+  const loginForm = document.getElementById("loginForm");
+  const openLoginModalLink = document.getElementById("openLoginModal");
+
+  // Signup modal elements (IDs expected in your HTML)
+  const signupModal = document.getElementById("signupModal");
+  const openSignupModalLink = document.getElementById("openSignupModal");
+  const closeSignupModal = document.getElementById("closeSignupModal");
+  const signupForm = document.getElementById("signupForm");
+
+  // Signup specific inputs (IDs expected)
+  const firstNameInput = document.getElementById("firstName");
+  const lastNameInput = document.getElementById("lastName");
+  // use "email", "password", "confirmPassword" as IDs for signup inputs
+  const signupEmailInput = document.getElementById("email");
+  const signupPasswordInput = document.getElementById("password");
+  const signupConfirmPasswordInput = document.getElementById("confirmPassword");
+  const termsCheckbox = document.getElementById("termsCheckbox");
+  const verifyEmailBtn = document.getElementById("verifyEmailBtn");
+
+  // Terms modal (optional)
+  const termsModal = document.getElementById("termsModal");
+  // search for a trigger anchor with id or fallback to any link pointing to #termsModal
+  const openTermsModal =
+    document.getElementById("openTermsModal") ||
+    document.querySelector('a[href="#termsModal"]');
+  const closeTermsModal =
+    (termsModal && termsModal.querySelector(".close")) ||
+    document.getElementById("closeTermsModal");
+
+  // Hamburger (mobile) toggle
   if (hamburger && nav && hamburgerIcon) {
     hamburger.addEventListener("click", () => {
       nav.classList.toggle("active");
       hamburger.classList.toggle("active");
 
-      // Swap icons
+      // Swap icons (make sure these file paths are correct for your project)
       hamburgerIcon.src = nav.classList.contains("active")
         ? "../assets/svg/hamburger-menu-active.svg"
         : "../assets/svg/hamburger-menu.svg";
     });
 
-    // Close nav when clicking a link
-    nav.querySelectorAll("a").forEach(link => {
+    // Close nav when clicking a link (mobile)
+    nav.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
         nav.classList.remove("active");
         hamburger.classList.remove("active");
@@ -43,25 +72,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Mobile search toggle
-  if (searchBar && searchIcon) {
+  if (searchBar && searchIcon && searchInput) {
+    // Ensure mobile behavior toggles the compact circle -> expanded search input
     searchIcon.addEventListener("click", (e) => {
-      
-      if (window.innerWidth <= 768) { // On mobile, toggle search bar expand
+      // only do this expand behavior on small screens
+      if (window.innerWidth <= 768) {
         e.preventDefault();
         searchBar.classList.toggle("active");
 
         if (searchBar.classList.contains("active")) {
+          // show input and focus
           searchInput.style.display = "block";
           searchInput.focus();
         } else {
           searchInput.style.display = "none";
-          suggestionsBox.style.display = "none";
+          if (suggestionsBox) suggestionsBox.style.display = "none";
         }
+      } else {
+        // On desktop you may want the icon to focus the input
+        if (searchInput) searchInput.focus();
       }
     });
+
+    // If page loads on mobile and you want the input hidden initially:
+    if (window.innerWidth <= 768 && !searchBar.classList.contains("active")) {
+      searchInput.style.display = "none";
+    }
   }
 
-  // Search functionality
+  // Search suggestions logic
   const products = [
     "Scotch Tape Roll",
     "Ballpen Black",
@@ -74,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Marker",
     "Highlighter",
     "Folder Manila",
-    "Correction Tape"
+    "Correction Tape",
   ];
 
   if (searchInput && suggestionsBox) {
@@ -87,8 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const filtered = products.filter(product =>
-        product.toLowerCase().includes(query)
+      const filtered = products.filter((p) =>
+        p.toLowerCase().includes(query)
       );
 
       if (filtered.length === 0) {
@@ -99,13 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      filtered.forEach(product => {
+      filtered.forEach((product) => {
         const item = document.createElement("div");
+        item.className = "suggestion-item";
         item.textContent = product;
 
         item.addEventListener("click", () => {
           searchInput.value = product;
           suggestionsBox.style.display = "none";
+          // Replace this with real search/redirection in your app:
+          // location.href = `/search?q=${encodeURIComponent(product)}`;
           alert("Searching for: " + product);
         });
 
@@ -115,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       suggestionsBox.style.display = "block";
     });
 
-    // Hide suggestions when clicking outside
+    // Hide suggestions when clicking outside search-bar
     document.addEventListener("click", (e) => {
       if (!e.target.closest(".search-bar")) {
         suggestionsBox.style.display = "none";
@@ -127,35 +169,37 @@ document.addEventListener("DOMContentLoaded", () => {
   if (heroCTA) {
     heroCTA.addEventListener("click", (e) => {
       e.preventDefault();
-      document.querySelector(".products")
-        .scrollIntoView({ behavior: "smooth" });
+      const productsSection = document.querySelector(".products");
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: "smooth" });
+      }
     });
   }
 
-  // FAQ accordion (only one open)
+  // FAQ accordion (single open)
   if (faqQuestions.length > 0) {
-    faqQuestions.forEach(q => {
+    faqQuestions.forEach((q) => {
       q.addEventListener("click", () => {
-        faqQuestions.forEach(el => {
-          if (el !== q) el.nextElementSibling.classList.remove("open");
+        faqQuestions.forEach((el) => {
+          if (el !== q && el.nextElementSibling) {
+            el.nextElementSibling.classList.remove("open");
+          }
         });
-        q.nextElementSibling.classList.toggle("open");
+        const ans = q.nextElementSibling;
+        if (ans) ans.classList.toggle("open");
       });
     });
   }
 
-  // Cart badge updater
+  // Cart badge updater (demo)
   if (cart) {
     let cartCount = 0;
-
     const updateCartBadge = () => {
       cart.setAttribute("data-count", cartCount);
     };
-
     updateCartBadge();
 
-    // Increment on "Add to Cart"
-    document.querySelectorAll(".cart-btn a").forEach(btn => {
+    document.querySelectorAll(".cart-btn a").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         cartCount++;
@@ -164,20 +208,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-    // Smooth scroll for nav
-    document.querySelectorAll("header nav a").forEach(link => {
-      link.addEventListener("click", function(e) {
-        if (this.getAttribute("href").startsWith("#")) {
-          e.preventDefault();
-          document.querySelector(this.getAttribute("href"))
-            .scrollIntoView({ behavior: "smooth" });
-        }
-      });
+  // Smooth scroll for in-page links
+  document.querySelectorAll("header nav a").forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const href = this.getAttribute("href");
+      if (href && href.startsWith("#")) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      }
     });
+  });
 
-  // Header color transition
+  // Header color transition on scroll
   if (header) {
     window.addEventListener("scroll", () => {
+      // threshold can be adjusted (100, 200, 700, etc.)
       if (window.scrollY > 700) {
         header.classList.add("scrolled");
       } else {
@@ -186,87 +232,166 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-    // Open modal when login button clicked
-    btnLogin.addEventListener('click', (event) => {
-      event.preventDefault(); // prevent default link behavior
-      loginModal.style.display = 'block';
+  // Login modal handlers (defensive)
+  if (btnLogin && loginModal) {
+    btnLogin.addEventListener("click", (event) => {
+      event.preventDefault();
+      loginModal.style.display = "block";
     });
+  }
 
-    // Close modal when close button clicked
-    closeBtn.addEventListener('click', () => {
-      loginModal.style.display = 'none';
+  if (closeBtn && loginModal) {
+    closeBtn.addEventListener("click", () => {
+      loginModal.style.display = "none";
     });
+  }
 
-    // Close modal when clicking outside modal content
-    window.addEventListener('click', (event) => {
+  if (window && loginModal) {
+    window.addEventListener("click", (event) => {
       if (event.target === loginModal) {
-        loginModal.style.display = 'none';
+        loginModal.style.display = "none";
       }
     });
+  }
 
-    // Handle login form submission
-    loginForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      // Your login inputs: 'username' and 'password' expected on the login form
+      const username = loginForm.username ? loginForm.username.value.trim() : "";
+      const password = loginForm.password ? loginForm.password.value.trim() : "";
 
       if (username && password) {
-        alert(`Logging in as ${username}`); // Replace with actual login logic
-        loginModal.style.display = 'none'; // Close modal on submit
+        // TODO: Replace with real login call
+        alert(`Logging in as ${username}`);
+        if (loginModal) loginModal.style.display = "none";
         loginForm.reset();
       } else {
-        alert('Please fill out all fields.');
+        alert("Please fill out all fields.");
       }
     });
+  }
 
-      openSignupModalLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      loginModal.style.display = 'none';
-      signupModal.style.display = 'block';
+  // Signup modal open/close logic
+  if (openSignupModalLink && signupModal) {
+    openSignupModalLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (loginModal) loginModal.style.display = "none";
+      signupModal.style.display = "block";
     });
+  }
 
-    closeSignupModal.addEventListener('click', () => {
-      signupModal.style.display = 'none';
+  if (closeSignupModal && signupModal) {
+    closeSignupModal.addEventListener("click", () => {
+      signupModal.style.display = "none";
     });
+  }
 
-    window.addEventListener('click', (event) => {
+  if (window && signupModal) {
+    window.addEventListener("click", (event) => {
       if (event.target === signupModal) {
-        signupModal.style.display = 'none';
+        signupModal.style.display = "none";
       }
     });
+  }
 
-    signupForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+  // allow switching between login/signup modals (if links present)
+  if (openLoginModalLink && signupModal && loginModal) {
+    openLoginModalLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      signupModal.style.display = "none";
+      loginModal.style.display = "block";
+    });
+  }
 
-      const email = signupForm.email.value.trim();
-      const username = signupForm.username.value.trim();
-      const password = signupForm.password.value.trim();
-      const confirmPassword = signupForm.confirmPassword.value.trim();
+  // SIGNUP form logic (first/last name, terms checkbox)
+  if (termsCheckbox && verifyEmailBtn) {
+    // Initially button is disabled in HTML; toggle based on checkbox
+    verifyEmailBtn.disabled = !termsCheckbox.checked;
 
-      if (!email || !username || !password || !confirmPassword) {
-        alert('Please fill out all fields.');
+    termsCheckbox.addEventListener("change", () => {
+      verifyEmailBtn.disabled = !termsCheckbox.checked;
+    });
+  }
+
+  if (signupForm) {
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // pull values from inputs (IDs expected)
+      const firstName = firstNameInput ? firstNameInput.value.trim() : "";
+      const lastName = lastNameInput ? lastNameInput.value.trim() : "";
+      const email = signupEmailInput ? signupEmailInput.value.trim() : "";
+      const password = signupPasswordInput ? signupPasswordInput.value.trim() : "";
+      const confirmPassword = signupConfirmPasswordInput
+        ? signupConfirmPasswordInput.value.trim()
+        : "";
+      const agreed = termsCheckbox ? termsCheckbox.checked : false;
+
+      // validation
+      if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        alert("Please fill out all fields.");
         return;
       }
 
       if (password !== confirmPassword) {
-        alert('Passwords do not match.');
+        alert("Passwords do not match.");
         return;
       }
 
-      alert(`Account created for ${username} with email ${email}`);
+      if (!agreed) {
+        alert("You must agree to the Terms and Conditions.");
+        return;
+      }
 
+      // Replace this with real sign-up / send verification email backend call
+      alert(`Verification email sent to ${email}`);
+
+      // reset UI
       signupForm.reset();
-      signupModal.style.display = 'none';
+      if (verifyEmailBtn) verifyEmailBtn.disabled = true;
+      if (signupModal) signupModal.style.display = "none";
     });
+  }
 
-    openLoginModalLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      signupModal.style.display = 'none';
-      loginModal.style.display = 'block';
+  /* ---------------------------
+     Terms modal open/close
+     (openTermsModal can be an ID or an <a href="#termsModal">)
+     --------------------------- */
+  if (openTermsModal && termsModal) {
+    openTermsModal.addEventListener("click", (e) => {
+      e.preventDefault();
+      // open the terms modal (must exist in HTML)
+      termsModal.style.display = "block";
     });
+  }
 
-  // Footer year auto-update
+  if (closeTermsModal && termsModal) {
+    closeTermsModal.addEventListener("click", () => {
+      termsModal.style.display = "none";
+    });
+  }
+
+  if (termsModal) {
+    window.addEventListener("click", (event) => {
+      if (event.target === termsModal) {
+        termsModal.style.display = "none";
+      }
+    });
+  }
+
+  // Terms & Verify Email Button
+  if (termsCheckbox && verifyEmailBtn) {
+    // Disable button initially
+    verifyEmailBtn.disabled = true;
+
+    // Enable/disable based on checkbox state
+    termsCheckbox.addEventListener("change", () => {
+      verifyEmailBtn.disabled = !termsCheckbox.checked;
+    });
+  }
+
+  // Footer auto-year
   const footerCopy = document.querySelector(".footer-copy p");
   if (footerCopy) {
     footerCopy.innerHTML = `© Copyright ${new Date().getFullYear()} M&E Interior Supplies Trading, All rights reserved.`;
