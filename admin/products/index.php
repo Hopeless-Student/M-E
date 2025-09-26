@@ -82,7 +82,7 @@
                     </a>
                     <a href="./mark-top-orders.php" class="btn btn-accent">
                         <i data-lucide="trending-up"></i>
-                        Top Orders
+                        Featured
                     </a>
                     <a href="./bulk-actions.php" class="btn btn-secondary">
                         <i data-lucide="settings"></i>
