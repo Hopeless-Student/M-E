@@ -333,15 +333,15 @@
       document.getElementById('orderModal').classList.add('active');
       document.body.style.overflow = 'hidden';
 
-    const updtbtn = document.getElementById("updateModal");
-    if(updtbtn){
-      updtbtn.onclick = () => openUpdateModal(orderId);
-    }
+      const updtbtn = document.getElementById("updateModal");
+      if(updtbtn){
+        updtbtn.onclick = () => openUpdateModal(orderId);
+      }
 
-      // Refresh Lucide icons for the modal
-      setTimeout(() => {
-        lucide.createIcons();
-      }, 100);
+        // Refresh Lucide icons for the modal
+        setTimeout(() => {
+          lucide.createIcons();
+        }, 100);
     }
 
     function openUpdateModal(orderId) {

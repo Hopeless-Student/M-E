@@ -753,12 +753,12 @@ body {
 }
 
 .modal-btn-edit {
-  background-color: #64748b;
+  background-color: #0050c2;
   color: white;
 }
 
 .modal-btn-edit:hover {
-    background-color: #475569;
+    background-color: #1e64c7;
 }
 
 .modal-btn-delete {

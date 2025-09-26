@@ -133,11 +133,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" onclick="closeProductModal()">Close</button>
-                <button class="modal-btn modal-btn-secondary" onclick="closeEditModal()">Edit</button>
-                <!-- <a class="modal-btn modal-btn-edit" id="modalEditBtn" onclick="openEditProd()">
-                    <i data-lucide="pencil"></i> Edit
-                </a> -->
+                <button class="modal-btn modal-btn-secondary" id="viewModal"onclick="closeProductModal()">Close</button>
+                <button class="modal-btn modal-btn-edit" id="EditModal">Edit</button>
                 <button class="modal-btn modal-btn-delete" id="modalDeleteBtn">
                     <i data-lucide="trash-2"></i> Delete Product
                 </button>
@@ -439,6 +436,9 @@
                     return;
                 }
 
+                // Close the product view modal first
+                closeProductModal();
+
                 // Populate the form fields with product data
                 document.getElementById('productName').value = product.name;
                 document.getElementById('productCategory').value = product.category;
@@ -455,12 +455,12 @@
                     currentImage.src = './images/placeholder.png';
                 }
 
-                // Show the modal
+                // Show the edit modal
                 document.getElementById('editModal').classList.add('active');
                 document.body.style.overflow = 'hidden';
 
                 // Store the product ID for later use in form submission
-                document.getElementById('editProductForm').dataset.productId = productId;
+                document.getElementById('editProductForm').dataset.productId = id;
 
                 // Initialize Lucide icons after modal is shown
                 setTimeout(() => {
@@ -670,11 +670,14 @@
 
             document.getElementById('modalContent').innerHTML = modalContent;
 
-            const editbtn = document.getElementById("updateModal");
-            if(editbtn){
-              editbtn.onclick = () => openUpdateModal(orderId);
-            }
+            document.getElementById('EditModal').onclick = function(){
+                openEditProd(id);
+                const editbtn = document.getElementById("updateModal");
 
+                if(editbtn){
+                  editbtn.onclick = () => openUpdateModal(orderId);
+                }
+            }
             document.getElementById('modalDeleteBtn').onclick = function() {
                 showDeleteModal(product.id);
             };
