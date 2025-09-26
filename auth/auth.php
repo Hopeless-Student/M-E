@@ -15,7 +15,8 @@
       $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if (!$user) {
-          echo "User not found!";
+          // echo "User not found!";
+          header("Location: ../pages/index.php");
           exit;
       } else {
         $_SESSION['isActive'] = $user['isActive'];
