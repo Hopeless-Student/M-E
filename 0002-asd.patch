@@ -1,0 +1,25 @@
+From 7c7a094ff37816e978209e1adc4fb46fb5dbff38 Mon Sep 17 00:00:00 2001
+From: Jsh_lptn <lapitanjoshua2005@gmail.com>
+Date: Fri, 26 Sep 2025 17:39:27 +0800
+Subject: [PATCH 2/2] asd
+
+---
+ admin/products/index.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/admin/products/index.php b/admin/products/index.php
+index a4d15f4..9aa67d9 100644
+--- a/admin/products/index.php
++++ b/admin/products/index.php
+@@ -82,7 +82,7 @@
+                     </a>
+                     <a href="./mark-top-orders.php" class="btn btn-accent">
+                         <i data-lucide="trending-up"></i>
+-                        Top Orders
++                        Featured
+                     </a>
+                     <a href="./bulk-actions.php" class="btn btn-secondary">
+                         <i data-lucide="settings"></i>
+-- 
+2.50.1.windows.1
+
