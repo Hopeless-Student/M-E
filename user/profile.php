@@ -84,7 +84,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           <!-- Gender  -->
           <div class="col-md-4">
             <label for="gender" class="form-label">Gender</label>
-            <select id="gender" name="genders" class="form-select">
+            <select id="gender" name="genders" class="form-select" disabled>
               <option value="">Select gender</option>
               <option value="Male"   <?php echo ($user['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
               <option value="Female" <?php echo ($user['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
@@ -182,8 +182,6 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
                    value="<?php echo date("M d, Y h:i A", strtotime($user['updated_at'])); ?>" readonly>
           </div>
 
-
-          <!-- Submit -->
           <div class="col-12 text-center">
             <button type="submit" class="btn btn-primary px-4" id="saveBtn" name="save">Save Changes</button>
           </div>
@@ -193,22 +191,16 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           Passwords do not match!
         </div>
         </form>
-      </div>
-    </div>
-    <!-- <script src="bootstrap-5.3.8-dist\js\bootstrap.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script> -->
-    <script>
-    window.appData = {
-      cities: <?= json_encode($cities) ?>,
-      barangays: <?= json_encode($barangays)?>,
-      userProvince: <?= (int)$user['province_id'] ?>,
-      userCity: <?= (int)$user['city_id'] ?>,
-      userBarangay: <?= (int)$user['barangay_id'] ?>
-    };
-    </script>
+          <script>
+          window.appData = {
+            cities: <?= json_encode($cities) ?>,
+            barangays: <?= json_encode($barangays)?>,
+            userProvince: <?= (int)$user['province_id'] ?>,
+            userCity: <?= (int)$user['city_id'] ?>,
+            userBarangay: <?= (int)$user['barangay_id'] ?>
+          };
+          </script>
     <script src="../assets/js/profile.js"></script>
-
     <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
   </body>
 </html>

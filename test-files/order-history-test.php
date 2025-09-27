@@ -142,6 +142,25 @@ try {
     .btn-checkout:hover {
         background-color: #001c4d;
     }
+    @media (max-width: 576px) {
+  .cart-product {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .product-img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .product-subtotal {
+    align-self: flex-end;
+    margin-top: 10px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -170,56 +189,96 @@ try {
       </div>
   </header>
 
-  <div class="container cart-container">
-      <!-- Cart Items -->
+  <div class="container my-5">
+  <div class="row gy-4">
+
+    <div class="col-12 col-lg-8">
       <div class="cart-items">
-          <h2>Your Shopping Cart</h2>
-          <?php $grandTotal = 0; ?>
-          <?php foreach ($cartItems as $item):
-              $grandTotal += $item['subtotal']; ?>
-              <div class="cart-product">
-                  <img src="../assets/images/Hard-Copy.jpg" alt="Product Image" class="product-img">
-                  <div class="product-info">
-                      <div class="product-title"><?= htmlspecialchars($item['product_name']) ?></div>
-                      <div class="product-price">₱<?= number_format($item['price'], 2) ?></div>
+        <h2 class="text-center">Your Shopping Cart</h2>
+        <?php $grandTotal = 0; ?>
+        <?php foreach ($cartItems as $item):
+            $grandTotal += $item['subtotal']; ?>
+            <div class="cart-product">
+                <img src="../assets/images/Hard-Copy.jpg" alt="Product Image" class="product-img">
+                <div class="product-info">
+                  <div class="product-title"><?= htmlspecialchars($item['product_name']) ?></div>
+                  <div class="product-price">₱<?= number_format($item['price'], 2) ?></div>
+                  <form action="cart-actions.php" method="post" class="d-inline">
+                      <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
                       <div class="quantity-control">
-                          <button class="quantity-btn">-</button>
-                          <?= $item['quantity'] ?>
-                          <button class="quantity-btn">+</button>
+                          <button type="submit" class="quantity-btn" name="action" value="decrease">-</button>
+                          <span><?= $item['quantity'] ?></span>
+                          <button type="submit" class="quantity-btn" name="action" value="increase">+</button>
                       </div>
-                      <button class="btn-remove">Remove</button>
-                  </div>
-                  <div class="product-subtotal">
-                      ₱<?= number_format($item['subtotal'], 2) ?>
-                  </div>
+                  </form>
+                  <form method="post" action="cart-actions.php" class="mt-2">
+                      <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
+                        <button type="submit" name="action" value="remove" class="btn-remove">Remove</button>
+                  </form>
               </div>
-          <?php endforeach; ?>
-      </div>
 
-      <!-- Cart Summary -->
+                <div class="product-subtotal">
+                    ₱<?= number_format($item['subtotal'], 2) ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <?php if (!$cartItems): ?>
+          <div class="text-center">
+            <img src="../assets/images/empty-cart.png" class="img-fluid" style="max-height:250px;" alt="">
+            <p class="fs-3 fw-bold" style="color: #002366;">Your Cart Is Currently Empty!</p>
+            <small>Before checking out, add some items first on your cart. <br>Browse our "Product page"!</small>
+            <button class="btn-checkout">Shop Now!</button>
+          </div>
+        <?php endif; ?>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
       <div class="cart-summary">
-          <h5>Order Summary</h5>
-          <div class="summary-line">
-              <span>Subtotal:</span>
-              <span>₱<?= number_format($grandTotal, 2) ?></span>
-          </div>
-          <div class="summary-line">
-              <span>Standard Delivery:</span>
-              <span>Free</span>
-          </div>
-          <hr>
-          <div class="summary-line fw-bold">
-              <span>Total:</span>
-              <span>₱<?= number_format($grandTotal, 2) ?></span>
-          </div>
-          <button class="btn-checkout">Proceed to Checkout</button>
-          <div class="mt-4 text-center">
-              <p class="text-muted">Enjoy your shopping with us 💙</p>
-          </div>
-      </div>
-  </div>
+        <h5>Order Summary</h5>
+        <div class="summary-line">
+            <span>Subtotal:</span>
+            <span>₱<?= number_format($grandTotal, 2) ?></span>
+        </div>
+        <div class="summary-line">
+            <span>Standard Delivery:</span>
+            <span>Free</span>
+        </div>
+        <hr>
+        <div class="summary-line fw-bold">
+            <span>Total:</span>
+            <span>₱<?= number_format($grandTotal, 2) ?></span>
+        </div>
+        <?php if ($cartItems): ?>
+            <form action="checkout-test.php" method="post">
+              <input type="submit" name="Checkout" value="Proceed to Checkout" class="btn-checkout">
+            </form>
+          <?php else: ?>
+            <button class="btn-checkout"
+                    style="background-color: gray;"
+                    disabled
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Add items to your cart before proceeding to checkout.">
+                Proceed to Checkout
+            </button>
+          <?php endif; ?>
 
-  <script src="../bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+        <div class="mt-4 text-center">
+            <p class="text-muted">Enjoy your shopping with us 💙</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+</script>
+
 </body>
 </html>
-  
