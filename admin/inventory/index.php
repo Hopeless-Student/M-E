@@ -26,11 +26,6 @@
             height: 250px;
         }
 
-        img {
-            width: 250px;
-            height: 250px;
-        }
-
         .dashboard {
             display: flex;
             min-height: 100vh;
