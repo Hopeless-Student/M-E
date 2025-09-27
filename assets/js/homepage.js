@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hamburgerIcon = document.querySelector(".hamburger-icon");
   const nav = document.querySelector("header nav");
 
-  // Search elements (fix: target .hero-search-bar, not .search-bar)
+  // Search elements
   const searchBar =
     document.querySelector(".hero-search-bar") ||
     document.querySelector(".header-actions .search-bar");
@@ -49,16 +49,19 @@ document.addEventListener("DOMContentLoaded", () => {
     (termsModal && termsModal.querySelector(".close")) ||
     document.getElementById("closeTermsModal");
 
-  // Hamburger toggle
+  // 🔥 Hamburger toggle
   if (hamburger && nav && hamburgerIcon) {
     hamburger.addEventListener("click", () => {
       nav.classList.toggle("active");
       hamburger.classList.toggle("active");
+
+      // Switch icon
       hamburgerIcon.src = nav.classList.contains("active")
         ? "../assets/svg/hamburger-menu-active.svg"
         : "../assets/svg/hamburger-menu.svg";
     });
 
+    // Close nav when a link is clicked
     nav.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
         nav.classList.remove("active");
@@ -147,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
       suggestionsBox.style.display = "block";
     });
 
-    // Fix: properly detect clicks outside hero-search-bar
     document.addEventListener("click", (e) => {
       if (!e.target.closest(".hero-search-bar")) {
         suggestionsBox.style.display = "none";
@@ -213,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Header color transition
   if (header) {
     window.addEventListener("scroll", () => {
-      if (window.scrollY > 700) {
+      if (window.scrollY > 900) {
         header.classList.add("scrolled");
       } else {
         header.classList.remove("scrolled");
@@ -221,9 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------------------------
-     Login modal logic
-     --------------------------- */
+  // Login modal logic
   if (btnLogin && loginModal) {
     btnLogin.addEventListener("click", (event) => {
       event.preventDefault();
@@ -265,9 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------------------------
-     Signup modal logic
-     --------------------------- */
+  // Signup modal logic
   if (openSignupModalLink && signupModal) {
     openSignupModalLink.addEventListener("click", (e) => {
       e.preventDefault();
@@ -354,9 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------------------------
-     Terms modal open/close
-     --------------------------- */
+  // Terms modal open/close
   if (openTermsModal && termsModal) {
     openTermsModal.addEventListener("click", (e) => {
       e.preventDefault();
