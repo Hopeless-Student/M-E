@@ -119,36 +119,32 @@ header .header-actions {
     
 }
 
-.header-actions .btn-login {
-    border-radius: 25px;
-    
-}
-
 .header-actions .btn-login a {
-    display: inline-block;
-    padding: 7px 25px;
-    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #FFFFFF;
-    color: #4169E1;
-    font-size: 18px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: bold;
-    text-decoration: none;
-    
+    border-radius: 70%;
+    padding: 9px 11px;
+    height: 44px;
+    width: 44px;
 }
 
+.header-actions .btn-login img {
+    height: 26px;
+    width: 26px;
+    object-fit: contain;
+}
+
+/* Hover and active states, same as cart */
 .header-actions .btn-login a:hover {
-    background-color: #4169E1;
-    color: #FFFFFF;
+    background-color: #A6BAFF;
     transition: 400ms;
-    
 }
 
 .header-actions .btn-login a:active {
-    background-color: #002366;
-    color: #FFFFFF;
+    background-color: #4169E1;
     transition: 400ms;
-
 }
 
 header.scrolled {
@@ -171,8 +167,7 @@ header.scrolled nav a:active {
 
 header.scrolled .btn-login a {
     transition: 400ms ease;
-    background-color: #4169E1;
-    color: #fff;
+    border: 1px solid #4169E1;
 }
 
 header.scrolled .btn-login a:hover {
@@ -1318,7 +1313,7 @@ footer {
     }
 
     header .logo {
-        margin-right: auto; /* push logo to left */
+        margin-right: auto;
     }
 
     header .logo img {
@@ -1343,7 +1338,7 @@ footer {
     header nav.active {
         display: flex;
         flex-direction: column;
-        max-height: 400px; /* enough for all links */
+        max-height: 400px;
         padding: 15px 0;
     }
 
@@ -1362,12 +1357,10 @@ footer {
         color: #C6D7FF;
     }
 
-    /* hide desktop-only buttons */
     .header-actions {
         display: none !important;
     }
 
-    /* show mobile-only links */
     nav .mobile-only {
         display: block !important;
     }
