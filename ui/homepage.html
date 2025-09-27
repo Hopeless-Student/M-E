@@ -20,15 +20,11 @@
                 <a href="homepage.html">Home</a>
                 <a href="#">Products</a>
                 <a href="#">About Us</a>
+                <a href="#" class="mobile-only mobile-nav-cart">Cart</a>
+                <a href="#" id="mobileLoginLink" class="mobile-only">Log in</a>
             </nav>
 
             <div class="header-actions">
-                <div class="search-bar">
-                    <img alt="search" class="search-icon" src="../assets/svg/search.svg"/>
-                    <input placeholder="Search products..." type="text" id="search-input"/>
-                    <div class="search-suggestions"></div>
-                </div>
-
                 <div class="cart">
                     <a href="#">
                         <img alt="cart" class="cart-img" src="../assets/svg/cart-button_default.svg"/>
@@ -40,7 +36,7 @@
                 </div>
             </div>
         </header>
-        
+
 
 
         <section class="hero">
@@ -49,6 +45,12 @@
                         Your One-stop Shop for <span class="highlight">Office, School,</span> and <span class="highlight">Sanitary Supplies</span>
                     </h1>
                     <p>Fast, reliable, and hassle-free ordering - delivered straight to your door.</p>
+
+                    <div class="hero-search-bar">
+                        <img alt="search" class="search-icon" src="../assets/svg/search.svg"/>
+                        <input placeholder="Search products..." type="text" id="search-input"/>
+                        <div class="search-suggestions"></div>
+                    </div>
                     <a href="#" class="hero-cta">Shop Now</a>
                 </div>
         </section>
@@ -83,21 +85,57 @@
                     
                 <div class="cart-btn">
                     <a href="#">
-                        <img alt="cart" src="Assets/cart-button_default.svg"/>
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
+
+
+            <div class="product-card">
+                <a class="card-link" href="#">
+                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+
+                    <div class="product-info">
+                        <h3>Scotch Tape Roll</h3>
+                        <p>PHP 50.00</p>
+                    </div>
+                </a>
+                
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
                     </a>
                 </div>
             </div>
                 
 
             <div class="product-card">
-                    <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="Assets/scotch-tape-roll.png"/>
-
-                        <div class="product-info">
-                            <h3>Scotch Tape Roll</h3>
-                            <p>PHP 50.00</p>
-                        </div>
+                <a class="card-link" href="#">
+                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                    
+                    <div class="product-info">
+                        <h3>Scotch Tape Roll</h3>
+                        <p>PHP 50.00</p>
+                    </div>
+                </a>
+                
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
                     </a>
+                </div>
+            </div>
+                
+
+            <div class="product-card">
+                <a class="card-link" href="#">
+                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                    
+                    <div class="product-info">
+                        <h3>Scotch Tape Roll</h3>
+                        <p>PHP 50.00</p>
+                    </div>
+                </a>
 
                 <div class="cart-btn">
                     <a href="#">
@@ -106,6 +144,41 @@
                 </div>
             </div>
 
+
+            <div class="product-card">
+                <a class="card-link" href="#">
+                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+
+                    <div class="product-info">
+                        <h3>Scotch Tape Roll</h3>
+                        <p>PHP 50.00</p>
+                    </div>
+                </a>
+                
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
+                
+
+            <div class="product-card">
+                <a class="card-link" href="#">
+                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                    
+                    <div class="product-info">
+                        <h3>Scotch Tape Roll</h3>
+                        <p>PHP 50.00</p>
+                    </div>
+                </a>
+                
+                <div class="cart-btn">
+                    <a href="#">
+                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                    </a>
+                </div>
+            </div>
 
 
             <div class="product-card">
@@ -197,21 +270,21 @@
                         </div>
                     </a>
                 </div>
-                            
+                
                 <div class="categ-card">
                     <a href="#">
-                        <img alt="Office Supplies" src="Assets/office-supplies.png"/>
-
+                        <img alt="Office Supplies" src="../assets/images/office-supplies.png"/>
+                        
                         <div class="overlay">
                             <span>Office Supplies</span>
                         </div>
                     </a>
                 </div>
-
+                
                 <div class="categ-card">
                     <a href="#">
-                        <img alt="Sanitary Supplies" src="Assets/sanitary-supplies.png"/>
-
+                        <img alt="Sanitary Supplies" src="../assets/images/sanitary-supplies.png"/>
+                        
                         <div class="overlay">
                             <span>Sanitary Supplies</span>
                         </div>
@@ -267,7 +340,7 @@
                 <div class="about-us-text">
                     <h2>About Us</h2>
                     <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
-
+                    
                     <a class="about-btn" href="#">Read more About Us</a>
                 </div>
             </div>
@@ -278,6 +351,7 @@
         <section class="contact">
             <div class="contact-content">
                 <h2>Contact Us</h2>
+                <p>We'd love to hear from you! Reach out via the details or send us a quick message.</p>
             </div>
 
             <div class="contact-grid">
@@ -395,7 +469,7 @@
             <div class="footer-socials">
                 <h4>Stay Connected</h4>
                 <p>Follow us for the latest deals & updates!</p>
-
+                
                 <a class="fb-btn" href="https://www.facebook.com/youronlineshooping" target="_blank">
                     <img alt="Facebook Link" src="../assets/images/Facebook_Logo_2023.png"/>
                     <span>Follow us on Facebook</span>
