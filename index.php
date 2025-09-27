@@ -18,7 +18,6 @@
             color: #333;
             overflow-x: hidden;
         }
-
         /* Header */
         header {
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
@@ -1022,3 +1021,12 @@
 
         console.log('M & E Interior Supplies Trading - Homepage loaded successfully!');
         console.log('This is a demo homepage. Full functionality will be implemented in the complete system.');
+<?php
+session_start();
+if(isset($_SESSION['email'])){
+  $email = $_SESSION['email'];
+} else {
+  header("Location: register.php");
+  exit;
+}
+ ?>
