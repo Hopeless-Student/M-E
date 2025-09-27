@@ -1,0 +1,1560 @@
+diff --git a/assets/css/homepage.css b/assets/css/homepage.css
+index 51ee2a3..23152ad 100644
+--- a/assets/css/homepage.css
++++ b/assets/css/homepage.css
+@@ -24,33 +24,6 @@ header {
+ 
+ }
+ 
+-header.scrolled {
+-    background-color: #ffffff;
+-    transition: background-color 400ms ease-in;
+-}
+-
+-header.scrolled nav a {
+-    color: #4169E1;
+-}
+-
+-header.scrolled nav a:hover {
+-    color: #002366;
+-}
+-
+-header.scrolled .btn-login a {
+-    transition: 400ms;
+-    background-color: #4169E1;
+-    color: #fff;
+-}
+-
+-header.scrolled .btn-login a:hover {
+-    background-color: #FFFFFF;
+-    color: #4169E1;
+-}
+-
+-header.scrolled .search-bar, .cart {
+-    border: 1px solid #4169E1;
+-}
+ 
+ header .logo img {
+     height: 70px;
+@@ -72,21 +45,20 @@ header nav a {
+     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+     color: #FFFFFF;
+     font-weight: bold;
+-    font-size: 18px;
++    font-size: 15px;
+     text-decoration: none;
+-
+ }
+ 
+ header nav a:hover {
++    transition: 400ms;
+     color: #C6D7FF;
+     text-decoration: underline;
+     text-underline-offset: 5px;
+-    transition: 400ms;
+ 
+ }
+ 
+ header nav a:active {
+-    color: #ffffff;
++    color: #002366;
+ 
+ }
+ 
+@@ -230,12 +202,12 @@ header .header-actions {
+ .header-actions .cart:active {
+     background-color: #4169E1;
+     transition: 400ms;
+-
++    
+ }
+ 
+ .header-actions .btn-login {
+     border-radius: 25px;
+-
++    
+ }
+ 
+ .header-actions .btn-login a {
+@@ -248,14 +220,14 @@ header .header-actions {
+     font-family: 'Poppins', sans-serif;
+     font-weight: bold;
+     text-decoration: none;
+-
++    
+ }
+ 
+ .header-actions .btn-login a:hover {
+     background-color: #4169E1;
+     color: #FFFFFF;
+     transition: 400ms;
+-
++    
+ }
+ 
+ .header-actions .btn-login a:active {
+@@ -265,6 +237,40 @@ header .header-actions {
+ 
+ }
+ 
++header.scrolled {
++    background-color: #ffffff;
++    transition: background-color 400ms ease;
++}
++
++header.scrolled nav a {
++    transition: 400ms ease;
++    color: #4169E1;
++}
++
++header.scrolled nav a:hover {
++    color: #A6BAFF;
++}
++
++header.scrolled nav a:active {
++    color: #E8E8E8;
++}
++
++header.scrolled .btn-login a {
++    transition: 400ms ease;
++    background-color: #4169E1;
++    color: #fff;
++}
++
++header.scrolled .btn-login a:hover {
++    background-color: #FFFFFF;
++    color: #4169E1;
++}
++
++header.scrolled .search-bar, .cart {
++    border: 1px solid #4169E1;
++}
++
++
+ /* ===== Sidebar Styles ===== */
+ .sidebar {
+     position: fixed;
+@@ -277,7 +283,7 @@ header .header-actions {
+     display: flex;
+     flex-direction: column;
+     padding: 80px 20px;
+-    transition: right 0.3s ease;
++    transition: right 400ms ease;
+     z-index: 1100;
+ }
+ 
+@@ -317,8 +323,8 @@ header .header-actions {
+ section {
+     background-color: #ffffff;
+     margin-bottom: 90px;
+-    padding: 60px 100px 100px 100px;
+-
++    padding: 50px 90px 90px 90px;
++    
+ }
+ 
+ 
+@@ -331,7 +337,7 @@ section {
+     align-items: center;
+     text-align: center;
+     background: linear-gradient(to bottom, #4169E1, rgba(65, 105, 225, 0)), url('../images/hero-bg-image.jpg') no-repeat center center/cover;
+-
++    
+ }
+ 
+ .hero .hero-content {
+@@ -354,7 +360,7 @@ section {
+ .hero .hero-content p {
+     margin-bottom: 100px;
+     font-size: 20px;
+-    color: #FFFFFF;
++    color: #FFFFFFC9;
+ 
+ }
+ 
+@@ -389,7 +395,7 @@ section {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+-    padding: 20px 35px 20px 35px;
++    padding: 10px 35px 10px 35px;
+ 
+ }
+ 
+@@ -458,8 +464,8 @@ section {
+ .products .product-grid {
+     display: flex;
+     justify-content: center;
+-    gap: 90px;
+-    padding: 40px 130px;
++    gap: 40px;
++    padding: 40px 30px;
+     flex-wrap: wrap;
+ 
+ }
+@@ -467,8 +473,8 @@ section {
+ .products .product-card {
+     background-color: #4169E1;
+     border-radius: 15px;
+-    max-width: 250px;
+-    max-height: 290px;
++    max-width: 230px;
++    max-height: 260px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+@@ -491,8 +497,8 @@ section {
+ }
+ 
+ .products .product-card img {
+-    height: 200px;
+-    width: 220px;
++    height: 170px;
++    width: 190px;
+     object-fit: contain;
+     background-color: #fff;
+     border-radius: 10px;
+@@ -526,11 +532,11 @@ section {
+ .products .cart-btn {
+     position: absolute;
+     right: 15px;
+-    bottom: 15px;
++    bottom: 18px;
+     background-color: #ffffff;
+     border-radius: 50%;
+-    height: 50px;
+-    width: 50px;
++    height: 45px;
++    width: 45px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+@@ -550,7 +556,7 @@ section {
+ 
+ .products .cart-btn img {
+     background: transparent;
+-    height: 30px;
++    height: 27px;
+     margin-top: 5px;
+     object-fit: contain;
+ 
+@@ -591,15 +597,14 @@ section {
+ .categ-grid {
+     display: flex;
+     justify-content: center;
+-    gap: 150px;
++    gap: 60px;
+     flex-wrap: wrap;
+ 
+ }
+ 
+ .categ-card {
+-    border-radius: 20px;
+-    height: 300px;
+-    width: 350px;
++    height: 450px;
++    width: 300px;
+     position: relative;
+     overflow: hidden;
+     cursor: pointer;
+@@ -612,7 +617,6 @@ section {
+     height: 100%;
+     width: 100%;
+     object-fit: cover;
+-    border-radius: 20px;
+     display: block;
+     transition: transform 400ms;
+ 
+@@ -625,7 +629,6 @@ section {
+     height: 100%;
+     width: 100%;
+     background-color: #00236660;
+-    border-radius: 20px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+@@ -644,7 +647,7 @@ section {
+ }
+ 
+ .categ-card:hover img {
+-    transform: scale(1.05);
++    transform: scale(1.10);
+ 
+ }
+ 
+@@ -653,12 +656,6 @@ section {
+ 
+ }
+ 
+-.categ-card:hover {
+-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+-    transform: scale(1.05);
+-
+-}
+-
+ 
+ 
+ .trust {
+@@ -689,12 +686,11 @@ section {
+ }
+ 
+ .trust-grid {
+-    padding-top: 60px;
++    padding-top: 30px;
+     display: flex;
+     justify-content: center;
+     gap: 120px;
+     flex-wrap: wrap;
+-
+ }
+ 
+ .trust-card {
+@@ -703,7 +699,6 @@ section {
+     flex-direction: column;
+     align-items: center;
+     text-align: center;
+-
+ }
+ 
+ .icon-circle {
+@@ -716,7 +711,7 @@ section {
+     justify-content: center;
+     margin-bottom: 25px;
+     box-shadow: 5px 5px 0px #00236650;
+-
++    transition: transform 400ms ease, background-color 400ms ease, box-shadow 400ms ease;
+ }
+ 
+ .icon-circle img {
+@@ -726,6 +721,12 @@ section {
+ 
+ }
+ 
++.icon-circle:hover {
++    background-color: #FFFFFF;
++    transform: translateY(-20px) scale(1.20);
++    box-shadow: 20px 20px 20px #00236650;
++}
++
+ .trust-card h3 {
+     font-family: 'Inter', sans-serif;
+     font-size: 16px;
+@@ -803,13 +804,18 @@ section {
+ 
+ 
+ .contact {
+-    text-align: center;
+-
++    display: flex;
++    flex-direction: row-reverse;
++    justify-content: center;
++    align-items: center;
++    gap: 80px;
++    padding: 60px 20px;
+ }
+ 
+ .contact-content {
+-    padding-bottom: 60px;
+-
++    flex: 1;
++    max-width: 400px;
++    text-align: left;
+ }
+ 
+ .contact-content h2 {
+@@ -822,10 +828,10 @@ section {
+ }
+ 
+ .contact-grid {
++    flex: 1.5;
+     display: flex;
+-    justify-content: center;
+-    gap: 80px;
+-    flex-wrap: wrap;
++    flex-direction: column; /* stack cards vertically */
++    gap: 30px;
+ 
+ }
+ 
+@@ -840,7 +846,13 @@ section {
+     gap: 20px;
+     text-align: left;
+     box-shadow: 0px 20px 20px #6A6FBF60;
++    transition: transform 400ms ease, box-shadow 400ms ease, background-color 400ms ease;
++}
+ 
++.contact-card:hover {
++    transform: translateY(-20px);
++    box-shadow: 0 40px 40px #6A6FBF60;
++    background-color: #FFFFFF;
+ }
+ 
+ .contact-card img {
+@@ -873,17 +885,45 @@ section {
+ 
+ 
+ .faqs {
+-    text-align: center;
++    display: flex;
++    justify-content: center;
++    align-items: flex-start;
++    gap: 80px;
++    padding: 60px 20px;
++}
+ 
++.faqs-content {
++    flex: 1;
++    max-width: 400px;
++}
++
++.faqs-column {
++    flex: 1.5;
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    justify-content: center;
++}
++
++.faqs-highlight {
++    color: #4169E1;
++    font-size: 59px;
+ }
+ 
+ .faqs-content h2 {
+     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+     font-size: 49px;
+     font-weight: bold;
+-    color: #4169E1;
++    color: #303030;
+     margin-bottom: 60px;
++    margin-left: 30px;
++    text-align: left;
++    line-height: 1.7;
++    letter-spacing: 5px;
++}
+ 
++.faqs-column {
++    align-items: center;
+ }
+ 
+ .faqs-list {
+@@ -1016,11 +1056,6 @@ footer {
+     letter-spacing: 5px;
+ }
+ 
+-.footer-tagline img {
+-    height: 200px;
+-}
+-
+-
+ .footer-links {
+     display: flex;
+     justify-content: space-between;
+@@ -1110,33 +1145,33 @@ footer {
+ }
+ 
+ .footer-copy p {
+-    margin-top: 150px;
++    margin-top: 60px;
+     font-size: 14px;
+     color: #A6BAFF;
+-    text-align: left;
++    text-align: center;
+ 
+ }
+ 
+ 
+ 
+ .modal {
+-    display: none; /* Hidden by default */
++    display: none;
+     position: fixed; 
+-    z-index: 2000; /* Above everything */
++    z-index: 2000;
+     left: 0;
+     top: 0;
+-    width: 100%; 
++    width: 100%;
+     height: 100%; 
+     overflow: auto; 
+-    background-color: rgba(0, 0, 0, 0.5); /* Black overlay */
++    background-color: rgba(0, 0, 0, 0.5);
+ }
+ 
+ .modal-content {
+     background-color: #fff;
+-    margin: 10% auto; /* Center the modal */
++    margin: 10% auto;
+     padding: 30px;
+     border-radius: 10px;
+-    max-width: 400px;
++    max-width: 500px;
+     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+     font-family: 'Poppins', sans-serif;
+ }
+@@ -1154,8 +1189,16 @@ footer {
+     color: #002366;
+ }
+ 
++.modal-content img {
++    height: 150px;
++    margin: 30px 147px 15px;
++    display: block;
++}
++
+ .modal-content h2 {
+-    margin-bottom: 20px;
++    text-align: center;
++    font-size: 32px;
++    margin: 20px 0;
+     color: #4169E1;
+ }
+ 
+@@ -1209,6 +1252,61 @@ footer {
+     text-decoration: underline;
+ }
+ 
++#signupModal input {
++    width: 100%;
++    margin-bottom: 12px;
++    padding: 10px;
++    font-size: 14px;
++}
++
++#signupModal .terms {
++    margin: 10px 0;
++    font-size: 13px;
++}
++
++#signupModal .terms-label {
++    display: flex;
++    align-items: center;
++    gap: 8px;
++    font-size: 14px;
++    color: #303030;
++}
++
++#signupModal .terms-label input[type="checkbox"] {
++    width: auto;
++    height: auto;
++    margin: 0;
++}
++
++#signupModal .terms-label a {
++    color: #4169E1;
++    text-decoration: none;
++    font-weight: 600;
++}
++
++#signupModal .terms-label a:hover {
++    transition: 400ms;
++    text-decoration: underline;
++    color: #002366;
++}
++
++
++#verifyEmailBtn[disabled] {
++    background: #D1D1D1;
++    cursor: not-allowed;
++}
++
++#termsModal .modal-content { 
++    max-width: 60%;
++    margin: auto;
++    padding: 20px 40px;
++}
++
++#termsModal ol li {
++    color: #4169E1;
++    font-weight: bold;
++}
++
+ 
+ 
+ @media (max-width: 768px) {
+@@ -1417,22 +1515,69 @@ footer {
+ 
+     .products .product-grid {
+         gap: 30px;
+-        padding: 20px;
++        padding: 20px 5px;
+     }
+ 
+     .products .product-card {
+         background-color: #4169E1;
+         border-radius: 15px;
+-        max-width: 250px;
+-        max-height: 290px;
++        width: 180px;
++        height: 220px;
+         display: flex;
+-        flex-direction: row;
++        flex-direction: column;
+         align-items: center;
+         position: relative;
+         overflow: hidden;
+         padding: 15px;
+         cursor: pointer;
++    }
++
++    .products .product-card img {
++        height: 140px;
++        width: 155px;
++        object-fit: contain;
++        background-color: #fff;
++        border-radius: 10px;
++        margin-bottom: 10px;
++    }
+ 
++    .products .product-info {
++        width: 100%;
++        color: #fff;
++        font-family: 'Inter', sans-serif;
++        text-align: left;
++        margin-bottom: 35px;
++        padding: 0;
++    }
++
++    .products .product-info h3 {
++        font-size: 14px;
++        margin-bottom: 5px;
++        display: flex;
++        flex-wrap: wrap;
++    }
++
++    .products .product-info p {
++        font-size: 14px;
++    }
++
++    .products .cart-btn {
++        position: absolute;
++        right: 10px;
++        bottom: 15px;
++        background-color: #ffffff;
++        border-radius: 50%;
++        height: 38px;
++        width: 38px;
++        display: flex;
++        align-items: center;
++        justify-content: center;
++    }
++
++    .products .cart-btn img {
++        height: 24px;
++        margin: 0;
++        background: transparent;
+     }
+ 
+ 
+@@ -1443,8 +1588,8 @@ footer {
+ 
+     .categ-card {
+         width: 100%;
+-        max-height: 220px;
+-        max-width: 250px;
++        max-height: 350px;
++        max-width: 200px;
+     }
+ 
+     .categ-card .overlay span {
+@@ -1548,10 +1693,6 @@ footer {
+         direction: ltr;
+     }
+ 
+-    .footer-tagline img {
+-        height: max-content;
+-    }
+-
+ 
+     .footer-links {
+         margin: 0 40px;
+diff --git a/assets/js/homepage.js b/assets/js/homepage.js
+index 0754ebf..3a3e27a 100644
+--- a/assets/js/homepage.js
++++ b/assets/js/homepage.js
+@@ -1,39 +1,68 @@
+ document.addEventListener("DOMContentLoaded", () => {
++  // Header & nav elements
+   const hamburger = document.querySelector(".hamburger");
+   const hamburgerIcon = document.querySelector(".hamburger-icon");
+   const nav = document.querySelector("header nav");
++
++  // Search elements
+   const searchBar = document.querySelector(".header-actions .search-bar");
+   const searchInput = document.querySelector("#search-input");
+   const searchIcon = document.querySelector(".search-bar .search-icon");
+   const suggestionsBox = document.querySelector(".search-suggestions");
++
++  // Other UI
+   const cart = document.querySelector(".cart");
+   const heroCTA = document.querySelector(".hero-cta");
+   const faqQuestions = document.querySelectorAll(".faq-question");
+   const header = document.querySelector("header");
+-  const loginModal = document.getElementById('loginModal');
+-  const btnLogin = document.querySelector('.btn-login a');
+-  const closeBtn = document.getElementById('closeLoginModal');
+-  const loginForm = document.getElementById('loginForm');
+-  const signupModal = document.getElementById('signupModal');
+-  const openSignupModalLink = document.getElementById('openSignupModal');
+-  const closeSignupModal = document.getElementById('closeSignupModal');
+-  const signupForm = document.getElementById('signupForm');
+-  const openLoginModalLink = document.getElementById('openLoginModal');
+-
+-  // Hamburger toggle
++
++  // Login modal elements (if present)
++  const loginModal = document.getElementById("loginModal");
++  const btnLogin = document.querySelector(".btn-login a");
++  const closeBtn = document.getElementById("closeLoginModal");
++  const loginForm = document.getElementById("loginForm");
++  const openLoginModalLink = document.getElementById("openLoginModal");
++
++  // Signup modal elements (IDs expected in your HTML)
++  const signupModal = document.getElementById("signupModal");
++  const openSignupModalLink = document.getElementById("openSignupModal");
++  const closeSignupModal = document.getElementById("closeSignupModal");
++  const signupForm = document.getElementById("signupForm");
++
++  // Signup specific inputs (IDs expected)
++  const firstNameInput = document.getElementById("firstName");
++  const lastNameInput = document.getElementById("lastName");
++  // use "email", "password", "confirmPassword" as IDs for signup inputs
++  const signupEmailInput = document.getElementById("email");
++  const signupPasswordInput = document.getElementById("password");
++  const signupConfirmPasswordInput = document.getElementById("confirmPassword");
++  const termsCheckbox = document.getElementById("termsCheckbox");
++  const verifyEmailBtn = document.getElementById("verifyEmailBtn");
++
++  // Terms modal (optional)
++  const termsModal = document.getElementById("termsModal");
++  // search for a trigger anchor with id or fallback to any link pointing to #termsModal
++  const openTermsModal =
++    document.getElementById("openTermsModal") ||
++    document.querySelector('a[href="#termsModal"]');
++  const closeTermsModal =
++    (termsModal && termsModal.querySelector(".close")) ||
++    document.getElementById("closeTermsModal");
++
++  // Hamburger (mobile) toggle
+   if (hamburger && nav && hamburgerIcon) {
+     hamburger.addEventListener("click", () => {
+       nav.classList.toggle("active");
+       hamburger.classList.toggle("active");
+ 
+-      // Swap icons
++      // Swap icons (make sure these file paths are correct for your project)
+       hamburgerIcon.src = nav.classList.contains("active")
+         ? "../assets/svg/hamburger-menu-active.svg"
+         : "../assets/svg/hamburger-menu.svg";
+     });
+ 
+-    // Close nav when clicking a link
+-    nav.querySelectorAll("a").forEach(link => {
++    // Close nav when clicking a link (mobile)
++    nav.querySelectorAll("a").forEach((link) => {
+       link.addEventListener("click", () => {
+         nav.classList.remove("active");
+         hamburger.classList.remove("active");
+@@ -43,25 +72,35 @@ document.addEventListener("DOMContentLoaded", () => {
+   }
+ 
+   // Mobile search toggle
+-  if (searchBar && searchIcon) {
++  if (searchBar && searchIcon && searchInput) {
++    // Ensure mobile behavior toggles the compact circle -> expanded search input
+     searchIcon.addEventListener("click", (e) => {
+-      
+-      if (window.innerWidth <= 768) { // On mobile, toggle search bar expand
++      // only do this expand behavior on small screens
++      if (window.innerWidth <= 768) {
+         e.preventDefault();
+         searchBar.classList.toggle("active");
+ 
+         if (searchBar.classList.contains("active")) {
++          // show input and focus
+           searchInput.style.display = "block";
+           searchInput.focus();
+         } else {
+           searchInput.style.display = "none";
+-          suggestionsBox.style.display = "none";
++          if (suggestionsBox) suggestionsBox.style.display = "none";
+         }
++      } else {
++        // On desktop you may want the icon to focus the input
++        if (searchInput) searchInput.focus();
+       }
+     });
++
++    // If page loads on mobile and you want the input hidden initially:
++    if (window.innerWidth <= 768 && !searchBar.classList.contains("active")) {
++      searchInput.style.display = "none";
++    }
+   }
+ 
+-  // Search functionality
++  // Search suggestions logic
+   const products = [
+     "Scotch Tape Roll",
+     "Ballpen Black",
+@@ -74,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
+     "Marker",
+     "Highlighter",
+     "Folder Manila",
+-    "Correction Tape"
++    "Correction Tape",
+   ];
+ 
+   if (searchInput && suggestionsBox) {
+@@ -87,8 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
+         return;
+       }
+ 
+-      const filtered = products.filter(product =>
+-        product.toLowerCase().includes(query)
++      const filtered = products.filter((p) =>
++        p.toLowerCase().includes(query)
+       );
+ 
+       if (filtered.length === 0) {
+@@ -99,13 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
+         return;
+       }
+ 
+-      filtered.forEach(product => {
++      filtered.forEach((product) => {
+         const item = document.createElement("div");
++        item.className = "suggestion-item";
+         item.textContent = product;
+ 
+         item.addEventListener("click", () => {
+           searchInput.value = product;
+           suggestionsBox.style.display = "none";
++          // Replace this with real search/redirection in your app:
++          // location.href = `/search?q=${encodeURIComponent(product)}`;
+           alert("Searching for: " + product);
+         });
+ 
+@@ -115,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
+       suggestionsBox.style.display = "block";
+     });
+ 
+-    // Hide suggestions when clicking outside
++    // Hide suggestions when clicking outside search-bar
+     document.addEventListener("click", (e) => {
+       if (!e.target.closest(".search-bar")) {
+         suggestionsBox.style.display = "none";
+@@ -127,35 +169,37 @@ document.addEventListener("DOMContentLoaded", () => {
+   if (heroCTA) {
+     heroCTA.addEventListener("click", (e) => {
+       e.preventDefault();
+-      document.querySelector(".products")
+-        .scrollIntoView({ behavior: "smooth" });
++      const productsSection = document.querySelector(".products");
++      if (productsSection) {
++        productsSection.scrollIntoView({ behavior: "smooth" });
++      }
+     });
+   }
+ 
+-  // FAQ accordion (only one open)
++  // FAQ accordion (single open)
+   if (faqQuestions.length > 0) {
+-    faqQuestions.forEach(q => {
++    faqQuestions.forEach((q) => {
+       q.addEventListener("click", () => {
+-        faqQuestions.forEach(el => {
+-          if (el !== q) el.nextElementSibling.classList.remove("open");
++        faqQuestions.forEach((el) => {
++          if (el !== q && el.nextElementSibling) {
++            el.nextElementSibling.classList.remove("open");
++          }
+         });
+-        q.nextElementSibling.classList.toggle("open");
++        const ans = q.nextElementSibling;
++        if (ans) ans.classList.toggle("open");
+       });
+     });
+   }
+ 
+-  // Cart badge updater
++  // Cart badge updater (demo)
+   if (cart) {
+     let cartCount = 0;
+-
+     const updateCartBadge = () => {
+       cart.setAttribute("data-count", cartCount);
+     };
+-
+     updateCartBadge();
+ 
+-    // Increment on "Add to Cart"
+-    document.querySelectorAll(".cart-btn a").forEach(btn => {
++    document.querySelectorAll(".cart-btn a").forEach((btn) => {
+       btn.addEventListener("click", (e) => {
+         e.preventDefault();
+         cartCount++;
+@@ -164,20 +208,22 @@ document.addEventListener("DOMContentLoaded", () => {
+     });
+   }
+ 
+-    // Smooth scroll for nav
+-    document.querySelectorAll("header nav a").forEach(link => {
+-      link.addEventListener("click", function(e) {
+-        if (this.getAttribute("href").startsWith("#")) {
+-          e.preventDefault();
+-          document.querySelector(this.getAttribute("href"))
+-            .scrollIntoView({ behavior: "smooth" });
+-        }
+-      });
++  // Smooth scroll for in-page links
++  document.querySelectorAll("header nav a").forEach((link) => {
++    link.addEventListener("click", function (e) {
++      const href = this.getAttribute("href");
++      if (href && href.startsWith("#")) {
++        e.preventDefault();
++        const target = document.querySelector(href);
++        if (target) target.scrollIntoView({ behavior: "smooth" });
++      }
+     });
++  });
+ 
+-  // Header color transition
++  // Header color transition on scroll
+   if (header) {
+     window.addEventListener("scroll", () => {
++      // threshold can be adjusted (100, 200, 700, etc.)
+       if (window.scrollY > 700) {
+         header.classList.add("scrolled");
+       } else {
+@@ -186,87 +232,166 @@ document.addEventListener("DOMContentLoaded", () => {
+     });
+   }
+ 
+-    // Open modal when login button clicked
+-    btnLogin.addEventListener('click', (event) => {
+-      event.preventDefault(); // prevent default link behavior
+-      loginModal.style.display = 'block';
++  // Login modal handlers (defensive)
++  if (btnLogin && loginModal) {
++    btnLogin.addEventListener("click", (event) => {
++      event.preventDefault();
++      loginModal.style.display = "block";
+     });
++  }
+ 
+-    // Close modal when close button clicked
+-    closeBtn.addEventListener('click', () => {
+-      loginModal.style.display = 'none';
++  if (closeBtn && loginModal) {
++    closeBtn.addEventListener("click", () => {
++      loginModal.style.display = "none";
+     });
++  }
+ 
+-    // Close modal when clicking outside modal content
+-    window.addEventListener('click', (event) => {
++  if (window && loginModal) {
++    window.addEventListener("click", (event) => {
+       if (event.target === loginModal) {
+-        loginModal.style.display = 'none';
++        loginModal.style.display = "none";
+       }
+     });
++  }
+ 
+-    // Handle login form submission
+-    loginForm.addEventListener('submit', (event) => {
+-      event.preventDefault();
+-
+-      const username = loginForm.username.value.trim();
+-      const password = loginForm.password.value.trim();
++  if (loginForm) {
++    loginForm.addEventListener("submit", (e) => {
++      e.preventDefault();
++      // Your login inputs: 'username' and 'password' expected on the login form
++      const username = loginForm.username ? loginForm.username.value.trim() : "";
++      const password = loginForm.password ? loginForm.password.value.trim() : "";
+ 
+       if (username && password) {
+-        alert(`Logging in as ${username}`); // Replace with actual login logic
+-        loginModal.style.display = 'none'; // Close modal on submit
++        // TODO: Replace with real login call
++        alert(`Logging in as ${username}`);
++        if (loginModal) loginModal.style.display = "none";
+         loginForm.reset();
+       } else {
+-        alert('Please fill out all fields.');
++        alert("Please fill out all fields.");
+       }
+     });
++  }
+ 
+-      openSignupModalLink.addEventListener('click', (event) => {
+-      event.preventDefault();
+-      loginModal.style.display = 'none';
+-      signupModal.style.display = 'block';
++  // Signup modal open/close logic
++  if (openSignupModalLink && signupModal) {
++    openSignupModalLink.addEventListener("click", (e) => {
++      e.preventDefault();
++      if (loginModal) loginModal.style.display = "none";
++      signupModal.style.display = "block";
+     });
++  }
+ 
+-    closeSignupModal.addEventListener('click', () => {
+-      signupModal.style.display = 'none';
++  if (closeSignupModal && signupModal) {
++    closeSignupModal.addEventListener("click", () => {
++      signupModal.style.display = "none";
+     });
++  }
+ 
+-    window.addEventListener('click', (event) => {
++  if (window && signupModal) {
++    window.addEventListener("click", (event) => {
+       if (event.target === signupModal) {
+-        signupModal.style.display = 'none';
++        signupModal.style.display = "none";
+       }
+     });
++  }
+ 
+-    signupForm.addEventListener('submit', (event) => {
+-      event.preventDefault();
++  // allow switching between login/signup modals (if links present)
++  if (openLoginModalLink && signupModal && loginModal) {
++    openLoginModalLink.addEventListener("click", (e) => {
++      e.preventDefault();
++      signupModal.style.display = "none";
++      loginModal.style.display = "block";
++    });
++  }
+ 
+-      const email = signupForm.email.value.trim();
+-      const username = signupForm.username.value.trim();
+-      const password = signupForm.password.value.trim();
+-      const confirmPassword = signupForm.confirmPassword.value.trim();
++  // SIGNUP form logic (first/last name, terms checkbox)
++  if (termsCheckbox && verifyEmailBtn) {
++    // Initially button is disabled in HTML; toggle based on checkbox
++    verifyEmailBtn.disabled = !termsCheckbox.checked;
+ 
+-      if (!email || !username || !password || !confirmPassword) {
+-        alert('Please fill out all fields.');
++    termsCheckbox.addEventListener("change", () => {
++      verifyEmailBtn.disabled = !termsCheckbox.checked;
++    });
++  }
++
++  if (signupForm) {
++    signupForm.addEventListener("submit", (e) => {
++      e.preventDefault();
++
++      // pull values from inputs (IDs expected)
++      const firstName = firstNameInput ? firstNameInput.value.trim() : "";
++      const lastName = lastNameInput ? lastNameInput.value.trim() : "";
++      const email = signupEmailInput ? signupEmailInput.value.trim() : "";
++      const password = signupPasswordInput ? signupPasswordInput.value.trim() : "";
++      const confirmPassword = signupConfirmPasswordInput
++        ? signupConfirmPasswordInput.value.trim()
++        : "";
++      const agreed = termsCheckbox ? termsCheckbox.checked : false;
++
++      // validation
++      if (!firstName || !lastName || !email || !password || !confirmPassword) {
++        alert("Please fill out all fields.");
+         return;
+       }
+ 
+       if (password !== confirmPassword) {
+-        alert('Passwords do not match.');
++        alert("Passwords do not match.");
++        return;
++      }
++
++      if (!agreed) {
++        alert("You must agree to the Terms and Conditions.");
+         return;
+       }
+ 
+-      alert(`Account created for ${username} with email ${email}`);
++      // Replace this with real sign-up / send verification email backend call
++      alert(`Verification email sent to ${email}`);
+ 
++      // reset UI
+       signupForm.reset();
+-      signupModal.style.display = 'none';
++      if (verifyEmailBtn) verifyEmailBtn.disabled = true;
++      if (signupModal) signupModal.style.display = "none";
+     });
++  }
+ 
+-    openLoginModalLink.addEventListener('click', (event) => {
+-      event.preventDefault();
+-      signupModal.style.display = 'none';
+-      loginModal.style.display = 'block';
++  /* ---------------------------
++     Terms modal open/close
++     (openTermsModal can be an ID or an <a href="#termsModal">)
++     --------------------------- */
++  if (openTermsModal && termsModal) {
++    openTermsModal.addEventListener("click", (e) => {
++      e.preventDefault();
++      // open the terms modal (must exist in HTML)
++      termsModal.style.display = "block";
++    });
++  }
++
++  if (closeTermsModal && termsModal) {
++    closeTermsModal.addEventListener("click", () => {
++      termsModal.style.display = "none";
+     });
++  }
++
++  if (termsModal) {
++    window.addEventListener("click", (event) => {
++      if (event.target === termsModal) {
++        termsModal.style.display = "none";
++      }
++    });
++  }
++
++  // Terms & Verify Email Button
++  if (termsCheckbox && verifyEmailBtn) {
++    // Disable button initially
++    verifyEmailBtn.disabled = true;
++
++    // Enable/disable based on checkbox state
++    termsCheckbox.addEventListener("change", () => {
++      verifyEmailBtn.disabled = !termsCheckbox.checked;
++    });
++  }
+ 
+-  // Footer year auto-update
++  // Footer auto-year
+   const footerCopy = document.querySelector(".footer-copy p");
+   if (footerCopy) {
+     footerCopy.innerHTML = `© Copyright ${new Date().getFullYear()} M&E Interior Supplies Trading, All rights reserved.`;
+diff --git a/ui/homepage.html b/ui/homepage.html
+index 5883d51..dae7813 100644
+--- a/ui/homepage.html
++++ b/ui/homepage.html
+@@ -68,7 +68,6 @@
+                         </a>
+                     </div>
+                 </div>
+-                
+             </div>
+             
+             <div class="product-grid">
+@@ -89,90 +88,167 @@
+                 </div>
+             </div>
+ 
++
+             <div class="product-card">
+-                    <a class="card-link" href="#">
+-                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+ 
+-                        <div class="product-info">
+-                            <h3>Scotch Tape Roll</h3>
+-                            <p>PHP 50.00</p>
+-                        </div>
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
++                    </div>
++                </a>
++                
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
++                </div>
++            </div>
++                
++
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                     
+-                    <div class="cart-btn">
+-                        <a href="#">
+-                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+-                        </a>
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
+                     </div>
+-                </div>
++                </a>
+                 
+-                <div class="product-card">
+-                    <a class="card-link" href="#">
+-                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+-                        
+-                        <div class="product-info">
+-                            <h3>Scotch Tape Roll</h3>
+-                            <p>PHP 50.00</p>
+-                        </div>
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
++                </div>
++            </div>
++                
++
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                     
+-                    <div class="cart-btn">
+-                        <a href="#">
+-                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+-                        </a>
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
+                     </div>
++                </a>
++
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
++                    </a>
+                 </div>
++            </div>
++
++
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
++
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
++                    </div>
++                </a>
+                 
+-                <div class="product-card">
+-                    <a class="card-link" href="#">
+-                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+-                        
+-                        <div class="product-info">
+-                            <h3>Scotch Tape Roll</h3>
+-                            <p>PHP 50.00</p>
+-                        </div>
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
++                </div>
++            </div>
++                
+ 
+-                    <div class="cart-btn">
+-                        <a href="#">
+-                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
++                    
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
++                    </div>
++                </a>
++                
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
+                 </div>
+             </div>
+ 
+-            <div class="product-card">
+-                    <a class="card-link" href="#">
+-                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+ 
+-                        <div class="product-info">
+-                            <h3>Scotch Tape Roll</h3>
+-                            <p>PHP 50.00</p>
+-                        </div>
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
++                    
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
++                    </div>
++                </a>
++                
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
++                </div>
++            </div>
++
++
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                     
+-                    <div class="cart-btn">
+-                        <a href="#">
+-                            <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+-                        </a>
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
+                     </div>
++                </a>
++                
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
++                    </a>
+                 </div>
++            </div>
++
++
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
++                    
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
++                    </div>
++                </a>
+                 
+-                <div class="product-card">
+-                    <a class="card-link" href="#">
+-                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+-                        
+-                        <div class="product-info">
+-                            <h3>Scotch Tape Roll</h3>
+-                            <p>PHP 50.00</p>
+-                        </div>
++                <div class="cart-btn">
++                    <a href="#">
++                        <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
++                </div>
++            </div>
++
++
++            <div class="product-card">
++                <a class="card-link" href="#">
++                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+                     
+-                    <div class="cart-btn">
++                    <div class="product-info">
++                        <h3>Scotch Tape Roll</h3>
++                        <p>PHP 50.00</p>
++                    </div>
++                </a>
++                
++                <div class="cart-btn">
+                     <a href="#">
+                         <img alt="cart" src="../assets/svg/cart-button_default.svg"/>
+                     </a>
+                 </div>
+-            </div>    
++            </div>
+         </section>
+         
+         
+@@ -303,36 +379,44 @@
+                 </div>
+             </div>
+         </section>
+-        
+ 
+-        
++
++
+         <section class="faqs">
+             <div class="faqs-content">
+-                <h2>FAQs</h2>
++                <h2>
++                    <span class="faqs-highlight">F</span>requently
++                    <br>
++                    <span class="faqs-highlight">A</span>sked
++                    <br>
++                    <span class="faqs-highlight">Q</span>uestions
++                </h2>
+             </div>
+             
+-            <div class="faqs-list">
+-                <div class="faq-item">
+-                    <p class="faq-question"><strong>Q:</strong> Do you accept bulk orders?</p>
+-                    <p class="faq-answer">Yes, we accept bulk orders for schools, offices, and organizations.</p>
+-                </div>
+-
+-                <div class="faq-item">
+-                    <p class="faq-question"><strong>Q:</strong> What are delivery options?</p>
+-                    <p class="faq-answer">We offer same-day delivery within Olongapo City.</p>
++            <div class="faqs-column">
++                <div class="faqs-list">
++                    <div class="faq-item">
++                        <p class="faq-question"><strong>Q:</strong> Do you accept bulk orders?</p>
++                        <p class="faq-answer">Yes, we accept bulk orders for schools, offices, and organizations.</p>
++                    </div>
++    
++                    <div class="faq-item">
++                        <p class="faq-question"><strong>Q:</strong> What are delivery options?</p>
++                        <p class="faq-answer">We offer same-day delivery within Olongapo City.</p>
++                    </div>
++                    
++                    <div class="faq-item">
++                        <p class="faq-question"><strong>Q:</strong> Returns & refunds?</p>
++                        <p class="faq-answer">Items cannot be returned after checking out or after the product request. Items must ensure before checking out.</p>
++                    </div>
+                 </div>
+                 
+-                <div class="faq-item">
+-                    <p class="faq-question"><strong>Q:</strong> Returns & refunds?</p>
+-                    <p class="faq-answer">Items cannot be returned after checking out or after the product request. Items must ensure before checking out.</p>
++                <div class="faqs-more">
++                    <a href="#">More about FAQs
++                        <img alt="More" src="../assets/svg/right-arrow.svg"/>
++                    </a>
+                 </div>
+             </div>
+-            
+-            <div class="faqs-more">
+-                <a href="#">More about FAQs
+-                    <img alt="More" src="../assets/svg/right-arrow.svg"/>
+-                </a>
+-            </div>
+         </section>
+ 
+         
+@@ -344,10 +428,6 @@
+                         <img alt="M&E Logo" class="footer-logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
+                         <h3>Interior Supplies Trading</h3>
+                     </div>
+-                    
+-                    <div class="footer-tagline">
+-                        <img alt="Your Online Shopping" src="../assets/images/fb-coverphoto_footer-tagline.png"/>
+-                    </div>
+                 </div>
+                 
+                 <div class="footer-links">
+@@ -403,10 +483,13 @@
+         <div id="loginModal" class="modal">
+             <div class="modal-content">
+                 <span class="close-btn" id="closeLoginModal">&times;</span>
+-                <h2>Login</h2>
++                
++                <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
+ 
++                <h2>Login</h2>
++                
+                 <form id="loginForm">
+-                    <label for="username">Username or Email</label>
++                    <label for="username">Username</label>
+                     <input type="text" id="username" name="username" required/>
+                     
+                     <label for="password">Password</label>
+@@ -416,7 +499,7 @@
+ 
+                     <p class="modal-switch-text">
+                         Don't have an account? 
+-                        <a href="#" id="openSignupModal">Sign Up here</a>
++                        <a href="#" id="openSignupModal">Create Your Account here</a>
+                     </p>
+                 </form>
+             </div>
+@@ -424,23 +507,36 @@
+ 
+         <div id="signupModal" class="modal">
+             <div class="modal-content">
+-                <span class="close-btn" id="closeSignupModal">&times;</span>
+-                <h2>Sign Up</h2>
++                <span id="closeSignupModal" class="close-btn">&times;</span>
++
++                <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
++
++                <h2>Create Your Account</h2>
+ 
+                 <form id="signupForm">
+-                    <label for="signup-email">Email Address</label>
+-                    <input type="email" id="signup-email" name="email" required/>
++                    <label for="firstName">First Name</label>
++                    <input type="text" id="firstName" name="firstName" required>
++                
++                    <label for="lastName">Last Name</label>
++                    <input type="text" id="lastName" name="lastName" required>
+ 
+-                    <label for="signup-username">Username</label>
+-                    <input type="text" id="signup-username" name="username" required/>
++                    <label for="email">Email</label>
++                    <input type="email" id="email" name="email" required>
+ 
+-                    <label for="signup-password">Password</label>
+-                    <input type="password" id="signup-password" name="password" required/>
++                    <label for="password">Password</label>
++                    <input type="password" id="password" name="password" required>
+ 
+-                    <label for="signup-confirm-password">Confirm Password</label>
+-                    <input type="password" id="signup-confirm-password" name="confirmPassword" required/>
+-                    
+-                    <button type="submit">Sign Up</button>
++                    <label for="confirmPassword">Confirm Password</label>
++                    <input type="password" id="confirmPassword" name="confirmPassword" required>
++
++                    <div class="terms">
++                        <label class="terms-label">
++                            <input type="checkbox" id="termsCheckbox" required>
++                            <span>I confirm agree to our <a href="#termsModal" id="openTermsModal">Terms and Conditions</a></span>
++                        </label>
++                    </div>
++
++                    <button type="submit" id="verifyEmailBtn" disabled>Verify Email</button>
+ 
+                     <p class="modal-switch-text">
+                         Already have an account? 
+@@ -449,6 +545,35 @@
+                 </form>
+             </div>
+         </div>
++
++        <div id="termsModal" class="modal">
++            <div class="modal-content">
++                <span id="closeTermsModal" class="close-btn">&times;</span>
++                <h2>Terms and Conditions</h2>
++                <ol>
++                    <li>Introduction</li>
++                    <p>Welcome to M&E Interior Trading Supplies. By using our website and services, you agree to these Terms & Conditions. Please read them carefully.</p>
++                    <br>
++                    <li>Using our service</li>
++                    <p>Customers must be at least 18 years old or have parental consent. You agree to provide accurate information when placing orders.</p>
++                    <br>
++                    <li>Orders & Payment</li>
++                    <p>Prices are displayed in your local currency. Payments are processed through third-party providers — M&E Interior Trading Supplies does not store payment details.</p>
++                    <br>
++                    <li>Shipping & Returns</li>
++                    <p>Shipping times vary by location. Cancellation are not accepted unless otherwise stated on the product page.</p>
++                    <br>
++                    <li>intellectual Property</li>
++                    <p>All content on this site is owned or licensed by M&E Interior Trading Supplies. You may not reuse our content without permission.</p>
++                    <br>
++                    <li>Limitation of Liability</li>
++                    <p>To the fullest extent permitted by law, M&E Interior Trading Supplies is not liable for indirect or consequential loss arising from use of the site.</p>
++                    <br>
++                    <li>Changes</li>
++                    <p>We may update these Terms from time to time. We will publish changes on this page with a revised date.</p>
++                </ol>
++            </div>
++        </div>
+         
+         <script src="../assets/js/homepage.js"></script>
+     </body>
