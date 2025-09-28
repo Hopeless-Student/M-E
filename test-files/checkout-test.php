@@ -88,7 +88,6 @@ $final_amount = $total_amount + $shipping_fee;
                 Confirm & Pay ₱<?= number_format($final_amount, 2) ?>
             </button>
         </form>
-        <h6>conflict test in test-files</h6>
     </div>
 </div>
 <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
