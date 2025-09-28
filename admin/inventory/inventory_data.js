@@ -1,5 +1,5 @@
 // --- INVENTORY DATA ---
-const inventoryData = [
+window.inventoryData = [
     {
         id: 1,
         name: 'Ballpoint Pens',
@@ -107,7 +107,7 @@ const inventoryData = [
 ];
 
 // --- LOW STOCK ALERTS DATA ---
-const lowStockData = [
+window.lowStockData = [
     {
         id: 1,
         name: 'Staplers',
@@ -215,7 +215,7 @@ const lowStockData = [
 ];
 
 // --- STOCK MOVEMENTS DATA ---
-const stockMovementsData = [
+window.stockMovementsData = [
     {
         id: 1,
         productId: 1,

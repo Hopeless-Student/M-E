@@ -408,11 +408,17 @@
 
 <script>
     let currentLowStockAlertsPage = 1;
-    let filteredLowStockAlertsData = [...lowStockData];
+    let filteredLowStockAlertsData = [...(window.lowStockData || [])]; // Fallback: empty array if data not loaded
     let currentEditingLowStockItem = null; // For individual restock/adjust stock modals
 
     function openLowStockAlertsModal() {
-        applyLowStockAlertsFilters(); // Initial population and filtering
+        // Ensure data exists before filtering
+        if (!window.lowStockData || window.lowStockData.length === 0) {
+            console.warn('Low stock data not loaded—using fallback empty data');
+            filteredLowStockAlertsData = [];
+        } else {
+            applyLowStockAlertsFilters(); // Initial population and filtering
+        }
         openModal('lowStockAlertsModal');
     }
 
@@ -421,6 +427,9 @@
         document.getElementById('lowStockCategoryFilter').addEventListener('change', applyLowStockAlertsFilters);
         document.getElementById('lowStockAlertLevelFilter').addEventListener('change', applyLowStockAlertsFilters);
 
+        if (searchInput) searchInput.addEventListener('input', applyLowStockAlertsFilters);
+        if (categoryFilter) categoryFilter.addEventListener('change', applyLowStockAlertsFilters);
+        if (alertLevelFilter) alertLevelFilter.addEventListener('change', applyLowStockAlertsFilters);
         // Minimum levels adjustment method change
         document.getElementById('minimumLevelsBulkAdjustMethod').addEventListener('change', function() {
             const method = this.value;
@@ -527,19 +536,18 @@
     }
 
     function applyLowStockAlertsFilters() {
-        const searchTerm = document.getElementById('lowStockSearchInput').value.toLowerCase();
-        const selectedCategory = document.getElementById('lowStockCategoryFilter').value;
-        const selectedLevel = document.getElementById('lowStockAlertLevelFilter').value;
-
-        filteredLowStockAlertsData = lowStockData.filter(item => {
-            const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
-                                item.sku.toLowerCase().includes(searchTerm);
-            const matchesCategory = !selectedCategory || item.category === selectedCategory;
-            const matchesLevel = !selectedLevel || item.alertLevel === selectedLevel;
-
+        // Fallback data if not loaded
+        const dataToFilter = window.lowStockData || [];
+        const searchTerm = (document.getElementById('lowStockSearchInput')?.value || '').toLowerCase();
+        const selectedCategory = document.getElementById('lowStockCategoryFilter')?.value || '';
+        const selectedLevel = document.getElementById('lowStockAlertLevelFilter')?.value || '';
+        filteredLowStockAlertsData = dataToFilter.filter(item => {
+            const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm) ||
+                                (item.sku || '').toLowerCase().includes(searchTerm);
+            const matchesCategory = !selectedCategory || (item.category || '') === selectedCategory;
+            const matchesLevel = !selectedLevel || (item.alertLevel || '') === selectedLevel;
             return matchesSearch && matchesCategory && matchesLevel;
         });
-
         currentLowStockAlertsPage = 1;
         populateLowStockAlertsTable(filteredLowStockAlertsData);
         updateLowStockSummaryCards();
@@ -548,15 +556,15 @@
 
     function populateLowStockAlertsTable(data) {
         const tbody = document.getElementById('lowStockAlertsTableBody');
+        if (!tbody) return; // Safety check
         tbody.innerHTML = '';
-
+        const lowStockItemsPerPage = 5; // Define if missing
         const startIndex = (currentLowStockAlertsPage - 1) * lowStockItemsPerPage;
         const endIndex = startIndex + lowStockItemsPerPage;
-        const pageData = data.slice(startIndex, endIndex);
-
+        const pageData = (data || []).slice(startIndex, endIndex); // Fallback empty
         if (pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">No low stock items found matching your criteria.</td></tr>`;
-            updateLowStockAlertsPagination(data.length);
+            updateLowStockAlertsPagination((data || []).length);
             return;
         }
 
