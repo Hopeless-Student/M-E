@@ -1,3 +1,67 @@
+<?php
+require_once __DIR__ . '/../includes/database.php';
+include('../includes/user-sidebar.php');
+
+$pdo = connect();
+  try {
+
+    $user_id = $user['user_id'];
+
+     $status = isset($_GET['status']) ? trim($_GET['status']) : 'All';
+
+    $sql = "
+    SELECT o.order_id,
+    o.order_number, o.final_amount,
+    o.order_status, o.payment_method,
+    o.order_date,
+    oi.product_name, oi.product_price,
+    oi.quantity, oi.subtotal
+    FROM orders o
+    JOIN order_items oi
+    ON o.order_id = oi.order_id
+    WHERE o.user_id = :user_id
+    ";
+    // ORDER BY o.order_date DESC, o.order_id DESC;
+
+        $filter = [':user_id' => $user_id];
+    if ($status !== 'All') {
+        $sql .= " AND o.order_status = :status";
+        $filter[':status'] = $status;
+    }
+    $sql .= " ORDER BY o.order_date DESC, o.order_id DESC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($filter);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $order_history = [];
+      foreach ($result as $items) {
+        $orderId = $items['order_id'];
+
+        if (!isset($order_history[$orderId])) {
+        $order_history[$orderId] = [
+            'order_number' => $items['order_number'],
+            'final_amount' => $items['final_amount'],
+            'order_status' => $items['order_status'],
+            'payment_method' => $items['payment_method'],
+            'order_date' => $items['order_date'],
+            'items' => []
+        ];
+    }
+
+    $order_history[$orderId]['items'][] = [
+        'product_name' => $items['product_name'],
+        'price' => $items['product_price'],
+        'qty' => $items['quantity'],
+        'subtotal' => $items['subtotal']
+    ];
+      }
+  } catch (PDOException $e) {
+    echo "Database Error: " . $e->getMessage();
+  }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -75,8 +139,12 @@
 
     .status-pending { background-color: #ffc107; }
     .status-delivered { background-color: #28a745; }
-    .status-cancelled { background-color: #dc3545; }
-
+    .status-shipped { background-color: #4169E1; }
+    .status-confirmed { background-color: #8AFF8A; }
+    .status a.active {
+      color: #002366;
+      font-weight: 700;
+    }
     .item {
       display: flex;
       align-items: center;
@@ -116,59 +184,73 @@
 
     .btn-details:hover {
       background-color: #001c4d;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <?php include('../includes/user-sidebar.php'); ?>
   <div class="container py-4">
     <div class="order-content">
       <h2 class="order-title">Order History</h2>
       <hr>
       <div class="status">
-        <a href="#">All</a>|
-        <a href="#">Pending</a>|
-        <a href="#">Delivered</a>
+        <a href="?status=All" class="<?= $status === 'All' ? 'active' : '' ?>">All</a> |
+        <a href="?status=Pending" class="<?= $status === 'Pending' ? 'active' : '' ?>">Pending</a> |
+        <a href="?status=Delivered" class="<?= $status === 'Delivered' ? 'active' : '' ?>">Delivered</a> |
+        <a href="?status=Shipped" class="<?= $status === 'Shipped' ? 'active' : '' ?>">Shipped</a> |
+        <a href="?status=Confirmed" class="<?= $status === 'Confirmed' ? 'active' : '' ?>">Confirmed</a>
       </div>
+
+
 
       <!-- Example Order Card -->
+      <?php if (!empty($order_history)): ?>
+
+      <?php foreach ($order_history as $orders): ?>
       <div class="items-container">
         <div class="order-header">
-          <p>09/09/2025 | Order No: <strong>123456789</strong></p>
-          <p>Total: <strong>₱800</strong></p>
+          <p><?= date("m/d/Y", strtotime($orders['order_date'])) ?> | Order No: <?= htmlspecialchars($orders['order_number']) ?></p>
+          <p>Total: ₱ <strong><?= number_format($orders['final_amount'], 2) ?></strong></p>
         </div>
-        <span class="order-status status-pending">Pending</span>
+        <span class="order-status
+          <?= $orders['order_status'] === 'Pending' ? 'status-pending' : (
+              $orders['order_status'] === 'Delivered' ? 'status-delivered' : (
+               $orders['order_status'] === 'Confirmed' ? 'status-confirmed' : (
+                 $orders['order_status'] === 'Shipped' ? 'status-shipped' :
+                 'status-cancelled'))) ?>">
+          <?= $orders['order_status'] ?>
+        </span>
+
         <hr>
+        <?php foreach ($orders['items'] as $item): ?>
+
         <div class="item">
           <img src="../assets/images/Hard-Copy.jpg" alt="item sample">
           <div class="item-text">
-            <p>Bond paper ream</p>
-            <sub>₱800 × 1</sub>
+            <p><?= htmlspecialchars($item['product_name']) ?></p>
+            <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>
           </div>
-          <button class="btn-details">Order Details</button>
+          <!-- <button class="btn-details">Order Details</button> -->
+        </div>
+      <?php endforeach; ?>
+        <div class="text-end mt-3">
+          <a href="order-details.php?order_id=<?= urlencode($orders['order_number']) ?>" class="btn btn-details">Order Details</a>
         </div>
       </div>
-
-      <!-- Duplicate more items-container for demo -->
-      <div class="items-container">
-        <div class="order-header">
-          <p>09/09/2025 | Order No: <strong>987654321</strong></p>
-          <p>Total: <strong>₱1,200</strong></p>
-        </div>
-        <span class="order-status status-delivered">Delivered</span>
-        <hr>
-        <div class="item">
-          <img src="../assets/images/Hard-Copy.jpg" alt="item sample">
-          <div class="item-text">
-            <p>Notebook Pack</p>
-            <sub>₱400 × 3</sub>
-          </div>
-          <button class="btn-details">Order Details</button>
-        </div>
+      <?php endforeach; ?>
+    <?php elseif ($status === 'All'): ?>
+      <div class="text-center">
+        <img src="../assets/images/order-history.png" class="img-fluid" style="max-height:250px;" alt="order history">
+        <p class="fs-3 fw-bold" style="color: #002366;">You Have No Order History</p>
+        <small>You haven't order anything yet. <br>Your Order History will appear here once you have!</small>
       </div>
-    </div>
-  </div>
 
+      <?php else: ?>
+        <div class="text-center">
+          <img src="../assets/images/order-history.png" class="img-fluid" style="max-height:250px;" alt="order history">
+          <p class="fs-3 fw-bold" style="color: #002366;">No Orders Found for this Status</p>
+        </div>
+    <?php endif; ?>
   <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
 </body>
 </html>
