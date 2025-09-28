@@ -17,7 +17,7 @@
             </div>
 
             <nav>
-                <a href="homepage.html">Home</a>
+                <a href="homepage.php">Home</a>
                 <a href="#">Products</a>
                 <a href="#">About Us</a>
                 <a href="#" class="mobile-only mobile-nav-cart">Cart</a>
