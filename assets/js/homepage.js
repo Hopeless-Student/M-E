@@ -251,22 +251,22 @@ document.addEventListener("DOMContentLoaded", () => {
       termsModal.style.display = "none";
     }
   });
-
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const username = loginForm.username?.value.trim() || "";
-      const password = loginForm.password?.value.trim() || "";
-
-      if (username && password) {
-        alert(`Logging in as ${username}`);
-        loginModal.style.display = "none";
-        loginForm.reset();
-      } else {
-        alert("Please fill out all fields.");
-      }
-    });
-  }
+  // No need PHP ang backend
+  // if (loginForm) {
+  //   loginForm.addEventListener("submit", (e) => {
+  //     e.preventDefault();
+  //     const username = loginForm.username?.value.trim() || "";
+  //     const password = loginForm.password?.value.trim() || "";
+  //
+  //     if (username && password) {
+  //       alert(`Logging in as ${username}`);
+  //       loginModal.style.display = "none";
+  //       loginForm.reset();
+  //     } else {
+  //       alert("Please fill out all fields.");
+  //     }
+  //   });
+  // }
 
   // Signup modal logic
   if (openSignupModalLink && signupModal) {
@@ -299,37 +299,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (signupForm) {
-    signupForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const firstName = firstNameInput?.value.trim() || "";
-      const lastName = lastNameInput?.value.trim() || "";
-      const email = signupEmailInput?.value.trim() || "";
-      const password = signupPasswordInput?.value.trim() || "";
-      const confirmPassword = signupConfirmPasswordInput?.value.trim() || "";
-      const agreed = termsCheckbox?.checked || false;
-
-      if (!firstName || !lastName || !email || !password || !confirmPassword) {
-        alert("Please fill out all fields.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
-
-      if (!agreed) {
-        alert("You must agree to the Terms and Conditions.");
-        return;
-      }
-
-      alert(`Verification email sent to ${email}`);
-      signupForm.reset();
-      verifyEmailBtn.disabled = true;
-      signupModal.style.display = "none";
-    });
-  }
+  // if (signupForm) {
+  //   signupForm.addEventListener("submit", (e) => {
+  //     const firstName = firstNameInput?.value.trim() || "";
+  //     const lastName = lastNameInput?.value.trim() || "";
+  //     const email = signupEmailInput?.value.trim() || "";
+  //     const password = signupPasswordInput?.value.trim() || "";
+  //     const confirmPassword = signupConfirmPasswordInput?.value.trim() || "";
+  //     const agreed = termsCheckbox?.checked || false;
+  //
+  //     if (!firstName || !lastName || !email || !password || !confirmPassword) {
+  //       alert("Please fill out all fields.");
+  //       return;
+  //     }
+  //
+  //     if (password !== confirmPassword) {
+  //       alert("Passwords do not match.");
+  //       return;
+  //     }
+  //
+  //     if (!agreed) {
+  //       alert("You must agree to the Terms and Conditions.");
+  //       return;
+  //     }
+  //
+  //     alert(`Verification email sent to ${email}`);
+  //     signupForm.reset();
+  //     verifyEmailBtn.disabled = true;
+  //     signupModal.style.display = "none";
+  //   });
+  // }
 
   // Mobile login link inside hamburger
   const mobileLoginLink = document.getElementById("mobileLoginLink");

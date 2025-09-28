@@ -1,5 +1,6 @@
-<?php    ?>
-<!DOCTYPE html>
+<?php
+// Current output is for testing
+?><!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">

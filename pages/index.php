@@ -1,3 +1,6 @@
+<?php
+// Current output is for testing
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

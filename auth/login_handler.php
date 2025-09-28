@@ -27,7 +27,7 @@
                         exit;
                     }
 
-                    header("Location: ../pages/index.php");
+                    header("Location: ../pages/homepage.php");
                     exit;
                 } else {
                 $loginFailed = "Incorrect password";
