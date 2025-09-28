@@ -137,7 +137,8 @@
     let currentStockMovementEndDate = null;
     let currentStockMovementPage = 1;
     const stockMovementsPerPage = 10;
-    let filteredStockMovementsData = [...stockMovementsData];
+    // Ensure stockMovementsData is defined before spreading
+    let filteredStockMovementsData = (typeof window.stockMovementsData !== 'undefined' && window.stockMovementsData.length > 0) ? [...window.stockMovementsData] : [];
     let currentMovementDetails = null; // For movement details modal
 
     function openStockMovementsModal() {
@@ -149,12 +150,15 @@
     function populateMovementProductFilter() {
         const select = document.getElementById('movementProductFilter');
         select.innerHTML = '<option value="">All Products</option>';
-        inventoryData.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.id;
-            option.textContent = item.name;
-            select.appendChild(option);
-        });
+        // Ensure inventoryData is available before using it
+        if (typeof inventoryData !== 'undefined' && inventoryData.length > 0) {
+            inventoryData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                select.appendChild(option);
+            });
+        }
     }
 
     function setupStockMovementsModalListeners() {
@@ -172,7 +176,10 @@
         const startDate = document.getElementById('movementStartDate').value;
         const endDate = document.getElementById('movementEndDate').value;
 
-        filteredStockMovementsData = stockMovementsData.filter(movement => {
+        // Ensure stockMovementsData is defined before filtering
+        const dataToFilter = (typeof window.stockMovementsData !== 'undefined' && window.stockMovementsData.length > 0) ? window.stockMovementsData : [];
+
+        filteredStockMovementsData = dataToFilter.filter(movement => {
             const matchesProduct = !productId || movement.productId == productId;
             const matchesType = !type || movement.type === type;
             const matchesReason = !reason || movement.reason === reason;
@@ -182,7 +189,10 @@
                 matchesDate = matchesDate && new Date(movement.timestamp) >= new Date(startDate);
             }
             if (endDate) {
-                matchesDate = matchesDate && new Date(movement.timestamp) <= new Date(endDate);
+                // Set end date to end of day for inclusive filtering
+                const endOfDay = new Date(endDate);
+                endOfDay.setHours(23, 59, 59, 999);
+                matchesDate = matchesDate && new Date(movement.timestamp) <= endOfDay;
             }
             return matchesProduct && matchesType && matchesReason && matchesDate;
         });
@@ -208,7 +218,8 @@
 
         pageData.forEach(movement => {
             const row = tbody.insertRow();
-            const product = inventoryData.find(item => item.id === movement.productId);
+            // Ensure inventoryData is available before using it
+            const product = typeof inventoryData !== 'undefined' ? inventoryData.find(item => item.id === movement.productId) : null;
             const icon = product ? product.icon : '📦'; // Default icon if product not found
 
             let typeClass = '';
@@ -348,6 +359,11 @@
     }
 
     function openMovementDetailsModal(movementId) {
+        // Ensure stockMovementsData is available
+        if (typeof stockMovementsData === 'undefined') {
+            showNotification('Error: Stock movements data not loaded.', 'error');
+            return;
+        }
         const movement = stockMovementsData.find(m => m.id === movementId);
         if (movement) {
             const detailsContent = document.getElementById('movementDetailsContent');
@@ -396,19 +412,34 @@
                 </div>
             `;
             openModal('movementDetailsModal');
+        } else {
+            showNotification('Error: Movement details not found.', 'error');
         }
     }
 
     function confirmReverseMovement(movementId) {
+        // Ensure stockMovementsData is available
+        if (typeof stockMovementsData === 'undefined') {
+            showNotification('Error: Stock movements data not loaded.', 'error');
+            return;
+        }
         const movement = stockMovementsData.find(m => m.id === movementId);
         if (movement) {
             openConfirmationModal(`Are you sure you want to reverse movement ID ${movement.id} for "${movement.productName}"? This will adjust stock back to ${movement.previousStock}.`, () => {
                 reverseMovement(movementId);
             });
+        } else {
+            showNotification('Error: Movement not found for reversal.', 'error');
         }
     }
 
     function reverseMovement(movementId) {
+        // Ensure stockMovementsData and inventoryData are available
+        if (typeof stockMovementsData === 'undefined' || typeof inventoryData === 'undefined') {
+            showNotification('Error: Required data not loaded for reversal.', 'error');
+            return;
+        }
+
         const movementIndex = stockMovementsData.findIndex(m => m.id === movementId);
         if (movementIndex !== -1) {
             const movement = stockMovementsData[movementIndex];

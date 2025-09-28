@@ -408,28 +408,31 @@
 
 <script>
     let currentLowStockAlertsPage = 1;
-    let filteredLowStockAlertsData = [...(window.lowStockData || [])]; // Fallback: empty array if data not loaded
+    // Ensure window.lowStockData is defined before spreading
+    let filteredLowStockAlertsData = (typeof window.lowStockData !== 'undefined' && window.lowStockData.length > 0) ? [...window.lowStockData] : [];
     let currentEditingLowStockItem = null; // For individual restock/adjust stock modals
+
+    // lowStockItemsPerPage is now defined in index.php globally
 
     function openLowStockAlertsModal() {
         // Ensure data exists before filtering
-        if (!window.lowStockData || window.lowStockData.length === 0) {
+        if (typeof window.lowStockData === 'undefined' || window.lowStockData.length === 0) {
             console.warn('Low stock data not loaded—using fallback empty data');
             filteredLowStockAlertsData = [];
         } else {
+            // Re-initialize filteredLowStockAlertsData from window.lowStockData
+            filteredLowStockAlertsData = [...window.lowStockData];
             applyLowStockAlertsFilters(); // Initial population and filtering
         }
         openModal('lowStockAlertsModal');
     }
 
     function setupLowStockAlertsModalListeners() {
+        // Directly access elements by ID, as global variables might not be immediately assigned
         document.getElementById('lowStockSearchInput').addEventListener('input', applyLowStockAlertsFilters);
         document.getElementById('lowStockCategoryFilter').addEventListener('change', applyLowStockAlertsFilters);
         document.getElementById('lowStockAlertLevelFilter').addEventListener('change', applyLowStockAlertsFilters);
 
-        if (searchInput) searchInput.addEventListener('input', applyLowStockAlertsFilters);
-        if (categoryFilter) categoryFilter.addEventListener('change', applyLowStockAlertsFilters);
-        if (alertLevelFilter) alertLevelFilter.addEventListener('change', applyLowStockAlertsFilters);
         // Minimum levels adjustment method change
         document.getElementById('minimumLevelsBulkAdjustMethod').addEventListener('change', function() {
             const method = this.value;
@@ -469,7 +472,11 @@
             const priority = document.getElementById('individualRestockPriority').value;
             const reason = document.getElementById('individualRestockReason').value;
 
-            showNotification(`Restock request submitted for ${currentEditingLowStockItem.name}\nQuantity: ${quantity} units\nPriority: ${capitalizeFirst(priority)}`, 'success');
+            if (currentEditingLowStockItem) {
+                showNotification(`Restock request submitted for ${currentEditingLowStockItem.name}\nQuantity: ${quantity} units\nPriority: ${capitalizeFirst(priority)}`, 'success');
+            } else {
+                showNotification('Error: No item selected for restock.', 'error');
+            }
             closeModal('individualRestockModal');
         });
 
@@ -479,7 +486,17 @@
             const quantity = document.getElementById('lowStockAdjustStockModalQuantity').value;
             const reason = document.getElementById('lowStockAdjustStockModalReason').value;
 
+            if (!currentEditingLowStockItem) {
+                showNotification('Error: No product selected for adjustment.', 'error');
+                return;
+            }
+
             // Find the corresponding item in inventoryData and update its stock
+            // Ensure inventoryData is available
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
+            }
             const itemIndex = inventoryData.findIndex(item => item.id === currentEditingLowStockItem.id);
             if (itemIndex !== -1) {
                 let newStock;
@@ -500,19 +517,23 @@
                 inventoryData[itemIndex].stock = newStock;
 
                 // Add to stock movements history
-                stockMovementsData.unshift({
-                    id: stockMovementsData.length + 1,
-                    productId: currentEditingLowStockItem.id,
-                    productName: currentEditingLowStockItem.name,
-                    productSKU: currentEditingLowStockItem.sku,
-                    type: type,
-                    quantity: parseInt(quantity),
-                    previousStock: currentStock,
-                    newStock: newStock,
-                    reason: reason,
-                    user: 'Admin',
-                    timestamp: new Date().toLocaleString([], {hour: '2-digit', minute:'2-digit', year: 'numeric', month: '2-digit', day: '2-digit'})
-                });
+                // Ensure stockMovementsData is defined
+                if (typeof stockMovementsData !== 'undefined') {
+                    stockMovementsData.unshift({
+                        id: stockMovementsData.length + 1,
+                        productId: currentEditingLowStockItem.id,
+                        productName: currentEditingLowStockItem.name,
+                        productSKU: currentEditingLowStockItem.sku,
+                        type: type,
+                        quantity: parseInt(quantity),
+                        previousStock: currentStock,
+                        newStock: newStock,
+                        reason: reason,
+                        user: 'Admin',
+                        timestamp: new Date().toLocaleString([], {hour: '2-digit', minute:'2-digit', year: 'numeric', month: '2-digit', day: '2-digit'})
+                    });
+                }
+
 
                 showNotification(`Stock adjustment applied for ${currentEditingLowStockItem.name}\nType: ${capitalizeFirst(type)}\nQuantity: ${quantity}\nReason: ${reason}`, 'success');
                 closeModal('lowStockAdjustStockModal');
@@ -537,10 +558,10 @@
 
     function applyLowStockAlertsFilters() {
         // Fallback data if not loaded
-        const dataToFilter = window.lowStockData || [];
+        const dataToFilter = (typeof window.lowStockData !== 'undefined' && window.lowStockData.length > 0) ? window.lowStockData : [];
         const searchTerm = (document.getElementById('lowStockSearchInput')?.value || '').toLowerCase();
-        const selectedCategory = document.getElementById('lowStockCategoryFilter')?.value || '';
-        const selectedLevel = document.getElementById('lowStockAlertLevelFilter')?.value || '';
+        const selectedCategory = (document.getElementById('lowStockCategoryFilter')?.value || '');
+        const selectedLevel = (document.getElementById('lowStockAlertLevelFilter')?.value || '');
         filteredLowStockAlertsData = dataToFilter.filter(item => {
             const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm) ||
                                 (item.sku || '').toLowerCase().includes(searchTerm);
@@ -558,7 +579,7 @@
         const tbody = document.getElementById('lowStockAlertsTableBody');
         if (!tbody) return; // Safety check
         tbody.innerHTML = '';
-        const lowStockItemsPerPage = 5; // Define if missing
+        // lowStockItemsPerPage is now a global variable from index.php
         const startIndex = (currentLowStockAlertsPage - 1) * lowStockItemsPerPage;
         const endIndex = startIndex + lowStockItemsPerPage;
         const pageData = (data || []).slice(startIndex, endIndex); // Fallback empty
@@ -570,7 +591,7 @@
 
         pageData.forEach(item => {
             const row = tbody.insertRow();
-            const stockPercentage = (item.currentStock / item.minStock) * 100;
+            const stockPercentage = (item.minStock > 0) ? (item.currentStock / item.minStock) * 100 : 0; // Avoid division by zero
 
             row.innerHTML = `
                 <td>
@@ -696,7 +717,16 @@
     }
 
     function openIndividualRestockModal(itemId) {
+        // Ensure lowStockData is available
+        if (typeof lowStockData === 'undefined') {
+            showNotification('Error: Low stock data not loaded.', 'error');
+            return;
+        }
         const item = lowStockData.find(i => i.id === itemId);
+        if (!item) {
+            showNotification('Error: Item not found in low stock alerts.', 'error');
+            return;
+        }
         currentEditingLowStockItem = item;
 
         document.getElementById('individualRestockProductName').textContent = item.name;
@@ -710,7 +740,16 @@
     }
 
     function openLowStockAdjustStockModal(itemId) {
+        // Ensure lowStockData is available
+        if (typeof lowStockData === 'undefined') {
+            showNotification('Error: Low stock data not loaded.', 'error');
+            return;
+        }
         const item = lowStockData.find(i => i.id === itemId);
+        if (!item) {
+            showNotification('Error: Item not found in low stock alerts.', 'error');
+            return;
+        }
         currentEditingLowStockItem = item;
 
         document.getElementById('lowStockAdjustStockModalProductName').textContent = item.name;
@@ -750,6 +789,12 @@
     function applyMinimumLevelChanges() {
         const method = document.getElementById('minimumLevelsBulkAdjustMethod').value;
         let changesApplied = 0;
+
+        // Ensure inventoryData is available
+        if (typeof inventoryData === 'undefined') {
+            showNotification('Error: Inventory data not loaded.', 'error');
+            return;
+        }
 
         if (method === 'percentage') {
             const percentage = parseFloat(document.getElementById('minimumLevelsPercentageChange').value);

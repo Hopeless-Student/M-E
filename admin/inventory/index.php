@@ -216,12 +216,24 @@
     <script src="shared_functions.js"></script>
     <script>
         let currentPage = 1;
-        let itemsPerPage = 5;
-        let filteredData = [...inventoryData];
+        const itemsPerPage = 5; // Made const as it's unlikely to change
+        let filteredData = []; // Initialize as empty, will be populated by updateAllDataAndUI
         let currentConfirmAction = null; // For confirmation modal
+
+        // Global variables for low stock alerts filters, accessible by low-stock-alerts.php
+        const lowStockItemsPerPage = 5; // Define here for global access
+        let searchInput; // Declared globally
+        let categoryFilter; // Declared globally
+        let alertLevelFilter; // Declared globally
 
         // --- MAIN DASHBOARD INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', function() {
+            // Assign elements to global variables after DOM is loaded
+            searchInput = document.getElementById('searchInput');
+            categoryFilter = document.getElementById('categoryFilter');
+            // Note: lowStockAlertLevelFilter is in low-stock-alerts.php, but its value is used by applyLowStockAlertsFilters
+            // We can assign it here if needed for other functions, but applyLowStockAlertsFilters directly accesses it.
+
             initializeDashboard();
             // Initialize all modal-specific event listeners
             setupAdjustStockModalListeners();
@@ -240,6 +252,13 @@
         }
 
         function updateAllDataAndUI() {
+            // Ensure inventoryData is loaded before processing
+            if (typeof inventoryData === 'undefined' || inventoryData.length === 0) {
+                console.warn('inventoryData is not loaded or is empty.');
+                // Optionally, display a message or handle gracefully
+                return;
+            }
+
             // Recalculate stock levels for inventoryData based on minStock
             inventoryData.forEach(item => {
                 if (item.stock <= 0) {
@@ -254,23 +273,27 @@
             });
 
             // Recalculate alert levels for lowStockData based on inventoryData
-            lowStockData.forEach(lowItem => {
-                const correspondingInventoryItem = inventoryData.find(invItem => invItem.id === lowItem.id);
-                if (correspondingInventoryItem) {
-                    lowItem.currentStock = correspondingInventoryItem.stock;
-                    lowItem.minStock = correspondingInventoryItem.minStock;
+            // Ensure lowStockData is loaded before processing
+            if (typeof lowStockData !== 'undefined' && lowStockData.length > 0) {
+                lowStockData.forEach(lowItem => {
+                    const correspondingInventoryItem = inventoryData.find(invItem => invItem.id === lowItem.id);
+                    if (correspondingInventoryItem) {
+                        lowItem.currentStock = correspondingInventoryItem.stock;
+                        lowItem.minStock = correspondingInventoryItem.minStock;
 
-                    if (lowItem.currentStock <= 0) {
-                        lowItem.alertLevel = 'critical';
-                    } else if (lowItem.currentStock <= lowItem.minStock * 0.5) {
-                        lowItem.alertLevel = 'critical';
-                    } else if (lowItem.currentStock <= lowItem.minStock) {
-                        lowItem.alertLevel = 'warning';
-                    } else {
-                        lowItem.alertLevel = 'low'; // Or 'normal' if you have that level
+                        if (lowItem.currentStock <= 0) {
+                            lowItem.alertLevel = 'critical';
+                        } else if (lowItem.currentStock <= lowItem.minStock * 0.5) {
+                            lowItem.alertLevel = 'critical';
+                        } else if (lowItem.currentStock <= lowItem.minStock) {
+                            lowItem.alertLevel = 'warning';
+                        } else {
+                            lowItem.alertLevel = 'low'; // Or 'normal' if you have that level
+                        }
                     }
-                }
-            });
+                });
+            }
+
 
             applyFilters(); // Re-apply main inventory filters
             updateStats();
@@ -285,6 +308,13 @@
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #64748b;">No products found matching your criteria.</td></tr>`;
+                updatePaginationInfo();
+                updatePaginationControls();
+                return;
+            }
 
             pageData.forEach(item => {
                 const row = tbody.insertRow();
@@ -367,23 +397,37 @@
         }
 
         function setupEventListeners() {
-            document.getElementById('searchInput').addEventListener('input', function() {
-                applyFilters();
-            });
+            // Ensure elements exist before adding listeners
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    applyFilters();
+                });
+            }
 
-            document.getElementById('categoryFilter').addEventListener('change', function() {
-                applyFilters();
-            });
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
 
-            document.getElementById('stockFilter').addEventListener('change', function() {
-                applyFilters();
-            });
+            const stockFilterElement = document.getElementById('stockFilter');
+            if (stockFilterElement) {
+                stockFilterElement.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
         }
 
         function applyFilters() {
-            const selectedCategory = document.getElementById('categoryFilter').value;
-            const selectedStock = document.getElementById('stockFilter').value;
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedCategory = categoryFilter ? categoryFilter.value : '';
+            const selectedStock = document.getElementById('stockFilter') ? document.getElementById('stockFilter').value : '';
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+            // Ensure inventoryData is loaded before filtering
+            if (typeof inventoryData === 'undefined') {
+                filteredData = [];
+                return;
+            }
 
             filteredData = inventoryData.filter(item => {
                 const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
@@ -404,6 +448,13 @@
         let turnoverChartInstance = null;
 
         function initializeCharts() {
+            // Ensure inventoryData is loaded before initializing charts
+            if (typeof inventoryData === 'undefined' || inventoryData.length === 0) {
+                console.warn('inventoryData is not loaded or is empty, charts cannot be initialized.');
+                // Optionally, display a message or hide the chart containers
+                return;
+            }
+
             const stockCtx = document.getElementById('stockChart').getContext('2d');
             if (stockChartInstance) stockChartInstance.destroy(); // Destroy existing chart
             stockChartInstance = new Chart(stockCtx, {
@@ -485,6 +536,11 @@
         }
 
         function updateLowStockAlertsBadge() {
+            // Ensure inventoryData is loaded before filtering
+            if (typeof inventoryData === 'undefined') {
+                document.getElementById('lowStockAlertsBadge').textContent = '0';
+                return;
+            }
             const lowItems = inventoryData.filter(item => item.stock <= item.minStock);
             document.getElementById('lowStockAlertsBadge').textContent = lowItems.length;
         }
@@ -546,6 +602,12 @@
                     return;
                 }
 
+                // Ensure inventoryData is loaded before filtering
+                if (typeof inventoryData === 'undefined') {
+                    showNotification('Error: Inventory data not loaded.', 'error');
+                    return;
+                }
+
                 const itemsToUpdate = inventoryData.filter(item => item.category === category);
                 let updatedCount = 0;
 
@@ -574,6 +636,11 @@
 
         // --- PRODUCT DETAILS MODAL FUNCTIONS ---
         function openProductDetailsModal(itemId) {
+            // Ensure inventoryData is loaded before searching
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
+            }
             const item = inventoryData.find(i => i.id === itemId);
             if (item) {
                 const detailsContent = document.getElementById('productDetailsContent');
@@ -610,6 +677,8 @@
                     </div>
                 `;
                 openModal('productDetailsModal');
+            } else {
+                showNotification('Error: Product details not found.', 'error');
             }
         }
 
@@ -624,20 +693,34 @@
         }
 
         function confirmDeleteItem(itemId) {
+            // Ensure inventoryData is loaded before searching
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
+            }
             const item = inventoryData.find(i => i.id === itemId);
             if (item) {
                 openConfirmationModal(`Are you sure you want to delete "${item.name}" from inventory? This action cannot be undone.`, () => {
                     deleteItem(itemId);
                 });
+            } else {
+                showNotification('Error: Item not found for deletion.', 'error');
             }
         }
 
         function deleteItem(itemId) {
+            // Ensure inventoryData is loaded before modifying
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
+            }
             const index = inventoryData.findIndex(i => i.id === itemId);
             if (index !== -1) {
                 inventoryData.splice(index, 1);
                 showNotification('Item deleted successfully!', 'success');
                 updateAllDataAndUI(); // Refresh all dashboard data and UI
+            } else {
+                showNotification('Error: Item not found for deletion.', 'error');
             }
         }
 

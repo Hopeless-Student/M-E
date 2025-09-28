@@ -145,14 +145,17 @@
     function populateAdjustStockProductSelect() {
         const select = document.getElementById('adjustStockProductSelect');
         select.innerHTML = '<option value="">Choose a product...</option>';
-        inventoryData.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.id;
-            option.textContent = `${item.name} (${item.description})`;
-            option.dataset.stock = item.stock;
-            option.dataset.min = item.minStock;
-            select.appendChild(option);
-        });
+        // Ensure inventoryData is available before using it
+        if (typeof inventoryData !== 'undefined' && inventoryData.length > 0) {
+            inventoryData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} (${item.description})`;
+                option.dataset.stock = item.stock;
+                option.dataset.min = item.minStock;
+                select.appendChild(option);
+            });
+        }
     }
 
     function setupAdjustStockModalListeners() {
@@ -194,6 +197,11 @@
             const currentStock = parseInt(selectedOption.dataset.stock);
 
             // Update inventoryData
+            // Ensure inventoryData is available before using it
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
+            }
             const itemIndex = inventoryData.findIndex(item => item.id === productId);
             if (itemIndex !== -1) {
                 let newStock;
@@ -318,7 +326,8 @@
         const selectedProductId = document.getElementById('adjustStockProductSelect').value;
         const filteredHistory = selectedProductId
             ? adjustStockHistory.filter(entry => {
-                const product = inventoryData.find(item => item.id == selectedProductId);
+                // Ensure inventoryData is available before using it
+                const product = typeof inventoryData !== 'undefined' ? inventoryData.find(item => item.id == selectedProductId) : null;
                 return product && entry.productName.includes(product.name);
             })
             : adjustStockHistory;
@@ -331,7 +340,7 @@
                 case 'set': typeSpan = '<span class="adjust-stock-adjustment-type set">Set</span>'; break;
             }
 
-            const newRow = tbody.insertRow();
+            const newRow = tbody.insertCell();
             newRow.innerHTML = `
                 <td>${entry.date}</td>
                 <td>${entry.productName}</td>
