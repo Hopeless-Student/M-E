@@ -6,6 +6,7 @@
     <title>Adjust Stock - M & E Dashboard</title>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
+        /* Base styles */
         * {
             margin: 0;
             padding: 0;
@@ -23,13 +24,12 @@
             height: 250px;
         }
 
-
-        .dashboard {
+        .adjust-stock-dashboard {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* Sidebar (assuming external styling or handled by admin_sidebar.php) */
         .sidebar {
             position: fixed;
             left: 0;
@@ -61,8 +61,6 @@
             margin-bottom: 75px;
             margin-top: 30px;
         }
-
-
 
         .logo h1 {
             font-size: 1.5rem;
@@ -105,13 +103,13 @@
         }
 
         /* Main Content */
-        .main-content {
+        .adjust-stock-main-content {
             flex: 1;
             padding: 2rem;
             margin-left: 280px;
         }
 
-        .header {
+        .adjust-stock-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -122,19 +120,19 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .header h2 {
+        .adjust-stock-header h2 {
             font-size: 2rem;
             font-weight: 600;
             color: #1e40af;
         }
 
-        .header-actions {
+        .adjust-stock-header-actions {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
 
-        .back-btn {
+        .adjust-stock-back-btn {
             background: #64748b;
             color: white;
             border: none;
@@ -149,18 +147,18 @@
             gap: 0.5rem;
         }
 
-        .back-btn:hover {
+        .adjust-stock-back-btn:hover {
             background: #475569;
             color: white;
         }
 
-        .user-info {
+        .adjust-stock-user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        .avatar {
+        .adjust-stock-avatar {
             width: 40px;
             height: 40px;
             background: linear-gradient(135deg, #1e40af, #3b82f6);
@@ -173,7 +171,7 @@
         }
 
         /* Form Container */
-        .form-container {
+        .adjust-stock-form-container {
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -182,46 +180,46 @@
             margin: 0 auto;
         }
 
-        .form-header {
+        .adjust-stock-form-header {
             background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
             color: white;
             padding: 2rem;
             text-align: center;
         }
 
-        .form-header h3 {
+        .adjust-stock-form-header h3 {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
-        .form-header p {
+        .adjust-stock-form-header p {
             opacity: 0.9;
         }
 
-        .form-content {
+        .adjust-stock-form-content {
             padding: 2rem;
         }
 
-        .form-grid {
+        .adjust-stock-form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
         }
 
-        .form-group {
+        .adjust-stock-form-group {
             margin-bottom: 1.5rem;
         }
 
-        .form-label {
+        .adjust-stock-form-label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: #475569;
         }
 
-        .form-input, .form-select {
+        .adjust-stock-form-input, .adjust-stock-form-select {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid #e2e8f0;
@@ -230,13 +228,13 @@
             transition: border-color 0.2s;
         }
 
-        .form-input:focus, .form-select:focus {
+        .adjust-stock-form-input:focus, .adjust-stock-form-select:focus {
             outline: none;
             border-color: #1e40af;
             box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
         }
 
-        .current-stock-display {
+        .adjust-stock-current-stock-display {
             background: #f1f5f9;
             padding: 1rem;
             border-radius: 8px;
@@ -244,19 +242,19 @@
             text-align: center;
         }
 
-        .stock-number {
+        .adjust-stock-stock-number {
             font-size: 2rem;
             font-weight: 700;
             color: #1e40af;
             margin-bottom: 0.5rem;
         }
 
-        .stock-label {
+        .adjust-stock-stock-label {
             color: #64748b;
             font-size: 0.9rem;
         }
 
-        .adjustment-preview {
+        .adjust-stock-adjustment-preview {
             background: #eff6ff;
             border: 2px solid #3b82f6;
             border-radius: 8px;
@@ -264,26 +262,26 @@
             margin: 1.5rem 0;
         }
 
-        .preview-title {
+        .adjust-stock-preview-title {
             font-weight: 600;
             color: #1e40af;
             margin-bottom: 1rem;
         }
 
-        .preview-row {
+        .adjust-stock-preview-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.5rem;
         }
 
-        .preview-row.total {
+        .adjust-stock-preview-row.total {
             border-top: 2px solid #3b82f6;
             padding-top: 0.5rem;
             font-weight: 600;
             color: #1e40af;
         }
 
-        .form-actions {
+        .adjust-stock-form-actions {
             display: flex;
             gap: 1rem;
             justify-content: flex-end;
@@ -291,7 +289,7 @@
             border-top: 2px solid #e2e8f0;
         }
 
-        .btn {
+        .adjust-stock-btn {
             padding: 0.75rem 2rem;
             border: none;
             border-radius: 8px;
@@ -301,46 +299,46 @@
             font-size: 1rem;
         }
 
-        .btn-primary {
+        .adjust-stock-btn-primary {
             background: #1e40af;
             color: white;
         }
 
-        .btn-primary:hover {
+        .adjust-stock-btn-primary:hover {
             background: #1e3a8a;
             transform: translateY(-1px);
         }
 
-        .btn-secondary {
+        .adjust-stock-btn-secondary {
             background: #e2e8f0;
             color: #475569;
         }
 
-        .btn-secondary:hover {
+        .adjust-stock-btn-secondary:hover {
             background: #cbd5e1;
         }
 
-        .alert {
+        .adjust-stock-alert {
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
             border-left: 4px solid;
         }
 
-        .alert-success {
+        .adjust-stock-alert-success {
             background: #ecfdf5;
             border-color: #10b981;
             color: #065f46;
         }
 
-        .alert-error {
+        .adjust-stock-alert-error {
             background: #fef2f2;
             border-color: #ef4444;
             color: #991b1b;
         }
 
         /* Recent Adjustments */
-        .recent-adjustments {
+        .adjust-stock-recent-adjustments {
             margin-top: 2rem;
             background: white;
             border-radius: 12px;
@@ -348,19 +346,19 @@
             padding: 2rem;
         }
 
-        .section-title {
+        .adjust-stock-section-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: #1e40af;
             margin-bottom: 1rem;
         }
 
-        .adjustments-table {
+        .adjust-stock-adjustments-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .adjustments-table th {
+        .adjust-stock-adjustments-table th {
             background-color: #f8fafc;
             padding: 1rem;
             text-align: left;
@@ -369,33 +367,33 @@
             border-bottom: 2px solid #e2e8f0;
         }
 
-        .adjustments-table td {
+        .adjust-stock-adjustments-table td {
             padding: 1rem;
             border-bottom: 1px solid #e2e8f0;
         }
 
-        .adjustments-table tr:hover {
+        .adjust-stock-adjustments-table tr:hover {
             background-color: #f8fafc;
         }
 
-        .adjustment-type {
+        .adjust-stock-adjustment-type {
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 500;
         }
 
-        .adjustment-type.add {
+        .adjust-stock-adjustment-type.add {
             background: #dcfce7;
             color: #166534;
         }
 
-        .adjustment-type.remove {
+        .adjust-stock-adjustment-type.remove {
             background: #fee2e2;
             color: #991b1b;
         }
 
-        .adjustment-type.set {
+        .adjust-stock-adjustment-type.set {
             background: #e0e7ff;
             color: #1e40af;
         }
@@ -407,27 +405,27 @@
                 height: auto;
             }
 
-            .main-content {
+            .adjust-stock-main-content {
                 margin-left: 0;
             }
 
-            .dashboard {
+            .adjust-stock-dashboard {
                 flex-direction: column;
             }
 
-            .form-grid {
+            .adjust-stock-form-grid {
                 grid-template-columns: 1fr;
                 gap: 1rem;
             }
 
-            .form-actions {
+            .adjust-stock-form-actions {
                 flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
+    <div class="adjust-stock-dashboard">
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="logo">
@@ -474,34 +472,34 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="main-content">
-            <div class="header">
+        <main class="adjust-stock-main-content">
+            <div class="adjust-stock-header">
                 <h2>Adjust Stock</h2>
-                <div class="header-actions">
-                    <a href="index.php" class="back-btn">
+                <div class="adjust-stock-header-actions">
+                    <a href="index.php" class="adjust-stock-back-btn">
                         <span>←</span> Back to Inventory
                     </a>
-                    <div class="user-info">
+                    <div class="adjust-stock-user-info">
                         <span>Admin Panel</span>
-                        <div class="avatar">A</div>
+                        <div class="adjust-stock-avatar">A</div>
                     </div>
                 </div>
             </div>
 
-            <div id="alertContainer"></div>
+            <div id="adjustStockAlertContainer"></div>
 
             <!-- Adjust Stock Form -->
-            <div class="form-container">
-                <div class="form-header">
+            <div class="adjust-stock-form-container">
+                <div class="adjust-stock-form-header">
                     <h3>Stock Adjustment</h3>
                     <p>Modify product stock levels with tracking and reason</p>
                 </div>
-                <div class="form-content">
+                <div class="adjust-stock-form-content">
                     <form id="adjustStockForm">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Select Product</label>
-                                <select class="form-select" id="productSelect" required>
+                        <div class="adjust-stock-form-grid">
+                            <div class="adjust-stock-form-group">
+                                <label class="adjust-stock-form-label">Select Product</label>
+                                <select class="adjust-stock-form-select" id="adjustStockProductSelect" required>
                                     <option value="">Choose a product...</option>
                                     <option value="1" data-stock="150" data-min="20">Ballpoint Pens (Pack of 12)</option>
                                     <option value="2" data-stock="85" data-min="30">Bond Paper (A4 Ream)</option>
@@ -510,64 +508,64 @@
                                     <option value="5" data-stock="8" data-min="20">Notebooks</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Current Stock</label>
-                                <div class="current-stock-display">
-                                    <div class="stock-number" id="currentStock">-</div>
-                                    <div class="stock-label">Current Quantity</div>
+                            <div class="adjust-stock-form-group">
+                                <label class="adjust-stock-form-label">Current Stock</label>
+                                <div class="adjust-stock-current-stock-display">
+                                    <div class="adjust-stock-stock-number" id="adjustStockCurrentStock">-</div>
+                                    <div class="adjust-stock-stock-label">Current Quantity</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Adjustment Type</label>
-                                <select class="form-select" id="adjustmentType" required>
+                        <div class="adjust-stock-form-grid">
+                            <div class="adjust-stock-form-group">
+                                <label class="adjust-stock-form-label">Adjustment Type</label>
+                                <select class="adjust-stock-form-select" id="adjustStockAdjustmentType" required>
                                     <option value="">Select adjustment type...</option>
                                     <option value="add">Add Stock (+)</option>
                                     <option value="remove">Remove Stock (-)</option>
                                     <option value="set">Set Stock Level (=)</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" class="form-input" id="adjustmentQuantity" min="1" placeholder="Enter quantity" required>
+                            <div class="adjust-stock-form-group">
+                                <label class="adjust-stock-form-label">Quantity</label>
+                                <input type="number" class="adjust-stock-form-input" id="adjustStockAdjustmentQuantity" min="1" placeholder="Enter quantity" required>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Reason for Adjustment</label>
-                            <input type="text" class="form-input" id="adjustmentReason" placeholder="Enter reason for stock adjustment" required>
+                        <div class="adjust-stock-form-group">
+                            <label class="adjust-stock-form-label">Reason for Adjustment</label>
+                            <input type="text" class="adjust-stock-form-input" id="adjustStockAdjustmentReason" placeholder="Enter reason for stock adjustment" required>
                         </div>
 
-                        <div class="adjustment-preview" id="adjustmentPreview" style="display: none;">
-                            <div class="preview-title">Adjustment Preview</div>
-                            <div class="preview-row">
+                        <div class="adjust-stock-adjustment-preview" id="adjustStockAdjustmentPreview" style="display: none;">
+                            <div class="adjust-stock-preview-title">Adjustment Preview</div>
+                            <div class="adjust-stock-preview-row">
                                 <span>Current Stock:</span>
-                                <span id="previewCurrent">-</span>
+                                <span id="adjustStockPreviewCurrent">-</span>
                             </div>
-                            <div class="preview-row">
+                            <div class="adjust-stock-preview-row">
                                 <span>Adjustment:</span>
-                                <span id="previewAdjustment">-</span>
+                                <span id="adjustStockPreviewAdjustment">-</span>
                             </div>
-                            <div class="preview-row total">
+                            <div class="adjust-stock-preview-row total">
                                 <span>New Stock Level:</span>
-                                <span id="previewNew">-</span>
+                                <span id="adjustStockPreviewNew">-</span>
                             </div>
                         </div>
 
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-                            <button type="submit" class="btn btn-primary">Apply Adjustment</button>
+                        <div class="adjust-stock-form-actions">
+                            <button type="button" class="adjust-stock-btn adjust-stock-btn-secondary" onclick="resetAdjustStockForm()">Reset Form</button>
+                            <button type="submit" class="adjust-stock-btn adjust-stock-btn-primary">Apply Adjustment</button>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Recent Adjustments -->
-            <div class="recent-adjustments">
-                <h3 class="section-title">Recent Stock Adjustments</h3>
-                <table class="adjustments-table">
+            <div class="adjust-stock-recent-adjustments">
+                <h3 class="adjust-stock-section-title">Recent Stock Adjustments</h3>
+                <table class="adjust-stock-adjustments-table">
                     <thead>
                         <tr>
                             <th>Date/Time</th>
@@ -580,11 +578,11 @@
                             <th>User</th>
                         </tr>
                     </thead>
-                    <tbody id="adjustmentsHistory">
+                    <tbody id="adjustStockAdjustmentsHistory">
                         <tr>
                             <td>2024-11-15 10:30 AM</td>
                             <td>Ballpoint Pens</td>
-                            <td><span class="adjustment-type add">Add</span></td>
+                            <td><span class="adjust-stock-adjustment-type add">Add</span></td>
                             <td>+50</td>
                             <td>100</td>
                             <td>150</td>
@@ -594,7 +592,7 @@
                         <tr>
                             <td>2024-11-15 09:15 AM</td>
                             <td>Bond Paper</td>
-                            <td><span class="adjustment-type remove">Remove</span></td>
+                            <td><span class="adjust-stock-adjustment-type remove">Remove</span></td>
                             <td>-15</td>
                             <td>100</td>
                             <td>85</td>
@@ -604,7 +602,7 @@
                         <tr>
                             <td>2024-11-14 02:45 PM</td>
                             <td>Staplers</td>
-                            <td><span class="adjustment-type set">Set</span></td>
+                            <td><span class="adjust-stock-adjustment-type set">Set</span></td>
                             <td>=12</td>
                             <td>8</td>
                             <td>12</td>
@@ -621,11 +619,11 @@
         lucide.createIcons();
         // Form handling and preview functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const productSelect = document.getElementById('productSelect');
-            const currentStockElement = document.getElementById('currentStock');
-            const adjustmentType = document.getElementById('adjustmentType');
-            const adjustmentQuantity = document.getElementById('adjustmentQuantity');
-            const adjustmentPreview = document.getElementById('adjustmentPreview');
+            const productSelect = document.getElementById('adjustStockProductSelect');
+            const currentStockElement = document.getElementById('adjustStockCurrentStock');
+            const adjustmentType = document.getElementById('adjustStockAdjustmentType');
+            const adjustmentQuantity = document.getElementById('adjustStockAdjustmentQuantity');
+            const adjustmentPreview = document.getElementById('adjustStockAdjustmentPreview');
             const adjustStockForm = document.getElementById('adjustStockForm');
 
             // Update current stock when product is selected
@@ -635,7 +633,7 @@
 
                 if (stock) {
                     currentStockElement.textContent = stock;
-                    updatePreview();
+                    updateAdjustStockPreview();
                 } else {
                     currentStockElement.textContent = '-';
                     adjustmentPreview.style.display = 'none';
@@ -644,18 +642,18 @@
 
             // Update preview when adjustment details change
             [adjustmentType, adjustmentQuantity].forEach(element => {
-                element.addEventListener('input', updatePreview);
-                element.addEventListener('change', updatePreview);
+                element.addEventListener('input', updateAdjustStockPreview);
+                element.addEventListener('change', updateAdjustStockPreview);
             });
 
-            function updatePreview() {
-                const selectedOption = productSelect.options[productSelect.selectedIndex];
+            function updateAdjustStockPreview() {
+                const selectedOption = adjustStockProductSelect.options[adjustStockProductSelect.selectedIndex];
                 const currentStock = parseInt(selectedOption.dataset.stock || 0);
-                const type = adjustmentType.value;
-                const quantity = parseInt(adjustmentQuantity.value || 0);
+                const type = adjustStockAdjustmentType.value;
+                const quantity = parseInt(adjustStockAdjustmentQuantity.value || 0);
 
                 if (!type || !quantity || !currentStock) {
-                    adjustmentPreview.style.display = 'none';
+                    adjustStockAdjustmentPreview.style.display = 'none';
                     return;
                 }
 
@@ -679,11 +677,11 @@
                         return;
                 }
 
-                document.getElementById('previewCurrent').textContent = currentStock;
-                document.getElementById('previewAdjustment').textContent = adjustmentText;
-                document.getElementById('previewNew').textContent = newStock;
+                document.getElementById('adjustStockPreviewCurrent').textContent = currentStock;
+                document.getElementById('adjustStockPreviewAdjustment').textContent = adjustmentText;
+                document.getElementById('adjustStockPreviewNew').textContent = newStock;
 
-                adjustmentPreview.style.display = 'block';
+                adjustStockAdjustmentPreview.style.display = 'block';
             }
 
             // Form submission
@@ -695,35 +693,35 @@
                     productName: productSelect.options[productSelect.selectedIndex].text,
                     type: adjustmentType.value,
                     quantity: adjustmentQuantity.value,
-                    reason: document.getElementById('adjustmentReason').value,
+                    reason: document.getElementById('adjustStockAdjustmentReason').value,
                     currentStock: productSelect.options[productSelect.selectedIndex].dataset.stock
                 };
 
                 // Simulate API call
-                showAlert('Stock adjustment applied successfully!', 'success');
+                showAdjustStockAlert('Stock adjustment applied successfully!', 'success');
 
                 // Add to recent adjustments table
-                addToAdjustmentsHistory(formData);
+                addAdjustStockToAdjustmentsHistory(formData);
 
                 // Reset form
                 setTimeout(() => {
-                    resetForm();
+                    resetAdjustStockForm();
                 }, 1500);
             });
         });
 
-        function resetForm() {
+        function resetAdjustStockForm() {
             document.getElementById('adjustStockForm').reset();
-            document.getElementById('currentStock').textContent = '-';
-            document.getElementById('adjustmentPreview').style.display = 'none';
+            document.getElementById('adjustStockCurrentStock').textContent = '-';
+            document.getElementById('adjustStockAdjustmentPreview').style.display = 'none';
         }
 
-        function showAlert(message, type) {
-            const alertContainer = document.getElementById('alertContainer');
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+        function showAdjustStockAlert(message, type) {
+            const alertContainer = document.getElementById('adjustStockAlertContainer');
+            const alertClass = type === 'success' ? 'adjust-stock-alert-success' : 'adjust-stock-alert-error';
 
             alertContainer.innerHTML = `
-                <div class="alert ${alertClass}">
+                <div class="adjust-stock-alert ${alertClass}">
                     ${message}
                 </div>
             `;
@@ -733,8 +731,8 @@
             }, 5000);
         }
 
-        function addToAdjustmentsHistory(data) {
-            const tbody = document.getElementById('adjustmentsHistory');
+        function addAdjustStockToAdjustmentsHistory(data) {
+            const tbody = document.getElementById('adjustStockAdjustmentsHistory');
             const now = new Date();
             const formattedDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
@@ -745,17 +743,17 @@
 
             switch (data.type) {
                 case 'add':
-                    typeSpan = '<span class="adjustment-type add">Add</span>';
+                    typeSpan = '<span class="adjust-stock-adjustment-type add">Add</span>';
                     quantityText = `+${quantity}`;
                     newStock = currentStock + quantity;
                     break;
                 case 'remove':
-                    typeSpan = '<span class="adjustment-type remove">Remove</span>';
+                    typeSpan = '<span class="adjust-stock-adjustment-type remove">Remove</span>';
                     quantityText = `-${quantity}`;
                     newStock = Math.max(0, currentStock - quantity);
                     break;
                 case 'set':
-                    typeSpan = '<span class="adjustment-type set">Set</span>';
+                    typeSpan = '<span class="adjust-stock-adjustment-type set">Set</span>';
                     quantityText = `=${quantity}`;
                     newStock = quantity;
                     break;

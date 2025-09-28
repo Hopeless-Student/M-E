@@ -165,8 +165,6 @@
     <?php include './edit-user.php';
           include './user-details.php';
           include './user-orders.php';
-
-
           ?>
     <script>
         lucide.createIcons();
@@ -182,6 +180,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadCustomersData();
             updateStats();
+            setupModalClickOutside(); // Call this once on DOMContentLoaded
         });
 
         function updateStats() {
@@ -218,7 +217,13 @@
                                 totalSpent: 4250,
                                 status: "active",
                                 avatar: "JD",
-                                memberSince: "Aug 2024"
+                                memberSince: "Aug 2024",
+                                dob: "June 15, 1985",
+                                gender: "Male",
+                                streetAddress: "123 Main Street",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 2,
@@ -230,7 +235,13 @@
                                 totalSpent: 2180,
                                 status: "active",
                                 avatar: "RG",
-                                memberSince: "Jun 2024"
+                                memberSince: "Jun 2024",
+                                dob: "July 20, 1990",
+                                gender: "Male",
+                                streetAddress: "456 Oak Avenue",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 3,
@@ -242,7 +253,13 @@
                                 totalSpent: 1850,
                                 status: "new",
                                 avatar: "AR",
-                                memberSince: "Aug 2025"
+                                memberSince: "Aug 2025",
+                                dob: "January 10, 1995",
+                                gender: "Female",
+                                streetAddress: "789 Pine Lane",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 4,
@@ -254,7 +271,13 @@
                                 totalSpent: 8900,
                                 status: "active",
                                 avatar: "CM",
-                                memberSince: "May 2024"
+                                memberSince: "May 2024",
+                                dob: "March 5, 1980",
+                                gender: "Male",
+                                streetAddress: "101 Elm Street",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 5,
@@ -266,7 +289,13 @@
                                 totalSpent: 1200,
                                 status: "inactive",
                                 avatar: "LF",
-                                memberSince: "Apr 2024"
+                                memberSince: "Apr 2024",
+                                dob: "November 22, 1992",
+                                gender: "Female",
+                                streetAddress: "202 Birch Road",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 6,
@@ -278,7 +307,13 @@
                                 totalSpent: 3450,
                                 status: "active",
                                 avatar: "MT",
-                                memberSince: "Mar 2024"
+                                memberSince: "Mar 2024",
+                                dob: "September 1, 1988",
+                                gender: "Male",
+                                streetAddress: "303 Cedar Street",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 7,
@@ -290,7 +325,13 @@
                                 totalSpent: 450,
                                 status: "new",
                                 avatar: "CL",
-                                memberSince: "Aug 2025"
+                                memberSince: "Aug 2025",
+                                dob: "April 18, 1998",
+                                gender: "Female",
+                                streetAddress: "404 Willow Drive",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             },
                             {
                                 id: 8,
@@ -302,7 +343,13 @@
                                 totalSpent: 6780,
                                 status: "active",
                                 avatar: "MS",
-                                memberSince: "Jul 2024"
+                                memberSince: "Jul 2024",
+                                dob: "December 12, 1983",
+                                gender: "Female",
+                                streetAddress: "505 Maple Avenue",
+                                province: "Zambales",
+                                postalCode: "2200",
+                                country: "Philippines"
                             }
                         ],
                         total: 8
@@ -430,6 +477,7 @@
         }
 
         // Modal Functions - These will open your existing modals
+
         function openCustomerDetailsModal(customerId) {
             const customer = allCustomers.find(c => c.id === customerId);
             if (!customer) {
@@ -437,17 +485,61 @@
                 return;
             }
 
-            // Populate the customer details modal with customer data
             populateCustomerDetailsModal(customer);
-
-            // Show the customer details modal (use your existing modal ID)
             document.getElementById('customerDetailsModal').classList.add('show');
             document.body.style.overflow = 'hidden';
 
-            // Refresh Lucide icons for the modal
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
+        }
+
+        function populateCustomerDetailsModal(customer) {
+            const modal = document.getElementById('customerDetailsModal');
+            if (!modal) return;
+
+            modal.querySelector('.customer-details-avatar-large').textContent = customer.avatar;
+            modal.querySelector('.customer-details-modal-title h3').textContent = customer.name;
+            modal.querySelector('.customer-details-modal-title p').textContent = `Customer ID: #CUS-00${customer.id}`;
+
+            // Update stats
+            const stats = modal.querySelectorAll('.customer-details-stat-value');
+            if (stats[0]) stats[0].textContent = customer.orders;
+            if (stats[1]) stats[1].textContent = `₱${customer.totalSpent.toLocaleString()}`;
+            if (stats[2]) stats[2].textContent = `₱${Math.round(customer.totalSpent / customer.orders).toLocaleString()}`;
+            // Last order is hardcoded in HTML, would need dynamic data for this
+
+            // Update personal info
+            const personalInfoRows = modal.querySelectorAll('.customer-details-info-section .customer-details-info-row');
+            if (personalInfoRows[0]) personalInfoRows[0].querySelector('.customer-details-info-value').textContent = customer.name;
+            if (personalInfoRows[1]) personalInfoRows[1].querySelector('.customer-details-info-value').textContent = customer.email;
+            if (personalInfoRows[2]) personalInfoRows[2].querySelector('.customer-details-info-value').textContent = customer.phone;
+            if (personalInfoRows[3]) personalInfoRows[3].querySelector('.customer-details-info-value').textContent = customer.dob;
+            if (personalInfoRows[4]) personalInfoRows[4].querySelector('.customer-details-info-value').textContent = customer.gender;
+            if (personalInfoRows[5]) personalInfoRows[5].querySelector('.customer-details-info-value').textContent = customer.memberSince;
+
+            // Update address info
+            const addressInfoRows = modal.querySelectorAll('.customer-details-info-section:nth-of-type(2) .customer-details-info-row');
+            if (addressInfoRows[0]) addressInfoRows[0].querySelector('.customer-details-info-value').textContent = customer.streetAddress;
+            if (addressInfoRows[1]) addressInfoRows[1].querySelector('.customer-details-info-value').textContent = customer.location; // Assuming location is city
+            if (addressInfoRows[2]) addressInfoRows[2].querySelector('.customer-details-info-value').textContent = customer.province;
+            if (addressInfoRows[3]) addressInfoRows[3].querySelector('.customer-details-info-value').textContent = customer.postalCode;
+            if (addressInfoRows[4]) addressInfoRows[4].querySelector('.customer-details-info-value').textContent = customer.country;
+            if (addressInfoRows[5]) {
+                const statusBadge = addressInfoRows[5].querySelector('.customer-details-status-badge');
+                statusBadge.textContent = customer.status.charAt(0).toUpperCase() + customer.status.slice(1) + ' Customer';
+                statusBadge.className = `customer-details-status-badge ${customer.status}`;
+            }
+
+            // Recent orders and activity timeline are hardcoded, would need dynamic data for these
+        }
+
+        function closeCustomerDetailsModal(event) {
+            const modal = document.getElementById('customerDetailsModal');
+            if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-details-close-btn'))) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
         }
 
         function openCustomerOrdersModal(customerId) {
@@ -461,15 +553,49 @@
             document.getElementById('customerOrdersModal').classList.add('show');
             document.body.style.overflow = 'hidden';
 
-            // Setup close button if it exists
-            const closeBtn = document.querySelector('#customerOrdersModal .close-btn');
-            if (closeBtn) {
-                closeBtn.onclick = closeCustomerOrdersModal;
-            }
-
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
+        }
+
+        function populateCustomerOrdersModal(customer) {
+            const modal = document.getElementById('customerOrdersModal');
+            if (!modal) return;
+
+            modal.querySelector('.customer-orders-avatar-large').textContent = customer.avatar;
+            modal.querySelector('.customer-orders-modal-title h3').textContent = `${customer.name} - Orders`;
+            modal.querySelector('.customer-orders-modal-title p').textContent = `Customer ID: #CUS-00${customer.id} • Member since ${customer.memberSince}`;
+
+            // Update order summary (hardcoded values, would need dynamic data)
+            // For demonstration, let's assume completed orders are customer.orders and cancelled is 1 if status is inactive
+            const completedOrders = customer.orders - (customer.status === 'inactive' ? 1 : 0);
+            const cancelledOrders = (customer.status === 'inactive' ? 1 : 0);
+            const completedSpent = customer.totalSpent - (cancelledOrders > 0 ? 300 : 0); // Example deduction for cancelled
+
+            const summaryValues = modal.querySelectorAll('.customer-orders-summary-value');
+            const summaryLabels = modal.querySelectorAll('.customer-orders-summary-label');
+
+            if (summaryValues[0]) summaryValues[0].textContent = completedOrders;
+            if (summaryLabels[0]) summaryLabels[0].textContent = `Completed (₱${completedSpent.toLocaleString()})`;
+
+            if (summaryValues[1]) summaryValues[1].textContent = 0; // Pending
+            if (summaryLabels[1]) summaryLabels[1].textContent = `Pending (₱0)`;
+
+            if (summaryValues[2]) summaryValues[2].textContent = 0; // Processing
+            if (summaryLabels[2]) summaryLabels[2].textContent = `Processing (₱0)`;
+
+            if (summaryValues[3]) summaryValues[3].textContent = cancelledOrders;
+            if (summaryLabels[3]) summaryLabels[3].textContent = `Cancelled (₱${(cancelledOrders > 0 ? 300 : 0).toLocaleString()})`;
+
+            // Orders table is hardcoded, would need dynamic data for these
+        }
+
+        function closeCustomerOrdersModal(event) {
+            const modal = document.getElementById('customerOrdersModal');
+            if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-orders-close-btn'))) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
         }
 
         function openCustomerEditModal(customerId) {
@@ -483,56 +609,78 @@
             document.getElementById('customerEditModal').classList.add('show');
             document.body.style.overflow = 'hidden';
 
-            // Setup close button if it exists
-            const closeBtn = document.querySelector('#customerEditModal .close-btn');
-            if (closeBtn) {
-                closeBtn.onclick = closeCustomerEditModal;
-            }
-
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
         }
 
-        // These functions populate your existing modals with customer data
-        function openCustomerDetailsModal(customerId) {
-            const customer = allCustomers.find(c => c.id === customerId);
-            if (!customer) {
-                alert('Customer not found');
-                return;
-            }
+        function populateCustomerEditModal(customer) {
+            const modal = document.getElementById('customerEditModal');
+            if (!modal) return;
 
-            populateCustomerDetailsModal(customer);
-            document.getElementById('customerDetailsModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
+            modal.querySelector('.customer-edit-avatar-large').textContent = customer.avatar;
+            modal.querySelector('.customer-edit-modal-title h3').textContent = `Edit Customer - ${customer.name}`;
+            modal.querySelector('#customerEditID').textContent = `#CUS-00${customer.id}`;
 
-            // Setup close button if it exists
-            const closeBtn = document.querySelector('#customerDetailsModal .close-btn');
-            if (closeBtn) {
-                closeBtn.onclick = closeCustomerDetailsModal;
-            }
+            // Update stats
+            const stats = modal.querySelectorAll('.customer-edit-stat-value');
+            if (stats[0]) stats[0].textContent = customer.orders;
+            if (stats[1]) stats[1].textContent = `₱${customer.totalSpent.toLocaleString()}`;
+            if (stats[2]) stats[2].textContent = customer.memberSince;
+            // Last order is hardcoded in HTML, would need dynamic data for this
 
-            setTimeout(() => {
-                lucide.createIcons();
-            }, 100);
+            // Update customer info in read-only fields
+            const infoValues = modal.querySelectorAll('.customer-edit-info-display .customer-edit-info-value');
+            if (infoValues[0]) infoValues[0].textContent = customer.name;
+            if (infoValues[1]) infoValues[1].textContent = customer.email;
+            if (infoValues[2]) infoValues[2].textContent = customer.phone;
+            // Registration Date, Location, Last Login are hardcoded, would need dynamic data
+
+            // Update form fields (example for account status and customer type)
+            const accountStatusSelect = modal.querySelector('select[name="account_status"]');
+            if (accountStatusSelect) accountStatusSelect.value = customer.status;
+
+            // Financial summary (hardcoded, would need dynamic data)
+            const financialValues = modal.querySelectorAll('.customer-edit-financial-value');
+            if (financialValues[2]) financialValues[2].textContent = `₱${customer.totalSpent.toLocaleString()}`;
+
+            // Sub-modal email field
+            const emailSubModalInput = document.querySelector('#emailModal .customer-edit-form-input[type="email"]');
+            if (emailSubModalInput) emailSubModalInput.value = customer.email;
+
+            // Sub-modal password reset email field
+            const passwordSubModalInput = document.querySelector('#passwordModal .customer-edit-form-input[type="email"]');
+            if (passwordSubModalInput) passwordSubModalInput.value = customer.email;
         }
-        function populateCustomerOrdersModal(customer) {
-            // Update customer orders modal with customer data
-            const modal = document.getElementById('customerOrdersModal');
+
+        function closeCustomerEditModal(event) {
+            const modal = document.getElementById('customerEditModal');
+            if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-edit-close-btn'))) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            }
+        }
+
+        function showCustomerEditSubModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            document.body.style.overflow = 'hidden'; // Keep main body locked
+        }
+
+        function closeCustomerEditSubModal(modalId) {
+            const modal = document.getElementById(modalId);
             if (modal) {
-                const nameElement = modal.querySelector('.modal-title h3');
-                if (nameElement) nameElement.textContent = `${customer.name} - Orders`;
-
-                const avatarElement = modal.querySelector('.customer-avatar-large');
-                if (avatarElement) avatarElement.textContent = customer.avatar;
-
-                // Update order stats
-                const statsElements = modal.querySelectorAll('.stat-value');
-                if (statsElements.length >= 4) {
-                    statsElements[0].textContent = customer.orders;
-                    statsElements[1].textContent = `₱${customer.totalSpent.toLocaleString()}`;
-                    statsElements[2].textContent = `₱${Math.round(customer.totalSpent / customer.orders).toLocaleString()}`;
-                    statsElements[3].textContent = customer.orders - (customer.status === 'active' ? 0 : 1); // Assuming cancelled orders
+                modal.classList.remove('show');
+                // Only unlock body if no other modals are open
+                if (!document.querySelector('.customer-edit-modal-base.show')) {
+                    document.body.style.overflow = 'auto';
+                }
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
                 }
             }
         }
@@ -545,46 +693,7 @@
                 document.body.style.overflow = 'auto';
             }
         }
-        function closeCustomerDetailsModal() {
-            const modal = document.getElementById('customerDetailsModal');
-            if (modal) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        }
-        function closeCustomerOrdersModal() {
-            const modal = document.getElementById('customerOrdersModal');
-            if (modal) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        }
-        function closeCustomerEditModal() {
-            const modal = document.getElementById('customerEditModal');
-            if (modal) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
 
-                // Reset any form data if there's a form in the edit modal
-                const form = modal.querySelector('form');
-                if (form) {
-                    form.reset();
-                }
-            }
-        }
-        function closeAllModals() {
-            const modals = document.querySelectorAll('.modal.show');
-            modals.forEach(modal => {
-                modal.classList.remove('show');
-
-                // Reset forms if they exist
-                const form = modal.querySelector('form');
-                if (form) {
-                    form.reset();
-                }
-            });
-            document.body.style.overflow = 'auto';
-        }
         function setupModalClickOutside() {
             // Add Customer Modal
             const addCustomerModal = document.getElementById('addCustomerModal');
@@ -625,40 +734,48 @@
                     }
                 });
             }
-        }
 
-        function populateCustomerEditModal(customer) {
-            // Update customer edit modal with customer data
-            const modal = document.getElementById('customerEditModal');
-            if (modal) {
-                const nameElement = modal.querySelector('.modal-title h3');
-                if (nameElement) nameElement.textContent = `Edit Customer - ${customer.name}`;
-
-                const avatarElement = modal.querySelector('.customer-avatar-large');
-                if (avatarElement) avatarElement.textContent = customer.avatar;
-
-                // Update customer info in read-only fields
-                const infoValues = modal.querySelectorAll('.info-value');
-                if (infoValues.length >= 6) {
-                    infoValues[0].textContent = customer.name;
-                    infoValues[1].textContent = customer.email;
-                    infoValues[2].textContent = customer.phone;
-                    infoValues[4].textContent = customer.location;
-                }
+            // Sub-modals for Edit Customer Modal
+            const emailModal = document.getElementById('emailModal');
+            if (emailModal) {
+                emailModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerEditSubModal('emailModal');
+                    }
+                });
+            }
+            const reportModal = document.getElementById('reportModal');
+            if (reportModal) {
+                reportModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerEditSubModal('reportModal');
+                    }
+                });
+            }
+            const passwordModal = document.getElementById('passwordModal');
+            if (passwordModal) {
+                passwordModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerEditSubModal('passwordModal');
+                    }
+                });
+            }
+            const deleteModal = document.getElementById('deleteModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerEditSubModal('deleteModal');
+                    }
+                });
             }
         }
+
 
         // Modal functions for add customer
         function showAddCustomerModal() {
             document.getElementById('addCustomerModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
         }
-
-        // Close modal when clicking outside
-        document.getElementById('addCustomerModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAddCustomerModal();
-            }
-        });
 
         // Add customer form submission
         document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
@@ -685,13 +802,38 @@
         document.addEventListener('keydown', function(e) {
             // ESC to close modals
             if (e.key === 'Escape') {
-                closeAddCustomerModal();
-                // Close other modals if they exist
-                const modals = document.querySelectorAll('.modal.show');
-                modals.forEach(modal => {
-                    modal.classList.remove('show');
-                    document.body.style.overflow = 'auto';
-                });
+                // Close Add Customer Modal
+                const addModal = document.getElementById('addCustomerModal');
+                if (addModal && addModal.classList.contains('show')) {
+                    closeAddCustomerModal();
+                    return;
+                }
+
+                // Close Customer Details Modal
+                const detailsModal = document.getElementById('customerDetailsModal');
+                if (detailsModal && detailsModal.classList.contains('show')) {
+                    closeCustomerDetailsModal();
+                    return;
+                }
+
+                // Close Customer Orders Modal
+                const ordersModal = document.getElementById('customerOrdersModal');
+                if (ordersModal && ordersModal.classList.contains('show')) {
+                    closeCustomerOrdersModal();
+                    return;
+                }
+
+                // Close Customer Edit Modal (and its sub-modals first)
+                const editModal = document.getElementById('customerEditModal');
+                if (editModal && editModal.classList.contains('show')) {
+                    const subModals = editModal.querySelectorAll('.customer-edit-sub-modal.show');
+                    if (subModals.length > 0) {
+                        subModals.forEach(subModal => closeCustomerEditSubModal(subModal.id));
+                    } else {
+                        closeCustomerEditModal();
+                    }
+                    return;
+                }
             }
             // Ctrl+K to focus search
             if (e.ctrlKey && e.key === 'k') {

@@ -7,6 +7,237 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="../assets/css/admin/inventory/index.css">
+    <style>
+        /* General Modal Styles (prefixed for this file's modals) */
+        .inventory-modal-base {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            animation: inventoryModalFadeIn 0.3s ease;
+        }
+
+        .inventory-modal-base.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        @keyframes inventoryModalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .inventory-modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: inventoryModalSlideIn 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes inventoryModalSlideIn {
+            from { transform: translateY(-30px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .inventory-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .inventory-modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .inventory-modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .inventory-modal-close-btn:hover {
+            color: #1e40af;
+            background: #f1f5f9;
+        }
+
+        .inventory-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .inventory-form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .inventory-form-input, .inventory-form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .inventory-form-input:focus, .inventory-form-select:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .inventory-form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .inventory-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .inventory-btn-primary {
+            background: #1e40af;
+            color: white;
+        }
+
+        .inventory-btn-primary:hover {
+            background: #1e3a8a;
+        }
+
+        .inventory-btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .inventory-btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* Low Stock Modal Specifics */
+        .low-stock-modal-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #fef2f2;
+        }
+
+        .low-stock-modal-item-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .low-stock-modal-item-icon {
+            font-size: 2rem;
+        }
+
+        .low-stock-modal-item-name {
+            color: #dc2626;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .low-stock-modal-item-stock {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .low-stock-modal-reorder-btn {
+            padding: 0.5rem 1rem;
+            background: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .low-stock-modal-reorder-btn:hover {
+            background: #1e3a8a;
+        }
+
+        /* Notification styles */
+        .inventory-notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 3000;
+            max-width: 300px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .inventory-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .inventory-notification.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .inventory-notification.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .inventory-notification.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        @media (max-width: 768px) {
+            .inventory-modal-content {
+                max-width: 95vw;
+                margin: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard">
@@ -28,10 +259,10 @@
             </div>
 
             <div class="quick-actions">
-                <button class="quick-action-btn primary">
+                <button class="quick-action-btn primary" onclick="window.location.href='adjust-stock.php'">
                     <i data-lucide="plus"></i> Quick Stock Adjust
                 </button>
-                <button class="quick-action-btn">
+                <button class="quick-action-btn" onclick="window.location.href='stock-movements.php'">
                     <i data-lucide="activity"></i> View Movements
                 </button>
                 <button class="quick-action-btn" onclick="openBulkUpdateModal()">
@@ -138,53 +369,53 @@
         </main>
     </div>
 
-    <div id="bulkUpdateModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Bulk Stock Update</h3>
-                <button class="close-btn" onclick="closeModal('bulkUpdateModal')">&times;</button>
+    <div id="bulkUpdateModal" class="inventory-modal-base">
+        <div class="inventory-modal-content">
+            <div class="inventory-modal-header">
+                <h3 class="inventory-modal-title">Bulk Stock Update</h3>
+                <button class="inventory-modal-close-btn" onclick="closeBulkUpdateModal()">&times;</button>
             </div>
             <form id="bulkUpdateForm">
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-input" id="bulkCategory" required>
+                <div class="inventory-form-group">
+                    <label class="inventory-form-label">Category</label>
+                    <select class="inventory-form-select" id="bulkCategory" required>
                         <option value="">Select Category</option>
                         <option value="office">Office Supplies</option>
                         <option value="school">School Supplies</option>
                         <option value="sanitary">Sanitary Supplies</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Action</label>
-                    <select class="form-input" id="bulkAction" required>
+                <div class="inventory-form-group">
+                    <label class="inventory-form-label">Action</label>
+                    <select class="inventory-form-select" id="bulkAction" required>
                         <option value="increase">Increase by Percentage</option>
                         <option value="decrease">Decrease by Percentage</option>
                         <option value="setMin">Set Minimum Stock</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Value</label>
-                    <input type="number" class="form-input" id="bulkValue" min="0" required>
+                <div class="inventory-form-group">
+                    <label class="inventory-form-label">Value</label>
+                    <input type="number" class="inventory-form-input" id="bulkValue" min="0" required>
                 </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('bulkUpdateModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Apply Update</button>
+                <div class="inventory-form-actions">
+                    <button type="button" class="inventory-btn inventory-btn-secondary" onclick="closeBulkUpdateModal()">Cancel</button>
+                    <button type="submit" class="inventory-btn inventory-btn-primary">Apply Update</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="lowStockModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Low Stock Alert</h3>
-                <button class="close-btn" onclick="closeModal('lowStockModal')">&times;</button>
+    <div id="lowStockModal" class="inventory-modal-base">
+        <div class="inventory-modal-content">
+            <div class="inventory-modal-header">
+                <h3 class="inventory-modal-title">Low Stock Alert</h3>
+                <button class="inventory-modal-close-btn" onclick="closeLowStockModal()">&times;</button>
             </div>
             <div id="lowStockList">
             </div>
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('lowStockModal')">Close</button>
-                <button type="button" class="btn btn-primary" onclick="bulkReorder()">Bulk Reorder</button>
+            <div class="inventory-form-actions">
+                <button type="button" class="inventory-btn inventory-btn-secondary" onclick="closeLowStockModal()">Close</button>
+                <button type="button" class="inventory-btn inventory-btn-primary" onclick="bulkReorder()">Bulk Reorder</button>
             </div>
         </div>
     </div>
@@ -303,6 +534,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeDashboard();
+            setupInventoryModalClickOutside(); // Setup click outside for modals in this file
         });
 
         function initializeDashboard() {
@@ -354,7 +586,7 @@
                     <td>₱${item.price.toLocaleString()}</td>
                     <td>₱${totalValue.toLocaleString()}</td>
                     <td>
-                        <button class="action-btn">Adjust</button>
+                        <button class="action-btn" onclick="window.location.href='adjust-stock.php?productId=${item.id}'">Adjust</button>
                         <button class="action-btn secondary" onclick="viewDetails(${item.id})">Details</button>
                         <button class="action-btn danger" onclick="deleteItem(${item.id})">Delete</button>
                     </td>
@@ -521,35 +753,47 @@
             const lowStockList = document.getElementById('lowStockList');
 
             lowStockList.innerHTML = lowStockItems.map(item => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; background: #fef2f2;">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div style="font-size: 2rem;">${item.icon}</div>
+                <div class="low-stock-modal-list-item">
+                    <div class="low-stock-modal-item-details">
+                        <div class="low-stock-modal-item-icon">${item.icon}</div>
                         <div>
-                            <h4 style="color: #dc2626; margin-bottom: 0.25rem;">${item.name}</h4>
-                            <p style="color: #64748b; font-size: 0.85rem;">Current: ${item.stock} | Min: ${item.minStock}</p>
+                            <h4 class="low-stock-modal-item-name">${item.name}</h4>
+                            <p class="low-stock-modal-item-stock">Current: ${item.stock} | Min: ${item.minStock}</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="quickReorder('${item.name}')">Quick Reorder</button>
+                    <button class="low-stock-modal-reorder-btn" onclick="quickReorder('${item.name}')">Quick Reorder</button>
                 </div>
             `).join('');
+            lucide.createIcons(); // Re-create icons for new modal content
         }
 
         function openBulkUpdateModal() {
             document.getElementById('bulkUpdateModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons(); // Re-create icons for new modal content
+        }
+
+        function closeBulkUpdateModal() {
+            document.getElementById('bulkUpdateModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            document.getElementById('bulkUpdateForm').reset();
         }
 
         function openLowStockModal() {
             document.getElementById('lowStockModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons(); // Re-create icons for new modal content
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
+        function closeLowStockModal() {
+            document.getElementById('lowStockModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
         }
 
         function viewDetails(itemId) {
             const item = inventoryData.find(i => i.id === itemId);
             if (item) {
-                alert(`Product Details:\n\nName: ${item.name}\nSKU: ${item.sku}\nCategory: ${item.categoryName}\nStock: ${item.stock}\nMin Stock: ${item.minStock}\nPrice: ₱${item.price.toLocaleString()}\nTotal Value: ₱${(item.stock * item.price).toLocaleString()}`);
+                showNotification(`Product Details:\n\nName: ${item.name}\nSKU: ${item.sku}\nCategory: ${item.categoryName}\nStock: ${item.stock}\nMin Stock: ${item.minStock}\nPrice: ₱${item.price.toLocaleString()}\nTotal Value: ₱${(item.stock * item.price).toLocaleString()}`, 'info');
             }
         }
 
@@ -632,34 +876,28 @@
 
         function quickReorder(product) {
             showNotification(`Reorder request sent for ${product}`, 'success');
-            closeModal('lowStockModal');
+            closeLowStockModal();
         }
 
         function bulkReorder() {
             showNotification('Bulk reorder request sent for all low stock items', 'success');
-            closeModal('lowStockModal');
+            closeLowStockModal();
         }
 
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 2rem;
-                right: 2rem;
-                background: ${type === 'success' ? '#dcfce7' : type === 'error' ? '#fee2e2' : '#dbeafe'};
-                color: ${type === 'success' ? '#166534' : type === 'error' ? '#dc2626' : '#1e40af'};
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                z-index: 3000;
-                max-width: 300px;
-            `;
+            notification.className = `inventory-notification ${type}`;
             notification.textContent = message;
 
             document.body.appendChild(notification);
 
+            // Trigger reflow to enable transition
+            void notification.offsetWidth;
+            notification.classList.add('show');
+
             setTimeout(() => {
-                notification.remove();
+                notification.classList.remove('show');
+                notification.addEventListener('transitionend', () => notification.remove());
             }, 3000);
         }
 
@@ -670,8 +908,8 @@
             const action = document.getElementById('bulkAction').value;
             const value = parseFloat(document.getElementById('bulkValue').value);
 
-            if (!category || !action || !value) {
-                showNotification('Please fill in all fields', 'error');
+            if (!category || !action || isNaN(value)) {
+                showNotification('Please fill in all fields with valid values', 'error');
                 return;
             }
 
@@ -699,7 +937,7 @@
             });
 
             showNotification(`Bulk update completed! ${updatedCount} items updated successfully.`, 'success');
-            closeModal('bulkUpdateModal');
+            closeBulkUpdateModal();
             populateInventoryTable();
             updateStats();
             populateLowStockModal();
@@ -707,12 +945,27 @@
             this.reset();
         });
 
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.remove('show');
+        function setupInventoryModalClickOutside() {
+            const bulkUpdateModal = document.getElementById('bulkUpdateModal');
+            if (bulkUpdateModal) {
+                bulkUpdateModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeBulkUpdateModal();
+                    }
+                });
             }
-        });
 
+            const lowStockModal = document.getElementById('lowStockModal');
+            if (lowStockModal) {
+                lowStockModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeLowStockModal();
+                    }
+                });
+            }
+        }
+
+        // Ensure icons are created for dynamically added content
         setTimeout(() => {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
