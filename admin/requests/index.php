@@ -877,7 +877,7 @@
                             <button class="icon-btn" onclick="appState.openResponseModal()" title="Quick Response">
                                 <i data-lucide="reply" width="16" height="16"></i>
                             </button>
-                            <button class="icon-btn" onclick="appState.archiveMessageFromViewDetails()" title="Archive">
+                            <button class="icon-btn" onclick="appState.openSingleArchiveModal()" title="Archive">
                                 <i data-lucide="archive" width="16" height="16"></i>
                             </button>
                         </div>
@@ -987,7 +987,39 @@
 
     <!-- Notification -->
     <div class="app-notification" id="appNotification"></div>
-
+    <div class="app-modal-overlay" id="singleArchiveModal">
+        <div class="app-modal">
+            <div class="app-modal-header">
+                <h3 class="app-modal-title">Archive Message</h3>
+                <button class="app-modal-close-btn" onclick="appState.closeModal('singleArchiveModal')">&times;</button>
+            </div>
+            <form onsubmit="appState.handleSingleArchive(event)">
+                <p style="margin-bottom: 1.5rem; color: #64748b;">
+                    You are about to archive message <span id="archiveMessageIdDisplay" style="font-weight: 600;"></span>.
+                    Please select a reason for archiving.
+                </p>
+                <div class="app-form-group">
+                    <label class="app-form-label">Archive Reason</label>
+                    <select class="app-form-select" name="archiveReason" required>
+                        <option value="">Select reason</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="auto">Auto-archived (System)</option>
+                        <option value="manual">Manually archived</option>
+                        <option value="expired">Expired/Outdated</option>
+                        <option value="spam">Spam</option>
+                    </select>
+                </div>
+                <div class="app-form-group">
+                    <label class="app-form-label">Notes (Optional)</label>
+                    <textarea class="app-form-textarea" name="archiveNotes" placeholder="Add any relevant notes..."></textarea>
+                </div>
+                <div class="app-modal-actions">
+                    <button type="button" class="app-action-btn secondary" onclick="appState.closeModal('singleArchiveModal')">Cancel</button>
+                    <button type="submit" class="app-action-btn primary">Archive Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
@@ -1677,7 +1709,7 @@ M & E Team`
                 const backBtn = viewDetailsModal.querySelector('.header-actions .action-button.secondary');
 
                 if (replyBtn) replyBtn.onclick = () => appState.openResponseModalFromViewDetails();
-                if (archiveBtn) archiveBtn.onclick = () => appState.archiveMessageFromViewDetails();
+                if (archiveBtn) archiveBtn.onclick = () => appState.openSingleArchiveModal();
                 if (backBtn) backBtn.onclick = () => appState.closeModal('viewDetailsModal');
 
                 // Re-bind quick actions

@@ -324,36 +324,3 @@
         </div>
     </div>
 </div>
-<div class="app-modal-overlay" id="singleArchiveModal">
-    <div class="app-modal">
-        <div class="app-modal-header">
-            <h3 class="app-modal-title">Archive Message</h3>
-            <button class="app-modal-close-btn" onclick="appState.closeModal('singleArchiveModal')">&times;</button>
-        </div>
-        <form onsubmit="appState.handleSingleArchive(event)">
-            <p style="margin-bottom: 1.5rem; color: #64748b;">
-                You are about to archive message <span id="archiveMessageIdDisplay" style="font-weight: 600;"></span>.
-                Please select a reason for archiving.
-            </p>
-            <div class="app-form-group">
-                <label class="app-form-label">Archive Reason</label>
-                <select class="app-form-select" name="archiveReason" required>
-                    <option value="">Select reason</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="auto">Auto-archived (System)</option>
-                    <option value="manual">Manually archived</option>
-                    <option value="expired">Expired/Outdated</option>
-                    <option value="spam">Spam</option>
-                </select>
-            </div>
-            <div class="app-form-group">
-                <label class="app-form-label">Notes (Optional)</label>
-                <textarea class="app-form-textarea" name="archiveNotes" placeholder="Add any relevant notes..."></textarea>
-            </div>
-            <div class="app-modal-actions">
-                <button type="button" class="app-action-btn secondary" onclick="appState.closeModal('singleArchiveModal')">Cancel</button>
-                <button type="submit" class="app-action-btn primary">Archive Message</button>
-            </div>
-        </form>
-    </div>
-</div>
