@@ -23,13 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogin = document.querySelector(".btn-login a");
   const closeBtn = document.getElementById("closeLoginModal");
   const loginForm = document.getElementById("loginForm");
-  const openLoginModalLink = document.getElementById("openLoginModal");
+  const openLoginModalLink = document.getElementById("openLoginModal"); // Eto para sa header letche
 
   // Signup modal elements
   const signupModal = document.getElementById("signupModal");
   const openSignupModalLink = document.getElementById("openSignupModal");
   const closeSignupModal = document.getElementById("closeSignupModal");
   const signupForm = document.getElementById("signupForm");
+
+  // fixed: get the "Log in here" link from signup modal using a more specific selector
+  const signupToLoginLink = document.querySelector("#signupModal .modal-switch-text a");
 
   // Signup inputs
   const firstNameInput = document.getElementById("firstName");
@@ -280,8 +283,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (openLoginModalLink && signupModal && loginModal) {
-    openLoginModalLink.addEventListener("click", (e) => {
+  // fixed: Separate event listener for the "Log in here" link in signup modal
+  if (signupToLoginLink && signupModal && loginModal) {
+    signupToLoginLink.addEventListener("click", (e) => {
       e.preventDefault();
       signupModal.style.display = "none";
       loginModal.style.display = "block";

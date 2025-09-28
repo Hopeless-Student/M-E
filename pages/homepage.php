@@ -447,7 +447,7 @@
                     <input type="text" id="username" name="username" required/>
 
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required/>
+                    <input type="password" id="loginpassword" name="password" required/>
 
                     <button type="submit">Log In</button>
 
@@ -494,7 +494,7 @@
 
                     <p class="modal-switch-text">
                         Already have an account?
-                        <a href="#" id="openLoginModal">Log in here</a>
+                        <a href="#" id="signupToLoginLink">Log in here</a>
                     </p>
                 </form>
             </div>
