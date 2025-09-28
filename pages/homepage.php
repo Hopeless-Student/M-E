@@ -35,7 +35,20 @@ $profileImage = !empty($user['profile_image'])
                 <a href="products.php">Products</a>
                 <a href="about.php">About Us</a>
                 <a href="../test-files/order-history-test.php" class="mobile-only mobile-nav-cart">Cart</a>
-                <a href="#" id="mobileLoginLink" class="mobile-only">Log in</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                <div class="user-menu mobile-user-menu">
+                    <a href="../user/profile.php" class="user-avatar">
+                        <img src="<?php echo $profileImage; ?>" alt="User Avatar" class="avatar">
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="../user/profile.php">My Profile</a></li>
+                        <li><a href="../user/order-history.php">My Orders</a></li>
+                        <li><a href="../auth/logout.php">Logout</a></li>
+                    </ul>
+                </div>
+            <?php else: ?>
+                <a href="#" id="mobileLoginLink" class="mobile-only">Login</a>
+            <?php endif; ?>
             </nav>
 
             <div class="header-actions">
