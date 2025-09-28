@@ -29,80 +29,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-            z-index: 1000;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
 
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            line-height: 1.2;
-            margin-bottom: 75px;
-            margin-top: 30px;
-        }
-
-
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: #60a5fa;
-        }
-
-        .nav-link .lucide {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-        }
 
         /* Main Content */
         .main-content {
@@ -822,49 +749,7 @@
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="logo">
-                <img src="../../assets/images/logo/ME logo.png" alt="M&E Logo">
-
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.php" class="nav-link">
-                        <i data-lucide="bar-chart-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../orders/index.php" class="nav-link">
-                        <i data-lucide="package"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../products/index.php" class="nav-link">
-                        <i data-lucide="shopping-cart"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../users/index.php" class="nav-link">
-                        <i data-lucide="users"></i> Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link active">
-                        <i data-lucide="clipboard-list"></i> Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../requests/index.php" class="nav-link">
-                        <i data-lucide="message-circle"></i> Messages
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../settings/index.php" class="nav-link">
-                        <i data-lucide="settings"></i> Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <?php include '../../includes/admin_sidebar.php' ?>
 
         <!-- Main Content -->
         <main class="main-content">

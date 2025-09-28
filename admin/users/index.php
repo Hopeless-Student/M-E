@@ -28,7 +28,7 @@
                     <div class="stat-title">Total Customers</div>
                     <i data-lucide="users" class="stat-icon"></i>
                   </div>
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="totalCustomers">0</div>
                     <div class="stat-change neutral">Total registered customers</div>
                 </div>
                 <div class="stat-card">
@@ -36,7 +36,7 @@
                     <div class="stat-title">Active Customers</div>
                     <i data-lucide="user-round-check" class="stat-icon"></i>
                   </div>
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="activeCustomers">0</div>
                     <div class="stat-change neutral">Customers with orders from the past 1–2 months</div>
                 </div>
                 <div class="stat-card">
@@ -44,15 +44,15 @@
                     <div class="stat-title">Inactive Customers</div>
                     <i data-lucide="user-round-minus" class="stat-icon"></i>
                   </div>
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="inactiveCustomers">0</div>
                     <div class="stat-change neutral">Customers without orders from the past 1–2 months</div>
                 </div>
                 <div class="stat-card">
                   <div class="stat-header">
                     <div class="stat-title">New Customers</div>
-                    <i data-lucide="user-round-minus" class="stat-icon"></i>
+                    <i data-lucide="user-plus" class="stat-icon"></i>
                   </div>
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="newCustomers">0</div>
                     <div class="stat-change neutral">Registered within this month</div>
                 </div>
             </div>
@@ -69,6 +69,12 @@
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                         <option value="new">New</option>
+                    </select>
+                    <select class="filter-select" id="locationFilter">
+                        <option value="">All Locations</option>
+                        <option value="Olongapo City">Olongapo City</option>
+                        <option value="Subic Bay">Subic Bay</option>
+                        <option value="Zambales">Zambales</option>
                     </select>
                 </div>
                 <button class="add-customer-btn" onclick="showAddCustomerModal()">+ Add Customer</button>
@@ -91,198 +97,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">JD</div>
-                                        <div class="customer-details">
-                                            <h4>Juan Dela Cruz</h4>
-                                            <p>Member since Aug 2024</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>juan.delacruz@email.com</td>
-                                <td>+63 917 123 4567</td>
-                                <td>Olongapo City</td>
-                                <td>8</td>
-                                <td><strong>₱4,250</strong></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=1" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=1" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=1" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">RG</div>
-                                        <div class="customer-details">
-                                            <h4>Roberto Garcia</h4>
-                                            <p>Member since Jun 2024</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>roberto.garcia@email.com</td>
-                                <td>+63 919 345 6789</td>
-                                <td>Olongapo City</td>
-                                <td>5</td>
-                                <td><strong>₱2,180</strong></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=2" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=2" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=2" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">AR</div>
-                                        <div class="customer-details">
-                                            <h4>Ana Reyes</h4>
-                                            <p>Member since Aug 2025</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>ana.reyes@email.com</td>
-                                <td>+63 920 456 7890</td>
-                                <td>Olongapo City</td>
-                                <td>2</td>
-                                <td><strong>₱1,850</strong></td>
-                                <td><span class="status-badge new">New</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=3" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=3" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=3" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">CM</div>
-                                        <div class="customer-details">
-                                            <h4>Carlos Mendoza</h4>
-                                            <p>Member since May 2024</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>carlos.mendoza@email.com</td>
-                                <td>+63 921 567 8901</td>
-                                <td>Olongapo City</td>
-                                <td>15</td>
-                                <td><strong>₱8,900</strong></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=4" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=4" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=4" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">LF</div>
-                                        <div class="customer-details">
-                                            <h4>Lisa Fernandez</h4>
-                                            <p>Member since Apr 2024</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>lisa.fernandez@email.com</td>
-                                <td>+63 922 678 9012</td>
-                                <td>Olongapo City</td>
-                                <td>3</td>
-                                <td><strong>₱1,200</strong></td>
-                                <td><span class="status-badge inactive">Inactive</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=5" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=5" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=5" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">MT</div>
-                                        <div class="customer-details">
-                                            <h4>Miguel Torres</h4>
-                                            <p>Member since Mar 2024</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>miguel.torres@email.com</td>
-                                <td>+63 923 789 0123</td>
-                                <td>Olongapo City</td>
-                                <td>7</td>
-                                <td><strong>₱3,450</strong></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=6" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=6" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=6" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">CL</div>
-                                        <div class="customer-details">
-                                            <h4>Carmen Lopez</h4>
-                                            <p>Member since Aug 2025</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>carmen.lopez@email.com</td>
-                                <td>+63 924 890 1234</td>
-                                <td>Olongapo City</td>
-                                <td>1</td>
-                                <td><strong>₱450</strong></td>
-                                <td><span class="status-badge new">New</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=7" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=7" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=7" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="customer-info">
-                                        <div class="customer-avatar">MS</div>
-                                        <div class="customer-details">
-                                            <h4>Maria Santos</h4>
-                                            <p>Member since Jul 2024</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>maria.santos@email.com</td>
-                                <td>+63 918 234 5678</td>
-                                <td>Olongapo City</td>
-                                <td>12</td>
-                                <td><strong>₱6,780</strong></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="user-details.php?id=8" class="action-btn">View</a>
-                                        <a href="user-orders.php?id=8" class="action-btn orders">Orders</a>
-                                        <a href="edit-user.php?id=8" class="action-btn secondary">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
+                            <!-- Customers will be populated dynamically -->
                         </tbody>
                     </table>
                 </div>
@@ -293,11 +108,11 @@
                         Showing 1-8 of 142 customers
                     </div>
                     <div class="pagination-controls">
-                        <button class="page-btn">Previous</button>
+                        <button class="page-btn" id="prevBtn">Previous</button>
                         <button class="page-btn active">1</button>
                         <button class="page-btn">2</button>
                         <button class="page-btn">3</button>
-                        <button class="page-btn">Next</button>
+                        <button class="page-btn" id="nextBtn">Next</button>
                     </div>
                 </div>
             </div>
@@ -336,7 +151,7 @@
                     <label class="form-label">Customer Type</label>
                     <select class="form-input">
                         <option value="regular">Regular</option>
-                        <option value="vip">VIP</option>
+                        <option value="vip">Company</option>
                         <option value="wholesale">Wholesale</option>
                     </select>
                 </div>
@@ -347,43 +162,495 @@
             </form>
         </div>
     </div>
+    <?php include './edit-user.php';
+          include './user-details.php';
+          include './user-orders.php';
 
+
+          ?>
     <script>
         lucide.createIcons();
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.customers-table tbody tr');
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
+        // Global variables for pagination and data management
+        let currentPage = 1;
+        let totalPages = 1;
+        let allCustomers = [];
+        let filteredCustomers = [];
+        const customersPerPage = 8;
 
-            updatePaginationInfo();
+        // Load customers data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCustomersData();
+            updateStats();
         });
 
-        // Status filter
-        document.getElementById('statusFilter').addEventListener('change', function(e) {
-            const filterValue = e.target.value;
-            const rows = document.querySelectorAll('.customers-table tbody tr');
+        function updateStats() {
+            // Calculate stats from all customers
+            const total = allCustomers.length;
+            const active = allCustomers.filter(c => c.status === 'active').length;
+            const inactive = allCustomers.filter(c => c.status === 'inactive').length;
+            const newCustomers = allCustomers.filter(c => c.status === 'new').length;
 
-            rows.forEach(row => {
-                const status = row.querySelector('.status-badge').textContent.toLowerCase();
-                row.style.display = !filterValue || status.includes(filterValue) ? '' : 'none';
+            document.getElementById('totalCustomers').textContent = total;
+            document.getElementById('activeCustomers').textContent = active;
+            document.getElementById('inactiveCustomers').textContent = inactive;
+            document.getElementById('newCustomers').textContent = newCustomers;
+        }
+
+        async function loadCustomersData() {
+            try {
+                // Replace this with actual API call
+                // const response = await fetch('/api/customers.php');
+                // const result = await response.json();
+
+                // Mock data for now - using your existing data structure
+                const result = {
+                    success: true,
+                    data: {
+                        customers: [
+                            {
+                                id: 1,
+                                name: "Juan Dela Cruz",
+                                email: "juan.delacruz@email.com",
+                                phone: "+63 917 123 4567",
+                                location: "Olongapo City",
+                                orders: 8,
+                                totalSpent: 4250,
+                                status: "active",
+                                avatar: "JD",
+                                memberSince: "Aug 2024"
+                            },
+                            {
+                                id: 2,
+                                name: "Roberto Garcia",
+                                email: "roberto.garcia@email.com",
+                                phone: "+63 919 345 6789",
+                                location: "Olongapo City",
+                                orders: 5,
+                                totalSpent: 2180,
+                                status: "active",
+                                avatar: "RG",
+                                memberSince: "Jun 2024"
+                            },
+                            {
+                                id: 3,
+                                name: "Ana Reyes",
+                                email: "ana.reyes@email.com",
+                                phone: "+63 920 456 7890",
+                                location: "Olongapo City",
+                                orders: 2,
+                                totalSpent: 1850,
+                                status: "new",
+                                avatar: "AR",
+                                memberSince: "Aug 2025"
+                            },
+                            {
+                                id: 4,
+                                name: "Carlos Mendoza",
+                                email: "carlos.mendoza@email.com",
+                                phone: "+63 921 567 8901",
+                                location: "Olongapo City",
+                                orders: 15,
+                                totalSpent: 8900,
+                                status: "active",
+                                avatar: "CM",
+                                memberSince: "May 2024"
+                            },
+                            {
+                                id: 5,
+                                name: "Lisa Fernandez",
+                                email: "lisa.fernandez@email.com",
+                                phone: "+63 922 678 9012",
+                                location: "Olongapo City",
+                                orders: 3,
+                                totalSpent: 1200,
+                                status: "inactive",
+                                avatar: "LF",
+                                memberSince: "Apr 2024"
+                            },
+                            {
+                                id: 6,
+                                name: "Miguel Torres",
+                                email: "miguel.torres@email.com",
+                                phone: "+63 923 789 0123",
+                                location: "Olongapo City",
+                                orders: 7,
+                                totalSpent: 3450,
+                                status: "active",
+                                avatar: "MT",
+                                memberSince: "Mar 2024"
+                            },
+                            {
+                                id: 7,
+                                name: "Carmen Lopez",
+                                email: "carmen.lopez@email.com",
+                                phone: "+63 924 890 1234",
+                                location: "Olongapo City",
+                                orders: 1,
+                                totalSpent: 450,
+                                status: "new",
+                                avatar: "CL",
+                                memberSince: "Aug 2025"
+                            },
+                            {
+                                id: 8,
+                                name: "Maria Santos",
+                                email: "maria.santos@email.com",
+                                phone: "+63 918 234 5678",
+                                location: "Olongapo City",
+                                orders: 12,
+                                totalSpent: 6780,
+                                status: "active",
+                                avatar: "MS",
+                                memberSince: "Jul 2024"
+                            }
+                        ],
+                        total: 8
+                    }
+                };
+
+                allCustomers = result.data.customers;
+                filteredCustomers = [...allCustomers];
+                totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+
+                renderCustomers();
+                renderPagination();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                showError('Error loading customer data.');
+            }
+        }
+
+        function renderCustomers() {
+            const tbody = document.querySelector('.customers-table tbody');
+            const startIndex = (currentPage - 1) * customersPerPage;
+            const endIndex = startIndex + customersPerPage;
+            const pageCustomers = filteredCustomers.slice(startIndex, endIndex);
+
+            if (pageCustomers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="loading">No customers found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = pageCustomers.map(customer => `
+                <tr>
+                    <td>
+                        <div class="customer-info">
+                            <div class="customer-avatar">${customer.avatar}</div>
+                            <div class="customer-details">
+                                <h4>${customer.name}</h4>
+                                <p>Member since ${customer.memberSince}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.location}</td>
+                    <td>${customer.orders}</td>
+                    <td><strong>₱${customer.totalSpent.toLocaleString()}</strong></td>
+                    <td><span class="status-badge ${customer.status}">${customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}</span></td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn" onclick="openCustomerDetailsModal(${customer.id})">View</button>
+                            <button class="action-btn orders" onclick="openCustomerOrdersModal(${customer.id})">Orders</button>
+                            <button class="action-btn secondary" onclick="openCustomerEditModal(${customer.id})">Edit</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPagination() {
+            const paginationInfo = document.querySelector('.pagination-info');
+            const paginationControls = document.querySelector('.pagination-controls');
+
+            const startItem = ((currentPage - 1) * customersPerPage) + 1;
+            const endItem = Math.min(currentPage * customersPerPage, filteredCustomers.length);
+
+            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredCustomers.length} customers`;
+
+            // Generate page buttons
+            let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
+
+            for (let i = 1; i <= totalPages; i++) {
+                buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+
+            buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
+
+            paginationControls.innerHTML = buttonsHTML;
+
+            // Add event listeners
+            document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
+            document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
+
+            document.querySelectorAll('[data-page]').forEach(btn => {
+                btn.onclick = () => goToPage(parseInt(btn.dataset.page));
+            });
+        }
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderCustomers();
+            renderPagination();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const locationFilter = document.getElementById('locationFilter').value;
+
+            filteredCustomers = allCustomers.filter(customer => {
+                const matchesSearch = !searchTerm ||
+                    customer.name.toLowerCase().includes(searchTerm) ||
+                    customer.email.toLowerCase().includes(searchTerm);
+
+                const matchesStatus = !statusFilter || customer.status === statusFilter;
+                const matchesLocation = !locationFilter || customer.location.toLowerCase() === locationFilter.toLowerCase();
+
+                return matchesSearch && matchesStatus && matchesLocation;
             });
 
-            updatePaginationInfo();
-        });
+            totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+            currentPage = 1; // Reset to first page when filtering
+            renderCustomers();
+            renderPagination();
+        }
 
-        // Modal functions
-        function showAddCustomerModal() {
-            document.getElementById('addCustomerModal').classList.add('show');
+        // Search and filter functionality
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('locationFilter').addEventListener('change', applyFilters);
+
+        function showError(message) {
+            const tbody = document.querySelector('.customers-table tbody');
+            tbody.innerHTML = `<tr><td colspan="8" class="error" style="text-align: center; padding: 2rem; color: #dc2626;">${message}</td></tr>`;
+        }
+
+        // Modal Functions - These will open your existing modals
+        function openCustomerDetailsModal(customerId) {
+            const customer = allCustomers.find(c => c.id === customerId);
+            if (!customer) {
+                alert('Customer not found');
+                return;
+            }
+
+            // Populate the customer details modal with customer data
+            populateCustomerDetailsModal(customer);
+
+            // Show the customer details modal (use your existing modal ID)
+            document.getElementById('customerDetailsModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            // Refresh Lucide icons for the modal
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        }
+
+        function openCustomerOrdersModal(customerId) {
+            const customer = allCustomers.find(c => c.id === customerId);
+            if (!customer) {
+                alert('Customer not found');
+                return;
+            }
+
+            populateCustomerOrdersModal(customer);
+            document.getElementById('customerOrdersModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            // Setup close button if it exists
+            const closeBtn = document.querySelector('#customerOrdersModal .close-btn');
+            if (closeBtn) {
+                closeBtn.onclick = closeCustomerOrdersModal;
+            }
+
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        }
+
+        function openCustomerEditModal(customerId) {
+            const customer = allCustomers.find(c => c.id === customerId);
+            if (!customer) {
+                alert('Customer not found');
+                return;
+            }
+
+            populateCustomerEditModal(customer);
+            document.getElementById('customerEditModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            // Setup close button if it exists
+            const closeBtn = document.querySelector('#customerEditModal .close-btn');
+            if (closeBtn) {
+                closeBtn.onclick = closeCustomerEditModal;
+            }
+
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        }
+
+        // These functions populate your existing modals with customer data
+        function openCustomerDetailsModal(customerId) {
+            const customer = allCustomers.find(c => c.id === customerId);
+            if (!customer) {
+                alert('Customer not found');
+                return;
+            }
+
+            populateCustomerDetailsModal(customer);
+            document.getElementById('customerDetailsModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            // Setup close button if it exists
+            const closeBtn = document.querySelector('#customerDetailsModal .close-btn');
+            if (closeBtn) {
+                closeBtn.onclick = closeCustomerDetailsModal;
+            }
+
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        }
+        function populateCustomerOrdersModal(customer) {
+            // Update customer orders modal with customer data
+            const modal = document.getElementById('customerOrdersModal');
+            if (modal) {
+                const nameElement = modal.querySelector('.modal-title h3');
+                if (nameElement) nameElement.textContent = `${customer.name} - Orders`;
+
+                const avatarElement = modal.querySelector('.customer-avatar-large');
+                if (avatarElement) avatarElement.textContent = customer.avatar;
+
+                // Update order stats
+                const statsElements = modal.querySelectorAll('.stat-value');
+                if (statsElements.length >= 4) {
+                    statsElements[0].textContent = customer.orders;
+                    statsElements[1].textContent = `₱${customer.totalSpent.toLocaleString()}`;
+                    statsElements[2].textContent = `₱${Math.round(customer.totalSpent / customer.orders).toLocaleString()}`;
+                    statsElements[3].textContent = customer.orders - (customer.status === 'active' ? 0 : 1); // Assuming cancelled orders
+                }
+            }
         }
 
         function closeAddCustomerModal() {
-            document.getElementById('addCustomerModal').classList.remove('show');
-            document.getElementById('addCustomerForm').reset();
+            const modal = document.getElementById('addCustomerModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.getElementById('addCustomerForm').reset();
+                document.body.style.overflow = 'auto';
+            }
+        }
+        function closeCustomerDetailsModal() {
+            const modal = document.getElementById('customerDetailsModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        }
+        function closeCustomerOrdersModal() {
+            const modal = document.getElementById('customerOrdersModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        }
+        function closeCustomerEditModal() {
+            const modal = document.getElementById('customerEditModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+
+                // Reset any form data if there's a form in the edit modal
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            }
+        }
+        function closeAllModals() {
+            const modals = document.querySelectorAll('.modal.show');
+            modals.forEach(modal => {
+                modal.classList.remove('show');
+
+                // Reset forms if they exist
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            });
+            document.body.style.overflow = 'auto';
+        }
+        function setupModalClickOutside() {
+            // Add Customer Modal
+            const addCustomerModal = document.getElementById('addCustomerModal');
+            if (addCustomerModal) {
+                addCustomerModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeAddCustomerModal();
+                    }
+                });
+            }
+
+            // Customer Details Modal
+            const customerDetailsModal = document.getElementById('customerDetailsModal');
+            if (customerDetailsModal) {
+                customerDetailsModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerDetailsModal();
+                    }
+                });
+            }
+
+            // Customer Orders Modal
+            const customerOrdersModal = document.getElementById('customerOrdersModal');
+            if (customerOrdersModal) {
+                customerOrdersModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerOrdersModal();
+                    }
+                });
+            }
+
+            // Customer Edit Modal
+            const customerEditModal = document.getElementById('customerEditModal');
+            if (customerEditModal) {
+                customerEditModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomerEditModal();
+                    }
+                });
+            }
+        }
+
+        function populateCustomerEditModal(customer) {
+            // Update customer edit modal with customer data
+            const modal = document.getElementById('customerEditModal');
+            if (modal) {
+                const nameElement = modal.querySelector('.modal-title h3');
+                if (nameElement) nameElement.textContent = `Edit Customer - ${customer.name}`;
+
+                const avatarElement = modal.querySelector('.customer-avatar-large');
+                if (avatarElement) avatarElement.textContent = customer.avatar;
+
+                // Update customer info in read-only fields
+                const infoValues = modal.querySelectorAll('.info-value');
+                if (infoValues.length >= 6) {
+                    infoValues[0].textContent = customer.name;
+                    infoValues[1].textContent = customer.email;
+                    infoValues[2].textContent = customer.phone;
+                    infoValues[4].textContent = customer.location;
+                }
+            }
+        }
+
+        // Modal functions for add customer
+        function showAddCustomerModal() {
+            document.getElementById('addCustomerModal').classList.add('show');
         }
 
         // Close modal when clicking outside
@@ -410,35 +677,21 @@
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 // In a real app, you would refresh the table or add the new row
+                loadCustomersData(); // Reload data to include new customer
             }, 1500);
-        });
-
-        // Update pagination info based on visible rows
-        function updatePaginationInfo() {
-            const visibleRows = document.querySelectorAll('.customers-table tbody tr:not([style*="display: none"])');
-            const totalRows = document.querySelectorAll('.customers-table tbody tr').length;
-            const paginationInfo = document.querySelector('.pagination-info');
-
-            if (paginationInfo) {
-                paginationInfo.textContent = `Showing ${visibleRows.length} of ${totalRows} customers`;
-            }
-        }
-
-        // Pagination button functionality
-        document.querySelectorAll('.page-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (!this.classList.contains('active') && this.textContent !== 'Previous' && this.textContent !== 'Next') {
-                    document.querySelector('.page-btn.active').classList.remove('active');
-                    this.classList.add('active');
-                }
-            });
         });
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
-            // ESC to close modal
+            // ESC to close modals
             if (e.key === 'Escape') {
                 closeAddCustomerModal();
+                // Close other modals if they exist
+                const modals = document.querySelectorAll('.modal.show');
+                modals.forEach(modal => {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                });
             }
             // Ctrl+K to focus search
             if (e.ctrlKey && e.key === 'k') {
@@ -451,6 +704,9 @@
                 showAddCustomerModal();
             }
         });
+
+        // Initialize the page
+        lucide.createIcons();
     </script>
 </body>
 </html>

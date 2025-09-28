@@ -224,7 +224,7 @@
                     category: "flooring",
                     price: 1250,
                     stock: 150,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 2,
@@ -233,7 +233,7 @@
                     category: "tiles",
                     price: 850,
                     stock: 75,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 3,
@@ -242,7 +242,7 @@
                     category: "fixtures",
                     price: 2200,
                     stock: 8,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 4,
@@ -251,7 +251,7 @@
                     category: "flooring",
                     price: 980,
                     stock: 200,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 5,
@@ -260,7 +260,7 @@
                     category: "tiles",
                     price: 1450,
                     stock: 120,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 6,
@@ -269,7 +269,7 @@
                     category: "fixtures",
                     price: 650,
                     stock: 0,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 7,
@@ -278,7 +278,7 @@
                     category: "flooring",
                     price: 3200,
                     stock: 45,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 8,
@@ -287,7 +287,7 @@
                     category: "tiles",
                     price: 420,
                     stock: 180,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 9,
@@ -296,7 +296,7 @@
                     category: "fixtures",
                     price: 1100,
                     stock: 25,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 10,
@@ -305,7 +305,7 @@
                     category: "flooring",
                     price: 1680,
                     stock: 12,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 11,
@@ -314,7 +314,7 @@
                     category: "tiles",
                     price: 890,
                     stock: 65,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 },
                 {
                     id: 12,
@@ -323,7 +323,7 @@
                     category: "fixtures",
                     price: 750,
                     stock: 38,
-                    // image: ""
+                    image: "../../assets/images/scotch-tape-roll.png"
                 }
             ];
 
@@ -400,11 +400,11 @@
             grid.innerHTML = pageProducts.map(product => {
                 const stockStatus = getStockStatus(product.stock);
                 const stockLabel = getStockLabel(product.stock);
-// <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" onerror="this.src='./images/placeholder.png'">
+
                 return `
                     <div class="product-card" data-category="${product.category}">
                         <div class="product-image-container">
-
+                            <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" onerror="this.src='./images/placeholder.png'">
                             <div class="stock-status ${stockStatus}">${stockLabel}</div>
                         </div>
                         <div class="product-info">

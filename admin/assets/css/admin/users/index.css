@@ -38,10 +38,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    background: none;
     padding: 1.25rem 0rem;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     flex-wrap: wrap;
     gap: 1rem;
 }

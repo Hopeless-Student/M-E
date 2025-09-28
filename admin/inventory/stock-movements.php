@@ -31,103 +31,62 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-            z-index: 1000;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            line-height: 1.2;
-            margin-bottom: 75px;
-            margin-top: 30px;
-        }
-
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: #60a5fa;
-        }
-
-        .nav-link .lucide {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-        }
-
         /* Main Content */
         .main-content {
-            flex: 1;
-            padding: 2rem;
-            margin-left: 280px;
-        }
+         flex: 1;
+         margin-left: 230px !important; /* Exact match to sidebar width */
+         padding: 1.5rem;
+         min-height: 100vh;
+         transition: margin-left 0.3s ease;
+         width: calc(100vw - 230px); /* Changed from 100% to 100vw for absolute viewport width */
+         max-width: calc(100vw - 230px);
+         box-sizing: border-box;
+         position: relative; /* Ensure proper positioning */
+         overflow-x: hidden; /* Prevent horizontal scroll */
+       }
+       .header {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           margin-bottom: 1.5rem;
+           background: none;
+           padding: 1.25rem 0rem;
+           border-radius: 12px;
+           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+           flex-wrap: wrap;
+           gap: 1rem;
+       }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            background: white;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
+       .header h2 {
+           padding-left: 0.3rem;
+           font-size: 1.75rem;
+           font-weight: 600;
+           color: #1e40af;
 
-        .header h2 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
+       }
+       .user-info {
+           display: flex;
+           align-items: center;
+           padding-right: 0.3rem;
+           gap: 0.75rem;
+           font-size: 1rem;
+           font-weight: 500;
+           color: #475569;
+       }
+
+       .avatar {
+           width: 36px;
+           height: 36px;
+           background: linear-gradient(135deg, #1e40af, #3b82f6);
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           color: white;
+           font-weight: 600;
+           font-size: 1rem;
+       }
+
 
         .header-actions {
             display: flex;
@@ -153,24 +112,6 @@
         .back-btn:hover {
             background: #475569;
             color: white;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
         }
 
         /* Stats Cards */
@@ -545,50 +486,7 @@
 </head>
 <body>
     <div class="dashboard">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="logo">
-                <img src="../../assets/images/logo/ME logo.png" alt="">
-
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.php" class="nav-link">
-                        <i data-lucide="bar-chart-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../orders/index.php" class="nav-link">
-                        <i data-lucide="package"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../products/index.php" class="nav-link">
-                        <i data-lucide="shopping-cart"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../users/index.php" class="nav-link">
-                        <i data-lucide="users"></i> Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link active">
-                        <i data-lucide="clipboard-list"></i> Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../requests/index.php" class="nav-link">
-                        <i data-lucide="message-circle"></i> Messages
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../settings/index.php" class="nav-link">
-                        <i data-lucide="settings"></i> Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <?php include '../../includes/admin_sidebar.php' ?>
 
         <!-- Main Content -->
         <main class="main-content">
