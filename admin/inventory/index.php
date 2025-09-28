@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="../assets/css/admin/inventory/index.css">
+
 </head>
 <body>
     <div class="dashboard" id="dashboard">
@@ -145,6 +146,17 @@
             </div>
         </main>
     </div>
+
+    <!-- Bulk Update Modal -->
+    <div id="bulkUpdateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Bulk Stock Update</h3>
+                <button class="close-btn" onclick="closeModal('bulkUpdateModal')">&times;</button>
+            </div>
+<script>
+      // Initialize Lucide icons
+      lucide.createIcons();
 
     <!-- Bulk Update Modal -->
     <div id="bulkUpdateModal" class="modal">
