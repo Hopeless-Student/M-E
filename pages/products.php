@@ -9,7 +9,7 @@
             <link href="../assets/css/homepage.css" rel="stylesheet"/>
   </head>
   <body>
-    <header>
+    <!-- <header>
         <div class="logo">
             <img alt="M&E Logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
         </div>
@@ -39,7 +39,8 @@
                 </a>
             </div>
         </div>
-    </header>
+    </header> -->
+    <?php include('../includes/navbar.php'); ?>
 
 
 

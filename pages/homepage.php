@@ -21,7 +21,7 @@ $profileImage = !empty($user['profile_image'])
     </head>
 
     <body>
-        <header>
+        <!-- <header>
             <div class="logo">
                 <img alt="M&E Logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
             </div>
@@ -72,7 +72,7 @@ $profileImage = !empty($user['profile_image'])
                   </ul>
                   </div>
                 <?php else: ?>
-                  <!-- <p> NO USER</p> -->
+                   <p> NO USER</p>
                   <div class="btn-login">
                     <a href="#" id="openLoginModal">
                       <img class="login-img" src="../assets/svg/person.svg" alt="Log in">
@@ -80,8 +80,9 @@ $profileImage = !empty($user['profile_image'])
                   </div>
                 <?php endif; ?>
             </div>
-        </header>
+        </header> -->
 
+        <?php include('../includes/navbar.php') ?>
 
 
         <section class="hero">
@@ -471,7 +472,7 @@ $profileImage = !empty($user['profile_image'])
 
         <?php include '../includes/footer.php';?>
 
-
+        <!-- <?php include('login-modal.php'); ?> -->
 
 
         <div id="loginModal" class="modal">
