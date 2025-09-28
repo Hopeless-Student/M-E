@@ -1,539 +1,448 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Movements - M & E Dashboard</title>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <style>
-        /* Base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-        }
-
-        .stock-movements-dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Main Content */
-        .stock-movements-main-content {
-            flex: 1;
-            padding: 2rem;
-            margin-left: 280px; /* Adjust based on sidebar width */
-        }
-
-        .stock-movements-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            background: white;
-            padding: 1rem 1.5rem; /* Slightly reduced padding for compactness */
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .stock-movements-header h2 {
-            font-size: 1.8rem; /* Slightly smaller for better proportion */
-            font-weight: 600;
-            color: #1e40af;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .stock-movements-back-btn {
-            background: #64748b;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-back-btn:hover {
-            background: #475569;
-            color: white;
-        }
-
-        .stock-movements-refresh-btn {
-            background: #1e40af;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-refresh-btn:hover {
-            background: #1e3a8a;
-        }
-
-        .stock-movements-export-btn {
-            background: #059669;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-export-btn:hover {
-            background: #047857;
-        }
-
-        .stock-movements-user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .stock-movements-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Summary Cards */
-        .stock-movements-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Adjusted for better proportion */
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stock-movements-summary-card {
-            background: white;
-            padding: 1.5rem; /* Slightly reduced padding */
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid;
-            text-align: center;
-            position: relative;
-        }
-
-        .stock-movements-summary-card.add {
-            border-left-color: #10b981;
-        }
-
-        .stock-movements-summary-card.remove {
-            border-left-color: #ef4444;
-        }
-
-        .stock-movements-summary-card.adjust {
-            border-left-color: #3b82f6;
-        }
-
-        .stock-movements-summary-card.net {
-            border-left-color: #f59e0b;
-        }
-
-        .stock-movements-summary-title {
-            font-size: 0.85rem; /* Slightly smaller for density */
-            color: #64748b;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .stock-movements-summary-value {
-            font-size: 1.8rem; /* Slightly smaller */
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stock-movements-summary-card.add .stock-movements-summary-value {
-            color: #10b981;
-        }
-
-        .stock-movements-summary-card.remove .stock-movements-summary-value {
-            color: #ef4444;
-        }
-
-        .stock-movements-summary-card.adjust .stock-movements-summary-value {
-            color: #3b82f6;
-        }
-
-        .stock-movements-summary-card.net .stock-movements-summary-value {
-            color: #f59e0b;
-        }
-
-        .stock-movements-summary-subtitle {
-            font-size: 0.8rem;
-            color: #64748b;
-        }
-
-        .stock-movements-summary-icon {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            opacity: 0.3;
-        }
-
-        /* Controls/Filters */
-        .stock-movements-controls {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .stock-movements-controls-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e40af;
-            margin-bottom: 1rem;
-        }
-
-        .stock-movements-filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .stock-movements-form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stock-movements-form-label {
-            font-weight: 500;
-            color: #475569;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .stock-movements-form-input, .stock-movements-form-select {
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.2s;
-        }
-
-        .stock-movements-form-input:focus, .stock-movements-form-select:focus {
-            outline: none;
-            border-color: #1e40af;
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-        }
-
-        .stock-movements-date-range {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-apply-btn {
-            background: #1e40af;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            align-self: end;
-            grid-column: 1 / -1;
-        }
-
-        .stock-movements-apply-btn:hover {
-            background: #1e3a8a;
-        }
-
-        /* Movements Table */
-        .stock-movements-table-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .stock-movements-table-container {
-            overflow-x: auto;
-        }
-
-        .stock-movements-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px; /* Ensure horizontal scroll on small screens */
-        }
-
-        .stock-movements-table th {
-            background-color: #f8fafc;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.85rem; /* Slightly smaller for density */
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .stock-movements-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            vertical-align: middle;
-        }
-
-        .stock-movements-table tr:hover {
-            background-color: #f8fafc;
-        }
-
-        .stock-movements-movement-cell {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .stock-movements-movement-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        .stock-movements-movement-icon.add {
-            background: #10b981;
-        }
-
-        .stock-movements-movement-icon.remove {
-            background: #ef4444;
-        }
-
-        .stock-movements-movement-icon.adjust {
-            background: #3b82f6;
-        }
-
-        .stock-movements-movement-icon.transfer {
-            background: #f59e0b;
-        }
-
-        .stock-movements-movement-details h4 {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-        }
-
-        .stock-movements-movement-details p {
-            font-size: 0.8rem;
-            color: #64748b;
-        }
-
-        .stock-movements-movement-type {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .stock-movements-movement-type.add {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .stock-movements-movement-type.remove {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .stock-movements-movement-type.adjust {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .stock-movements-movement-type.transfer {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .stock-movements-quantity {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .stock-movements-quantity.add {
-            color: #10b981;
-        }
-
-        .stock-movements-quantity.remove {
-            color: #ef4444;
-        }
-
-        .stock-movements-impact {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .stock-movements-impact.positive {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .stock-movements-impact.negative {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .stock-movements-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-action-btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .stock-movements-action-btn.view {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .stock-movements-action-btn.view:hover {
-            background: #2563eb;
-        }
-
-        .stock-movements-action-btn.reverse {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .stock-movements-action-btn.reverse:hover {
-            background: #d97706;
-        }
-
-        /* Pagination */
-        .stock-movements-pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem;
-            border-top: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .stock-movements-pagination-info {
-            color: #64748b;
-            font-size: 0.85rem;
-        }
-
-        .stock-movements-pagination-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .stock-movements-page-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .stock-movements-page-btn:hover:not(:disabled) {
-            background: #1e40af;
-            color: white;
-            border-color: #1e40af;
-        }
-
-        .stock-movements-page-btn.active {
-            background: #1e40af;
-            color: white;
-            border-color: #1e40af;
-        }
-
-        .stock-movements-page-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Modal Styles */
-        .stock-movements-modal-base {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            animation: stockMovementsFadeIn 0.3s ease;
-        }
-
-        .stock-movements-modal-base.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        @keyframes stockMovementsFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .stock-movements-modal-content {
-            background: white;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0
+<!-- Stock Movements Modal -->
+<div id="stockMovementsModal" class="modal-base">
+    <div class="modal-content extra-large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i data-lucide="activity"></i> Stock Movements</h3>
+            <button class="modal-close-btn" onclick="closeModal('stockMovementsModal')"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="stock-movements-summary">
+            <div class="stock-movements-summary-card add">
+                <div class="stock-movements-summary-icon"><i data-lucide="plus-circle"></i></div>
+                <div class="stock-movements-summary-title">Total Additions</div>
+                <div class="stock-movements-summary-value" id="totalAdditions">0</div>
+                <div class="stock-movements-summary-subtitle">Units added</div>
+            </div>
+            <div class="stock-movements-summary-card remove">
+                <div class="stock-movements-summary-icon"><i data-lucide="minus-circle"></i></div>
+                <div class="stock-movements-summary-title">Total Removals</div>
+                <div class="stock-movements-summary-value" id="totalRemovals">0</div>
+                <div class="stock-movements-summary-subtitle">Units removed</div>
+            </div>
+            <div class="stock-movements-summary-card adjust">
+                <div class="stock-movements-summary-icon"><i data-lucide="arrow-left-right"></i></div>
+                <div class="stock-movements-summary-title">Total Adjustments</div>
+                <div class="stock-movements-summary-value" id="totalAdjustments">0</div>
+                <div class="stock-movements-summary-subtitle">Manual corrections</div>
+            </div>
+            <div class="stock-movements-summary-card net">
+                <div class="stock-movements-summary-icon"><i data-lucide="trending-up"></i></div>
+                <div class="stock-movements-summary-title">Net Change</div>
+                <div class="stock-movements-summary-value" id="netChange">0</div>
+                <div class="stock-movements-summary-subtitle">Overall stock impact</div>
+            </div>
+        </div>
+
+        <div class="stock-movements-controls">
+            <h3 class="stock-movements-controls-title">Filter Movements</h3>
+            <div class="stock-movements-filter-grid">
+                <div class="form-group stock-movements-form-group">
+                    <label class="stock-movements-form-label">Product</label>
+                    <select class="form-select stock-movements-form-select" id="movementProductFilter">
+                        <option value="">All Products</option>
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+                <div class="form-group stock-movements-form-group">
+                    <label class="stock-movements-form-label">Movement Type</label>
+                    <select class="form-select stock-movements-form-select" id="movementTypeFilter">
+                        <option value="">All Types</option>
+                        <option value="add">Add</option>
+                        <option value="remove">Remove</option>
+                        <option value="adjust">Adjust</option>
+                        <option value="transfer">Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group stock-movements-form-group">
+                    <label class="stock-movements-form-label">Reason</label>
+                    <select class="form-select stock-movements-form-select" id="movementReasonFilter">
+                        <option value="">All Reasons</option>
+                        <option value="delivery">New Delivery</option>
+                        <option value="sale">Sale</option>
+                        <option value="damaged">Damaged</option>
+                        <option value="recount">Recount</option>
+                        <option value="return">Customer Return</option>
+                        <option value="theft">Theft</option>
+                    </select>
+                </div>
+                <div class="form-group stock-movements-form-group">
+                    <label class="stock-movements-form-label">Date Range</label>
+                    <div class="stock-movements-date-range">
+                        <input type="date" class="form-input stock-movements-form-input" id="movementStartDate">
+                        <input type="date" class="form-input stock-movements-form-input" id="movementEndDate">
+                    </div>
+                </div>
+                <button class="stock-movements-apply-btn" onclick="applyStockMovementFilters()">Apply Filters</button>
+            </div>
+        </div>
+
+        <div class="stock-movements-table-section">
+            <div class="stock-movements-table-container">
+                <table class="stock-movements-table">
+                    <thead>
+                        <tr>
+                            <th>Movement ID</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Previous Stock</th>
+                            <th>New Stock</th>
+                            <th>Reason</th>
+                            <th>User</th>
+                            <th>Timestamp</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockMovementsTableBody">
+                        <!-- Movements populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stock-movements-pagination">
+                <div class="stock-movements-pagination-info">
+                    Showing <span id="movementStartItem">1</span>-<span id="movementEndItem">10</span> of <span id="movementTotalItems">0</span> movements
+                </div>
+                <div class="stock-movements-pagination-controls">
+                    <button class="stock-movements-page-btn" id="movementPrevBtn" onclick="changeStockMovementPage('prev')">← Previous</button>
+                    <span id="movementPageNumbers"></span>
+                    <button class="stock-movements-page-btn" id="movementNextBtn" onclick="changeStockMovementPage('next')">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Movement Details Modal -->
+<div id="movementDetailsModal" class="modal-base">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title"><i data-lucide="file-text"></i> Movement Details</h3>
+            <button class="modal-close-btn" onclick="closeModal('movementDetailsModal')"><i data-lucide="x"></i></button>
+        </div>
+        <div id="movementDetailsContent">
+            <!-- Details will be populated here -->
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('movementDetailsModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStockMovementProductId = null;
+    let currentStockMovementReason = null;
+    let currentStockMovementType = null;
+    let currentStockMovementStartDate = null;
+    let currentStockMovementEndDate = null;
+    let currentStockMovementPage = 1;
+    const stockMovementsPerPage = 10;
+    let filteredStockMovementsData = [...stockMovementsData];
+    let currentMovementDetails = null; // For movement details modal
+
+    function openStockMovementsModal() {
+        populateMovementProductFilter();
+        applyStockMovementFilters(); // Initial population and filtering
+        openModal('stockMovementsModal');
+    }
+
+    function populateMovementProductFilter() {
+        const select = document.getElementById('movementProductFilter');
+        select.innerHTML = '<option value="">All Products</option>';
+        inventoryData.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.name;
+            select.appendChild(option);
+        });
+    }
+
+    function setupStockMovementsModalListeners() {
+        document.getElementById('movementProductFilter').addEventListener('change', applyStockMovementFilters);
+        document.getElementById('movementTypeFilter').addEventListener('change', applyStockMovementFilters);
+        document.getElementById('movementReasonFilter').addEventListener('change', applyStockMovementFilters);
+        document.getElementById('movementStartDate').addEventListener('change', applyStockMovementFilters);
+        document.getElementById('movementEndDate').addEventListener('change', applyStockMovementFilters);
+    }
+
+    function applyStockMovementFilters() {
+        const productId = document.getElementById('movementProductFilter').value;
+        const type = document.getElementById('movementTypeFilter').value;
+        const reason = document.getElementById('movementReasonFilter').value;
+        const startDate = document.getElementById('movementStartDate').value;
+        const endDate = document.getElementById('movementEndDate').value;
+
+        filteredStockMovementsData = stockMovementsData.filter(movement => {
+            const matchesProduct = !productId || movement.productId == productId;
+            const matchesType = !type || movement.type === type;
+            const matchesReason = !reason || movement.reason === reason;
+
+            let matchesDate = true;
+            if (startDate) {
+                matchesDate = matchesDate && new Date(movement.timestamp) >= new Date(startDate);
+            }
+            if (endDate) {
+                matchesDate = matchesDate && new Date(movement.timestamp) <= new Date(endDate);
+            }
+            return matchesProduct && matchesType && matchesReason && matchesDate;
+        });
+
+        currentStockMovementPage = 1;
+        populateStockMovementsTable(filteredStockMovementsData);
+        updateStockMovementsSummary(filteredStockMovementsData);
+    }
+
+    function populateStockMovementsTable(data) {
+        const tbody = document.getElementById('stockMovementsTableBody');
+        tbody.innerHTML = '';
+
+        const startIndex = (currentStockMovementPage - 1) * stockMovementsPerPage;
+        const endIndex = startIndex + stockMovementsPerPage;
+        const pageData = data.slice(startIndex, endIndex);
+
+        if (pageData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 2rem; color: #64748b;">No stock movements found matching your criteria.</td></tr>`;
+            updateStockMovementPagination(data.length);
+            return;
+        }
+
+        pageData.forEach(movement => {
+            const row = tbody.insertRow();
+            const product = inventoryData.find(item => item.id === movement.productId);
+            const icon = product ? product.icon : '📦'; // Default icon if product not found
+
+            let typeClass = '';
+            let quantityClass = '';
+            let quantitySign = '';
+            let impactClass = '';
+
+            switch (movement.type) {
+                case 'add':
+                    typeClass = 'add';
+                    quantityClass = 'add';
+                    quantitySign = '+';
+                    impactClass = 'positive';
+                    break;
+                case 'remove':
+                    typeClass = 'remove';
+                    quantityClass = 'remove';
+                    quantitySign = '-';
+                    impactClass = 'negative';
+                    break;
+                case 'adjust':
+                    typeClass = 'adjust';
+                    quantityClass = movement.quantity > 0 ? 'add' : 'remove';
+                    quantitySign = movement.quantity > 0 ? '+' : '';
+                    impactClass = movement.quantity > 0 ? 'positive' : 'negative';
+                    break;
+                case 'transfer':
+                    typeClass = 'transfer';
+                    quantityClass = movement.quantity > 0 ? 'add' : 'remove';
+                    quantitySign = movement.quantity > 0 ? '+' : '';
+                    impactClass = movement.quantity > 0 ? 'positive' : 'negative';
+                    break;
+            }
+
+            row.innerHTML = `
+                <td>${movement.id}</td>
+                <td>
+                    <div class="stock-movements-movement-cell">
+                        <div class="stock-movements-movement-icon ${typeClass}">${icon}</div>
+                        <div class="stock-movements-movement-details">
+                            <h4>${movement.productName}</h4>
+                            <p>${movement.productSKU}</p>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="stock-movements-movement-type ${typeClass}">${capitalizeFirst(movement.type)}</span></td>
+                <td><span class="stock-movements-quantity ${quantityClass}">${quantitySign}${Math.abs(movement.quantity)}</span></td>
+                <td>${movement.previousStock}</td>
+                <td>${movement.newStock}</td>
+                <td>${movement.reason}</td>
+                <td>${movement.user}</td>
+                <td>${movement.timestamp}</td>
+                <td>
+                    <div class="stock-movements-actions-container">
+                        <button class="stock-movements-action-btn view" onclick="openMovementDetailsModal(${movement.id})">
+                            <i data-lucide="eye" style="width:16px; height:16px;"></i> View
+                        </button>
+                        <button class="stock-movements-action-btn reverse" onclick="confirmReverseMovement(${movement.id})">
+                            <i data-lucide="rotate-ccw" style="width:16px; height:16px;"></i> Reverse
+                        </button>
+                    </div>
+                </td>
+            `;
+        });
+        updateStockMovementPagination(data.length);
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    function updateStockMovementsSummary(data) {
+        let totalAdditions = 0;
+        let totalRemovals = 0;
+        let totalAdjustments = 0;
+        let netChange = 0;
+
+        data.forEach(movement => {
+            if (movement.type === 'add') {
+                totalAdditions += movement.quantity;
+                netChange += movement.quantity;
+            } else if (movement.type === 'remove') {
+                totalRemovals += movement.quantity;
+                netChange -= movement.quantity;
+            } else if (movement.type === 'adjust') {
+                totalAdjustments += Math.abs(movement.quantity);
+                netChange += movement.quantity; // Adjustments can be positive or negative
+            } else if (movement.type === 'transfer') {
+                // For simplicity, transfers are counted as adjustments in summary
+                totalAdjustments += Math.abs(movement.quantity);
+                netChange += movement.quantity;
+            }
+        });
+
+        document.getElementById('totalAdditions').textContent = totalAdditions;
+        document.getElementById('totalRemovals').textContent = totalRemovals;
+        document.getElementById('totalAdjustments').textContent = totalAdjustments;
+        document.getElementById('netChange').textContent = netChange;
+    }
+
+    function updateStockMovementPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / stockMovementsPerPage);
+        const startItem = totalItems === 0 ? 0 : (currentStockMovementPage - 1) * stockMovementsPerPage + 1;
+        const endItem = Math.min(currentStockMovementPage * stockMovementsPerPage, totalItems);
+
+        document.getElementById('movementStartItem').textContent = startItem;
+        document.getElementById('movementEndItem').textContent = endItem;
+        document.getElementById('movementTotalItems').textContent = totalItems;
+
+        const prevBtn = document.getElementById('movementPrevBtn');
+        const nextBtn = document.getElementById('movementNextBtn');
+        const pageNumbersContainer = document.getElementById('movementPageNumbers');
+
+        prevBtn.disabled = currentStockMovementPage === 1;
+        nextBtn.disabled = currentStockMovementPage === totalPages || totalPages === 0;
+
+        pageNumbersContainer.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.className = `stock-movements-page-btn ${i === currentStockMovementPage ? 'active' : ''}`;
+            pageBtn.textContent = i;
+            pageBtn.onclick = () => changeStockMovementPage(i);
+            pageNumbersContainer.appendChild(pageBtn);
+        }
+    }
+
+    function changeStockMovementPage(page) {
+        const totalPages = Math.ceil(filteredStockMovementsData.length / stockMovementsPerPage);
+
+        if (page === 'prev' && currentStockMovementPage > 1) {
+            currentStockMovementPage--;
+        } else if (page === 'next' && currentStockMovementPage < totalPages) {
+            currentStockMovementPage++;
+        } else if (typeof page === 'number' && page >= 1 && page <= totalPages) {
+            currentStockMovementPage = page;
+        }
+        populateStockMovementsTable(filteredStockMovementsData);
+    }
+
+    function openMovementDetailsModal(movementId) {
+        const movement = stockMovementsData.find(m => m.id === movementId);
+        if (movement) {
+            const detailsContent = document.getElementById('movementDetailsContent');
+            detailsContent.innerHTML = `
+                <div class="product-details-grid">
+                    <div class="product-details-card">
+                        <div class="product-details-label">Movement ID</div>
+                        <div class="product-details-value">${movement.id}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Product Name</div>
+                        <div class="product-details-value">${movement.productName}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Product SKU</div>
+                        <div class="product-details-value">${movement.productSKU}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Type</div>
+                        <div class="product-details-value">${capitalizeFirst(movement.type)}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Quantity</div>
+                        <div class="product-details-value">${movement.quantity > 0 ? '+' : ''}${movement.quantity}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Previous Stock</div>
+                        <div class="product-details-value">${movement.previousStock}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">New Stock</div>
+                        <div class="product-details-value">${movement.newStock}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Reason</div>
+                        <div class="product-details-value">${movement.reason}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">User</div>
+                        <div class="product-details-value">${movement.user}</div>
+                    </div>
+                    <div class="product-details-card">
+                        <div class="product-details-label">Timestamp</div>
+                        <div class="product-details-value">${movement.timestamp}</div>
+                    </div>
+                </div>
+            `;
+            openModal('movementDetailsModal');
+        }
+    }
+
+    function confirmReverseMovement(movementId) {
+        const movement = stockMovementsData.find(m => m.id === movementId);
+        if (movement) {
+            openConfirmationModal(`Are you sure you want to reverse movement ID ${movement.id} for "${movement.productName}"? This will adjust stock back to ${movement.previousStock}.`, () => {
+                reverseMovement(movementId);
+            });
+        }
+    }
+
+    function reverseMovement(movementId) {
+        const movementIndex = stockMovementsData.findIndex(m => m.id === movementId);
+        if (movementIndex !== -1) {
+            const movement = stockMovementsData[movementIndex];
+            const productIndex = inventoryData.findIndex(item => item.id === movement.productId);
+
+            if (productIndex !== -1) {
+                const product = inventoryData[productIndex];
+                // Revert stock to previous state
+                product.stock = movement.previousStock;
+
+                // Add a new movement entry for the reversal
+                const newMovement = {
+                    id: stockMovementsData.length + 1, // Simple ID generation
+                    productId: movement.productId,
+                    productName: movement.productName,
+                    productSKU: movement.productSKU,
+                    type: 'adjust', // Reversal is a type of adjustment
+                    quantity: movement.previousStock - movement.newStock, // Quantity to add/remove to revert
+                    previousStock: movement.newStock,
+                    newStock: movement.previousStock,
+                    reason: `Reversal of Movement ID ${movement.id} (${movement.reason})`,
+                    user: 'Admin (Reversal)',
+                    timestamp: new Date().toLocaleString([], {hour: '2-digit', minute:'2-digit', year: 'numeric', month: '2-digit', day: '2-digit'})
+                };
+                stockMovementsData.unshift(newMovement); // Add to beginning
+
+                showNotification(`Movement ID ${movementId} reversed successfully!`, 'success');
+                updateAllDataAndUI(); // Refresh all dashboard data and UI
+                applyStockMovementFilters(); // Re-apply filters for movements modal
+            } else {
+                showNotification('Error: Product for movement not found.', 'error');
+            }
+        } else {
+            showNotification('Error: Movement not found.', 'error');
+        }
+    }
+</script>
