@@ -4,399 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders - M & E Dashboard</title>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js">  </script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-        }
-        img{
-          width: 250px;
-          height: 250px;
-        }
-
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-        }
-
-        .logo {
-          width: 120px;
-          height: 120px;
-          margin: 0 auto 2rem;
-          border-radius: 50%;
-          background-color: rgba(255, 255, 255, 0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.5rem;
-          font-weight: 700;
-          text-align: center;
-          line-height: 1.2;
-          margin-bottom: 75px;
-          margin-top: 30px;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: #60a5fa;
-        }
-
-        .nav-link .lucide {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h2 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Orders Controls */
-        .orders-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            gap: 1rem;
-        }
-
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-input {
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            width: 250px;
-            font-size: 0.9rem;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
-        }
-        .filter-select {
-            padding: 0.75rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: white;
-            font-size: 0.9rem;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .filter-select:focus {
-            border-color: #1e40af;
-        }
-
-        .add-order-btn {
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .add-order-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        /* Orders Table */
-        .orders-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .orders-table th {
-            background-color: #f8fafc;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.9rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .orders-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .orders-table tr:hover {
-            background-color: #f8fafc;
-        }
-
-        .status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .status.pending { background-color: #fef3c7; color: #92400e; }
-        .status.processing { background-color: #dbeafe; color: #1d4ed8; }
-        .status.delivered { background-color: #d1fae5; color: #065f46; }
-        .status.shipped { background-color: #e0e7ff; color: #3730a3; }
-
-        .category-badge {
-            padding: 0.25rem 0.5rem;
-            background-color: #e0e7ff;
-            color: #1e40af;
-            border-radius: 6px;
-            font-size: 0.8rem;
-        }
-
-        .action-btn {
-            padding: 0.5rem 1rem;
-            background-color: #1e40af;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: background-color 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .action-btn:hover {
-            background-color: #1e3a8a;
-        }
-
-        .action-btn.secondary {
-            background-color: #64748b;
-        }
-
-        .action-btn.secondary:hover {
-            background-color: #475569;
-        }
-
-        .action-btn.danger {
-            background-color: #dc2626;
-        }
-
-        .action-btn.danger:hover {
-            background-color: #b91c1c;
-        }
-
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .pagination-info {
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-
-        .pagination-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .page-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .page-btn:hover {
-            background-color: #1e40af;
-            color: white;
-        }
-
-        .page-btn.active {
-            background-color: #1e40af;
-            color: white;
-            border-color: #1e40af;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-            }
-
-            .orders-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-filter {
-                flex-direction: column;
-            }
-
-            .search-box input {
-                width: 100%;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="stylesheet" href="../assets/css/admin/orders/index.css">
 </head>
 <body>
     <div class="dashboard">
-        <nav class="sidebar">
-            <div class="logo">
-                <!-- <h1>M & E</h1>
-                <p>Supply Management</p> -->
-                <img src="../../assets/images/logo/ME Logo.png" alt="">
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.php" class="nav-link">
-                        <i data-lucide="bar-chart-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="./index.php" class="nav-link active">
-                        <i data-lucide="package"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../products/index.php" class="nav-link">
-                        <i data-lucide="shopping-cart"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../users/index.php" class="nav-link">
-                        <i data-lucide="users"></i> Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../inventory/index.php" class="nav-link">
-                        <i data-lucide="clipboard-list"></i> Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../requests/index.php" class="nav-link">
-                        <i data-lucide="message-circle"></i> Messages
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../settings/index.php" class="nav-link">
-                      <i data-lucide="settings"></i> Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" data-sidebar-toggle="open">
+            <i data-lucide="menu"></i>
+        </button>
+
+        <?php include '../../includes/admin_sidebar.php'; ?>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -408,13 +26,48 @@
                 </div>
             </div>
 
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Pending</div>
+                        <i data-lucide="circle-dashed" class="stat-icon"></i>
+                    </div>
+                    <div class="stat-value" id="totalPending">0</div>
+                    <div class="stat-change neutral">Pending Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Processing</div>
+                        <i data-lucide="circle-dot-dashed" class="stat-icon"></i>
+                    </div>
+                    <div class="stat-value" id="totalProcessing">0</div>
+                    <div class="stat-change neutral">Orders in Process</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Shipped</div>
+                        <i data-lucide="truck" class="stat-icon"></i>
+                    </div>
+                    <div class="stat-value" id="totalShipped">0</div>
+                    <div class="stat-change neutral">Orders in transit</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Delivered</div>
+                        <i data-lucide="package-check " class="stat-icon"></i>
+                    </div>
+                    <div class="stat-value" id="totalDeliver">0</div>
+                    <div class="stat-change neutral">Delivered Orders</div>
+                </div>
+            </div>
             <!-- Orders Controls -->
             <div class="orders-controls">
                 <div class="search-filter">
-                  <div class="search-box">
-                      <i data-lucide="search" class="search-icon"></i>
-                      <input type="text" class="search-input" id="searchInput" placeholder="Search orders...">
-                  </div>
+                    <div class="search-box">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search orders...">
+                    </div>
                     <select class="filter-select" id="statusFilter">
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
@@ -424,160 +77,34 @@
                     </select>
                     <select class="filter-select" id="categoryFilter">
                         <option value="">All Categories</option>
-                        <option value="office">Office Supplies</option>
-                        <option value="school">School Supplies</option>
-                        <option value="sanitary">Sanitary Supplies</option>
+                        <option value="School Supplies">School Supplies</option>
+                        <option value="Sanitary Supplies">Sanitary Supplies</option>
+                        <option value="Office Supplies">Office Supplies</option>
                     </select>
                 </div>
-                <button class="add-order-btn">+ Add New Order</button>
             </div>
 
             <!-- Orders Table -->
             <div class="orders-section">
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Category</th>
-                            <th>Items</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>#ORD-001</strong></td>
-                            <td>Cjay Gonzales</td>
-                            <td><span class="category-badge">Office Supplies</span></td>
-                            <td>Ballpens (50pcs), Bond Paper (5 reams)</td>
-                            <td><strong>₱1,250</strong></td>
-                            <td>Aug 20, 2025</td>
-                            <td><span class="status processing">Processing</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=001" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=001" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=001" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-002</strong></td>
-                            <td>Joshua Lapitan</td>
-                            <td><span class="category-badge">School Supplies</span></td>
-                            <td>Notebooks (20pcs), Pencils (100pcs)</td>
-                            <td><strong>₱890</strong></td>
-                            <td>Aug 19, 2025</td>
-                            <td><span class="status shipped">Shipped</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=002" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=002" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=002" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-003</strong></td>
-                            <td>Prince Ace Masinsin</td>
-                            <td><span class="category-badge">Sanitary Supplies</span></td>
-                            <td>Hand Soap (10 bottles), Tissue (24 rolls)</td>
-                            <td><strong>₱675</strong></td>
-                            <td>Aug 19, 2025</td>
-                            <td><span class="status delivered">Delivered</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=003" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=003" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=003" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-004</strong></td>
-                            <td>Gillian Lorenzo</td>
-                            <td><span class="category-badge">Office Supplies</span></td>
-                            <td>Folders (25pcs), Staplers (5pcs)</td>
-                            <td><strong>₱1,420</strong></td>
-                            <td>Aug 18, 2025</td>
-                            <td><span class="status pending">Pending</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=004" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=004" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=004" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-005</strong></td>
-                            <td>Kenji Chua</td>
-                            <td><span class="category-badge">School Supplies</span></td>
-                            <td>Crayons (15 sets), Drawing Paper (200 sheets)</td>
-                            <td><strong>₱750</strong></td>
-                            <td>Aug 18, 2025</td>
-                            <td><span class="status delivered">Delivered</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=005" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=005" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=005" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-006</strong></td>
-                            <td>Angel Bien</td>
-                            <td><span class="category-badge">Office Supplies</span></td>
-                            <td>Paper Clips (500pcs), Rubber Bands (200pcs)</td>
-                            <td><strong>₱320</strong></td>
-                            <td>Aug 17, 2025</td>
-                            <td><span class="status processing">Processing</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=006" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=006" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=006" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-007</strong></td>
-                            <td>Miguel Torres</td>
-                            <td><span class="category-badge">Sanitary Supplies</span></td>
-                            <td>Disinfectant (5 bottles), Masks (100pcs)</td>
-                            <td><strong>₱980</strong></td>
-                            <td>Aug 17, 2025</td>
-                            <td><span class="status shipped">Shipped</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=007" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=007" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=007" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-008</strong></td>
-                            <td>Carmen Lopez</td>
-                            <td><span class="category-badge">School Supplies</span></td>
-                            <td>Erasers (50pcs), Rulers (20pcs)</td>
-                            <td><strong>₱450</strong></td>
-                            <td>Aug 16, 2025</td>
-                            <td><span class="status delivered">Delivered</span></td>
-                            <td>
-                                <div class="actions">
-                                    <a href="order-details.php?id=008" class="action-btn secondary">View</a>
-                                    <a href="update-status.php?id=008" class="action-btn">Update</a>
-                                    <a href="print-invoice.php?id=008" class="action-btn" target="_blank">Print</a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Category</th>
+                                <th>Items</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Orders will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Pagination -->
                 <div class="pagination">
@@ -597,50 +124,456 @@
         </main>
     </div>
 
+    <!-- Include the modal -->
+    <?php include 'order-details.php';
+          include 'update-status.php';
+    ?>
+
     <script>
-        lucide.createIcons();
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.orders-table tbody tr');
+    lucide.createIcons();
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
+    // Global variables for pagination and data
+    let currentPage = 1;
+    let totalPages = 1;
+    let allOrders = [];
+    let filteredOrders = [];
+    const ordersPerPage = 8;
 
-        // Status filter functionality
-        document.getElementById('statusFilter').addEventListener('change', function(e) {
-            const filterValue = e.target.value;
-            const rows = document.querySelectorAll('.orders-table tbody tr');
+    // Load orders data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadOrdersData();
+        updateStats();
+    });
 
-            rows.forEach(row => {
-                const status = row.querySelector('.status').textContent.toLowerCase();
-                row.style.display = !filterValue || status.includes(filterValue) ? '' : 'none';
-            });
-        });
+    function updateStats() {
+        // Calculate stats from all orders
+        const pending = allOrders.filter(o => o.status === 'pending').length;
+        const processing = allOrders.filter(o => o.status === 'processing').length;
+        const shipped = allOrders.filter(o => o.status === 'shipped').length;
+        const delivered = allOrders.filter(o => o.status === 'delivered').length;
 
-        // Category filter functionality
-        document.getElementById('categoryFilter').addEventListener('change', function(e) {
-            const filterValue = e.target.value;
-            const rows = document.querySelectorAll('.orders-table tbody tr');
+        document.getElementById('totalPending').textContent = pending;
+        document.getElementById('totalProcessing').textContent = processing;
+        document.getElementById('totalShipped').textContent = shipped;
+        document.getElementById('totalDeliver').textContent = delivered;
+    }
 
-            rows.forEach(row => {
-                const category = row.querySelector('.category-badge').textContent.toLowerCase();
-                row.style.display = !filterValue || category.includes(filterValue) ? '' : 'none';
-            });
-        });
+    async function loadOrdersData() {
+        try {
+            // Replace this with actual API call
+            // const response = await fetch('/api/orders.php');
+            // const result = await response.json();
 
-        // Pagination functionality
-        document.querySelectorAll('.page-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.textContent !== 'Previous' && this.textContent !== 'Next') {
-                    document.querySelector('.page-btn.active').classList.remove('active');
-                    this.classList.add('active');
+            // Mock data for now
+            const result = {
+                success: true,
+                data: {
+                    orders: generateMockOrders(25), // Generate 25 sample orders
+                    total: 25
                 }
+            };
+
+            allOrders = result.data.orders;
+            filteredOrders = [...allOrders];
+            totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+
+            renderOrders();
+            renderPagination();
+            updateStats();
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            showError('Error loading orders data.');
+        }
+    }
+
+    function generateMockOrders(count) {
+        const customers = ['Cjay Gonzales', 'Joshua Lapitan', 'Prince Ace Masinsin', 'Gillian Lorenzo', 'Kenji Chua', 'Angel Bien', 'Miguel Torres', 'Carmen Lopez'];
+        const categories = ['School Supplies', 'Office Supplies', 'Sanitary Supplies'];
+        const statuses = ['pending', 'processing', 'shipped', 'delivered'];
+        const orders = [];
+
+        for (let i = 1; i <= count; i++) {
+            orders.push({
+                id: String(i).padStart(3, '0'),
+                customer: customers[Math.floor(Math.random() * customers.length)],
+                category: categories[Math.floor(Math.random() * categories.length)],
+                items: Math.floor(Math.random() * 5) + 1,
+                amount: (Math.random() * 20000 + 1000).toFixed(0),
+                date: new Date(2024, 8, Math.floor(Math.random() * 30) + 1).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }),
+                status: statuses[Math.floor(Math.random() * statuses.length)],
+                // Additional details for modal
+                email: customers[Math.floor(Math.random() * customers.length)].toLowerCase().replace(' ', '.') + '@email.com',
+                phone: '+63 9' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0'),
+                company: 'Company ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)),
+                address: Math.floor(Math.random() * 999) + ' Business Street, Quezon City, Metro Manila',
+                trackingNumber: 'ME-TRK-2024-' + String(i).padStart(3, '0'),
+                paymentMethod: ['Bank Transfer', 'Credit Card', 'Cash'][Math.floor(Math.random() * 3)],
+                transactionId: 'TXN-' + Date.now() + i,
+                notes: 'Customer requested priority delivery for business opening.'
             });
+        }
+        return orders;
+    }
+
+    function renderOrders() {
+        const tbody = document.querySelector('.orders-table tbody');
+        const startIndex = (currentPage - 1) * ordersPerPage;
+        const endIndex = startIndex + ordersPerPage;
+        const pageOrders = filteredOrders.slice(startIndex, endIndex);
+
+        if (pageOrders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="loading">No orders found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = pageOrders.map(order => `
+            <tr>
+                <td><strong>#ORD-${order.id}</strong></td>
+                <td>${order.customer}</td>
+                <td><span class="category-badge">${order.category}</span></td>
+                <td>${order.items} item${order.items !== 1 ? 's' : ''}</td>
+                <td><strong>₱${parseInt(order.amount).toLocaleString()}</strong></td>
+                <td>${order.date}</td>
+                <td><span class="status ${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn secondary" onclick="openOrderModal('${order.id}')">View</button>
+                        <button class="action-btn primary" onclick="openUpdateModal('${order.id}')">Update</button>
+                        <button class="action-btn danger"  >Del</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderPagination() {
+        const paginationInfo = document.querySelector('.pagination-info');
+        const paginationControls = document.querySelector('.pagination-controls');
+
+        const startItem = ((currentPage - 1) * ordersPerPage) + 1;
+        const endItem = Math.min(currentPage * ordersPerPage, filteredOrders.length);
+
+        paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredOrders.length} orders`;
+
+        // Generate page buttons
+        let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
+
+        paginationControls.innerHTML = buttonsHTML;
+
+        // Add event listeners
+        document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
+        document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
+
+        document.querySelectorAll('[data-page]').forEach(btn => {
+            btn.onclick = () => goToPage(parseInt(btn.dataset.page));
         });
+    }
+
+    function goToPage(page) {
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderOrders();
+        renderPagination();
+    }
+
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+
+        filteredOrders = allOrders.filter(order => {
+          const matchesSearch = !searchTerm ||
+              order.customer.toLowerCase().includes(searchTerm) ||
+              order.id.includes(searchTerm);
+
+            const matchesStatus = !statusFilter || order.status === statusFilter;
+            const matchesCategory = !categoryFilter || order.category.toLowerCase() === categoryFilter.toLowerCase();;
+
+            return matchesSearch && matchesStatus && matchesCategory;
+        });
+
+        totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+        currentPage = 1; // Reset to first page when filtering
+        renderOrders();
+        renderPagination();
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+
+    function showError(message) {
+        const tbody = document.querySelector('.orders-table tbody');
+        tbody.innerHTML = `<tr><td colspan="8" class="error" style="text-align: center; padding: 2rem; color: #dc2626;">${message}</td></tr>`;
+    }
+
+    // Modal Functions
+    function openOrderModal(orderId) {
+      const order = allOrders.find(o => o.id === orderId);
+      if (!order) {
+        alert('Order not found');
+        return;
+      }
+
+      // Populate modal with order data
+      populateModalData(order);
+
+      // Show only the order details modal
+      document.getElementById('orderModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      const updtbtn = document.getElementById("updateModal");
+      if(updtbtn){
+        updtbtn.onclick = () => openUpdateModal(orderId);
+      }
+
+        // Refresh Lucide icons for the modal
+        setTimeout(() => {
+          lucide.createIcons();
+        }, 100);
+    }
+
+    function openUpdateModal(orderId) {
+      const order = allOrders.find(o => o.id === orderId);
+      if (!order) {
+        alert('Order not found');
+        return;
+      }
+
+      populateUpdateData(order);
+
+      // Close the order details modal
+      const orderModal = document.getElementById("orderModal");
+      if (orderModal) orderModal.classList.remove("active");
+
+      // Open the update status modal
+      const updateModal = document.getElementById("updateStatusModal");
+      if (updateModal) updateModal.classList.add("active");
+
+      document.body.style.overflow = "hidden";
+
+      // Refresh Lucide icons for the modal
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
+    }
+
+    function submitStatusUpdate(orderId) {
+      alert("Order Updated Successfully!");
+
+      const modal = document.getElementById("updateStatusModal");
+      if (modal) {
+        modal.classList.remove("active");
+      }
+
+      document.body.style.overflow = ''; // restore scrolling
+    }
+
+
+    function populateModalData(order) {
+        // Basic order information
+        document.getElementById('modalOrderId').textContent = `#ORD-${order.id}`;
+        document.getElementById('detailOrderId').textContent = `#ORD-${order.id}`;
+        document.getElementById('detailCustomer').textContent = order.customer;
+        document.getElementById('detailCategory').textContent = order.category;
+        document.getElementById('detailAmount').textContent = `₱${parseInt(order.amount).toLocaleString()}`;
+        document.getElementById('detailDate').textContent = order.date;
+
+        // Status with proper class
+        const statusElement = document.getElementById('detailStatus');
+        statusElement.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+        statusElement.className = `status ${order.status}`;
+
+        // Customer information
+        document.getElementById('customerName').textContent = order.customer;
+        document.getElementById('customerEmail').textContent = order.email;
+        document.getElementById('customerPhone').textContent = order.phone;
+        document.getElementById('customerCompany').textContent = order.company;
+        document.getElementById('customerSince').textContent = 'January 2024';
+
+        // Delivery information
+        document.getElementById('deliveryAddress').innerHTML = order.address.replace(', ', '<br>');
+        document.getElementById('deliveryMethod').textContent = 'Standard Delivery';
+        document.getElementById('expectedDelivery').textContent = getExpectedDeliveryDate(order.date, order.status);
+        document.getElementById('trackingNumber').textContent = order.trackingNumber;
+
+        // Payment information
+        document.getElementById('paymentMethod').textContent = order.paymentMethod;
+        const paymentStatusElement = document.getElementById('paymentStatus');
+        paymentStatusElement.textContent = 'Paid';
+        paymentStatusElement.className = 'status delivered';
+        document.getElementById('transactionId').textContent = order.transactionId;
+        document.getElementById('paymentDate').textContent = order.date;
+
+        // Order items (mock data)
+        populateOrderItems(order);
+
+        // Order timeline
+        populateOrderTimeline(order);
+
+        // Notes
+        document.getElementById('orderNotes').value = order.notes;
+    }
+
+    function populateUpdateData(order){
+        document.getElementById('modalUpdateId').textContent = `#ORD-${order.id}`;
+        document.getElementById('updateOrderId').textContent = `#ORD-${order.id}`;
+        document.getElementById('updateCustomerName').textContent = order.customer;
+        document.getElementById('updateOrderAmount').textContent = `₱${parseInt(order.amount).toLocaleString()}`;
+
+        const statusElement = document.getElementById('updateCurrentStatus');
+        statusElement.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+        statusElement.className = `status ${order.status}`;
+
+        document.getElementById('updateOrderDate').textContent = order.date;
+        document.getElementById('updateTrackingNumber').textContent = order.trackingNumber;
+
+
+    }
+
+    function populateOrderItems(order) {
+        const itemsContainer = document.getElementById('orderItems');
+
+        // Generate mock items based on category and amount
+        const mockItems = generateMockItems(order.category, order.items, order.amount);
+
+        let itemsHTML = '';
+        let total = 0;
+
+        mockItems.forEach(item => {
+            const subtotal = item.quantity * item.price;
+            total += subtotal;
+
+            itemsHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity} ${item.unit}</td>
+                    <td>₱${item.price.toLocaleString()}</td>
+                    <td>₱${subtotal.toLocaleString()}</td>
+                </tr>
+            `;
+        });
+
+        itemsHTML += `
+            <tr style="border-top: 2px solid #1e40af;">
+                <td colspan="3" style="text-align: right; font-weight: 600;">Total:</td>
+                <td style="font-weight: 700; color: #1e40af; font-size: 1.1rem;">₱${total.toLocaleString()}</td>
+            </tr>
+        `;
+
+        itemsContainer.innerHTML = itemsHTML;
+    }
+
+    function generateMockItems(category, itemCount, totalAmount) {
+        const itemsMap = {
+            'School Supplies': [
+                { name: 'Vinyl Planks', unit: 'sqm' },
+                { name: 'Ceramic Tiles', unit: 'sqm' },
+                { name: 'Hardwood Flooring', unit: 'sqm' }
+            ],
+            'Office Supplies': [
+                { name: 'Ceramic Wall Tiles', unit: 'sqm' },
+                { name: 'Porcelain Floor Tiles', unit: 'sqm' },
+                { name: 'Mosaic Tiles', unit: 'sqm' }
+            ],
+            'Sanitary Supplies': [
+                { name: 'LED Light Fixtures', unit: 'pcs' },
+                { name: 'Ceiling Fans', unit: 'pcs' },
+                { name: 'Wall Sconces', unit: 'pcs' }
+            ]
+        };
+
+        const availableItems = itemsMap[category] || itemsMap['Fixtures'];
+        const items = [];
+        const targetAmount = parseInt(totalAmount);
+
+        for (let i = 0; i < itemCount; i++) {
+            const item = availableItems[i % availableItems.length];
+            const quantity = Math.floor(Math.random() * 10) + 1;
+            const price = Math.floor((targetAmount / itemCount) / quantity);
+
+            items.push({
+                name: item.name,
+                quantity: quantity,
+                unit: item.unit,
+                price: price
+            });
+        }
+
+        return items;
+    }
+
+    function populateOrderTimeline(order) {
+        const timeline = document.getElementById('orderTimeline');
+        const statuses = ['Order Placed', 'Payment Confirmed', 'Processing Started', 'Shipped', 'Delivered'];
+        const currentStatusIndex = ['pending', 'processing', 'shipped', 'delivered'].indexOf(order.status);
+
+        let timelineHTML = '';
+        const baseDate = new Date(order.date);
+
+        statuses.forEach((status, index) => {
+            if (index <= currentStatusIndex + 1) {
+                const statusDate = new Date(baseDate);
+                statusDate.setHours(statusDate.getHours() + (index * 6));
+
+                timelineHTML += `
+                    <div class="timeline-item">
+                        <span class="timeline-date">${statusDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</span>
+                        <span class="timeline-status">${status}</span>
+                    </div>
+                `;
+            }
+        });
+
+        timeline.innerHTML = timelineHTML;
+    }
+
+    function getExpectedDeliveryDate(orderDate, status) {
+        const date = new Date(orderDate);
+        const daysToAdd = status === 'delivered' ? 0 : Math.floor(Math.random() * 5) + 1;
+        date.setDate(date.getDate() + daysToAdd);
+
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    function closeModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('orderModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+    function closeUpdateModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('updateStatusModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
     </script>
 </body>
 </html>

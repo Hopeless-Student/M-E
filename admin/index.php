@@ -3,410 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M & E Dashboard</title>
+    <title>M & E Interior Supplies Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-        }
-
-        img {
-          width: 250px;
-          height: 250px;
-        }
-
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-        }
-
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            line-height: 1.2;
-            margin-bottom: 75px;
-            margin-top: 30px;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: #60a5fa;
-        }
-
-        .nav-link .lucide {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h2 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #1e40af;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .stat-title {
-            color: #64748b;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1e40af;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-change {
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .positive { color: #059669; }
-        .negative { color: #dc2626; }
-
-        /* Charts Section */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-container.sales-chart {
-            height: 400px;
-        }
-
-        .chart-container.category-chart {
-            height: 400px;
-        }
-
-        .chart-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e40af;
-            margin-bottom: 1rem;
-        }
-
-        .chart-wrapper {
-            position: relative;
-            height: 320px;
-        }
-
-        /* Recent Orders Table */
-        .orders-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .orders-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .orders-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
-
-        .view-all {
-            color: #1e40af;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .orders-table th {
-            background-color: #f8fafc;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.9rem;
-        }
-
-        .orders-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .status.pending { background-color: #fef3c7; color: #92400e; }
-        .status.processing { background-color: #dbeafe; color: #1d4ed8; }
-        .status.delivered { background-color: #d1fae5; color: #065f46; }
-        .status.shipped { background-color: #e0e7ff; color: #3730a3; }
-
-        .category-badge {
-            padding: 0.25rem 0.5rem;
-            background-color: #e0e7ff;
-            color: #1e40af;
-            border-radius: 6px;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./assets/css/admin/index.css">
 </head>
 <body>
     <div class="dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" data-sidebar-toggle="open">
+            <i data-lucide="menu"></i>
+        </button>
 
-        <nav class="sidebar">
-            <div class="logo">
-                <img src="../assets/images/logo/ME Logo.png" alt="">
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="./index.php" class="nav-link active">
-                        <i data-lucide="bar-chart-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../admin/orders/index.php" class="nav-link">
-                        <i data-lucide="package"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../admin/products/index.php" class="nav-link">
-                        <i data-lucide="shopping-cart"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../admin/users/index.php" class="nav-link">
-                        <i data-lucide="users"></i> Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../admin/inventory/index.php" class="nav-link">
-                        <i data-lucide="clipboard-list"></i> Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../admin/requests/index.php" class="nav-link">
-                        <i data-lucide="message-circle"></i> Messages
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../admin/settings/index.php" class="nav-link">
-                        <i data-lucide="settings"></i> Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <!-- Include Sidebar -->
+        <?php include '../includes/admin_sidebar.php'; ?>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="header">
                 <h2>Dashboard Overview</h2>
                 <div class="user-info">
-                    <span>Elbar Como</span>
+                    <span>Admin User</span>
                     <div class="avatar">A</div>
                 </div>
             </div>
 
             <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-title">Total Revenue</div>
-                    <div class="stat-value">₱48,750</div>
-                    <div class="stat-change positive">
-                        ↗ +12.5% from last month
+            <div class="stats-grid" id="statsGrid">
+                <div class="loading">Loading dashboard data...</div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="./orders/index.php" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="plus"></i>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Total Orders</div>
-                    <div class="stat-value">267</div>
-                    <div class="stat-change positive">
-                        ↗ +8.2% from last month
+                    <h4>New Order</h4>
+                    <p>Create manual order</p>
+                </a>
+                <a href="./products/index.php" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="package-plus"></i>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">New Customers</div>
-                    <div class="stat-value">52</div>
-                    <div class="stat-change positive">
-                        ↗ +15.3% from last month
+                    <h4>Add Product</h4>
+                    <p>Add new product</p>
+                </a>
+                <a href="./inventory/index.php" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="truck"></i>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Avg. Order Value</div>
-                    <div class="stat-value">₱825</div>
-                    <div class="stat-change negative">
-                        ↘ -2.1% from last month
+                    <h4>Restock</h4>
+                    <p>Update inventory</p>
+                </a>
+                <a href="./reports/index.php" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="file-text"></i>
                     </div>
-                </div>
+                    <h4>Reports</h4>
+                    <p>View detailed reports</p>
+                </a>
             </div>
 
             <!-- Charts -->
             <div class="charts-grid">
-                <div class="chart-container sales-chart">
-                    <div class="chart-title">Sales Overview (Last 6 Months)</div>
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i data-lucide="trending-up"></i>
+                        Sales & Orders (Last 6 Months)
+                    </div>
                     <div class="chart-wrapper">
                         <canvas id="salesChart"></canvas>
                     </div>
                 </div>
-                <div class="chart-container category-chart">
-                    <div class="chart-title">Product Categories</div>
-                    <div class="chart-wrapper">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <i data-lucide="pie-chart"></i>
+                        Product Categories
+                    </div>
+                    <div class="chart-wrapper small">
                         <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Status Distribution -->
+            <div class="charts-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">
+                        <i data-lucide="activity"></i>
+                        Order Status Distribution (Last 30 Days)
+                    </div>
+                    <div class="chart-wrapper small">
+                        <canvas id="statusChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -414,168 +103,360 @@
             <!-- Recent Orders -->
             <div class="orders-section">
                 <div class="orders-header">
-                    <h3 class="orders-title">Recent Orders</h3>
+                    <h3 class="orders-title">
+                        <i data-lucide="clock"></i>
+                        Recent Orders
+                    </h3>
                     <a href="../admin/orders/index.php" class="view-all">View All Orders</a>
                 </div>
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#ORD-001</td>
-                            <td>Juan Dela Cruz</td>
-                            <td><span class="category-badge">Office Supplies</span></td>
-                            <td>₱1,250</td>
-                            <td>Aug 20, 2025</td>
-                            <td><span class="status processing">Processing</span></td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-002</td>
-                            <td>Maria Santos</td>
-                            <td><span class="category-badge">School Supplies</span></td>
-                            <td>₱890</td>
-                            <td>Aug 19, 2025</td>
-                            <td><span class="status shipped">Shipped</span></td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-003</td>
-                            <td>Roberto Garcia</td>
-                            <td><span class="category-badge">Sanitary Supplies</span></td>
-                            <td>₱675</td>
-                            <td>Aug 19, 2025</td>
-                            <td><span class="status delivered">Delivered</span></td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-004</td>
-                            <td>Ana Reyes</td>
-                            <td><span class="category-badge">Office Supplies</span></td>
-                            <td>₱1,420</td>
-                            <td>Aug 18, 2025</td>
-                            <td><span class="status pending">Pending</span></td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-005</td>
-                            <td>Carlos Mendoza</td>
-                            <td><span class="category-badge">School Supplies</span></td>
-                            <td>₱750</td>
-                            <td>Aug 18, 2025</td>
-                            <td><span class="status delivered">Delivered</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Category</th>
+                                <th>Items</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="7" class="loading">Loading recent orders...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
 
     <script>
         // Initialize Lucide icons
-        lucide.createIcons();
+        // Initialize Lucide icons
+          lucide.createIcons();
 
-        // Sales Chart
-        const salesCtx = document.getElementById('salesChart').getContext('2d');
-        new Chart(salesCtx, {
-            type: 'line',
-            data: {
-                labels: ['March', 'April', 'May', 'June', 'July', 'August'],
-                datasets: [{
-                    label: 'Revenue (₱)',
-                    data: [35000, 42000, 38000, 45000, 52000, 48750],
-                    borderColor: '#1e40af',
-                    backgroundColor: 'rgba(30, 64, 175, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#1e40af',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#64748b',
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(148, 163, 184, 0.2)'
-                        },
-                        ticks: {
-                            color: '#64748b',
-                            font: {
-                                size: 12
-                            },
-                            callback: function(value) {
-                                return '₱' + value.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                elements: {
-                    point: {
-                        hoverBackgroundColor: '#1e40af',
-                        hoverBorderColor: '#ffffff'
-                    }
-                }
-            }
-        });
+          let salesChart, categoryChart, statusChart;
 
-        // Category Chart
-        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Office Supplies', 'School Supplies', 'Sanitary Supplies'],
-                datasets: [{
-                    data: [45, 35, 20],
-                    backgroundColor: [
-                        '#1e40af',
-                        '#3b82f6',
-                        '#60a5fa'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    }
-                }
-            }
-        });
+          // Load dashboard data on page load
+          document.addEventListener('DOMContentLoaded', function() {
+              loadDashboardData();
+          });
 
+          async function loadDashboardData() {
+              try {
+                  // Simulate API call with sample data
+                  const result = {
+                      success: true,
+                      data: {
+                          stats: {
+                              total_revenue: '145,250.00',
+                              revenue_change: '12.5',
+                              active_customers: '89',
+                              customers_change: '5.2',
+                              avg_order_value: '620.30'
+                          },
+                          charts: {
+                              sales: {
+                                  labels: ['April', 'May', 'June', 'July', 'August', 'September'],
+                                  revenue: [85000, 92000, 88000, 105000, 125000, 145000],
+                                  orders: [145, 160, 142, 175, 198, 234]
+                              },
+                              categories: {
+                                  labels: ['Sanitary Supplies', 'Office Supplies', 'School Supplies'],
+                                  data: [45, 35, 20]
+                              },
+                              order_status: {
+                                  labels: ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered'],
+                                  data: [7, 15, 12, 8, 25],
+                                  colors: ['#f59e0b', '#1d4ed8', '#3730a3', '#5b21b6', '#059669']
+                              }
+                          },
+                          recent_orders: [
+                              {
+                                  order_number: 'ORD-2024-001',
+                                  customer_name: 'John Doe',
+                                  category: 'Sanitary Supplies',
+                                  item_count: '3',
+                                  amount: '15,250.00',
+                                  date: '2024-09-20',
+                                  status: 'processing'
+                              },
+                              {
+                                  order_number: 'ORD-2024-002',
+                                  customer_name: 'Jane Smith',
+                                  category: 'Office Supplies',
+                                  item_count: '5',
+                                  amount: '8,450.00',
+                                  date: '2024-09-19',
+                                  status: 'confirmed'
+                              },
+                              {
+                                  order_number: 'ORD-2024-003',
+                                  customer_name: 'Mike Johnson',
+                                  category: 'School Supplies',
+                                  item_count: '2',
+                                  amount: '12,800.00',
+                                  date: '2024-09-18',
+                                  status: 'delivered'
+                              },
+                              {
+                                  order_number: 'ORD-2024-004',
+                                  customer_name: 'Sarah Wilson',
+                                  category: 'Sanitary Supplies',
+                                  item_count: '4',
+                                  amount: '22,150.00',
+                                  date: '2024-09-17',
+                                  status: 'shipped'
+                              },
+                              {
+                                  order_number: 'ORD-2024-005',
+                                  customer_name: 'David Brown',
+                                  category: 'Office Supplies',
+                                  item_count: '1',
+                                  amount: '3,200.00',
+                                  date: '2024-09-16',
+                                  status: 'pending'
+                              }
+                          ]
+                      }
+                  };
+
+                  renderStats(result.data.stats);
+                  renderCharts(result.data.charts);
+                  renderRecentOrders(result.data.recent_orders);
+              } catch (error) {
+                  console.error('Error loading dashboard data:', error);
+                  showError('Error loading dashboard data. Please check your connection.');
+              }
+          }
+
+          function renderStats(stats) {
+              const statsGrid = document.getElementById('statsGrid');
+
+              const revenueChange = parseFloat(stats.revenue_change || 0);
+              const customersChange = parseFloat(stats.customers_change || 0);
+
+              const revenueChangeClass = revenueChange >= 0 ? 'positive' : 'negative';
+              const customersChangeClass = customersChange >= 0 ? 'positive' : 'negative';
+
+              const revenueChangeIcon = revenueChange >= 0 ? '' : '';
+              const customersChangeIcon = customersChange >= 0 ? '' : '';
+
+              statsGrid.innerHTML = `
+                  <div class="stat-card">
+                      <div class="stat-header">
+                          <div class="stat-title">Total Revenue</div>
+                          <i data-lucide="dollar-sign" class="stat-icon"></i>
+                      </div>
+                      <div class="stat-value">${stats.total_revenue}</div>
+                      <div class="stat-change ${revenueChangeClass}">
+                          ${revenueChangeIcon} ${Math.abs(revenueChange)}% from last month
+                      </div>
+                  </div>
+                  <div class="stat-card">
+                      <div class="stat-header">
+                          <div class="stat-title">Average Order Value</div>
+                          <i data-lucide="calculator" class="stat-icon"></i>
+                      </div>
+                      <div class="stat-value">${stats.avg_order_value}</div>
+                      <div class="stat-change neutral">
+                          Including shipping fees
+                      </div>
+                  </div>
+                  <div class="stat-card">
+                      <div class="stat-header">
+                          <div class="stat-title">Active Customers</div>
+                          <i data-lucide="users" class="stat-icon"></i>
+                      </div>
+                      <div class="stat-value">${stats.active_customers}</div>
+                      <div class="stat-change ${customersChangeClass}">
+                          ${customersChangeIcon} ${Math.abs(customersChange)}% this month
+                      </div>
+                  </div>
+              `;
+
+              // Re-initialize icons for new content
+              lucide.createIcons();
+          }
+
+          function renderCharts(chartData) {
+              // Sales & Orders Chart (Combined)
+              const salesCtx = document.getElementById('salesChart').getContext('2d');
+              if (salesChart) salesChart.destroy();
+
+              salesChart = new Chart(salesCtx, {
+                  type: 'line',
+                  data: {
+                      labels: chartData.sales.labels,
+                      datasets: [
+                          {
+                              label: 'Revenue',
+                              data: chartData.sales.revenue,
+                              borderColor: '#1e40af',
+                              backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                              borderWidth: 3,
+                              fill: true,
+                              tension: 0.4,
+                              yAxisID: 'y'
+                          },
+                          {
+                              label: 'Orders',
+                              data: chartData.sales.orders,
+                              borderColor: '#f59e0b',
+                              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                              borderWidth: 2,
+                              fill: false,
+                              tension: 0.4,
+                              yAxisID: 'y1'
+                          }
+                      ]
+                  },
+                  options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      interaction: {
+                          mode: 'index',
+                          intersect: false
+                      },
+                      scales: {
+                          x: {
+                              display: true,
+                              title: {
+                                  display: true,
+                                  text: 'Month'
+                              }
+                          },
+                          y: {
+                              type: 'linear',
+                              display: true,
+                              position: 'left',
+                              title: {
+                                  display: true,
+                                  text: 'Revenue'
+                              },
+                              ticks: {
+                                  callback: function(value) {
+                                      return value.toLocaleString();
+                                  }
+                              }
+                          },
+                          y1: {
+                              type: 'linear',
+                              display: true,
+                              position: 'right',
+                              title: {
+                                  display: true,
+                                  text: 'Orders'
+                              },
+                              grid: {
+                                  drawOnChartArea: false
+                              }
+                          }
+                      }
+                  }
+              });
+
+              // Category Chart
+              const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+              if (categoryChart) categoryChart.destroy();
+
+              categoryChart = new Chart(categoryCtx, {
+                  type: 'doughnut',
+                  data: {
+                      labels: chartData.categories.labels,
+                      datasets: [{
+                          data: chartData.categories.data,
+                          backgroundColor: [
+                              '#1e40af',
+                              '#f59e0b',
+                              '#10b981'
+                          ],
+                          borderWidth: 0
+                      }]
+                  },
+                  options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                          legend: {
+                              position: 'bottom',
+                              labels: {
+                                  padding: 20,
+                                  usePointStyle: true
+                              }
+                          }
+                      }
+                  }
+              });
+
+              // Order Status Chart
+              if (chartData.order_status && chartData.order_status.labels.length > 0) {
+                  const statusCtx = document.getElementById('statusChart').getContext('2d');
+                  if (statusChart) statusChart.destroy();
+
+                  statusChart = new Chart(statusCtx, {
+                      type: 'bar',
+                      data: {
+                          labels: chartData.order_status.labels,
+                          datasets: [{
+                              label: 'Orders',
+                              data: chartData.order_status.data,
+                              backgroundColor: chartData.order_status.colors,
+                              borderWidth: 0
+                          }]
+                      },
+                      options: {
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                              legend: {
+                                  display: false
+                              }
+                          },
+                          scales: {
+                              y: {
+                                  beginAtZero: true,
+                                  ticks: {
+                                      stepSize: 1
+                                  }
+                              }
+                          }
+                      }
+                  });
+              }
+          }
+
+          function renderRecentOrders(orders) {
+              const tableBody = document.getElementById('ordersTableBody');
+
+              if (orders.length === 0) {
+                  tableBody.innerHTML = '<tr><td colspan="7" class="loading">No recent orders found</td></tr>';
+                  return;
+              }
+
+              tableBody.innerHTML = orders.map(order => `
+                  <tr>
+                      <td><strong>${order.order_number}</strong></td>
+                      <td>${order.customer_name}</td>
+                      <td><span class="category-badge">${order.category}</span></td>
+                      <td>${order.item_count} item${order.item_count !== '1' ? 's' : ''}</td>
+                      <td><strong>${order.amount}</strong></td>
+                      <td>${order.date}</td>
+                      <td><span class="status ${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
+                  </tr>
+              `).join('');
+          }
+
+          function showError(message) {
+              const statsGrid = document.getElementById('statsGrid');
+              statsGrid.innerHTML = `<div class="error">${message}</div>`;
+          }
+
+          // Auto-refresh data every 5 minutes
+          setInterval(loadDashboardData, 300000);
     </script>
 </body>
 </html>

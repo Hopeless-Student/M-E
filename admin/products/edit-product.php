@@ -1,214 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product - M & E Dashboard</title>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-        }
-        img{
-          width: 250px;
-          height: 250px;
-        }
-
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
+        /* Modal Overlay */
+        .modal-overlay {
             position: fixed;
-            left: 0;
             top: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-            z-index: 1000;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            line-height: 1.2;
-            margin-bottom: 75px;
-            margin-top: 30px;
+            z-index: 1000;
         }
 
-        /* .logo img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 1rem;
-        } */
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        /* Modal Container */
+        .modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .logo p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: #60a5fa;
-        }
-
-        .nav-link .lucide {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-        }
-
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            margin-left: 280px;
-        }
-
-        .header {
+        /* Modal Header */
+        .modal-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
         }
 
-        .header h2 {
-            font-size: 2rem;
+        .modal-title {
+            font-size: 1.25rem;
             font-weight: 600;
             color: #1e40af;
         }
 
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
             color: #64748b;
+            transition: all 0.2s ease;
         }
 
-        .breadcrumb a {
-            color: #1e40af;
-            text-decoration: none;
+        .close-btn:hover {
+            background-color: #f1f5f9;
+            color: #334155;
         }
 
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
+        /* Modal Body */
+        .modal-body {
+            padding: 1.5rem;
         }
 
         /* Form Styles */
-        .form-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            max-width: 800px;
+        .form-group {
+            margin-bottom: 1rem;
         }
 
-        .form-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .form-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e40af;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-subtitle {
-            color: #64748b;
-        }
-
-        .form-grid {
+        .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
+            gap: 1rem;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             font-weight: 500;
             color: #374151;
+            font-size: 0.875rem;
         }
 
         .form-label.required::after {
@@ -218,40 +86,65 @@
 
         .form-input, .form-textarea, .form-select {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
             transition: border-color 0.2s ease;
         }
 
         .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
             border-color: #1e40af;
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+            box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1);
         }
 
         .form-textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
+        }
+
+        /* Image Upload */
+        .image-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .current-image-container {
+            text-align: center;
+        }
+
+        .current-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            margin-bottom: 0.5rem;
+        }
+
+        .current-image-label {
+            font-size: 0.75rem;
+            color: #64748b;
         }
 
         .file-upload-container {
-            position: relative;
             border: 2px dashed #d1d5db;
             border-radius: 8px;
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
             transition: border-color 0.2s ease;
             background: #f9fafb;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .file-upload-container:hover {
-            border-color: #1e40af;
-            background: #eff6ff;
-        }
-
-        .file-upload-container.dragover {
             border-color: #1e40af;
             background: #eff6ff;
         }
@@ -270,48 +163,45 @@
             cursor: pointer;
             color: #1e40af;
             font-weight: 500;
+            font-size: 0.875rem;
         }
 
         .file-upload-text {
             color: #64748b;
-            margin-top: 0.5rem;
-        }
-
-        .current-image {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
         }
 
         .image-preview {
-            max-width: 200px;
-            max-height: 200px;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
             border-radius: 8px;
             border: 1px solid #d1d5db;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
 
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            padding-top: 2rem;
+        /* Modal Footer */
+        .modal-footer {
+            padding: 1rem 1.5rem;
             border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
+            font-size: 0.875rem;
             transition: all 0.2s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.25rem;
         }
 
         .btn-primary {
@@ -321,7 +211,6 @@
 
         .btn-primary:hover {
             background-color: #1e3a8a;
-            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -333,17 +222,6 @@
             background-color: #475569;
         }
 
-        .btn-outline {
-            background-color: transparent;
-            color: #1e40af;
-            border: 1px solid #1e40af;
-        }
-
-        .btn-outline:hover {
-            background-color: #1e40af;
-            color: white;
-        }
-
         .btn-danger {
             background-color: #dc2626;
             color: white;
@@ -353,6 +231,27 @@
             background-color: #b91c1c;
         }
 
+        .btn .lucide {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Delete Confirmation Modal */
+        .delete-modal {
+            max-width: 400px;
+        }
+
+        .delete-modal .modal-body {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .delete-modal .modal-body p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+
         /* Alert */
         .alert {
             position: fixed;
@@ -361,6 +260,7 @@
             padding: 1rem 1.5rem;
             border-radius: 8px;
             font-weight: 500;
+            font-size: 0.875rem;
             z-index: 1100;
             transform: translateX(400px);
             transition: transform 0.3s ease;
@@ -382,105 +282,48 @@
             border: 1px solid #fecaca;
         }
 
-        @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
+        @media (max-width: 640px) {
+            .modal {
+                width: 95%;
+                margin: 1rem;
             }
 
-            .sidebar {
-                width: 100%;
-            }
-
-            .form-grid {
+            .form-row {
                 grid-template-columns: 1fr;
             }
 
-            .form-actions {
-                flex-direction: column;
+            .image-section {
+                grid-template-columns: 1fr;
             }
 
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
+            .modal-footer {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="logo">
-              <img src="../../assets/images/logo/ME logo.png" alt="">
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.php" class="nav-link">
-                        <i data-lucide="bar-chart-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../orders/index.php" class="nav-link">
-                        <i data-lucide="package"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="./index.php" class="nav-link active">
-                        <i data-lucide="shopping-cart"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../users/index.php" class="nav-link">
-                        <i data-lucide="users"></i> Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../inventory/index.php" class="nav-link">
-                        <i data-lucide="clipboard-list"></i> Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../requests/index.php" class="nav-link">
-                        <i data-lucide="message-circle"></i> Messages
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../settings/index.php" class="nav-link">
-                        <i data-lucide="settings"></i> Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <!-- Demo Button -->
+    <!-- <button class="demo-btn" onclick="openEditModal()">Open Edit Product Modal</button> -->
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="header">
-                <h2>Edit Product</h2>
-                <div class="user-info">
-                    <span>Admin Panel</span>
-                    <div class="avatar">A</div>
-                </div>
+    <!-- Edit Product Modal -->
+    <div class="modal-overlay" id="editModal" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Product</h3>
+                <button type="button" class="close-btn" onclick="closeModal()">
+                    <i data-lucide="x"></i>
+                </button>
             </div>
 
-            <div class="breadcrumb">
-                <a href="./index.php">Products</a>
-                <span></span>
-                <span>Edit Product</span>
-            </div>
+            <form id="editProductForm" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label required" for="productName">Product Name</label>
+                        <input type="text" class="form-input" id="productName" name="product_name" required>
+                    </div>
 
-            <div class="form-container">
-                <div class="form-header">
-                    <h3 class="form-title">Edit Product Information</h3>
-                    <p class="form-subtitle">Update the product details below</p>
-                </div>
-
-                <form id="editProductForm" method="POST" enctype="multipart/form-data">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label required" for="productName">Product Name</label>
-                            <input type="text" class="form-input" id="productName" name="product_name" required>
-                        </div>
-
+                    <div class="form-row">
                         <div class="form-group">
                             <label class="form-label required" for="productCategory">Category</label>
                             <select class="form-select" id="productCategory" name="category" required>
@@ -490,197 +333,71 @@
                                 <option value="sanitary">Sanitary Supplies</option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label class="form-label required" for="productPrice">Price (₱)</label>
                             <input type="number" class="form-input" id="productPrice" name="price" min="0" step="0.01" required>
                         </div>
+                    </div>
 
+                    <div class="form-group">
+                        <label class="form-label required" for="productDescription">Description</label>
+                        <textarea class="form-textarea" id="productDescription" name="description" required placeholder="Enter product description..."></textarea>
+                    </div>
 
-                        <div class="form-group full-width">
-                            <label class="form-label required" for="productDescription">Description</label>
-                            <textarea class="form-textarea" id="productDescription" name="description" required placeholder="Enter a detailed description of the product..."></textarea>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label class="form-label" for="productImage">Product Image</label>
-                            <div id="currentImageContainer">
-                                <p style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #64748b;">Current Image:</p>
-                                <img id="currentImage" class="current-image" src="" alt="Current product image">
+                    <div class="form-group">
+                        <label class="form-label">Product Image</label>
+                        <div class="image-section">
+                            <div class="current-image-container" id="currentImageContainer">
+                                <img id="currentImage" class="current-image" src="" alt="Current product">
+                                <div class="current-image-label">Current Image</div>
                             </div>
-                            <div class="file-upload-container" id="fileUploadContainer">
+                            <div class="file-upload-container">
                                 <input type="file" class="file-upload-input" id="productImage" name="product_image" accept="image/*">
-                                <div class="file-upload-content">
-                                    <p class="file-upload-label">Click to upload new image or drag and drop</p>
-                                    <p class="file-upload-text">PNG, JPG, JPEG up to 5MB</p>
-                                </div>
+                                <div class="file-upload-label">Upload New Image</div>
+                                <div class="file-upload-text">PNG, JPG up to 5MB</div>
+                                <img id="imagePreview" class="image-preview" style="display: none;">
                             </div>
-                            <img id="imagePreview" class="image-preview" style="display: none;">
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-actions">
-                        <a href="./index.php" class="btn btn-outline">Cancel</a>
-                        <button type="button" class="btn btn-danger" id="deleteBtn">
-                            <span data-lucide="trash-2"></span>
-                            Delete Product
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <span data-lucide="save"></span>
-                            Update Product
-                        </button>
-                    </div>
-                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="openDeleteModal()">
+                        <i data-lucide="trash-2"></i>
+                        Delete
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save"></i>
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal" style="display: none;">
+        <div class="modal delete-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #dc2626;">Confirm Deletion</h3>
+                <button type="button" class="close-btn" onclick="closeDeleteModal()">
+                    <i data-lucide="x"></i>
+                </button>
             </div>
-        </main>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+                <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                    <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete Product</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Alert Container -->
     <div class="alert" id="alertContainer"></div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); width: 90%; max-width: 400px;">
-            <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb;">
-                <h3 style="font-size: 1.25rem; font-weight: 600; color: #dc2626; margin: 0;">Confirm Deletion</h3>
-            </div>
-            <p style="margin-bottom: 2rem; color: #64748b;">Are you sure you want to delete this product? This action cannot be undone.</p>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete Product</button>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        lucide.createIcons();
-        // Sample product data (in real implementation, this would come from the server)
-        const sampleProduct = {
-            id: 1,
-            name: "Ballpoint Pens (Pack of 12)",
-            description: "High-quality ballpoint pens with smooth ink flow. Perfect for office and professional use.",
-            category: "office",
-            price: 180,
-            stock: 150,
-            image: "./images/ballpointpen.png"
-        };
-
-        // Get product ID from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id') || 1;
-
-        // Initialize form with product data
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProductData();
-            setupEventListeners();
-        });
-
-        function loadProductData() {
-            // In real implementation, fetch product data from server
-            const product = sampleProduct;
-
-            document.getElementById('productName').value = product.name;
-            document.getElementById('productDescription').value = product.description;
-            document.getElementById('productCategory').value = product.category;
-            document.getElementById('productPrice').value = product.price;
-            document.getElementById('productStock').value = product.stock;
-
-            // Set current image
-            if (product.image) {
-                document.getElementById('currentImage').src = product.image;
-                document.getElementById('currentImageContainer').style.display = 'block';
-            } else {
-                document.getElementById('currentImageContainer').style.display = 'none';
-            }
-        }
-
-        function setupEventListeners() {
-            const fileInput = document.getElementById('productImage');
-            const fileUploadContainer = document.getElementById('fileUploadContainer');
-            const imagePreview = document.getElementById('imagePreview');
-
-            // Handle file input change
-            fileInput.addEventListener('change', function(e) {
-                handleFileSelect(e.target.files[0]);
-            });
-
-            // Handle drag and drop
-            fileUploadContainer.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                fileUploadContainer.classList.add('dragover');
-            });
-
-            fileUploadContainer.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                fileUploadContainer.classList.remove('dragover');
-            });
-
-            fileUploadContainer.addEventListener('drop', function(e) {
-                e.preventDefault();
-                fileUploadContainer.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    handleFileSelect(files[0]);
-                }
-            });
-
-            // Delete button
-            document.getElementById('deleteBtn').addEventListener('click', function() {
-                document.getElementById('deleteModal').style.display = 'flex';
-            });
-        }
-
-        function handleFileSelect(file) {
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Form submission
-        document.getElementById('editProductForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Get form data
-            const formData = new FormData(this);
-
-            // Simulate form submission (replace with actual AJAX call)
-            showAlert('Product updated successfully!', 'success');
-
-            // Redirect after success
-            setTimeout(() => {
-                window.location.href = './index.php';
-            }, 1500);
-        });
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-        }
-
-        function confirmDelete() {
-            // Simulate deletion (replace with actual AJAX call)
-            showAlert('Product deleted successfully!', 'success');
-
-            setTimeout(() => {
-                window.location.href = './index.php';
-            }, 1500);
-        }
-
-        function showAlert(message, type) {
-            const alert = document.getElementById('alertContainer');
-            alert.textContent = message;
-            alert.className = `alert ${type}`;
-            alert.classList.add('show');
-
-            setTimeout(() => {
-                alert.classList.remove('show');
-            }, 3000);
-        }
-    </script>
 </body>
 </html>
