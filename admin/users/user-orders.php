@@ -3,989 +3,710 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Orders - M & E Dashboard</title>
+    <title>Customer Orders Modal</title>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Base styles for all modals */
+        .customer-orders-modal-base {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-        }
-
-        img {
-            width: 250px;
-            height: 250px;
-        }
-
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 4px 0 10px rgba(30, 58, 138, 0.1);
-        }
-
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
+        .customer-orders-modal-base.show {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            line-height: 1.2;
-            margin-bottom: 75px;
-            margin-top: 30px;
+            padding: 1rem;
+            animation: customerOrdersFadeIn 0.3s ease;
         }
 
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        @keyframes customerOrdersFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .logo p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: #60a5fa;
-        }
-
-        .nav-link .lucide {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            overflow-x: auto;
-            min-width: 0;
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .breadcrumb a {
-            color: #1e40af;
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header h2 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background-color: #1e40af;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #1e3a8a;
-        }
-
-        .btn-secondary {
-            background-color: #64748b;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #475569;
-        }
-
-        /* Customer Info Header */
-        .customer-info-header {
+        .customer-orders-modal-content {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            padding: 1.5rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1100px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            animation: customerOrdersSlideIn 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes customerOrdersSlideIn {
+            from { transform: translateY(-30px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        /* Modal Header */
+        .customer-orders-modal-header {
+            padding: 1rem 2rem; /* Slightly reduced padding */
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .customer-orders-modal-title {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        .customer-avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
+        .customer-orders-avatar-large {
+            width: 50px; /* Slightly smaller avatar */
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Slightly smaller font */
         }
 
-        .customer-details h3 {
-            color: #1e40af;
-            margin-bottom: 0.25rem;
+        .customer-orders-modal-title h3 {
+            font-size: 1.3rem; /* Slightly smaller font */
+            font-weight: 600;
+            margin: 0;
         }
 
-        .customer-details p {
-            color: #64748b;
-            font-size: 0.9rem;
+        .customer-orders-modal-title p {
+            opacity: 0.9;
+            font-size: 0.85rem; /* Slightly smaller font */
+            margin: 0;
         }
 
-        /* Order Stats */
-        .order-stats {
+        .customer-orders-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            width: 36px; /* Slightly smaller button */
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .customer-orders-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modal Body */
+        .customer-orders-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Stats Section (renamed to avoid conflict, though not used in this modal's HTML) */
+        .customer-orders-order-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .stat-card {
-            background: white;
+        .customer-orders-stat-card {
+            background: #f8fafc;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             text-align: center;
             border-left: 4px solid #1e40af;
         }
 
-        .stat-value {
+        .customer-orders-stat-value {
             font-size: 1.8rem;
             font-weight: 700;
             color: #1e40af;
             margin-bottom: 0.5rem;
         }
 
-        .stat-label {
+        .customer-orders-stat-label {
             color: #64748b;
             font-size: 0.9rem;
             font-weight: 500;
-        }
-
-        /* Filter Controls */
-        .filter-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-select {
-            padding: 0.75rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: white;
-            font-size: 0.9rem;
-            min-width: 150px;
-        }
-
-        .date-range {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .date-input {
-            padding: 0.75rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        /* Orders Table */
-        .orders-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-        }
-
-        .orders-table th {
-            background-color: #f8fafc;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.9rem;
-            border-bottom: 2px solid #e2e8f0;
-            white-space: nowrap;
-        }
-
-        .orders-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            vertical-align: middle;
-        }
-
-        .orders-table tr:hover {
-            background-color: #f8fafc;
-        }
-
-        .order-id {
-            color: #1e40af;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .order-id:hover {
-            text-decoration: underline;
-        }
-
-        .order-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .order-status.completed { background-color: #d1fae5; color: #065f46; }
-        .order-status.pending { background-color: #fef3c7; color: #92400e; }
-        .order-status.processing { background-color: #dbeafe; color: #1d4ed8; }
-        .order-status.cancelled { background-color: #fee2e2; color: #dc2626; }
-        .order-status.refunded { background-color: #f3e8ff; color: #7c3aed; }
-
-        .order-items {
-            max-width: 200px;
-        }
-
-        .item-list {
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .item-count {
-            font-weight: 500;
-            color: #1e40af;
-        }
-
-        .order-total {
-            font-weight: 700;
-            color: #1e293b;
-            font-size: 1rem;
-        }
-
-        .action-btn {
-            padding: 0.5rem 1rem;
-            background-color: #1e40af;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: background-color 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        .action-btn:hover {
-            background-color: #1e3a8a;
-        }
-
-        .action-btn.secondary {
-            background-color: #64748b;
-        }
-
-        .action-btn.secondary:hover {
-            background-color: #475569;
-        }
-
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-top: 1px solid #e2e8f0;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .pagination-info {
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-
-        .pagination-controls {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .page-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 44px;
-            text-align: center;
-        }
-
-        .page-btn:hover {
-            background-color: #1e40af;
-            color: white;
-        }
-
-        .page-btn.active {
-            background-color: #1e40af;
-            color: white;
-            border-color: #1e40af;
         }
 
         /* Order Summary */
-        .order-summary {
+        .customer-orders-order-summary {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
             padding: 1.5rem;
         }
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+        .customer-orders-summary-title {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem; /* Slightly smaller font */
         }
 
-        .summary-item {
+        .customer-orders-summary-title .lucide {
+            width: 16px; /* Slightly smaller icon */
+            height: 16px;
+        }
+
+        .customer-orders-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted minmax */
+            gap: 1rem;
+        }
+
+        .customer-orders-summary-item {
             text-align: center;
             padding: 1rem;
             border-radius: 8px;
             background: #f8fafc;
         }
 
-        .summary-value {
-            font-size: 1.5rem;
+        .customer-orders-summary-value {
+            font-size: 1.2rem; /* Slightly smaller font */
             font-weight: 700;
             color: #1e40af;
             margin-bottom: 0.25rem;
         }
 
-        .summary-label {
+        .customer-orders-summary-label {
             color: #64748b;
+            font-size: 0.8rem; /* Slightly smaller font */
+        }
+
+        /* Filter Controls */
+        .customer-orders-filter-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .customer-orders-filter-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .customer-orders-filter-select, .customer-orders-date-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
             font-size: 0.9rem;
+            min-width: 120px;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 1024px) {
-            .dashboard {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                position: static;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
+        .customer-orders-date-range {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
         }
 
+        /* Orders Table */
+        .customer-orders-orders-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .customer-orders-table-container {
+            overflow-x: auto;
+        }
+
+        .customer-orders-orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .customer-orders-orders-table th {
+            background-color: #f8fafc;
+            padding: 0.8rem 1rem; /* Slightly reduced padding */
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.85rem; /* Slightly smaller font */
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .customer-orders-orders-table td {
+            padding: 0.8rem 1rem; /* Slightly reduced padding */
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .customer-orders-orders-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .customer-orders-order-id {
+            color: #1e40af;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .customer-orders-order-id:hover {
+            text-decoration: underline;
+        }
+
+        .customer-orders-order-status {
+            padding: 0.2rem 0.6rem; /* Slightly reduced padding */
+            border-radius: 20px;
+            font-size: 0.75rem; /* Slightly smaller font */
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .customer-orders-order-status.completed { background-color: #d1fae5; color: #065f46; }
+        .customer-orders-order-status.pending { background-color: #fef3c7; color: #92400e; }
+        .customer-orders-order-status.processing { background-color: #dbeafe; color: #1d4ed8; }
+        .customer-orders-order-status.cancelled { background-color: #fee2e2; color: #dc2626; }
+
+        .customer-orders-order-items {
+            max-width: 200px;
+        }
+
+        .customer-orders-item-count {
+            font-weight: 500;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .customer-orders-item-list {
+            font-size: 0.8rem;
+            color: #64748b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .customer-orders-order-total {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.95rem; /* Slightly smaller font */
+        }
+
+        .customer-orders-action-btn {
+            padding: 0.4rem 0.8rem; /* Slightly reduced padding */
+            background-color: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem; /* Slightly smaller font */
+            transition: background-color 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .customer-orders-action-btn:hover {
+            background-color: #1e3a8a;
+        }
+
+        /* Pagination */
+        .customer-orders-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem; /* Slightly reduced padding */
+            border-top: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .customer-orders-pagination-info {
+            color: #64748b;
+            font-size: 0.85rem; /* Slightly smaller font */
+        }
+
+        .customer-orders-pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .customer-orders-page-btn {
+            padding: 0.4rem 0.8rem; /* Slightly reduced padding */
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 38px; /* Slightly smaller button */
+            text-align: center;
+            font-size: 0.85rem; /* Slightly smaller font */
+        }
+
+        .customer-orders-page-btn:hover {
+            background-color: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        .customer-orders-page-btn.active {
+            background-color: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        /* Modal Footer */
+        .customer-orders-modal-footer {
+            padding: 1rem 2rem; /* Slightly reduced padding */
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .customer-orders-btn {
+            padding: 0.6rem 1.2rem; /* Slightly reduced padding */
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem; /* Slightly smaller font */
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .customer-orders-btn .lucide {
+            width: 14px; /* Slightly smaller icon */
+            height: 14px;
+        }
+
+        .customer-orders-btn-primary {
+            background-color: #1e40af;
+            color: white;
+        }
+
+        .customer-orders-btn-primary:hover {
+            background-color: #1e3a8a;
+        }
+
+        .customer-orders-btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .customer-orders-btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .customer-info-header {
-                flex-direction: column;
-                text-align: center;
+            .customer-orders-modal-content {
+                max-width: 95vw;
+                margin: 0.5rem;
             }
 
-            .filter-controls {
+            .customer-orders-order-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .customer-orders-filter-controls {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-            .filter-group {
+            .customer-orders-filter-group {
                 flex-direction: column;
                 width: 100%;
             }
 
-            .filter-select, .date-input {
+            .customer-orders-filter-select, .customer-orders-date-input {
                 width: 100%;
             }
 
-            .header-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-            .order-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .order-stats {
-                grid-template-columns: 1fr;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .pagination {
+            .customer-orders-pagination {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
 
-            .pagination-controls {
+            .customer-orders-pagination-controls {
                 justify-content: center;
+            }
+            .customer-orders-modal-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            .customer-orders-modal-title {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .customer-orders-modal-title h3 {
+                font-size: 1.2rem;
+            }
+            .customer-orders-modal-title p {
+                font-size: 0.8rem;
+            }
+            .customer-orders-avatar-large {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+            .customer-orders-modal-body {
+                padding: 1rem;
+            }
+            .customer-orders-modal-footer {
+                flex-direction: column;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            .customer-orders-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .customer-orders-order-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .customer-orders-summary-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <nav class="sidebar">
-            <div class="logo">
-                <img src="../../assets/images/logo/ME logo.png" alt="">
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.php" class="nav-link">
-                        <i data-lucide="bar-chart-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../orders/index.php" class="nav-link">
-                        <i data-lucide="package"></i> Orders
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../products/index.php" class="nav-link">
-                        <i data-lucide="shopping-cart"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link active">
-                        <i data-lucide="users"></i> Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../inventory/index.php" class="nav-link">
-                        <i data-lucide="clipboard-list"></i> Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../requests/index.php" class="nav-link">
-                        <i data-lucide="message-circle"></i> Messages
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="../settings/index.php" class="nav-link">
-                        <i data-lucide="settings"></i> Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
 
-        <main class="main-content">
-            <div class="breadcrumb">
-                <a href="../index.php">Dashboard</a>
-                <span>›</span>
-                <a href="index.php">Customers</a>
-                <span>›</span>
-                <a href="user-details.php?id=1">Juan Dela Cruz</a>
-                <span>›</span>
-                <span>Orders</span>
-            </div>
-
-            <div class="header">
-                <h2>Customer Orders</h2>
-                <div class="header-actions">
-                    <a href="user-details.php?id=1" class="btn btn-secondary">Back to Profile</a>
-                    <a href="edit-user.php?id=1" class="btn btn-primary">Edit Customer</a>
-                </div>
-            </div>
-
-            <!-- Customer Info Header -->
-            <div class="customer-info-header">
-                <div class="customer-avatar">JD</div>
-                <div class="customer-details">
-                    <h3>Juan Dela Cruz</h3>
-                    <p>juan.delacruz@email.com • +63 917 123 4567</p>
-                    <p>Customer ID: #CUS-001 • Member since August 2024</p>
-                </div>
-            </div>
-
-            <!-- Order Stats -->
-            <div class="order-stats">
-                <div class="stat-card">
-                    <div class="stat-value">8</div>
-                    <div class="stat-label">Total Orders</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">₱4,250</div>
-                    <div class="stat-label">Total Spent</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">₱531</div>
-                    <div class="stat-label">Average Order</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">7</div>
-                    <div class="stat-label">Completed Orders</div>
-                </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="order-summary">
-                <h4 style="margin-bottom: 1rem; color: #1e40af;">Order Summary by Status</h4>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-value">7</div>
-                        <div class="summary-label">Completed (₱3,950)</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value">0</div>
-                        <div class="summary-label">Pending (₱0)</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value">0</div>
-                        <div class="summary-label">Processing (₱0)</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value">1</div>
-                        <div class="summary-label">Cancelled (₱300)</div>
+    <!-- Customer Orders Modal -->
+    <div id="customerOrdersModal" class="customer-orders-modal-base" onclick="closeCustomerOrdersModal(event)">
+        <div class="customer-orders-modal-content" onclick="event.stopPropagation()">
+            <div class="customer-orders-modal-header">
+                <div class="customer-orders-modal-title">
+                    <div class="customer-orders-avatar-large">JD</div>
+                    <div>
+                        <h3>Juan Dela Cruz - Orders</h3>
+                        <p>Customer ID: #CUS-001 • Member since August 2024</p>
                     </div>
                 </div>
+                <button class="customer-orders-close-btn" onclick="closeCustomerOrdersModal()">&times;</button>
             </div>
 
-            <!-- Filter Controls -->
-            <div class="filter-controls">
-                <div class="filter-group">
-                    <select class="filter-select" id="statusFilter">
-                        <option value="">All Status</option>
-                        <option value="completed">Completed</option>
-                        <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
-                        <option value="cancelled">Cancelled</option>
-                        <option value="refunded">Refunded</option>
-                    </select>
-                    <div class="date-range">
-                        <input type="date" class="date-input" id="startDate" title="Start Date">
-                        <span>to</span>
-                        <input type="date" class="date-input" id="endDate" title="End Date">
+            <div class="customer-orders-modal-body">
+                <!-- Order Summary -->
+                <div class="customer-orders-order-summary">
+                    <h4 class="customer-orders-summary-title">
+                        <i data-lucide="bar-chart-3"></i>
+                        Order Summary by Status
+                    </h4>
+                    <div class="customer-orders-summary-grid">
+                        <div class="customer-orders-summary-item">
+                            <div class="customer-orders-summary-value">7</div>
+                            <div class="customer-orders-summary-label">Completed (₱3,950)</div>
+                        </div>
+                        <div class="customer-orders-summary-item">
+                            <div class="customer-orders-summary-value">0</div>
+                            <div class="customer-orders-summary-label">Pending (₱0)</div>
+                        </div>
+                        <div class="customer-orders-summary-item">
+                            <div class="customer-orders-summary-value">0</div>
+                            <div class="customer-orders-summary-label">Processing (₱0)</div>
+                        </div>
+                        <div class="customer-orders-summary-item">
+                            <div class="customer-orders-summary-value">1</div>
+                            <div class="customer-orders-summary-label">Cancelled (₱300)</div>
+                        </div>
                     </div>
                 </div>
-                <div class="filter-group">
-                    <button class="btn btn-secondary" onclick="exportOrders()">Export Orders</button>
-                </div>
-            </div>
 
-            <!-- Orders Table -->
-            <div class="orders-section">
-                <div class="table-container">
-                    <table class="orders-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Items</th>
-                                <th>Total</th>
-                                <th>Payment Method</th>
-                                <th>Status</th>
-                                <th>Last Updated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1234" class="order-id">#1234</a></td>
-                                <td>Aug 30, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">3 items</div>
-                                        <div class="item-list">Widget A, Widget B, Widget C</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱850</span></td>
-                                <td>Credit Card</td>
-                                <td><span class="order-status completed">Completed</span></td>
-                                <td>Aug 30, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1234" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1233" class="order-id">#1233</a></td>
-                                <td>Aug 25, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">2 items</div>
-                                        <div class="item-list">Product X, Product Y</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱650</span></td>
-                                <td>GCash</td>
-                                <td><span class="order-status completed">Completed</span></td>
-                                <td>Aug 25, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1233" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1232" class="order-id">#1232</a></td>
-                                <td>Aug 20, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">5 items</div>
-                                        <div class="item-list">Item A, Item B, Item C, Item D, Item E</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱1,200</span></td>
-                                <td>PayPal</td>
-                                <td><span class="order-status completed">Completed</span></td>
-                                <td>Aug 20, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1232" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1231" class="order-id">#1231</a></td>
-                                <td>Aug 15, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">1 item</div>
-                                        <div class="item-list">Special Product</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱300</span></td>
-                                <td>Credit Card</td>
-                                <td><span class="order-status cancelled">Cancelled</span></td>
-                                <td>Aug 16, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1231" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1230" class="order-id">#1230</a></td>
-                                <td>Aug 10, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">4 items</div>
-                                        <div class="item-list">Product A, Product B, Product C, Product D</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱950</span></td>
-                                <td>Bank Transfer</td>
-                                <td><span class="order-status completed">Completed</span></td>
-                                <td>Aug 10, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1230" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1229" class="order-id">#1229</a></td>
-                                <td>Aug 05, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">2 items</div>
-                                        <div class="item-list">Widget X, Widget Y</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱750</span></td>
-                                <td>GCash</td>
-                                <td><span class="order-status completed">Completed</span></td>
-                                <td>Aug 05, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1229" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="../orders/order-details.php?id=1228" class="order-id">#1228</a></td>
-                                <td>Jul 30, 2025</td>
-                                <td>
-                                    <div class="order-items">
-                                        <div class="item-count">3 items</div>
-                                        <div class="item-list">Item X, Item Y, Item Z</div>
-                                    </div>
-                                </td>
-                                <td><span class="order-total">₱495</span></td>
-                                <td>Credit Card</td>
-                                <td><span class="order-status completed">Completed</span></td>
-                                <td>Jul 30, 2025</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="../orders/order-details.php?id=1228" class="action-btn">View</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="pagination">
-                    <div class="pagination-info">
-                        Showing 1-7 of 8 orders
+                <!-- Filter Controls -->
+                <div class="customer-orders-filter-controls">
+                    <div class="customer-orders-filter-group">
+                        <select class="customer-orders-filter-select" id="customerOrdersStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <div class="customer-orders-date-range">
+                            <input type="date" class="customer-orders-date-input" id="customerOrdersStartDate" title="Start Date">
+                            <span>to</span>
+                            <input type="date" class="customer-orders-date-input" id="customerOrdersEndDate" title="End Date">
+                        </div>
                     </div>
-                    <div class="pagination-controls">
-                        <button class="page-btn">Previous</button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn">2</button>
-                        <button class="page-btn">Next</button>
+                    <div class="customer-orders-filter-group">
+                        <button class="customer-orders-btn customer-orders-btn-secondary" onclick="exportOrders()">
+                            <i data-lucide="download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="customer-orders-orders-section">
+                    <div class="customer-orders-table-container">
+                        <table class="customer-orders-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="#" class="customer-orders-order-id">#1234</a></td>
+                                    <td>Aug 30, 2025</td>
+                                    <td>
+                                        <div class="customer-orders-order-items">
+                                            <div class="customer-orders-item-count">3 items</div>
+                                            <div class="customer-orders-item-list">Widget A, Widget B, Widget C</div>
+                                        </div>
+                                    </td>
+                                    <td><span class="customer-orders-order-total">₱850</span></td>
+                                    <td>Credit Card</td>
+                                    <td><span class="customer-orders-order-status completed">Completed</span></td>
+                                    <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" class="customer-orders-order-id">#1233</a></td>
+                                    <td>Aug 25, 2025</td>
+                                    <td>
+                                        <div class="customer-orders-order-items">
+                                            <div class="customer-orders-item-count">2 items</div>
+                                            <div class="customer-orders-item-list">Product X, Product Y</div>
+                                        </div>
+                                    </td>
+                                    <td><span class="customer-orders-order-total">₱650</span></td>
+                                    <td>GCash</td>
+                                    <td><span class="customer-orders-order-status completed">Completed</span></td>
+                                    <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" class="customer-orders-order-id">#1232</a></td>
+                                    <td>Aug 20, 2025</td>
+                                    <td>
+                                        <div class="customer-orders-order-items">
+                                            <div class="customer-orders-item-count">5 items</div>
+                                            <div class="customer-orders-item-list">Item A, Item B, Item C, Item D, Item E</div>
+                                        </div>
+                                    </td>
+                                    <td><span class="customer-orders-order-total">₱1,200</span></td>
+                                    <td>PayPal</td>
+                                    <td><span class="customer-orders-order-status completed">Completed</span></td>
+                                    <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" class="customer-orders-order-id">#1231</a></td>
+                                    <td>Aug 15, 2025</td>
+                                    <td>
+                                        <div class="customer-orders-order-items">
+                                            <div class="customer-orders-item-count">1 item</div>
+                                            <div class="customer-orders-item-list">Special Product</div>
+                                        </div>
+                                    </td>
+                                    <td><span class="customer-orders-order-total">₱300</span></td>
+                                    <td>Credit Card</td>
+                                    <td><span class="customer-orders-order-status cancelled">Cancelled</span></td>
+                                    <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" class="customer-orders-order-id">#1230</a></td>
+                                    <td>Aug 10, 2025</td>
+                                    <td>
+                                        <div class="customer-orders-order-items">
+                                            <div class="customer-orders-item-count">4 items</div>
+                                            <div class="customer-orders-item-list">Product A, Product B, Product C, Product D</div>
+                                        </div>
+                                    </td>
+                                    <td><span class="customer-orders-order-total">₱950</span></td>
+                                    <td>Bank Transfer</td>
+                                    <td><span class="customer-orders-order-status completed">Completed</span></td>
+                                    <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" class="customer-orders-order-id">#1229</a></td>
+                                    <td>Aug 05, 2025</td>
+                                    <td>
+                                        <div class="customer-orders-order-items">
+                                            <div class="customer-orders-item-count">2 items</div>
+                                            <div class="customer-orders-item-list">Widget X, Widget Y</div>
+                                        </div>
+                                    </td>
+                                    <td><span class="customer-orders-order-total">₱750</span></td>
+                                    <td>GCash</td>
+                                    <td><span class="customer-orders-order-status completed">Completed</span></td>
+                                    <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="customer-orders-pagination">
+                        <div class="customer-orders-pagination-info">
+                            Showing 1-6 of 8 orders
+                        </div>
+                        <div class="customer-orders-pagination-controls">
+                            <button class="customer-orders-page-btn">Previous</button>
+                            <button class="customer-orders-page-btn active">1</button>
+                            <button class="customer-orders-page-btn">2</button>
+                            <button class="customer-orders-page-btn">Next</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </main>
+
+            <div class="customer-orders-modal-footer">
+                <button class="customer-orders-btn customer-orders-btn-secondary" onclick="closeCustomerOrdersModal()">
+                    <i data-lucide="x"></i> Close
+                </button>
+                <button class="customer-orders-btn customer-orders-btn-secondary">
+                    <i data-lucide="user"></i> View Profile
+                </button>
+                <button class="customer-orders-btn customer-orders-btn-primary">
+                    <i data-lucide="edit"></i> Edit Customer
+                </button>
+            </div>
+        </div>
     </div>
-
-    <script>
-        lucide.createIcons();
-        // Status filter functionality
-        document.getElementById('statusFilter').addEventListener('change', function(e) {
-            const filterValue = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.orders-table tbody tr');
-
-            rows.forEach(row => {
-                const statusElement = row.querySelector('.order-status');
-                const status = statusElement.textContent.toLowerCase();
-
-                row.style.display = !filterValue || status.includes(filterValue) ? '' : 'none';
-            });
-
-            updatePaginationInfo();
-        });
-
-        // Date range filter
-        function filterByDateRange() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const rows = document.querySelectorAll('.orders-table tbody tr');
-
-            if (!startDate && !endDate) {
-                rows.forEach(row => row.style.display = '');
-                return;
-            }
-
-            rows.forEach(row => {
-                const dateCell = row.cells[1].textContent;
-                const orderDate = new Date(dateCell);
-
-                let showRow = true;
-
-                if (startDate && orderDate < new Date(startDate)) {
-                    showRow = false;
-                }
-
-                if (endDate && orderDate > new Date(endDate)) {
-                    showRow = false;
-                }
-
-                row.style.display = showRow ? '' : 'none';
-            });
-
-            updatePaginationInfo();
-        }
-
-        document.getElementById('startDate').addEventListener('change', filterByDateRange);
-        document.getElementById('endDate').addEventListener('change', filterByDateRange);
-
-        // Export orders functionality
-        function exportOrders() {
-            const visibleRows = document.querySelectorAll('.orders-table tbody tr:not([style*="display: none"])');
-
-            if (visibleRows.length === 0) {
-                alert('No orders to export with current filters.');
-                return;
-            }
-
-            // Create CSV content
-            let csvContent = "Order ID,Date,Items,Total,Payment Method,Status,Last Updated\n";
-
-            visibleRows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = [
-                    cells[0].textContent.trim(),
-                    cells[1].textContent.trim(),
-                    cells[2].querySelector('.item-count').textContent.trim(),
-                    cells[3].textContent.trim(),
-                    cells[4].textContent.trim(),
-                    cells[5].textContent.trim(),
-                    cells[6].textContent.trim()
-                ];
-
-                csvContent += rowData.map(field => `"${field}"`).join(',') + '\n';
-            });
-
-            // Download CSV
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `juan_delacruz_orders_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-            alert('Orders exported successfully!');
-        }
-
-        // Update pagination info based on visible rows
-        function updatePaginationInfo() {
-            const visibleRows = document.querySelectorAll('.orders-table tbody tr:not([style*="display: none"])');
-            const totalRows = document.querySelectorAll('.orders-table tbody tr').length;
-            const paginationInfo = document.querySelector('.pagination-info');
-
-            if (paginationInfo) {
-                paginationInfo.textContent = `Showing ${visibleRows.length} of ${totalRows} orders`;
-            }
-        }
-
-        // Pagination button functionality
-        document.querySelectorAll('.page-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (!this.classList.contains('active') &&
-                    this.textContent !== 'Previous' &&
-                    this.textContent !== 'Next') {
-                    document.querySelector('.page-btn.active').classList.remove('active');
-                    this.classList.add('active');
-                }
-            });
-        });
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set default date range to current month
-            const now = new Date();
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-            // Uncomment to set default date range
-            // document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
-            // document.getElementById('endDate').value = lastDay.toISOString().split('T')[0];
-
-            // Add click tracking for orders
-            document.querySelectorAll('.order-id').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    console.log('Viewing order:', this.textContent);
-                });
-            });
-        });
-    </script>
 </body>
 </html>

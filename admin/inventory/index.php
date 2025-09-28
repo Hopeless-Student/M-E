@@ -7,19 +7,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="../assets/css/admin/inventory/index.css">
-
 </head>
 <body>
-    <div class="dashboard" id="dashboard">
-      <?php include '../../includes/admin_sidebar.php' ?>
+    <div class="dashboard">
+        <?php include '../../includes/admin_sidebar.php' ?>
 
-        <!-- Main Content -->
         <main class="main-content">
             <div class="header">
                 <h2>Inventory Management</h2>
                 <div class="header-actions">
-                    <button class="notification-btn" onclick="window.location.href='./low-stock-alerts.php'">
-                        <span class="notification-badge">12</span>
+                    <button class="notification-btn" onclick="openLowStockAlertsModal()">
+                        <span class="notification-badge" id="lowStockAlertsBadge">12</span>
                         <i data-lucide="bell-ring"></i> Low Stock Alerts
                     </button>
                     <div class="user-info">
@@ -29,12 +27,11 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
             <div class="quick-actions">
-                <button class="quick-action-btn primary" onclick="window.location.href='./adjust-stock.php'">
+                <button class="quick-action-btn primary" onclick="openAdjustStockModalFromIndex()">
                     <i data-lucide="plus"></i> Quick Stock Adjust
                 </button>
-                <button class="quick-action-btn" onclick="window.location.href='./stock-movements.php'">
+                <button class="quick-action-btn" onclick="openStockMovementsModal()">
                     <i data-lucide="activity"></i> View Movements
                 </button>
                 <button class="quick-action-btn" onclick="openBulkUpdateModal()">
@@ -45,31 +42,29 @@
                 </button>
             </div>
 
-            <!-- Inventory Stats -->
             <div class="stats-grid">
                 <div class="stat-card" onclick="filterByStatus('all')">
                     <div class="stat-title">Total Products</div>
-                    <div class="stat-value">8</div>
+                    <div class="stat-value" id="totalProductsStat">8</div>
                     <div class="stat-subtitle">Across 3 categories</div>
                 </div>
-                <div class="stat-card warning" onclick="openLowStockModal()">
+                <div class="stat-card warning" onclick="openLowStockAlertsModal()">
                     <div class="stat-title">Low Stock Items</div>
-                    <div class="stat-value">4</div>
+                    <div class="stat-value" id="lowStockItemsStat">4</div>
                     <div class="stat-subtitle">Need restocking</div>
                 </div>
                 <div class="stat-card danger" onclick="filterByStatus('out-of-stock')">
                     <div class="stat-title">Out of Stock</div>
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="outOfStockStat">0</div>
                     <div class="stat-subtitle">Immediate attention</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Total Value</div>
-                    <div class="stat-value">₱285K</div>
+                    <div class="stat-value" id="totalValueStat">₱285K</div>
                     <div class="stat-subtitle">Current inventory</div>
                 </div>
             </div>
 
-            <!-- Charts Section -->
             <div class="charts-section">
                 <div class="chart-container">
                     <div class="chart-title">Stock Levels by Category</div>
@@ -85,7 +80,6 @@
                 </div>
             </div>
 
-            <!-- Inventory Controls -->
             <div class="inventory-controls">
                 <div class="search-filter">
                     <div class="search-box">
@@ -105,12 +99,11 @@
                         <option value="low">Low Stock</option>
                     </select>
                 </div>
-                <button class="export-btn" onclick="exportReport()">
+                <button class="export-btn" onclick="exportInventoryReport()">
                     <i data-lucide="download"></i> Export Report
                 </button>
             </div>
 
-            <!-- Inventory Table -->
             <div class="inventory-section">
                 <div class="table-container">
                     <table class="inventory-table">
@@ -119,56 +112,45 @@
                                 <th>Product</th>
                                 <th>Category</th>
                                 <th>SKU</th>
-                                <th>Current Stock</th>
-                                <th>Min Stock</th>
-                                <th>Unit Price</th>
-                                <th>Total Value</th>
+                                <th>Stock</th>
+                                <th>Min</th>
+                                <th>Price</th>
+                                <th>Value</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="inventoryTableBody">
-                            <!-- Table rows will be populated here -->
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Pagination -->
                 <div class="pagination">
                     <div class="pagination-info">
-                        Showing <span id="startItem">1</span>-<span id="endItem">8</span> of <span id="totalItems">8</span> products
+                        Showing <span id="startItem">1</span>-<span id="endItem">5</span> of <span id="totalItems">8</span> products
                     </div>
                     <div class="pagination-controls">
-                        <button class="page-btn" onclick="changePage('prev')">← Previous</button>
-                        <button class="page-btn active" onclick="changePage(1)">1</button>
-                        <button class="page-btn" onclick="changePage('next')">Next →</button>
+                        <button class="page-btn" id="prevBtn" onclick="changePage('prev')">← Previous</button>
+                        <span id="pageNumbers"></span>
+                        <button class="page-btn" id="nextBtn" onclick="changePage('next')">Next →</button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Bulk Update Modal -->
-    <div id="bulkUpdateModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Bulk Stock Update</h3>
-                <button class="close-btn" onclick="closeModal('bulkUpdateModal')">&times;</button>
-            </div>
-<script>
-      // Initialize Lucide icons
-      lucide.createIcons();
+    <!-- --- MODAL CONTAINERS --- -->
 
     <!-- Bulk Update Modal -->
-    <div id="bulkUpdateModal" class="modal">
+    <div id="bulkUpdateModal" class="modal-base">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Bulk Stock Update</h3>
-                <button class="close-btn" onclick="closeModal('bulkUpdateModal')">&times;</button>
+                <h3 class="modal-title"><i data-lucide="edit"></i> Bulk Stock Update</h3>
+                <button class="modal-close-btn" onclick="closeModal('bulkUpdateModal')"><i data-lucide="x"></i></button>
             </div>
             <form id="bulkUpdateForm">
                 <div class="form-group">
                     <label class="form-label">Category</label>
-                    <select class="form-input" id="bulkCategory" required>
+                    <select class="form-select" id="bulkCategory" required>
                         <option value="">Select Category</option>
                         <option value="office">Office Supplies</option>
                         <option value="school">School Supplies</option>
@@ -177,7 +159,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Action</label>
-                    <select class="form-input" id="bulkAction" required>
+                    <select class="form-select" id="bulkAction" required>
                         <option value="increase">Increase by Percentage</option>
                         <option value="decrease">Decrease by Percentage</option>
                         <option value="setMin">Set Minimum Stock</option>
@@ -195,163 +177,129 @@
         </div>
     </div>
 
-    <!-- Low Stock Modal -->
-    <div id="lowStockModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Low Stock Alert</h3>
-                <button class="close-btn" onclick="closeModal('lowStockModal')">&times;</button>
-            </div>
-            <div id="lowStockList">
-                <!-- Low stock items will be populated here -->
-            </div>
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('lowStockModal')">Close</button>
-                <button type="button" class="btn btn-primary" onclick="bulkReorder()">Bulk Reorder</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Product Details Modal -->
-    <div id="productDetailsModal" class="modal">
+    <div id="productDetailsModal" class="modal-base">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Product Details</h3>
-                <button class="close-btn" onclick="closeModal('productDetailsModal')">&times;</button>
+                <h3 class="modal-title"><i data-lucide="info"></i> Product Details</h3>
+                <button class="modal-close-btn" onclick="closeModal('productDetailsModal')"><i data-lucide="x"></i></button>
             </div>
             <div id="productDetailsContent">
-                <!-- Product details will be populated here -->
+                <!-- Details will be populated here -->
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('productDetailsModal')">Close</button>
-                <button type="button" class="btn btn-primary" onclick="editProduct()">Edit Product</button>
             </div>
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal-base">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i data-lucide="alert-triangle"></i> Confirm Action</h3>
+                <button class="modal-close-btn" onclick="closeModal('confirmationModal')"><i data-lucide="x"></i></button>
+            </div>
+            <p id="confirmationMessage" style="margin-bottom: 1.5rem;"></p>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('confirmationModal')">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmActionButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <?php include 'adjust-stock.php'; ?>
+    <?php include 'stock-movements.php'; ?>
+    <?php include 'low-stock-alerts.php'; ?>
+
+    <script src="inventory_data.js"></script>
+    <script src="shared_functions.js"></script>
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-
-        const inventoryData = [
-            {
-                id: 1,
-                name: 'Ballpoint Pens',
-                description: 'Pack of 12',
-                category: 'office',
-                categoryName: 'Office Supplies',
-                sku: 'OFF-PEN-001',
-                stock: 150,
-                minStock: 20,
-                price: 180,
-                icon: '🖊️',
-                stockLevel: 'high'
-            },
-            {
-                id: 2,
-                name: 'Bond Paper',
-                description: 'A4 Ream 500 sheets',
-                category: 'office',
-                categoryName: 'Office Supplies',
-                sku: 'OFF-PAP-002',
-                stock: 85,
-                minStock: 30,
-                price: 250,
-                icon: '📄',
-                stockLevel: 'medium'
-            },
-            {
-                id: 3,
-                name: 'File Folders',
-                description: 'Manila folders',
-                category: 'office',
-                categoryName: 'Office Supplies',
-                sku: 'OFF-FOL-003',
-                stock: 45,
-                minStock: 15,
-                price: 120,
-                icon: '📁',
-                stockLevel: 'medium'
-            },
-            {
-                id: 4,
-                name: 'Staplers',
-                description: 'Heavy duty stapler',
-                category: 'office',
-                categoryName: 'Office Supplies',
-                sku: 'OFF-STA-004',
-                stock: 12,
-                minStock: 25,
-                price: 850,
-                icon: '📎',
-                stockLevel: 'low'
-            },
-            {
-                id: 5,
-                name: 'Notebooks',
-                description: 'Spiral notebook 100 pages',
-                category: 'school',
-                categoryName: 'School Supplies',
-                sku: 'SCH-NOT-005',
-                stock: 8,
-                minStock: 20,
-                price: 65,
-                icon: '📓',
-                stockLevel: 'low'
-            },
-            {
-                id: 6,
-                name: 'Hand Sanitizer',
-                description: '500ml bottle',
-                category: 'sanitary',
-                categoryName: 'Sanitary Supplies',
-                sku: 'SAN-HAN-006',
-                stock: 25,
-                minStock: 30,
-                price: 185,
-                icon: '🧴',
-                stockLevel: 'low'
-            },
-            {
-                id: 7,
-                name: 'Whiteboard Markers',
-                description: 'Set of 4 colors',
-                category: 'office',
-                categoryName: 'Office Supplies',
-                sku: 'OFF-MAR-007',
-                stock: 75,
-                minStock: 25,
-                price: 320,
-                icon: '🖊️',
-                stockLevel: 'high'
-            },
-            {
-                id: 8,
-                name: 'Tissue Paper',
-                description: 'Box of 200 sheets',
-                category: 'sanitary',
-                categoryName: 'Sanitary Supplies',
-                sku: 'SAN-TIS-008',
-                stock: 22,
-                minStock: 40,
-                price: 95,
-                icon: '🧻',
-                stockLevel: 'low'
-            }
-        ];
-
         let currentPage = 1;
-        let itemsPerPage = 10;
-        let filteredData = inventoryData;
+        const itemsPerPage = 5; // Made const as it's unlikely to change
+        let filteredData = []; // Initialize as empty, will be populated by updateAllDataAndUI
+        let currentConfirmAction = null; // For confirmation modal
 
-        // Initialize page
+        // Global variables for low stock alerts filters, accessible by low-stock-alerts.php
+        const lowStockItemsPerPage = 5; // Define here for global access
+        let searchInput; // Declared globally
+        let categoryFilter; // Declared globally
+        let alertLevelFilter; // Declared globally
+
+        // --- MAIN DASHBOARD INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', function() {
-            populateInventoryTable();
-            initializeCharts();
-            updateStats();
-            setupEventListeners();
-            populateLowStockModal();
+            // Assign elements to global variables after DOM is loaded
+            searchInput = document.getElementById('searchInput');
+            categoryFilter = document.getElementById('categoryFilter');
+            // Note: lowStockAlertLevelFilter is in low-stock-alerts.php, but its value is used by applyLowStockAlertsFilters
+            // We can assign it here if needed for other functions, but applyLowStockAlertsFilters directly accesses it.
+
+            initializeDashboard();
+            // Initialize all modal-specific event listeners
+            setupAdjustStockModalListeners();
+            setupStockMovementsModalListeners();
+            setupLowStockAlertsModalListeners();
+            setupBulkUpdateModalListeners();
+            setupConfirmationModalListeners();
         });
+
+        function initializeDashboard() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            updateAllDataAndUI(); // Initial load and update
+            setupEventListeners();
+        }
+
+        function updateAllDataAndUI() {
+            // Ensure inventoryData is loaded before processing
+            if (typeof inventoryData === 'undefined' || inventoryData.length === 0) {
+                console.warn('inventoryData is not loaded or is empty.');
+                // Optionally, display a message or handle gracefully
+                return;
+            }
+
+            // Recalculate stock levels for inventoryData based on minStock
+            inventoryData.forEach(item => {
+                if (item.stock <= 0) {
+                    item.stockLevel = 'low'; // Treat 0 as low/critical
+                } else if (item.stock <= item.minStock * 0.5) {
+                    item.stockLevel = 'low';
+                } else if (item.stock <= item.minStock) {
+                    item.stockLevel = 'medium';
+                } else {
+                    item.stockLevel = 'high';
+                }
+            });
+
+            // Recalculate alert levels for lowStockData based on inventoryData
+            // Ensure lowStockData is loaded before processing
+            if (typeof lowStockData !== 'undefined' && lowStockData.length > 0) {
+                lowStockData.forEach(lowItem => {
+                    const correspondingInventoryItem = inventoryData.find(invItem => invItem.id === lowItem.id);
+                    if (correspondingInventoryItem) {
+                        lowItem.currentStock = correspondingInventoryItem.stock;
+                        lowItem.minStock = correspondingInventoryItem.minStock;
+
+                        if (lowItem.currentStock <= 0) {
+                            lowItem.alertLevel = 'critical';
+                        } else if (lowItem.currentStock <= lowItem.minStock * 0.5) {
+                            lowItem.alertLevel = 'critical';
+                        } else if (lowItem.currentStock <= lowItem.minStock) {
+                            lowItem.alertLevel = 'warning';
+                        } else {
+                            lowItem.alertLevel = 'low'; // Or 'normal' if you have that level
+                        }
+                    }
+                });
+            }
+
+
+            applyFilters(); // Re-apply main inventory filters
+            updateStats();
+            initializeCharts();
+            updateLowStockAlertsBadge();
+        }
 
         function populateInventoryTable() {
             const tbody = document.getElementById('inventoryTableBody');
@@ -361,9 +309,17 @@
             const endIndex = startIndex + itemsPerPage;
             const pageData = filteredData.slice(startIndex, endIndex);
 
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #64748b;">No products found matching your criteria.</td></tr>`;
+                updatePaginationInfo();
+                updatePaginationControls();
+                return;
+            }
+
             pageData.forEach(item => {
                 const row = tbody.insertRow();
                 const totalValue = item.stock * item.price;
+                const stockPercentage = Math.min((item.stock / (item.minStock * 2)) * 100, 100); // Max 100% for bar
 
                 row.innerHTML = `
                     <td>
@@ -382,64 +338,126 @@
                     <td>
                         <div class="stock-level ${item.stockLevel}">${item.stock}</div>
                         <div class="stock-bar">
-                            <div class="stock-fill ${item.stockLevel}" style="width: ${Math.min((item.stock / item.minStock) * 100, 100)}%"></div>
+                            <div class="stock-fill ${item.stockLevel}" style="width: ${stockPercentage}%"></div>
                         </div>
                     </td>
                     <td>${item.minStock}</td>
                     <td>₱${item.price.toLocaleString()}</td>
                     <td>₱${totalValue.toLocaleString()}</td>
                     <td>
-                        <button class="action-btn" onclick="window.location.href='./adjust-stock.php'">Adjust</button>
-                        <button class="action-btn secondary" onclick="viewDetails(${item.id})">Details</button>
-                        <button class="action-btn danger" onclick="deleteItem(${item.id})">Delete</button>
+                        <div class="action-buttons-container">
+                            <button class="action-btn" onclick="openAdjustStockModalFromIndex(${item.id})">Adjust</button>
+                            <button class="action-btn secondary" onclick="openProductDetailsModal(${item.id})">Details</button>
+                            <button class="action-btn danger" onclick="confirmDeleteItem(${item.id})">Delete</button>
+                        </div>
                     </td>
                 `;
             });
 
             updatePaginationInfo();
+            updatePaginationControls();
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        function updatePaginationInfo() {
+            const totalItems = filteredData.length;
+            const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+            document.getElementById('startItem').textContent = startItem;
+            document.getElementById('endItem').textContent = endItem;
+            document.getElementById('totalItems').textContent = totalItems;
+        }
+
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageNumbers = document.getElementById('pageNumbers');
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+
+            let pageNumbersHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbersHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            pageNumbers.innerHTML = pageNumbersHTML;
         }
 
         function setupEventListeners() {
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                filteredData = inventoryData.filter(item =>
-                    item.name.toLowerCase().includes(searchTerm) ||
-                    item.sku.toLowerCase().includes(searchTerm) ||
-                    item.description.toLowerCase().includes(searchTerm)
-                );
-                currentPage = 1;
-                populateInventoryTable();
-                updateStats();
-            });
+            // Ensure elements exist before adding listeners
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    applyFilters();
+                });
+            }
 
-            // Category filter
-            document.getElementById('categoryFilter').addEventListener('change', function() {
-                const selectedCategory = this.value;
-                filteredData = selectedCategory ?
-                    inventoryData.filter(item => item.category === selectedCategory) :
-                    inventoryData;
-                currentPage = 1;
-                populateInventoryTable();
-                updateStats();
-            });
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
 
-            // Stock filter
-            document.getElementById('stockFilter').addEventListener('change', function() {
-                const selectedStock = this.value;
-                filteredData = selectedStock ?
-                    inventoryData.filter(item => item.stockLevel === selectedStock) :
-                    inventoryData;
-                currentPage = 1;
-                populateInventoryTable();
-                updateStats();
-            });
+            const stockFilterElement = document.getElementById('stockFilter');
+            if (stockFilterElement) {
+                stockFilterElement.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
         }
 
+        function applyFilters() {
+            const selectedCategory = categoryFilter ? categoryFilter.value : '';
+            const selectedStock = document.getElementById('stockFilter') ? document.getElementById('stockFilter').value : '';
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+            // Ensure inventoryData is loaded before filtering
+            if (typeof inventoryData === 'undefined') {
+                filteredData = [];
+                return;
+            }
+
+            filteredData = inventoryData.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                                    item.sku.toLowerCase().includes(searchTerm) ||
+                                    item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !selectedCategory || item.category === selectedCategory;
+                const matchesStock = !selectedStock || item.stockLevel === selectedStock;
+
+                return matchesSearch && matchesCategory && matchesStock;
+            });
+
+            currentPage = 1;
+            populateInventoryTable();
+            updateStats();
+        }
+
+        let stockChartInstance = null;
+        let turnoverChartInstance = null;
+
         function initializeCharts() {
-            // Stock Levels Chart
+            // Ensure inventoryData is loaded before initializing charts
+            if (typeof inventoryData === 'undefined' || inventoryData.length === 0) {
+                console.warn('inventoryData is not loaded or is empty, charts cannot be initialized.');
+                // Optionally, display a message or hide the chart containers
+                return;
+            }
+
             const stockCtx = document.getElementById('stockChart').getContext('2d');
-            new Chart(stockCtx, {
+            if (stockChartInstance) stockChartInstance.destroy(); // Destroy existing chart
+            stockChartInstance = new Chart(stockCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Office Supplies', 'School Supplies', 'Sanitary Supplies'],
@@ -465,15 +483,15 @@
                 }
             });
 
-            // Turnover Chart
             const turnoverCtx = document.getElementById('turnoverChart').getContext('2d');
-            new Chart(turnoverCtx, {
+            if (turnoverChartInstance) turnoverChartInstance.destroy(); // Destroy existing chart
+            turnoverChartInstance = new Chart(turnoverCtx, {
                 type: 'line',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [{
                         label: 'Inventory Turnover',
-                        data: [2.1, 2.8, 3.2, 2.9, 3.5, 3.8],
+                        data: [2.1, 2.8, 3.2, 2.9, 3.5, 3.8], // Static data for now
                         borderColor: '#1e40af',
                         backgroundColor: 'rgba(30, 64, 175, 0.1)',
                         tension: 0.4,
@@ -511,136 +529,20 @@
             const outOfStockItems = filteredData.filter(item => item.stock === 0).length;
             const totalValue = filteredData.reduce((sum, item) => sum + (item.stock * item.price), 0);
 
-            // Update stat cards
-            const statCards = document.querySelectorAll('.stat-card');
-            if (statCards.length >= 4) {
-                statCards[0].querySelector('.stat-value').textContent = totalProducts;
-                statCards[1].querySelector('.stat-value').textContent = lowStockItems;
-                statCards[2].querySelector('.stat-value').textContent = outOfStockItems;
-                statCards[3].querySelector('.stat-value').textContent = `₱${Math.round(totalValue / 1000)}K`;
+            document.getElementById('totalProductsStat').textContent = totalProducts;
+            document.getElementById('lowStockItemsStat').textContent = lowStockItems;
+            document.getElementById('outOfStockStat').textContent = outOfStockItems;
+            document.getElementById('totalValueStat').textContent = `₱${Math.round(totalValue / 1000)}K`;
+        }
+
+        function updateLowStockAlertsBadge() {
+            // Ensure inventoryData is loaded before filtering
+            if (typeof inventoryData === 'undefined') {
+                document.getElementById('lowStockAlertsBadge').textContent = '0';
+                return;
             }
-        }
-
-        function updatePaginationInfo() {
-            const totalItems = filteredData.length;
-            const startItem = (currentPage - 1) * itemsPerPage + 1;
-            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
-
-            document.getElementById('startItem').textContent = startItem;
-            document.getElementById('endItem').textContent = endItem;
-            document.getElementById('totalItems').textContent = totalItems;
-        }
-
-        function populateLowStockModal() {
-            const lowStockItems = inventoryData.filter(item => item.stockLevel === 'low');
-            const lowStockList = document.getElementById('lowStockList');
-
-            lowStockList.innerHTML = lowStockItems.map(item => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; background: #fef2f2;">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div style="font-size: 2rem;">${item.icon}</div>
-                        <div>
-                            <h4 style="color: #dc2626; margin-bottom: 0.25rem;">${item.name}</h4>
-                            <p style="color: #64748b; font-size: 0.85rem;">Current: ${item.stock} | Min: ${item.minStock}</p>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" onclick="quickReorder('${item.name}')">Quick Reorder</button>
-                </div>
-            `).join('');
-        }
-
-        // Modal functions
-        function openBulkUpdateModal() {
-            const modal = document.getElementById('bulkUpdateModal');
-            modal.classList.add('show');
-        }
-
-        function openLowStockModal() {
-            const modal = document.getElementById('lowStockModal');
-            modal.classList.add('show');
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('show');
-        }
-
-        // Action functions
-        function viewDetails(itemId) {
-            const item = inventoryData.find(i => i.id === itemId);
-            const modal = document.getElementById('productDetailsModal');
-            const content = document.getElementById('productDetailsContent');
-
-            content.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                    <div>
-                        <div style="text-align: center; margin-bottom: 2rem;">
-                            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto 1rem;">${item.icon}</div>
-                            <h3 style="color: #1e40af; margin-bottom: 0.5rem;">${item.name}</h3>
-                            <p style="color: #64748b;">${item.description}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px;">
-                            <h4 style="margin-bottom: 1rem; color: #475569;">Product Information</h4>
-                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #64748b;">SKU:</span>
-                                    <span style="font-weight: 600;">${item.sku}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #64748b;">Category:</span>
-                                    <span style="font-weight: 600;">${item.categoryName}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #64748b;">Current Stock:</span>
-                                    <span style="font-weight: 600; color: ${item.stockLevel === 'low' ? '#dc2626' : item.stockLevel === 'medium' ? '#d97706' : '#059669'};">${item.stock}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #64748b;">Minimum Stock:</span>
-                                    <span style="font-weight: 600;">${item.minStock}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #64748b;">Unit Price:</span>
-                                    <span style="font-weight: 600;">₱${item.price.toLocaleString()}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #64748b;">Total Value:</span>
-                                    <span style="font-weight: 600; color: #1e40af;">₱${(item.stock * item.price).toLocaleString()}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            modal.classList.add('show');
-        }
-
-        function deleteItem(itemId) {
-            const item = inventoryData.find(i => i.id === itemId);
-            if (confirm(`Are you sure you want to delete "${item.name}" from inventory?`)) {
-                const index = inventoryData.findIndex(i => i.id === itemId);
-                inventoryData.splice(index, 1);
-                filteredData = inventoryData;
-                populateInventoryTable();
-                updateStats();
-                showNotification('Item deleted successfully!', 'success');
-            }
-        }
-
-        function filterByStatus(status) {
-            if (status === 'all') {
-                filteredData = inventoryData;
-            } else if (status === 'out-of-stock') {
-                filteredData = inventoryData.filter(item => item.stock === 0);
-            } else {
-                filteredData = inventoryData.filter(item => item.stockLevel === status);
-            }
-
-            currentPage = 1;
-            populateInventoryTable();
-            updateStats();
+            const lowItems = inventoryData.filter(item => item.stock <= item.minStock);
+            document.getElementById('lowStockAlertsBadge').textContent = lowItems.length;
         }
 
         function changePage(page) {
@@ -655,18 +557,9 @@
             }
 
             populateInventoryTable();
-
-            // Update active page button
-            document.querySelectorAll('.page-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent == currentPage) {
-                    btn.classList.add('active');
-                }
-            });
         }
 
-        function exportReport() {
-            // Create CSV content
+        function exportInventoryReport() {
             let csvContent = "Product Name,SKU,Category,Current Stock,Min Stock,Unit Price,Total Value\n";
 
             filteredData.forEach(item => {
@@ -674,7 +567,6 @@
                 csvContent += `"${item.name}",${item.sku},"${item.categoryName}",${item.stock},${item.minStock},${item.price},${totalValue}\n`;
             });
 
-            // Create download link
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -692,167 +584,156 @@
             showNotification('Generating comprehensive inventory report...', 'info');
         }
 
-        function quickReorder(product) {
-            showNotification(`Reorder request sent for ${product}`, 'success');
+        // --- BULK UPDATE MODAL FUNCTIONS ---
+        function openBulkUpdateModal() {
+            openModal('bulkUpdateModal');
         }
 
-        function bulkReorder() {
-            showNotification('Bulk reorder request sent for all low stock items', 'success');
+        function setupBulkUpdateModalListeners() {
+            document.getElementById('bulkUpdateForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const category = document.getElementById('bulkCategory').value;
+                const action = document.getElementById('bulkAction').value;
+                const value = parseFloat(document.getElementById('bulkValue').value);
+
+                if (!category || !action || isNaN(value)) {
+                    showNotification('Please fill in all fields with valid values', 'error');
+                    return;
+                }
+
+                // Ensure inventoryData is loaded before filtering
+                if (typeof inventoryData === 'undefined') {
+                    showNotification('Error: Inventory data not loaded.', 'error');
+                    return;
+                }
+
+                const itemsToUpdate = inventoryData.filter(item => item.category === category);
+                let updatedCount = 0;
+
+                itemsToUpdate.forEach(item => {
+                    switch (action) {
+                        case 'increase':
+                            item.stock = Math.round(item.stock * (1 + value / 100));
+                            updatedCount++;
+                            break;
+                        case 'decrease':
+                            item.stock = Math.round(item.stock * (1 - value / 100));
+                            updatedCount++;
+                            break;
+                        case 'setMin':
+                            item.minStock = value;
+                            updatedCount++;
+                            break;
+                    }
+                });
+
+                showNotification(`Bulk update completed! ${updatedCount} items updated successfully.`, 'success');
+                closeModal('bulkUpdateModal');
+                updateAllDataAndUI(); // Refresh all dashboard data and UI
+            });
         }
 
-        function editProduct() {
-            showNotification('Edit product functionality would open here', 'info');
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 2rem;
-                right: 2rem;
-                background: ${type === 'success' ? '#dcfce7' : type === 'error' ? '#fee2e2' : '#dbeafe'};
-                color: ${type === 'success' ? '#166534' : type === 'error' ? '#dc2626' : '#1e40af'};
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                z-index: 3000;
-                animation: slideInRight 0.3s ease;
-                max-width: 300px;
-            `;
-            notification.textContent = message;
-
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        // Form submissions
-        document.getElementById('bulkUpdateForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const category = document.getElementById('bulkCategory').value;
-            const action = document.getElementById('bulkAction').value;
-            const value = parseFloat(document.getElementById('bulkValue').value);
-
-            if (!category || !action || !value) {
-                showNotification('Please fill in all fields', 'error');
+        // --- PRODUCT DETAILS MODAL FUNCTIONS ---
+        function openProductDetailsModal(itemId) {
+            // Ensure inventoryData is loaded before searching
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
                 return;
             }
-
-            const itemsToUpdate = inventoryData.filter(item => item.category === category);
-            let updatedCount = 0;
-
-            itemsToUpdate.forEach(item => {
-                switch (action) {
-                    case 'increase':
-                        item.stock = Math.round(item.stock * (1 + value / 100));
-                        updatedCount++;
-                        break;
-                    case 'decrease':
-                        item.stock = Math.round(item.stock * (1 - value / 100));
-                        updatedCount++;
-                        break;
-                    case 'setMin':
-                        item.minStock = value;
-                        updatedCount++;
-                        break;
-                }
-
-                // Update stock level
-                item.stockLevel = item.stock <= item.minStock * 0.5 ? 'low' :
-                                 item.stock <= item.minStock ? 'medium' : 'high';
-            });
-
-            showNotification(`Bulk update completed! ${updatedCount} items updated successfully.`, 'success');
-            closeModal('bulkUpdateModal');
-            populateInventoryTable();
-            updateStats();
-            populateLowStockModal();
-
-            // Reset form
-            this.reset();
-        });
-
-        // Close modals when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.remove('show');
+            const item = inventoryData.find(i => i.id === itemId);
+            if (item) {
+                const detailsContent = document.getElementById('productDetailsContent');
+                detailsContent.innerHTML = `
+                    <div class="product-details-grid">
+                        <div class="product-details-card">
+                            <div class="product-details-label">Product Name</div>
+                            <div class="product-details-value">${item.name}</div>
+                        </div>
+                        <div class="product-details-card">
+                            <div class="product-details-label">SKU</div>
+                            <div class="product-details-value">${item.sku}</div>
+                        </div>
+                        <div class="product-details-card">
+                            <div class="product-details-label">Category</div>
+                            <div class="product-details-value">${item.categoryName}</div>
+                        </div>
+                        <div class="product-details-card">
+                            <div class="product-details-label">Current Stock</div>
+                            <div class="product-details-value">${item.stock}</div>
+                        </div>
+                        <div class="product-details-card">
+                            <div class="product-details-label">Minimum Stock</div>
+                            <div class="product-details-value">${item.minStock}</div>
+                        </div>
+                        <div class="product-details-card">
+                            <div class="product-details-label">Unit Price</div>
+                            <div class="product-details-value">₱${item.price.toLocaleString()}</div>
+                        </div>
+                        <div class="product-details-card">
+                            <div class="product-details-label">Total Value</div>
+                            <div class="product-details-value">₱${(item.stock * item.price).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+                openModal('productDetailsModal');
+            } else {
+                showNotification('Error: Product details not found.', 'error');
             }
-        });
+        }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'f') {
-                e.preventDefault();
-                document.getElementById('searchInput').focus();
+        // --- CONFIRMATION MODAL FUNCTIONS ---
+        function openConfirmationModal(message, callback) {
+            document.getElementById('confirmationMessage').textContent = message;
+            document.getElementById('confirmActionButton').onclick = () => {
+                callback();
+                closeModal('confirmationModal');
+            };
+            openModal('confirmationModal');
+        }
+
+        function confirmDeleteItem(itemId) {
+            // Ensure inventoryData is loaded before searching
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
             }
-            if (e.key === 'Escape') {
-                // Close any open modals
-                document.querySelectorAll('.modal.show').forEach(modal => {
-                    modal.classList.remove('show');
+            const item = inventoryData.find(i => i.id === itemId);
+            if (item) {
+                openConfirmationModal(`Are you sure you want to delete "${item.name}" from inventory? This action cannot be undone.`, () => {
+                    deleteItem(itemId);
                 });
+            } else {
+                showNotification('Error: Item not found for deletion.', 'error');
             }
-        });
+        }
 
-        // Initialize tooltips and additional functionality
+        function deleteItem(itemId) {
+            // Ensure inventoryData is loaded before modifying
+            if (typeof inventoryData === 'undefined') {
+                showNotification('Error: Inventory data not loaded.', 'error');
+                return;
+            }
+            const index = inventoryData.findIndex(i => i.id === itemId);
+            if (index !== -1) {
+                inventoryData.splice(index, 1);
+                showNotification('Item deleted successfully!', 'success');
+                updateAllDataAndUI(); // Refresh all dashboard data and UI
+            } else {
+                showNotification('Error: Item not found for deletion.', 'error');
+            }
+        }
+
+        function setupConfirmationModalListeners() {
+            // No specific listeners needed beyond the dynamic onclick for confirmActionButton
+        }
+
+        // Initial icon creation
         setTimeout(() => {
-            // Add hover effects to action buttons
-            document.querySelectorAll('.action-btn').forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-1px)';
-                });
-                btn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-
-            // Add click animation to buttons
-            document.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 100);
-                });
-            });
-
-            // Auto-refresh data every 30 seconds (simulate real-time updates)
-            setInterval(() => {
-                // This would typically fetch fresh data from an API
-                updateStats();
-            }, 30000);
-        }, 1000);
-
-        // Export functions for external use
-        window.inventorySystem = {
-            getData: () => inventoryData,
-            updateItem: (id, updates) => {
-                const item = inventoryData.find(i => i.id === id);
-                if (item) {
-                    Object.assign(item, updates);
-                    populateInventoryTable();
-                    updateStats();
-                    return true;
-                }
-                return false;
-            },
-            addItem: (newItem) => {
-                const maxId = Math.max(...inventoryData.map(i => i.id));
-                newItem.id = maxId + 1;
-                inventoryData.push(newItem);
-                populateInventoryTable();
-                updateStats();
-                return newItem.id;
-            },
-            searchItems: (query) => {
-                return inventoryData.filter(item =>
-                    item.name.toLowerCase().includes(query.toLowerCase()) ||
-                    item.sku.toLowerCase().includes(query.toLowerCase())
-                );
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
             }
-        };
+        }, 100);
     </script>
 </body>
 </html>
