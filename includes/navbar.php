@@ -8,7 +8,7 @@
     </div>
 
     <nav>
-        <a href="homepage.php">Home</a>
+        <a href="index.php">Home</a>
         <a href="products.php">Products</a>
         <a href="about.php">About Us</a>
         <a href="../test-files/order-history-test.php" class="mobile-only mobile-nav-cart">Cart</a>

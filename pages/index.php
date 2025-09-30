@@ -2,6 +2,13 @@
 require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../auth/mainpage-auth.php';
 
+  try {
+    $featured_products = $pdo->query("SELECT product_id, product_name, price FROM products WHERE is_featured = 1")->fetchAll(PDO::FETCH_ASSOC);
+    // var_dump($featured_products);
+  } catch (PDOException $e) {
+    echo "Database Error: " . $e->getMessage();
+  }
+
 
  ?>
 <!DOCTYPE html>
@@ -35,200 +42,41 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
 
         <section class="products">
-            <div class="products-header">
-                <h2>Top Ordered Products</h2>
+              <div class="products-header">
+                  <h2>Top Ordered Products</h2>
 
-                <div class="products-actions">
-                <p>See products</p>
+                  <div class="products-actions">
+                      <p>See products</p>
 
-                    <div class="right-btn">
-                        <a href="products.php">
-                            <img alt="right" class="right-icon" src="../assets/svg/right-icon.svg"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
+                      <div class="right-btn">
+                          <a href="products.php">
+                              <img alt="right" class="right-icon" src="../assets/svg/right-icon.svg"/>
+                          </a>
+                      </div>
+                  </div>
+              </div>
 
-            <div class="product-grid">
-                <div class="product-card">
-                    <a class="card-link" href="#">
-                        <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
+              <div class="product-grid">
+                  <?php foreach ($featured_products as $products): ?>
+                      <div class="product-card">
+                          <a class="card-link" href="#">
+                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/scotch-tape-roll.png"/>
 
-                        <div class="product-info">
-                            <h3>Scotch Tape Roll</h3>
-                            <p>PHP 50.00</p>
-                        </div>
-                    </a>
+                              <div class="product-info">
+                                  <h3><?= htmlspecialchars($products['product_name']); ?></h3>
+                                  <p>PHP <?= number_format($products['price'], 2); ?></p>
+                              </div>
+                          </a>
 
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="product-card">
-                <a class="card-link" href="#">
-                    <img alt="Scotch Tape Roll" src="../assets/images/scotch-tape-roll.png"/>
-
-                    <div class="product-info">
-                        <h3>Scotch Tape Roll</h3>
-                        <p>PHP 50.00</p>
-                    </div>
-                </a>
-
-                <div class="cart-btn">
-                    <a href="#">
-                        <img alt="cart" src="../assets/svg/bag.svg"/>
-                    </a>
-                </div>
-            </div>
-        </section>
+                          <div class="cart-btn">
+                              <a href="#">
+                                  <img alt="cart" src="../assets/svg/bag.svg"/>
+                              </a>
+                          </div>
+                      </div>
+                  <?php endforeach; ?>
+              </div>
+          </section>
 
 
 
@@ -465,37 +313,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             </div>
         </div>
 
-        <!-- <div id="termsModal" class="modal">
-            <div class="modal-content">
-                <span id="closeTermsModal" class="close-btn">&times;</span>
-                <h2>Terms and Conditions</h2>
-                <ol>
-                    <li>Introduction</li>
-                    <p>Welcome to M&E Interior Trading Supplies. By using our website and services, you agree to these Terms & Conditions. Please read them carefully.</p>
-                    <br>
-                    <li>Using our service</li>
-                    <p>Customers must be at least 18 years old or have parental consent. You agree to provide accurate information when placing orders.</p>
-                    <br>
-                    <li>Orders & Payment</li>
-                    <p>Prices are displayed in your local currency. Payments are processed through third-party providers — M&E Interior Trading Supplies does not store payment details.</p>
-                    <br>
-                    <li>Shipping & Returns</li>
-                    <p>Shipping times vary by location. Cancellation are not accepted unless otherwise stated on the product page.</p>
-                    <br>
-                    <li>intellectual Property</li>
-                    <p>All content on this site is owned or licensed by M&E Interior Trading Supplies. You may not reuse our content without permission.</p>
-                    <br>
-                    <li>Limitation of Liability</li>
-                    <p>To the fullest extent permitted by law, M&E Interior Trading Supplies is not liable for indirect or consequential loss arising from use of the site.</p>
-                    <br>
-                    <li>Changes</li>
-                    <p>We may update these Terms from time to time. We will publish changes on this page with a revised date.</p>
-                </ol>
-            </div>
-        </div> -->
-
         <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-        <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.js"></script>
         <script src="../assets/js/homepage.js"></script>
     </body>
 </html>
