@@ -1,6 +1,4 @@
-<?php
-function renderFooter() {
-    ?>
+
     <footer>
         <div class="footer-container">
             <div class="footer-brand">
@@ -58,4 +56,3 @@ function renderFooter() {
         </div>
     </footer>
     <?php
-}
