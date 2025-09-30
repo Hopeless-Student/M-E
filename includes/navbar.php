@@ -29,10 +29,17 @@
     </nav>
 
     <div class="header-actions">
+      <?php if (isset($_SESSION['user_id'])): ?>
         <div class="cart">
-            <a href="../test-files/order-history-test.php">
+          <a href="../test-files/order-history-test.php">
+            <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
+          </a>
+          <?php else: ?>
+            <div class="cart">
+              <a href="#" id="toggleLogin">
                 <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
-            </a>
+              </a>
+      <?php endif; ?>
         </div>
 
         <?php if (isset($_SESSION['user_id'])): ?>

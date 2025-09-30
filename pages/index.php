@@ -118,7 +118,51 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             </div>
         </section>
 
+                <button id="floatingRequestBtn" class="floating-request-btn" title="Send Custom Request">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Request</span>
+        </button>
 
+
+      <div id="customRequestModal" class="modal">
+          <div class="modal-content request-modal-content">
+              <span class="close-btn" id="closeRequestModal">&times;</span>
+
+              <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
+
+              <h2>Custom Request</h2>
+              <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
+
+              <form id="customRequestForm" action="../handlers/custom_request_handler.php" method="post">
+                  <label for="requestType">Request Type *</label>
+                  <select id="requestType" name="request_type" required>
+                      <option value="" disabled selected>Select request type</option>
+                      <option value="inquiry">Inquiry</option>
+                      <option value="complaint">Complaint</option>
+                      <option value="custom_order">Custom Order</option>
+                      <option value="others">Others</option>
+                  </select>
+
+                  <label for="requestSubject">Subject *</label>
+                  <input type="text" id="requestSubject" name="subject" placeholder="Brief description of your request" required maxlength="100">
+
+                  <label for="requestMessage">Message *</label>
+                  <textarea id="requestMessage" name="message" placeholder="Provide detailed information about your request..." required rows="6" maxlength="1000"></textarea>
+
+                  <div class="char-counter">
+                      <span id="charCount">0</span> / 1000 characters
+                  </div>
+
+                  <button type="submit" id="submitRequestBtn">Submit Request</button>
+
+                  <p class="request-note">
+                      <strong>Note:</strong> We typically respond within 24-48 hours during business days.
+                  </p>
+              </form>
+          </div>
+      </div>
 
         <section class="trust">
             <div class="trust-content">
