@@ -7,18 +7,7 @@
 body {
     background-color: #E8E8E8;
 }
-/* .avatar{
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  vertical-align: middle;
-  margin-top: -2px;
-  margin-right: 8px;
-  display: block;
-} */
+
 .avatar:hover{
   background-color: rgb(166, 186, 255);
 }
@@ -251,6 +240,25 @@ nav .mobile-user-menu {
         opacity: 0;
         top: -100px;
     }
+}
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+.eye-icon {
+  position: absolute;
+  top: 0%;
+  right: -30%;
+  transform: translateY(-55%);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
 }
 @media (max-width: 768px){
   header nav.active ~ .alert-message {

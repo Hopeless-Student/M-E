@@ -312,9 +312,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
         <?php include '../includes/footer.php';?>
 
-        <!-- <?php include('login-modal.php'); ?> -->
-
-
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn" id="closeLoginModal">&times;</span>
@@ -325,11 +322,16 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                 <form id="loginForm" action="../auth/login_handler.php" method="post">
                     <input type="text" placeholder="Username or Email" name="login_id" id="username" required/>
-
-                    <input type="password" placeholder="Password" id="loginpassword" name="password" required/>
-
-                    <button type="submit">Log In</button>
-
+                    <!-- <input type="password" placeholder="Password" id="loginpassword" name="password" required/> -->
+                    <div class="password-wrapper" style="position: relative;">
+                      <input type="password" placeholder="Password" id="loginpassword" name="password"
+                             style="padding-right: 40px;" required />
+                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye.svg" alt="Toggle Password" />
+                    </div>
+                                        <button type="submit">Log In</button>
+                    <?php if (isset($_SESSION['loginFailed'])): ?>
+                      <p class="error-message" style="color:red; margin-top:10px; font-size:0.9rem; text-align:center"> <?php echo $_SESSION['loginFailed']; unset($_SESSION['loginFailed']);?> </p>
+                    <?php endif; ?>
                     <p class="modal-switch-text">
                         Don't have an account?
                         <a href="#" id="openSignupModal">Create Your Account here</a>

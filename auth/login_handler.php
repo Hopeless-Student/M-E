@@ -63,11 +63,14 @@
                     exit;
                 } else {
                 $loginFailed = "Incorrect password";
-                // $showModal = true;
+                $_SESSION['loginFailed'] = $loginFailed;
+                header("Location: ../pages/index.php");
+                exit;
               }
             } else {
               $loginFailed = "User not found";
-              // $showModal = true;
+              header("Location: ../pages/index.php");
+              exit;
             }
         } catch (PDOException $e) {
           echo "Database failed: " . $e->getMessage();
