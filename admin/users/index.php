@@ -184,7 +184,6 @@
         });
 
         function updateStats() {
-            // Calculate stats from all customers
             const total = allCustomers.length;
             const active = allCustomers.filter(c => c.status === 'active').length;
             const inactive = allCustomers.filter(c => c.status === 'inactive').length;

@@ -64,9 +64,9 @@
                     </div>
                     <select class="filter-select" id="categoryFilter">
                         <option value="">All Categories</option>
-                        <option value="flooring">Flooring</option>
-                        <option value="tiles">Tiles</option>
-                        <option value="fixtures">Fixtures</option>
+                        <option value="School">School Supplies</option>
+                        <option value="Office">Office Supplies</option>
+                        <option value="Sanitary">Sanitary Supplies</option>
                     </select>
                     <select class="filter-select" id="stockFilter">
                         <option value="">All Stock</option>
@@ -193,9 +193,9 @@
 
         // Category mappings
         const categoryLabels = {
-            'flooring': 'Flooring',
-            'tiles': 'Tiles',
-            'fixtures': 'Fixtures'
+            'School': 'School supplies',
+            'Office': 'Office supplies',
+            'Sanitary': 'Sanitary supplies'
         };
 
         // Load products data on page load
@@ -219,9 +219,9 @@
             const products = [
                 {
                     id: 1,
-                    name: "Laminate Flooring Premium",
-                    description: "High-quality laminate flooring with water-resistant coating. Perfect for residential and commercial spaces.",
-                    category: "flooring",
+                    name: "Scotch tape",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ",
+                    category: "Office",
                     price: 1250,
                     stock: 150,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -230,7 +230,7 @@
                     id: 2,
                     name: "Ceramic Wall Tiles",
                     description: "Premium ceramic tiles with glossy finish. Suitable for bathrooms and kitchens.",
-                    category: "tiles",
+                    category: "School",
                     price: 850,
                     stock: 75,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -239,7 +239,7 @@
                     id: 3,
                     name: "LED Ceiling Light Fixture",
                     description: "Modern LED ceiling fixture with dimmer control. Energy efficient and long-lasting.",
-                    category: "fixtures",
+                    category: "Sanitary",
                     price: 2200,
                     stock: 8,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -248,7 +248,7 @@
                     id: 4,
                     name: "Vinyl Plank Flooring",
                     description: "Waterproof vinyl planks with realistic wood texture. Easy to install and maintain.",
-                    category: "flooring",
+                    category: "Sanitary",
                     price: 980,
                     stock: 200,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -257,7 +257,7 @@
                     id: 5,
                     name: "Porcelain Floor Tiles",
                     description: "Durable porcelain tiles with anti-slip surface. Perfect for high-traffic areas.",
-                    category: "tiles",
+                    category: "office",
                     price: 1450,
                     stock: 120,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -266,7 +266,7 @@
                     id: 6,
                     name: "Cabinet Door Handles",
                     description: "Stainless steel cabinet handles with modern design. Set of 10 pieces.",
-                    category: "fixtures",
+                    category: "School",
                     price: 650,
                     stock: 0,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -275,7 +275,7 @@
                     id: 7,
                     name: "Hardwood Flooring Oak",
                     description: "Solid oak hardwood flooring with natural finish. Premium quality construction.",
-                    category: "flooring",
+                    category: "Sanitary",
                     price: 3200,
                     stock: 45,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -284,7 +284,7 @@
                     id: 8,
                     name: "Subway Tiles White",
                     description: "Classic white subway tiles for kitchen backsplash. Timeless design.",
-                    category: "tiles",
+                    category: "Office",
                     price: 420,
                     stock: 180,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -293,7 +293,7 @@
                     id: 9,
                     name: "Pendant Light Fixture",
                     description: "Industrial style pendant light with adjustable cord. Perfect for kitchens.",
-                    category: "fixtures",
+                    category: "School",
                     price: 1100,
                     stock: 25,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -302,7 +302,7 @@
                     id: 10,
                     name: "Bamboo Flooring",
                     description: "Eco-friendly bamboo flooring with natural grain pattern. Sustainable choice.",
-                    category: "flooring",
+                    category: "Sanitary",
                     price: 1680,
                     stock: 12,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -311,7 +311,7 @@
                     id: 11,
                     name: "Mosaic Glass Tiles",
                     description: "Decorative glass mosaic tiles for accent walls. Various color options available.",
-                    category: "tiles",
+                    category: "Office",
                     price: 890,
                     stock: 65,
                     image: "../../assets/images/scotch-tape-roll.png"
@@ -320,7 +320,7 @@
                     id: 12,
                     name: "Wall Light Sconces",
                     description: "Modern wall sconces with LED bulbs. Perfect for hallways and bedrooms.",
-                    category: "fixtures",
+                    category: "Sanitary",
                     price: 750,
                     stock: 38,
                     image: "../../assets/images/scotch-tape-roll.png"
