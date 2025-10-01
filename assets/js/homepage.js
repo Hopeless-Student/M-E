@@ -362,27 +362,23 @@ const customRequestForm = document.getElementById("customRequestForm");
 const requestMessage = document.getElementById("requestMessage");
 const charCount = document.getElementById("charCount");
 
-// Open custom request modal
 if (floatingRequestBtn && customRequestModal) {
   floatingRequestBtn.addEventListener("click", () => {
     customRequestModal.style.display = "block";
   });
 }
 
-// Close custom request modal
 if (closeRequestModal && customRequestModal) {
   closeRequestModal.addEventListener("click", () => {
     customRequestModal.style.display = "none";
   });
 }
 
-// Character counter for textarea
 if (requestMessage && charCount) {
   requestMessage.addEventListener("input", () => {
     const count = requestMessage.value.length;
     charCount.textContent = count;
 
-    // Change color as it approaches limit
     if (count > 900) {
       charCount.style.color = "#ff0000";
     } else if (count > 800) {
@@ -393,38 +389,51 @@ if (requestMessage && charCount) {
   });
 }
 
-// Handle form submission
-if (customRequestForm) {
-  customRequestForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+const alerts = document.querySelectorAll(".alert-message");
+  alerts.forEach(alert => {
+    alert.addEventListener("animationend", (e) => {
+      if (e.animationName === "fadeOut") {
+        alert.remove();
+      }
+    });
 
-    const requestType = document.getElementById("requestType").value;
-    const subject = document.getElementById("requestSubject").value.trim();
-    const message = requestMessage.value.trim();
-
-    if (!requestType || !subject || !message) {
-      alert("Please fill out all required fields.");
-      return;
-    }
-
-    if (message.length < 10) {
-      alert("Please provide a more detailed message (at least 10 characters).");
-      return;
-    }
-
-    // Submit the form (this will go to your PHP handler)
-    // For now, we'll show a confirmation
-    alert(`Request submitted successfully!\n\nType: ${requestType}\nSubject: ${subject}\n\nWe'll get back to you soon!`);
-
-    // Uncomment this line to actually submit the form:
-    // customRequestForm.submit();
-
-    // Reset form and close modal
-    customRequestForm.reset();
-    charCount.textContent = "0";
-    customRequestModal.style.display = "none";
+    alert.addEventListener("click", () => {
+      alert.remove();
+    });
   });
-}
+
+// Handle form submission
+// if (customRequestForm) {
+//   customRequestForm.addEventListener("submit", (e) => {
+//     // e.preventDefault();
+//     //
+//     // const requestType = document.getElementById("requestType").value;
+//     // const subject = document.getElementById("requestSubject").value.trim();
+//     // const message = requestMessage.value.trim();
+//     //
+//     // if (!requestType || !subject || !message) {
+//     //   alert("Please fill out all required fields.");
+//     //   return;
+//     // }
+//     //
+//     // if (message.length < 10) {
+//     //   alert("Please provide a more detailed message (at least 10 characters).");
+//     //   return;
+//     // }
+//     //
+//     // // Submit the form (this will go to your PHP handler)
+//     // // For now, we'll show a confirmation
+//     // alert(`Request submitted successfully!\n\nType: ${requestType}\nSubject: ${subject}\n\nWe'll get back to you soon!`);
+//
+//     // Uncomment this line to actually submit the form:
+//     // customRequestForm.submit();
+//
+//     // Reset form and close modal
+//     // customRequestForm.reset();
+//     // charCount.textContent = "0";
+//     // customRequestModal.style.display = "none";
+//   });
+// }
 
 // Close modals when clicking outside
 window.addEventListener("click", (event) => {

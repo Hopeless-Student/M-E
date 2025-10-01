@@ -21,6 +21,19 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
     <body>
         <?php include('../includes/navbar.php') ?>
+        <?php if (isset($_SESSION['request_success'])): ?>
+            <div class="alert-message success">
+                <?= htmlspecialchars($_SESSION['request_success']) ?>
+            </div>
+            <?php unset($_SESSION['request_success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['request_error'])): ?>
+            <div class="alert-message error">
+                <?= htmlspecialchars($_SESSION['request_error']) ?>
+            </div>
+            <?php unset($_SESSION['request_error']); ?>
+        <?php endif; ?>
 
 
         <section class="hero">
@@ -119,9 +132,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         </section>
 
                 <button id="floatingRequestBtn" class="floating-request-btn" title="Send Custom Request">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
+                  <img src="../assets/svg/chat-text.svg" alt="chat-text" width="24" height="24">
             <span>Request</span>
         </button>
 
@@ -135,7 +146,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               <h2>Custom Request</h2>
               <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
 
-              <form id="customRequestForm" action="../handlers/custom_request_handler.php" method="post">
+              <form id="customRequestForm" action="../auth/custom_request.php" method="post">
                   <label for="requestType">Request Type *</label>
                   <select id="requestType" name="request_type" required>
                       <option value="" disabled selected>Select request type</option>
