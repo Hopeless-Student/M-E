@@ -22,6 +22,38 @@
               if (password_verify($password, $user['password'])) {
                     $_SESSION["user_id"] = $user["user_id"];
 
+                    try {
+                      $pdo->beginTransaction();
+
+                      if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+                        foreach ($_SESSION['cart'] as $product_id => $item) {
+
+                          $checkStmt = $pdo->prepare("SELECT * FROM shopping_cart WHERE user_id = ? AND product_id = ?");
+                          $checkStmt->execute([$user['user_id'], $product_id]);
+
+                          if ($checkStmt->rowCount() > 0) {
+
+                            $pdo->prepare("UPDATE shopping_cart
+                              SET quantity = quantity + ?
+                              WHERE user_id = ? AND product_id = ?")
+                              ->execute([$item['quantity'], $user['user_id'], $product_id]);
+                            } else {
+
+                              $pdo->prepare("INSERT INTO shopping_cart (user_id, product_id, quantity)
+                              VALUES (?, ?, ?)")
+                              ->execute([$user['user_id'], $product_id, $item['quantity']]);
+                            }
+                          }
+
+                        }
+
+                      $pdo->commit();
+                      unset($_SESSION['cart']);
+                    } catch (Exception $e) {
+                      $pdo->rollBack();
+                      error_log("Cart merge failed: " . $e->getMessage());
+                    }
+
                     if ($user['isActive'] == 0) {
                         header("Location: ../user/profile.php");
                         exit;

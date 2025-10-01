@@ -81,11 +81,17 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                               </div>
                           </a>
 
-                          <div class="cart-btn">
+                          <!-- <div class="cart-btn">
                               <a href="#">
                                   <img alt="cart" src="../assets/svg/bag.svg"/>
                               </a>
-                          </div>
+                          </div> -->
+                          <form action="../auth/add_to_cart.php" method="post">
+                            <input type="hidden" name="product_id" value="<?= $products['product_id'] ?>">
+                            <button type="submit" class="cart-btn">
+                              <img alt="cart" src="../assets/svg/bag.svg"/>
+                            </button>
+                        </form>
                       </div>
                   <?php endforeach; ?>
               </div>
