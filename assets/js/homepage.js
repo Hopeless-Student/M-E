@@ -343,6 +343,130 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const toggleLogin = document.getElementById("toggleLogin");
+  if (toggleLogin) {
+    toggleLogin.addEventListener("click", (event) => {
+      event.preventDefault();
+      signupModal.style.display = "none";
+      loginModal.style.display = "block";
+      nav.classList.remove("active");
+      hamburger.classList.remove("active");
+      hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
+    });
+  }
+
+  const floatingRequestBtn = document.getElementById("floatingRequestBtn");
+const customRequestModal = document.getElementById("customRequestModal");
+const closeRequestModal = document.getElementById("closeRequestModal");
+const customRequestForm = document.getElementById("customRequestForm");
+const requestMessage = document.getElementById("requestMessage");
+const charCount = document.getElementById("charCount");
+
+if (floatingRequestBtn && customRequestModal) {
+  floatingRequestBtn.addEventListener("click", () => {
+    customRequestModal.style.display = "block";
+  });
+}
+
+if (closeRequestModal && customRequestModal) {
+  closeRequestModal.addEventListener("click", () => {
+    customRequestModal.style.display = "none";
+  });
+}
+
+if (requestMessage && charCount) {
+  requestMessage.addEventListener("input", () => {
+    const count = requestMessage.value.length;
+    charCount.textContent = count;
+
+    if (count > 900) {
+      charCount.style.color = "#ff0000";
+    } else if (count > 800) {
+      charCount.style.color = "#ff9900";
+    } else {
+      charCount.style.color = "#999";
+    }
+  });
+}
+
+const alerts = document.querySelectorAll(".alert-message");
+  alerts.forEach(alert => {
+    alert.addEventListener("animationend", (e) => {
+      if (e.animationName === "fadeOut") {
+        alert.remove();
+      }
+    });
+
+    alert.addEventListener("click", () => {
+      alert.remove();
+    });
+  });
+
+// Handle form submission
+// if (customRequestForm) {
+//   customRequestForm.addEventListener("submit", (e) => {
+//     // e.preventDefault();
+//     //
+//     // const requestType = document.getElementById("requestType").value;
+//     // const subject = document.getElementById("requestSubject").value.trim();
+//     // const message = requestMessage.value.trim();
+//     //
+//     // if (!requestType || !subject || !message) {
+//     //   alert("Please fill out all required fields.");
+//     //   return;
+//     // }
+//     //
+//     // if (message.length < 10) {
+//     //   alert("Please provide a more detailed message (at least 10 characters).");
+//     //   return;
+//     // }
+//     //
+//     // // Submit the form (this will go to your PHP handler)
+//     // // For now, we'll show a confirmation
+//     // alert(`Request submitted successfully!\n\nType: ${requestType}\nSubject: ${subject}\n\nWe'll get back to you soon!`);
+//
+//     // Uncomment this line to actually submit the form:
+//     // customRequestForm.submit();
+//
+//     // Reset form and close modal
+//     // customRequestForm.reset();
+//     // charCount.textContent = "0";
+//     // customRequestModal.style.display = "none";
+//   });
+// }
+
+// Close modals when clicking outside
+window.addEventListener("click", (event) => {
+  if (event.target === customRequestModal) {
+    customRequestModal.style.display = "none";
+  }
+});
+
+// Hide floating button when modals are open to avoid overlap
+const allModals = [loginModal, signupModal, customRequestModal];
+const observer = new MutationObserver(() => {
+  const anyModalOpen = allModals.some(modal =>
+    modal && modal.style.display === "block"
+  );
+
+  if (floatingRequestBtn) {
+    if (anyModalOpen && customRequestModal.style.display !== "block") {
+      floatingRequestBtn.style.opacity = "0.3";
+      floatingRequestBtn.style.pointerEvents = "none";
+    } else {
+      floatingRequestBtn.style.opacity = "1";
+      floatingRequestBtn.style.pointerEvents = "auto";
+    }
+  }
+});
+
+// Observe each modal for display changes
+allModals.forEach(modal => {
+  if (modal) {
+    observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+  }
+});
+
   // Mobile cart link
   const mobileCartLink = document.querySelector(".mobile-nav-cart");
   if (mobileCartLink) {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php 
+    <?php
         $pageTitle = "About Us - M&E";
         include '../includes/header.php';
     ?>

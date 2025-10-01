@@ -1,241 +1,374 @@
 <?php
-// Current output is for testing
-?>
+require_once __DIR__ . '/../includes/database.php';
+require_once __DIR__ . '/../auth/mainpage-auth.php';
+
+  try {
+    $featured_products = $pdo->query("SELECT product_id, product_name, price FROM products WHERE is_featured = 1")->fetchAll(PDO::FETCH_ASSOC);
+    // var_dump($featured_products);
+  } catch (PDOException $e) {
+    echo "Database Error: " . $e->getMessage();
+  }
+
+
+ ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>M&E Interior Supplies</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../test-files/homepage.css">
-</head>
-<body>
+    <head>
+        <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <link href="../assets/css/homepage.css" rel="stylesheet"/>
+        <title>M&E: Interior Supplies Trading</title>
+    </head>
 
-<!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-transparent sticky-top px-4 py-2 custom-navbar">
-    <a class="navbar-brand" href="#"> <img src="../assets/images/M&E_LOGO_transparent.png" class="img-fluid" alt="M&E Logo"> </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <body>
+        <?php include('../includes/navbar.php') ?>
+        <?php if (isset($_SESSION['request_success'])): ?>
+            <div class="alert-message success">
+                <?= htmlspecialchars($_SESSION['request_success']) ?>
+            </div>
+            <?php unset($_SESSION['request_success']); ?>
+        <?php endif; ?>
 
-      <div class="collapse navbar-collapse align-items-center" id="navbarNav">
-    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-      <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="order_form.php">Products</a></li>
-      <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
-    </ul>
+        <?php if (isset($_SESSION['request_error'])): ?>
+            <div class="alert-message error">
+                <?= htmlspecialchars($_SESSION['request_error']) ?>
+            </div>
+            <?php unset($_SESSION['request_error']); ?>
+        <?php endif; ?>
 
-    <!-- Cart & Login -->
-      <div class="d-flex flex-column flex-lg-row align-items-center mt-3 mt-lg-0">
-        <a href="#" class="cart-icon mb-2 mb-lg-0 me-lg-3">
-          <img src="../assets/icons/bag.svg" alt="Cart" class="img-fluid">
-        </a>
-        <button class="btn btn-primary d-flex align-items-center login-btn"
-                data-bs-toggle="modal" data-bs-target="#loginModal">
-          <img src="../assets/icons/person.svg" alt="Login" class="me-2 login-icon">
-          Login
+
+        <section class="hero">
+                <div class="hero-content">
+                    <h1>
+                        Your One-stop Shop for <span class="highlight">Office, School,</span> and <span class="highlight">Sanitary Supplies</span>
+                    </h1>
+                    <p>Fast, reliable, and hassle-free ordering - delivered straight to your door.</p>
+
+                    <div class="hero-search-bar">
+                        <img alt="search" class="search-icon" src="../assets/svg/search.svg"/>
+                        <input placeholder="Search products..." type="text" id="search-input"/>
+                        <div class="search-suggestions"></div>
+                    </div>
+                    <a href="#" class="hero-cta">Shop Now</a>
+                </div>
+        </section>
+
+
+
+        <section class="products">
+              <div class="products-header">
+                  <h2>Top Ordered Products</h2>
+
+                  <div class="products-actions">
+                      <p>See products</p>
+
+                      <div class="right-btn">
+                          <a href="products.php">
+                              <img alt="right" class="right-icon" src="../assets/svg/right-icon.svg"/>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="product-grid">
+                  <?php foreach ($featured_products as $products): ?>
+                      <div class="product-card">
+                          <a class="card-link" href="#">
+                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/scotch-tape-roll.png"/>
+
+                              <div class="product-info">
+                                  <h3><?= htmlspecialchars($products['product_name']); ?></h3>
+                                  <p>PHP <?= number_format($products['price'], 2); ?></p>
+                              </div>
+                          </a>
+
+                          <div class="cart-btn">
+                              <a href="#">
+                                  <img alt="cart" src="../assets/svg/bag.svg"/>
+                              </a>
+                          </div>
+                      </div>
+                  <?php endforeach; ?>
+              </div>
+          </section>
+
+
+
+        <section class="categories">
+            <div class="categ-header">
+                <h2>Shop by Category</h2>
+            </div>
+
+            <div class="categ-grid">
+                <div class="categ-card">
+                    <a href="#">
+                        <img alt="School Supplies" src="../assets/images/school-supplies.png"/>
+
+                        <div class="overlay">
+                            <span>School Supplies</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="categ-card">
+                    <a href="#">
+                        <img alt="Office Supplies" src="../assets/images/office-supplies.png"/>
+
+                        <div class="overlay">
+                            <span>Office Supplies</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="categ-card">
+                    <a href="#">
+                        <img alt="Sanitary Supplies" src="../assets/images/sanitary-supplies.png"/>
+
+                        <div class="overlay">
+                            <span>Sanitary Supplies</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+                <button id="floatingRequestBtn" class="floating-request-btn" title="Send Custom Request">
+                  <img src="../assets/svg/chat-text.svg" alt="chat-text" width="24" height="24">
+            <span>Request</span>
         </button>
-      </div>
-  </div>
-  </nav>
 
-<!-- Hero Section -->
-<section class="hero">
-  <h1>Office, School & Sanitary Supplies</h1>
-  <p>Reliable, fast, and hassle-free ordering delivered straight to your door.</p>
-  <a href="#products" class="btn btn-light px-4 py-2">Shop Now</a>
-</section>
 
-<!-- Top Ordered Products -->
-<section class="py-5 text-center" id="products">
-  <div class="container">
-    <h2 class="mb-5">Top Products</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card">
-          <img src="../assets/images/default.png" class="card-img-top" alt="Product">
-          <div class="card-body">
-            <h5 class="card-title">Kiko Barzaga</h5>
-            <p class="card-text">₱100.00</p>
-            <a href="#" class="btn btn-primary w-100">Buy Now</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <img src="../assets/images/warning.png" class="card-img-top" alt="Product">
-          <div class="card-body">
-            <h5 class="card-title">Bawal Bastos</h5>
-            <p class="card-text">₱120.00</p>
-            <a href="#" class="btn btn-primary w-100">Buy Now</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <img src="../assets/images/Hard-Copy.jpg" class="card-img-top" alt="Product">
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text">₱150.00</p>
-            <a href="#" class="btn btn-primary w-100">Buy Now</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      <div id="customRequestModal" class="modal">
+          <div class="modal-content request-modal-content">
+              <span class="close-btn" id="closeRequestModal">&times;</span>
 
-<!-- Categories -->
-<section class="py-5 bg-light text-center">
-  <div class="container">
-    <h2 class="mb-5">Shop by Category</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <a href="#" class="text-decoration-none text-dark">
-          <div class="card category-card">
-            <img src="../ui/Assets/school-supplies.png" alt="School Supplies" class="category-img">
-            <div class="card-body">
-              <h5 class="card-title">School Supplies</h5>
+              <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
+
+              <h2>Custom Request</h2>
+              <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
+
+              <form id="customRequestForm" action="../auth/custom_request.php" method="post">
+                  <label for="requestType">Request Type <span style="color:red;">*</span></label>
+                  <select id="requestType" name="request_type" required>
+                      <option value="" disabled selected>Select request type</option>
+                      <option value="inquiry">Inquiry</option>
+                      <option value="complaint">Complaint</option>
+                      <option value="custom_order">Custom Order</option>
+                      <option value="others">Others</option>
+                  </select>
+
+                  <label for="requestSubject">Subject <span style="color:red;">*</span></label>
+                  <input type="text" id="requestSubject" name="subject" placeholder="Brief description of your request" required maxlength="100">
+
+                  <label for="requestMessage">Message <span style="color:red;">*</span></label>
+                  <textarea id="requestMessage" name="message" placeholder="Provide detailed information about your request..." required rows="6" maxlength="1000"></textarea>
+
+                  <div class="char-counter">
+                      <span id="charCount">0</span> / 1000 characters
+                  </div>
+
+                  <button type="submit" id="submitRequestBtn">Submit Request</button>
+
+                  <p class="request-note">
+                      <strong>Note:</strong> We typically respond within 24-48 hours during business days.
+                  </p>
+              </form>
+          </div>
+      </div>
+
+        <section class="trust">
+            <div class="trust-content">
+                <h2>Why Choose Us?</h2>
+                <p>We are committed to providing the best service and quality products to our customers.</p>
             </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a href="#" class="text-decoration-none text-dark">
-          <div class="card category-card">
-            <img src="../ui/Assets/office-supplies.png" alt="Office Supplies" class="category-img">
-            <div class="card-body">
-              <h5 class="card-title">Office Supplies</h5>
+
+            <div class="trust-grid">
+                <div class="trust-card">
+
+                    <div class="icon-circle">
+                        <img alt="Affordable Prices" src="../assets/svg/price-tag.svg"/>
+                    </div>
+
+                    <h3>Affordable & Competitive Prices</h3>
+                </div>
+
+                <div class="trust-card">
+                    <div class="icon-circle">
+                        <img alt="Bulk Orders" src="../assets/svg/order-approve-rounded.svg"/>
+                    </div>
+
+                    <h3>Bulk Orders for Schools & Offices</h3>
+                </div>
+
+                <div class="trust-card">
+                    <div class="icon-circle">
+                        <img alt="Quality Trust" src="../assets/svg/workspace-trusted.svg"/>
+                    </div>
+
+                    <h3>Trusted Quality Supplies</h3>
+                </div>
             </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a href="#" class="text-decoration-none text-dark">
-          <div class="card category-card">
-            <img src="../ui/Assets/sanitary-supplies.png" alt="Sanitary Supplies" class="category-img">
-            <div class="card-body">
-              <h5 class="card-title">Sanitary Supplies</h5>
+        </section>
+
+
+
+        <section class="about-us">
+            <div class="about-us-grid">
+                <div class="about-us-image">
+                    <img alt="About Us Image" src="../assets/images/about-us-image.jpg"/>
+                </div>
+
+                <div class="about-us-text">
+                    <h2>About Us</h2>
+                    <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
+
+                    <a class="about-btn" href="#">Read more About Us</a>
+                </div>
             </div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
+        </section>
 
-<!-- About Us -->
-<section class="py-5 text-center">
-  <div class="container">
-    <h2 class="mb-4">About Us</h2>
-    <p>We provide quality school, office, and sanitary essentials with reliable service and great value. Perfect for students, teachers, and offices.</p>
-    <a href="#about" class="btn btn-primary mt-3">Read More</a>
-  </div>
-</section>
 
-<!-- FAQ -->
-<section class="py-5 bg-light">
-  <div class="container">
-    <h2 class="text-center mb-4">FAQs</h2>
-    <div class="accordion" id="faqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq1">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#answer1">
-            Do you accept bulk orders?
-          </button>
-        </h2>
-        <div id="answer1" class="accordion-collapse collapse show">
-          <div class="accordion-body">Yes, we accept bulk orders for schools, offices, and organizations.</div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer2">
-            What are the delivery options?
-          </button>
-        </h2>
-        <div id="answer2" class="accordion-collapse collapse">
-          <div class="accordion-body">We offer same-day delivery within Olongapo City.</div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer3">
-            Returns & refunds?
-          </button>
-        </h2>
-        <div id="answer3" class="accordion-collapse collapse">
-          <div class="accordion-body">Please contact us for our return and refund policy details.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- Footer -->
-<footer class="footer text-center">
-  <div class="container">
-    <h5 class="mb-2">M&E Interior Supplies</h5>
-    <p class="mb-3 small">© 2025 All Rights Reserved</p>
-    <div class="row mt-3">
-      <div class="col-md-3"><a href="#">School</a></div>
-      <div class="col-md-3"><a href="#">Office</a></div>
-      <div class="col-md-3"><a href="#">Sanitary</a></div>
-      <div class="col-md-3"><a href="#contact">Contact</a></div>
-    </div>
-  </div>
-</footer>
+        <section class="contact">
+            <div class="contact-content">
+                <h2>Contact Us</h2>
+                <p>We'd love to hear from you! Reach out via the details or send us a quick message.</p>
+            </div>
 
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-4">
-      <form id="loginForm" action="../auth/login_handler.php" method="post">
-        <div class="modal-header border-0 pb-0 d-flex flex-column align-items-center">
-          <div class="logo text-center">
-            <img src="../assets/images/M&E_LOGO_transparent.png" alt="M&E Logo" style="width:40%; height:auto;">
-          </div>
-          <h5 class="modal-title fs-3 fw-bold text-center" id="loginModalLabel">Log In</h5>
-          <button type="button" class="btn-close position-absolute" style="top: 10px; right: 10px;" data-bs-dismiss="modal"aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group mb-3">
-            <input type="text" id="login_id" name="login_id" placeholder="Username or Email" class="form-control" required>
-          </div>
-          <div class="form-group mb-3">
-            <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
-          </div>
-          <!-- <div class="input-group">
-            <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
-            <button type="button" class="btn btn-outline-secondary" id="togglePassword"><i class="bi bi-eye"></i></button>
-        </div> -->
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <img alt="Store Address" src="../assets/svg/location.svg"/>
 
-          <p id="message">
-            <?php
-              if (isset($_SESSION['error'])) {
-                echo "<span style='color: red; font-size: 14px;'>".$_SESSION['error']."</span>";
-                unset($_SESSION['error']);
-              }
-            ?>
-          </p>
-          <button type="submit" class="btn btn-primary w-100">Login</button>
-          <div class="extra mb-3 text-center">
-            <p>Don’t have an account? <a href="../register.php">Create one</a></p>
-          </div>
+                    <div>
+                        <h3>Store Address:</h3>
+                        <p>Purok 4 Banaba St Bo.<br/>Barretto Olongapo City</p>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <img alt="Contact No" src="../assets/svg/phone.svg"/>
+
+                    <div>
+                        <h3>Contact No.:</h3>
+                        <p>+63 916 635 1911</p>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <img alt="Email" src="../assets/svg/email.svg"/>
+
+                <div>
+                    <h3>Email:</h3>
+                    <p>elbarcoma@gmail.com</p>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="faqs">
+            <div class="faqs-content">
+                <h2>
+                    <span class="faqs-highlight">F</span>requently
+                    <br>
+                    <span class="faqs-highlight">A</span>sked
+                    <br>
+                    <span class="faqs-highlight">Q</span>uestions
+                </h2>
+            </div>
+
+            <div class="faqs-column">
+                <div class="faqs-list">
+                    <div class="faq-item">
+                        <p class="faq-question"><strong>Q:</strong> Do you accept bulk orders?</p>
+                        <p class="faq-answer">Yes, we accept bulk orders for schools, offices, and organizations.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <p class="faq-question"><strong>Q:</strong> What are delivery options?</p>
+                        <p class="faq-answer">We offer same-day delivery within Olongapo City.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <p class="faq-question"><strong>Q:</strong> Returns & refunds?</p>
+                        <p class="faq-answer">Items cannot be returned after checking out or after the product request. Items must ensure before checking out.</p>
+                    </div>
+                </div>
+
+                <div class="faqs-more">
+                    <a href="#">More about FAQs
+                        <img alt="More" src="../assets/svg/right-arrow.svg"/>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+
+        <?php include '../includes/footer.php';?>
+
+        <!-- <?php include('login-modal.php'); ?> -->
+
+
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="closeLoginModal">&times;</span>
+
+                <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
+
+                <h2>Login</h2>
+
+                <form id="loginForm" action="../auth/login_handler.php" method="post">
+                    <input type="text" placeholder="Username or Email" name="login_id" id="username" required/>
+
+                    <input type="password" placeholder="Password" id="loginpassword" name="password" required/>
+
+                    <button type="submit">Log In</button>
+
+                    <p class="modal-switch-text">
+                        Don't have an account?
+                        <a href="#" id="openSignupModal">Create Your Account here</a>
+                    </p>
+                </form>
+            </div>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
-  <!-- <script>
-      document.getElementById('togglePassword').addEventListener('click', function() {
-      const passwordField = document.getElementById('password');
-      const type = passwordField.type === 'password' ? 'text' : 'password';
-      passwordField.type = type;
-      this.querySelector('i').classList.toggle('bi-eye-slash');
-  });
-  </script> -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+
+        <div id="signupModal" class="modal">
+            <div class="modal-content">
+                <span id="closeSignupModal" class="close-btn">&times;</span>
+
+                <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
+
+                <h2>Create Your Account</h2>
+
+                <form id="signupForm" action="../auth/register_process.php" method="post">
+                    <input type="text" placeholder="First Name" id="firstName" name="firstName" required>
+
+                    <input type="text" placeholder="Last Name" id="lastName" name="lastName" required>
+
+                    <input type="email" placeholder="Email" id="email" name="email" required>
+
+                    <input type="password" placeholder="Password" id="password" name="password" required>
+
+                    <input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirm-password" required>
+
+                    <div class="terms">
+                        <label class="terms-label">
+                            <input type="checkbox" id="termsCheckbox" required>
+                            <span>I confirm agree to our <a href="terms-of-service.php" target="_blank" id="openTermsModal">Terms and Conditions</a></span>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="verifyEmailBtn" disabled>Verify Email</button>
+
+                    <p class="modal-switch-text">
+                        Already have an account?
+                        <a href="#" id="signupToLoginLink">Log in here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../assets/js/homepage.js"></script>
+    </body>
 </html>
