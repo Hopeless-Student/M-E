@@ -134,8 +134,6 @@
     </div>
 
     <script>
-        // Initialize Lucide icons
-        // Initialize Lucide icons
           lucide.createIcons();
 
           let salesChart, categoryChart, statusChart;
