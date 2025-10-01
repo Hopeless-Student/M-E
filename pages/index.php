@@ -147,7 +147,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
 
               <form id="customRequestForm" action="../auth/custom_request.php" method="post">
-                  <label for="requestType">Request Type *</label>
+                  <label for="requestType">Request Type <span style="color:red;">*</span></label>
                   <select id="requestType" name="request_type" required>
                       <option value="" disabled selected>Select request type</option>
                       <option value="inquiry">Inquiry</option>
@@ -156,10 +156,10 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                       <option value="others">Others</option>
                   </select>
 
-                  <label for="requestSubject">Subject *</label>
+                  <label for="requestSubject">Subject <span style="color:red;">*</span></label>
                   <input type="text" id="requestSubject" name="subject" placeholder="Brief description of your request" required maxlength="100">
 
-                  <label for="requestMessage">Message *</label>
+                  <label for="requestMessage">Message <span style="color:red;">*</span></label>
                   <textarea id="requestMessage" name="message" placeholder="Provide detailed information about your request..." required rows="6" maxlength="1000"></textarea>
 
                   <div class="char-counter">
