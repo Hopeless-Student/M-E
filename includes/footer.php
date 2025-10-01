@@ -1,3 +1,4 @@
+<<<<<<< HEAD
     <style>
 
 footer {
@@ -129,6 +130,9 @@ footer {
 }
     </style>
     
+=======
+
+>>>>>>> 920939db91affeaddab6fc654a580413b1ceb28e
     <footer>
         <div class="footer-container">
             <div class="footer-brand">
@@ -151,7 +155,7 @@ footer {
                 <div class="footer-column">
                     <h4>Customer Support</h4>
                     <ul>
-                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#faq.php">FAQs</a></li>
                         <li><a href="#">Shipping</a></li>
                         <li><a href="#">Contact Us</a></li>
                     </ul>
@@ -160,7 +164,7 @@ footer {
                 <div class="footer-column">
                     <h4>Company Info</h4>
                     <ul>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="about.php">About Us</a></li>
                         <li><a href="#">Our Store</a></li>
                         <li><a href="#">Bulk Orders</a></li>
                         <li><a href="#">Return & Refund Policy</a></li>
@@ -185,4 +189,8 @@ footer {
             <p>© Copyright <?php echo date("Y"); ?> M&E Interior Supplies Trading, All rights reserved.</p>
         </div>
     </footer>
+<<<<<<< HEAD
 
+=======
+    <?php
+>>>>>>> 920939db91affeaddab6fc654a580413b1ceb28e

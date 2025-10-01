@@ -101,6 +101,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           <div class="col-md-4">
             <label for="inputContact" class="form-label">Contact No.</label>
             <input type="tel" class="form-control"
+            id="inputContact"
             maxlength="13"
             placeholder="+639123456789"
             name="contact-no" pattern="^(\+63|0)\d{10}$"

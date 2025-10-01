@@ -1,38 +1,196 @@
-<?php
-   ?>
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>About us</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../test-files/homepage.css">
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg bg-transparent sticky-top px-4 py-2 custom-navbar">
-      <a class="navbar-brand" href="#"> <img src="../assets/images/M&E_LOGO_transparent.png" class="img-fluid" alt="M&E Logo"> </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<html lang="en">
+    <?php
+        $pageTitle = "About Us - M&E";
+        include '../includes/header.php';
+    ?>
 
-        <div class="collapse navbar-collapse align-items-center" id="navbarNav">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="order_form.php">Products</a></li>
-        <li class="nav-item"><a class="nav-link active" href="about.php">About</a></li>
-      </ul>
+    <body>
+        <?php include '../includes/navbar.php'; ?>
 
-      <!-- Cart & Login -->
-        <div class="d-flex flex-column flex-lg-row align-items-center mt-3 mt-lg-0">
-          <a href="#" class="cart-icon mb-2 mb-lg-0 me-lg-3">
-            <img src="../assets/icons/bag.svg" alt="Cart" class="img-fluid">
-          </a>
-          <button class="btn btn-primary d-flex align-items-center login-btn"
-                  data-bs-toggle="modal" data-bs-target="#loginModal">
-            <img src="../assets/icons/person.svg" alt="Login" class="me-2 login-icon">
-            Login
-          </button>
-        </div>
-    </div>
-    </nav>
+        <section class="about-hero">
+            <div class="about-hero-overlay"></div>
+
+            <div class="about-hero-content">
+                <h1>About Us</h1>
+                <p class="lead">M&E Trading is your trusted e-commerce platform for quality office, school, and sanitary supplies—delivered fast, priced right, and always reliable.</p>
+            </div>
+        </section>
+
+
+
+        <section class="our-journey">
+            <div class="journey-content">
+                <h2>Our Journey</h2>
+                <p>
+                    Founded in 2022, M&E Trading started as a small local shop with a big vision:
+                    to make high-quality supplies accessible to every Filipino household, school,
+                    and business. Today, we serve thousands of customers with fast and reliable delivery.
+                </p>
+
+                <ul class="timeline">
+                    <li>
+                        <span class="timeline-year">2022</span>
+                        <p>Launched our first online store.</p>
+                    </li>
+                    <li>
+                        <span class="timeline-year">2023</span>
+                        <p>Expanded product catalog to 5,000+ items and partnered with schools.</p>
+                    </li>
+                    <li>
+                        <span class="timeline-year">2024</span>
+                        <p>Introduced bulk order discounts and next-day delivery.</p>
+                    </li>
+                    <li>
+                        <span class="timeline-year">2025</span>
+                        <p>Surpassed 10,000 products sold and 1,500+ happy customers.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="journey-image" style="background-image:url('../assets/images/mockup-image.png');"></div>
+        </section>
+
+
+
+        <section class="mission-values py-5 bg-light">
+            <div class="container text-center">
+                <h2 class="fw-bold mb-5">Our Mission & Values</h2>
+
+                <div class="row justify-content-center">
+
+                    <div class="col-md-4 mb-4">
+                        <div class="value-card animated-card h-100">
+                            <div class="icon-circle">
+                                <img src="../assets/svg/workspace-trusted.svg" alt="Quality Products">
+                            </div>
+                            <h3 class="fw-bold">Quality Products</h3>
+                            <p>We carefully curate our products from trusted manufacturers and suppliers to ensure you get the best quality.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="value-card animated-card h-100">
+                            <div class="icon-circle">
+                                <img src="../assets/svg/delivery.svg" alt="Fast Delivery">
+                            </div>
+                            <h3 class="fw-bold">Fast Delivery</h3>
+                            <p>We ensure quick processing and efficient delivery of your orders, getting your supplies to you when you need them.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="value-card animated-card h-100">
+                            <div class="icon-circle">
+                                <img src="../assets/svg/customer-support-1-solid.svg" alt="24/7 Support">
+                            </div>
+                            <h3 class="fw-bold">24/7 Support</h3>
+                            <p>Our dedicated customer service team is always ready to assist you with any questions or concerns.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="team py-5">
+            <div class="container text-center">
+                <h2 class="fw-bold mb-5">Meet the Team</h2>
+
+                <div class="row justify-content-center">
+
+                    <div class="col-md-3 mb-4">
+                        <div class="team-member">
+                            <img src="../assets/svg/person.svg" alt="Elbar Coma" class="rounded-circle shadow" style="width:160px;height:160px;object-fit:cover;">
+                            <h3 class="mt-3">Elbar Coma</h3>
+                            <p>Founder & Owner</p>
+                            <span class="badge bg-primary">E-commerce Visionary</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="team-member">
+                            <img src="../assets/svg/person.svg" alt="Maria Santos" class="rounded-circle shadow" style="width:160px;height:160px;object-fit:cover;">
+                            <h3 class="mt-3">Maria Santos</h3>
+                            <p>Sales Manager</p>
+                            <span class="badge bg-success">Customer Champion</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="team-member">
+                            <img src="../assets/svg/person.svg" alt="Daniel Cruz" class="rounded-circle shadow" style="width:160px;height:160px;object-fit:cover;">
+                            <h3 class="mt-3">Daniel Cruz</h3>
+                            <p>Logistics Lead</p>
+                            <span class="badge bg-warning text-dark">Delivery Expert</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="testimonials py-5 bg-primary text-white">
+            <div class="container text-center">
+                <h2 class="fw-bold mb-5">What Our Customers Say</h2>
+
+                <div class="row justify-content-center">
+
+                    <div class="col-md-5 mb-4">
+                        <div class="testimonial p-4 rounded bg-white text-dark shadow">
+                            <p class="mb-2">"Fast delivery and reliable service. Highly recommend!"</p>
+                            <span class="text-primary">- Maria, School Principal</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 mb-4">
+                        <div class="testimonial p-4 rounded bg-white text-dark shadow">
+                            <p class="mb-2">"Affordable prices and great product quality. We always buy here."</p>
+                            <span class="text-primary">- Daniel, Office Admin</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row justify-content-center mt-4">
+
+                    <div class="col-md-5 mb-4">
+                        <div class="testimonial p-4 rounded bg-white text-dark shadow">
+                            <p class="mb-2">"Bulk ordering for our school was so easy. The support team was very helpful!"</p>
+                            <span class="text-primary">- Principal Reyes</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 mb-4">
+                        <div class="testimonial p-4 rounded bg-white text-dark shadow">
+                            <p class="mb-2">"I love the real-time tracking and fast delivery. Will order again!"</p>
+                            <span class="text-primary">- Office Manager, ABC Corp</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+
+        <section class="about-cta">
+            <div class="container text-center">
+                <h2 class="fw-bold mb-3">Ready to Order?</h2>
+                <p class="mb-4">Visit our shop or contact us for bulk orders and inquiries.<br>We're here to help you get the supplies you need, fast.</p>
+
+                <a href="products.php" class="btn btn-primary">Browse Products</a>
+                <a href="contact.php" class="btn btn-outline-primary">Contact Us</a>
+            </div>
+        </section>
+
+        <?php include '../includes/footer.php'; ?>
+        <?php include '../includes/login-modal.php'; ?>
+        <script src="../assets/js/homepage.js"></script>
+    </body>
 </html>

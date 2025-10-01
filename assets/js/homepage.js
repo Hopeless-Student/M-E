@@ -23,13 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogin = document.querySelector(".btn-login a");
   const closeBtn = document.getElementById("closeLoginModal");
   const loginForm = document.getElementById("loginForm");
-  const openLoginModalLink = document.getElementById("openLoginModal");
+  const openLoginModalLink = document.getElementById("openLoginModal"); // Eto para sa header letche
 
   // Signup modal elements
   const signupModal = document.getElementById("signupModal");
   const openSignupModalLink = document.getElementById("openSignupModal");
   const closeSignupModal = document.getElementById("closeSignupModal");
   const signupForm = document.getElementById("signupForm");
+
+  // fixed: get the "Log in here" link from signup modal using a more specific selector
+  const signupToLoginLink = document.querySelector("#signupModal .modal-switch-text a");
 
   // Signup inputs
   const firstNameInput = document.getElementById("firstName");
@@ -215,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Header color transition
   if (header) {
     window.addEventListener("scroll", () => {
-      if (window.scrollY > 900) {
+      if (window.scrollY > 700) {
         header.classList.add("scrolled");
       } else {
         header.classList.remove("scrolled");
@@ -248,22 +251,22 @@ document.addEventListener("DOMContentLoaded", () => {
       termsModal.style.display = "none";
     }
   });
-
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const username = loginForm.username?.value.trim() || "";
-      const password = loginForm.password?.value.trim() || "";
-
-      if (username && password) {
-        alert(`Logging in as ${username}`);
-        loginModal.style.display = "none";
-        loginForm.reset();
-      } else {
-        alert("Please fill out all fields.");
-      }
-    });
-  }
+  // No need PHP ang backend
+  // if (loginForm) {
+  //   loginForm.addEventListener("submit", (e) => {
+  //     e.preventDefault();
+  //     const username = loginForm.username?.value.trim() || "";
+  //     const password = loginForm.password?.value.trim() || "";
+  //
+  //     if (username && password) {
+  //       alert(`Logging in as ${username}`);
+  //       loginModal.style.display = "none";
+  //       loginForm.reset();
+  //     } else {
+  //       alert("Please fill out all fields.");
+  //     }
+  //   });
+  // }
 
   // Signup modal logic
   if (openSignupModalLink && signupModal) {
@@ -280,8 +283,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (openLoginModalLink && signupModal && loginModal) {
-    openLoginModalLink.addEventListener("click", (e) => {
+  // fixed: Separate event listener for the "Log in here" link in signup modal
+  if (signupToLoginLink && signupModal && loginModal) {
+    signupToLoginLink.addEventListener("click", (e) => {
       e.preventDefault();
       signupModal.style.display = "none";
       loginModal.style.display = "block";
@@ -295,37 +299,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (signupForm) {
-    signupForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const firstName = firstNameInput?.value.trim() || "";
-      const lastName = lastNameInput?.value.trim() || "";
-      const email = signupEmailInput?.value.trim() || "";
-      const password = signupPasswordInput?.value.trim() || "";
-      const confirmPassword = signupConfirmPasswordInput?.value.trim() || "";
-      const agreed = termsCheckbox?.checked || false;
-
-      if (!firstName || !lastName || !email || !password || !confirmPassword) {
-        alert("Please fill out all fields.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
-
-      if (!agreed) {
-        alert("You must agree to the Terms and Conditions.");
-        return;
-      }
-
-      alert(`Verification email sent to ${email}`);
-      signupForm.reset();
-      verifyEmailBtn.disabled = true;
-      signupModal.style.display = "none";
-    });
-  }
+  // if (signupForm) {
+  //   signupForm.addEventListener("submit", (e) => {
+  //     const firstName = firstNameInput?.value.trim() || "";
+  //     const lastName = lastNameInput?.value.trim() || "";
+  //     const email = signupEmailInput?.value.trim() || "";
+  //     const password = signupPasswordInput?.value.trim() || "";
+  //     const confirmPassword = signupConfirmPasswordInput?.value.trim() || "";
+  //     const agreed = termsCheckbox?.checked || false;
+  //
+  //     if (!firstName || !lastName || !email || !password || !confirmPassword) {
+  //       alert("Please fill out all fields.");
+  //       return;
+  //     }
+  //
+  //     if (password !== confirmPassword) {
+  //       alert("Passwords do not match.");
+  //       return;
+  //     }
+  //
+  //     if (!agreed) {
+  //       alert("You must agree to the Terms and Conditions.");
+  //       return;
+  //     }
+  //
+  //     alert(`Verification email sent to ${email}`);
+  //     signupForm.reset();
+  //     verifyEmailBtn.disabled = true;
+  //     signupModal.style.display = "none";
+  //   });
+  // }
 
   // Mobile login link inside hamburger
   const mobileLoginLink = document.getElementById("mobileLoginLink");
@@ -339,6 +342,130 @@ document.addEventListener("DOMContentLoaded", () => {
       hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
     });
   }
+
+  const toggleLogin = document.getElementById("toggleLogin");
+  if (toggleLogin) {
+    toggleLogin.addEventListener("click", (event) => {
+      event.preventDefault();
+      signupModal.style.display = "none";
+      loginModal.style.display = "block";
+      nav.classList.remove("active");
+      hamburger.classList.remove("active");
+      hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
+    });
+  }
+
+  const floatingRequestBtn = document.getElementById("floatingRequestBtn");
+const customRequestModal = document.getElementById("customRequestModal");
+const closeRequestModal = document.getElementById("closeRequestModal");
+const customRequestForm = document.getElementById("customRequestForm");
+const requestMessage = document.getElementById("requestMessage");
+const charCount = document.getElementById("charCount");
+
+if (floatingRequestBtn && customRequestModal) {
+  floatingRequestBtn.addEventListener("click", () => {
+    customRequestModal.style.display = "block";
+  });
+}
+
+if (closeRequestModal && customRequestModal) {
+  closeRequestModal.addEventListener("click", () => {
+    customRequestModal.style.display = "none";
+  });
+}
+
+if (requestMessage && charCount) {
+  requestMessage.addEventListener("input", () => {
+    const count = requestMessage.value.length;
+    charCount.textContent = count;
+
+    if (count > 900) {
+      charCount.style.color = "#ff0000";
+    } else if (count > 800) {
+      charCount.style.color = "#ff9900";
+    } else {
+      charCount.style.color = "#999";
+    }
+  });
+}
+
+const alerts = document.querySelectorAll(".alert-message");
+  alerts.forEach(alert => {
+    alert.addEventListener("animationend", (e) => {
+      if (e.animationName === "fadeOut") {
+        alert.remove();
+      }
+    });
+
+    alert.addEventListener("click", () => {
+      alert.remove();
+    });
+  });
+
+// Handle form submission
+// if (customRequestForm) {
+//   customRequestForm.addEventListener("submit", (e) => {
+//     // e.preventDefault();
+//     //
+//     // const requestType = document.getElementById("requestType").value;
+//     // const subject = document.getElementById("requestSubject").value.trim();
+//     // const message = requestMessage.value.trim();
+//     //
+//     // if (!requestType || !subject || !message) {
+//     //   alert("Please fill out all required fields.");
+//     //   return;
+//     // }
+//     //
+//     // if (message.length < 10) {
+//     //   alert("Please provide a more detailed message (at least 10 characters).");
+//     //   return;
+//     // }
+//     //
+//     // // Submit the form (this will go to your PHP handler)
+//     // // For now, we'll show a confirmation
+//     // alert(`Request submitted successfully!\n\nType: ${requestType}\nSubject: ${subject}\n\nWe'll get back to you soon!`);
+//
+//     // Uncomment this line to actually submit the form:
+//     // customRequestForm.submit();
+//
+//     // Reset form and close modal
+//     // customRequestForm.reset();
+//     // charCount.textContent = "0";
+//     // customRequestModal.style.display = "none";
+//   });
+// }
+
+// Close modals when clicking outside
+window.addEventListener("click", (event) => {
+  if (event.target === customRequestModal) {
+    customRequestModal.style.display = "none";
+  }
+});
+
+// Hide floating button when modals are open to avoid overlap
+const allModals = [loginModal, signupModal, customRequestModal];
+const observer = new MutationObserver(() => {
+  const anyModalOpen = allModals.some(modal =>
+    modal && modal.style.display === "block"
+  );
+
+  if (floatingRequestBtn) {
+    if (anyModalOpen && customRequestModal.style.display !== "block") {
+      floatingRequestBtn.style.opacity = "0.3";
+      floatingRequestBtn.style.pointerEvents = "none";
+    } else {
+      floatingRequestBtn.style.opacity = "1";
+      floatingRequestBtn.style.pointerEvents = "auto";
+    }
+  }
+});
+
+// Observe each modal for display changes
+allModals.forEach(modal => {
+  if (modal) {
+    observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+  }
+});
 
   // Mobile cart link
   const mobileCartLink = document.querySelector(".mobile-nav-cart");

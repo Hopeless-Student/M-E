@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ .'/../includes/database.php';
 require_once __DIR__ .'/../auth/auth.php';
-
+$profileImage = !empty($user['profile_image'])
+    ? "../assets/profile-pics/" . htmlspecialchars($user['profile_image'])
+    : "../assets/images/default.png";
 $pdo = connect();
 $user_id = $user['user_id'];
 
@@ -33,7 +35,7 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shopping Cart</title>
   <link href="../bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
-  <link href="../ui/homepage.css" rel="stylesheet"/>
+  <link href="../assets/css/homepage.css" rel="stylesheet"/>
   <style>
     body {
         background-color: #f4f7fa;
@@ -164,30 +166,7 @@ try {
   </style>
 </head>
 <body>
-  <header>
-      <div class="logo">
-          <img alt="M&amp;E Logo" src="../ui/Assets/logo.png"/>
-      </div>
-      <nav>
-          <a href="homepage-sample.html">Home</a>
-          <a href="#">Products</a>
-          <a href="#">About Us</a>
-      </nav>
-      <div class="header-actions">
-          <div class="search-bar">
-              <img alt="search" class="search-icon" src="../ui/Assets/search.svg"/>
-              <input placeholder="Search products..." type="text"/>
-          </div>
-          <div class="cart">
-              <a href="#">
-                  <img alt="cart" class="cart-img" src="../ui/Assets/cart-button_default.svg"/>
-              </a>
-          </div>
-          <div class="btn-login">
-              <a href="#">Log in</a>
-          </div>
-      </div>
-  </header>
+  <?php include('../includes/navbar.php'); ?>
 
   <div class="container my-5">
   <div class="row gy-4">
@@ -203,7 +182,7 @@ try {
                 <div class="product-info">
                   <div class="product-title"><?= htmlspecialchars($item['product_name']) ?></div>
                   <div class="product-price">₱<?= number_format($item['price'], 2) ?></div>
-                  <form action="cart-actions.php" method="post" class="d-inline">
+                  <form action="../auth/cart-actions.php" method="post" class="d-inline">
                       <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
                       <div class="quantity-control">
                           <button type="submit" class="quantity-btn" name="action" value="decrease">-</button>
@@ -211,7 +190,7 @@ try {
                           <button type="submit" class="quantity-btn" name="action" value="increase">+</button>
                       </div>
                   </form>
-                  <form method="post" action="cart-actions.php" class="mt-2">
+                  <form method="post" action="../auth/cart-actions.php" class="mt-2">
                       <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
                         <button type="submit" name="action" value="remove" class="btn-remove">Remove</button>
                   </form>
@@ -251,7 +230,7 @@ try {
             <span>₱<?= number_format($grandTotal, 2) ?></span>
         </div>
         <?php if ($cartItems): ?>
-            <form action="checkout-test.php" method="post">
+            <form action="../test-files/checkout-test.php" method="post">
               <input type="submit" name="Checkout" value="Proceed to Checkout" class="btn-checkout">
             </form>
           <?php else: ?>

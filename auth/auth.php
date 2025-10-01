@@ -6,7 +6,7 @@
       $pdo = connect();
 
       if (!isset($_SESSION['user_id'])) {
-          header("Location: ../register.php");
+          header("Location: ../pages/index.php");
           exit;
       }
 
