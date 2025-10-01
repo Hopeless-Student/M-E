@@ -7,11 +7,22 @@ $pageSize = isset($_GET['pageSize']) ? min(48, max(1, (int)$_GET['pageSize'])) :
 $sort = $_GET['sort'] ?? 'default';
 $category = $_GET['category'] ?? 'all';
 $q = trim($_GET['q'] ?? '');
+$idsParam = isset($_GET['ids']) ? trim($_GET['ids']) : '';
 
 $offset = ($page - 1) * $pageSize;
 
 $where = ['p.isActive = 1'];
 $params = [];
+
+// Filter by prod id
+$ids = [];
+if ($idsParam !== '') {
+    $ids = array_values(array_filter(array_map('intval', explode(',', $idsParam)), function ($v) { return $v > 0; }));
+    if (count($ids) > 0) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $where[] = "p.product_id IN ($placeholders)";
+    }
+}
 
 if ($category !== 'all') {
     if (ctype_digit($category)) {
@@ -49,7 +60,13 @@ $whereSql = count($where) ? ('WHERE ' . implode(' AND ', $where)) : '';
 
 $countSql = "SELECT COUNT(*) FROM products p INNER JOIN categories c ON c.category_id = p.category_id $whereSql";
 $stmt = $pdo->prepare($countSql);
-$stmt->execute($params);
+
+foreach ($params as $k => $v) { $stmt->bindValue($k, $v); }
+if (count($ids) > 0) {
+    $pos = 1;
+    foreach ($ids as $id) { $stmt->bindValue($pos++, $id, PDO::PARAM_INT); }
+}
+$stmt->execute();
 $total = (int)$stmt->fetchColumn();
 
 $sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.product_image, p.stock_quantity,
@@ -60,17 +77,19 @@ $sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.product_i
         ORDER BY $orderBy
         LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);
-foreach ($params as $k => $v) {
-    $stmt->bindValue($k, $v);
+foreach ($params as $k => $v) { $stmt->bindValue($k, $v); }
+if (count($ids) > 0) {
+    $pos = 1;
+    foreach ($ids as $id) { $stmt->bindValue($pos++, $id, PDO::PARAM_INT); }
 }
 $stmt->bindValue(':limit', $pageSize, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$baseImg = '../assets/images/products';
+$baseImg = '../assets/images/products/';
 $items = array_map(function ($r) use ($baseImg) {
-    $img = $r['product_image'] ? ($baseImg . $r['product_image']) : ($baseImg . 'scotch-tape-roll.png');
+    $img = $r['product_image'] ? ($baseImg . $r['product_image']) : null;
     return [
         'id' => (int)$r['product_id'],
         'title' => $r['product_name'],

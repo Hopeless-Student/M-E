@@ -145,82 +145,10 @@
 
           async function loadDashboardData() {
               try {
-                  // Simulate API call with sample data
-                  const result = {
-                      success: true,
-                      data: {
-                          stats: {
-                              total_revenue: '145,250.00',
-                              revenue_change: '12.5',
-                              active_customers: '89',
-                              customers_change: '5.2',
-                              avg_order_value: '620.30'
-                          },
-                          charts: {
-                              sales: {
-                                  labels: ['April', 'May', 'June', 'July', 'August', 'September'],
-                                  revenue: [85000, 92000, 88000, 105000, 125000, 145000],
-                                  orders: [145, 160, 142, 175, 198, 234]
-                              },
-                              categories: {
-                                  labels: ['Sanitary Supplies', 'Office Supplies', 'School Supplies'],
-                                  data: [45, 35, 20]
-                              },
-                              order_status: {
-                                  labels: ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered'],
-                                  data: [7, 15, 12, 8, 25],
-                                  colors: ['#f59e0b', '#1d4ed8', '#3730a3', '#5b21b6', '#059669']
-                              }
-                          },
-                          recent_orders: [
-                              {
-                                  order_number: 'ORD-2024-001',
-                                  customer_name: 'John Doe',
-                                  category: 'Sanitary Supplies',
-                                  item_count: '3',
-                                  amount: '15,250.00',
-                                  date: '2024-09-20',
-                                  status: 'processing'
-                              },
-                              {
-                                  order_number: 'ORD-2024-002',
-                                  customer_name: 'Jane Smith',
-                                  category: 'Office Supplies',
-                                  item_count: '5',
-                                  amount: '8,450.00',
-                                  date: '2024-09-19',
-                                  status: 'confirmed'
-                              },
-                              {
-                                  order_number: 'ORD-2024-003',
-                                  customer_name: 'Mike Johnson',
-                                  category: 'School Supplies',
-                                  item_count: '2',
-                                  amount: '12,800.00',
-                                  date: '2024-09-18',
-                                  status: 'delivered'
-                              },
-                              {
-                                  order_number: 'ORD-2024-004',
-                                  customer_name: 'Sarah Wilson',
-                                  category: 'Sanitary Supplies',
-                                  item_count: '4',
-                                  amount: '22,150.00',
-                                  date: '2024-09-17',
-                                  status: 'shipped'
-                              },
-                              {
-                                  order_number: 'ORD-2024-005',
-                                  customer_name: 'David Brown',
-                                  category: 'Office Supplies',
-                                  item_count: '1',
-                                  amount: '3,200.00',
-                                  date: '2024-09-16',
-                                  status: 'pending'
-                              }
-                          ]
-                      }
-                  };
+                  const res = await fetch('../api/admin/index.php', { headers: { 'Accept': 'application/json' } });
+                  if (!res.ok) throw new Error('Network response was not ok');
+                  const result = await res.json();
+                  if (!result.success) throw new Error(result.message || 'Request failed');
 
                   renderStats(result.data.stats);
                   renderCharts(result.data.charts);

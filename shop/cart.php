@@ -4,561 +4,312 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - Your Items</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(to bottom right, #f9fafb, #e5e7eb);
-            min-height: 100vh;
-        }
-
-        .header {
-            background: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #111827;
-        }
-
-        .header-title p {
-            color: #6b7280;
-            margin-top: 0.25rem;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .nav-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .nav-btn:hover {
-            background: #1d4ed8;
-        }
-
-        .nav-btn.secondary {
-            background: white;
-            color: #2563eb;
-            border: 2px solid #2563eb;
-        }
-
-        .nav-btn.secondary:hover {
-            background: #eff6ff;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        .cart-container {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .cart-header {
-            background: #f8fafc;
-            padding: 2rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .cart-header h2 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .cart-header p {
-            color: #6b7280;
-        }
-
-        .cart-items {
-            padding: 0;
-        }
-
-        .cart-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid #e5e7eb;
-            align-items: center;
-            transition: background 0.2s;
-        }
-
-        .cart-item:hover {
-            background: #f9fafb;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
-        .cart-item-icon {
-            min-width: 60px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-item-icon img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-        }
-
-        .cart-item-details {
-            flex: 1;
-        }
-
-        .cart-item-title {
-            font-weight: 600;
-            font-size: 1.125rem;
-            color: #111827;
-            margin-bottom: 0.25rem;
-        }
-
-        .cart-item-category {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .cart-item-price {
-            color: #2563eb;
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
-
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #f3f4f6;
-            border-radius: 0.5rem;
-            padding: 0.25rem;
-        }
-
-        .qty-btn {
-            background: white;
-            border: 1px solid #d1d5db;
-            width: 32px;
-            height: 32px;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .qty-btn:hover {
-            background: #e5e7eb;
-            border-color: #9ca3af;
-        }
-
-        .qty-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .quantity {
-            font-weight: 600;
-            min-width: 24px;
-            text-align: center;
-            font-size: 1rem;
-        }
-
-        .remove-btn {
-            background: #fee2e2;
-            color: #dc2626;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .remove-btn:hover {
-            background: #fecaca;
-        }
-
-        .cart-empty {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #6b7280;
-        }
-
-        .cart-empty-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .cart-empty h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #111827;
-        }
-
-        .cart-empty p {
-            margin-bottom: 2rem;
-        }
-
-        .cart-total {
-            background: #f8fafc;
-            padding: 2rem;
-            border-top: 2px solid #e5e7eb;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 1.5rem;
-        }
-
-        .checkout-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .checkout-btn {
-            flex: 1;
-            background: #16a34a;
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .checkout-btn:hover {
-            background: #15803d;
-        }
-
-        .checkout-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        .clear-cart-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .clear-cart-btn:hover {
-            background: #dc2626;
-        }
-
-        .clear-cart-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: #10b981;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s;
-            z-index: 1001;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .toast.error {
-            background: #ef4444;
-        }
-
-        .toast.warning {
-            background: #f59e0b;
-        }
-
-        /* Loading State */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 4rem 2rem;
-            color: #6b7280;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #e5e7eb;
-            border-top: 4px solid #2563eb;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-                padding: 1rem;
-            }
-
-            .header-title h1 {
-                font-size: 1.5rem;
-            }
-
-            .nav-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav-btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .container {
-                padding: 2rem 1rem;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-                padding: 1.5rem 1rem;
-            }
-
-            .cart-item-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .checkout-actions {
-                flex-direction: column;
-            }
-
-            .toast {
-                left: 1rem;
-                right: 1rem;
-                bottom: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .cart-item-icon {
-                font-size: 2.5rem;
-            }
-
-            .cart-item-title {
-                font-size: 1rem;
-            }
-
-            .cart-item-price {
-                font-size: 1.125rem;
-            }
-
-            .total-row {
-                font-size: 1.25rem;
-            }
-        }
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 2rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; }
-        .navbar .logo img { height: 48px; }
-        .navbar .nav-links a { margin-left: 1rem; text-decoration: none; color: #111827; font-weight: 600; }
-        .navbar .nav-links a:hover { color: #2563eb; }
-    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../assets/css/cart.css">
 </head>
 <body>
-    <?php if (file_exists(__DIR__ . '/../includes/navbar.php')) { include __DIR__ . '/../includes/navbar.php'; } ?>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="header-title">
-                <h1>Shopping Cart</h1>
-                <p>Review your items and proceed to checkout</p>
+    <?php include '../includes/navbar.php'; ?>
+    <div class="shpcrt-wrapper">
+        <!-- Header -->
+        <header class="shpcrt-main-header">
+            <div class="shpcrt-header-inner">
+                <div>
+                    <h1><i data-lucide="shopping-cart" class="shpcrt-header-icon-main" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;"></i>Shopping Cart</h1>
+                    <div class="shpcrt-statistics-row">
+                        <div class="shpcrt-stat-box">
+                            <span class="shpcrt-stat-label-text"><i data-lucide="package" class="shpcrt-stat-icon-small" style="display: inline; vertical-align: middle;"></i>Total Items</span>
+                            <span class="shpcrt-stat-number" id="totalItemsCount">0</span>
+                        </div>
+                        <div class="shpcrt-stat-box">
+                            <span class="shpcrt-stat-label-text"><i data-lucide="check-circle" class="shpcrt-stat-icon-small" style="display: inline; vertical-align: middle;"></i>Selected for Checkout</span>
+                            <span class="shpcrt-stat-number" id="selectedItemsCount">0</span>
+                        </div>
+                        <div class="shpcrt-stat-box">
+                            <span class="shpcrt-stat-label-text"><i data-lucide="bookmark" class="shpcrt-stat-icon-small" style="display: inline; vertical-align: middle;"></i>Saved for Later</span>
+                            <span class="shpcrt-stat-number" id="savedItemsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shpcrt-nav-actions">
+                    <a href="../pages/products.php" class="shpcrt-btn-base shpcrt-btn-secondary-style">
+                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                        Continue Shopping
+                    </a>
+                </div>
             </div>
-            <div class="nav-buttons">
-                <a href="products.php" class="nav-btn secondary">←</a>
-                <a href="checkout.php" class="nav-btn" id="checkoutBtn" style="display: none;">Proceed to Checkout</a>
-            </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="cart-container">
-            <div class="cart-header">
-                <h2>Your Cart Items</h2>
-                <p id="cartSummary">Loading your cart...</p>
-            </div>
-            
-            <div class="cart-items" id="cartItems">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <span>Loading cart...</span>
+        <!-- Main Cart Layout -->
+        <div class="shpcrt-grid-layout">
+            <!-- Cart Items -->
+            <div class="shpcrt-items-container">
+                <div class="shpcrt-section-top">
+                    <h2>Cart Items</h2>
+                    <div class="shpcrt-quick-actions">
+                        <a class="shpcrt-action-link-style" onclick="selectAll()">Select All</a>
+                        <a class="shpcrt-action-link-style" onclick="deselectAll()">Deselect All</a>
+                    </div>
+                </div>
+                <div class="shpcrt-items-list" id="cartItems">
+                    <div class="shpcrt-loading-state">
+                        <div class="shpcrt-spinner"></div>
+                        <span>Loading your cart...</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="cart-total" id="cartTotal" style="display: none;">
-                <div class="total-row">
-                    <span>Total:</span>
-                    <span id="totalPrice">$0</span>
+
+            <!-- Cart Summary -->
+            <aside class="shpcrt-summary-panel">
+                <div class="shpcrt-summary-inner">
+                    <h3 class="shpcrt-summary-heading">Order Summary</h3>
+
+                    <div class="shpcrt-summary-details">
+                        <div class="shpcrt-summary-line">
+                            <span class="shpcrt-summary-key">Subtotal</span>
+                            <span class="shpcrt-summary-val" id="subtotalPrice">$0.00</span>
+                        </div>
+                        <div class="shpcrt-summary-line">
+                            <span class="shpcrt-summary-key">Items in Cart</span>
+                            <span class="shpcrt-summary-val" id="summaryTotalItems">0</span>
+                        </div>
+                        <div class="shpcrt-summary-line">
+                            <span class="shpcrt-summary-key">Selected Items</span>
+                            <span class="shpcrt-summary-val" id="summarySelectedItems">0</span>
+                        </div>
+                    </div>
+
+                    <div id="excludedItemsNotice"></div>
+
+                    <div class="shpcrt-summary-line shpcrt-total-line">
+                        <span class="shpcrt-total-text">Total</span>
+                        <span class="shpcrt-total-amount" id="totalPrice">$0.00</span>
+                    </div>
+
+                    <div class="shpcrt-action-buttons">
+                        <button class="shpcrt-btn-base shpcrt-btn-primary-style shpcrt-btn-checkout-main" onclick="proceedToCheckout()" id="checkoutButton">
+                            <i data-lucide="credit-card" style="width: 18px; height: 18px;"></i>
+                            Proceed to Checkout
+                        </button>
+                        <button class="shpcrt-btn-base shpcrt-btn-secondary-style shpcrt-btn-clear-all" onclick="clearCart()" id="clearButton">
+                            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                            Clear Cart
+                        </button>
+                    </div>
                 </div>
-                <div class="checkout-actions">
-                    <button class="checkout-btn" onclick="proceedToCheckout()" id="checkoutButton">Proceed to Checkout</button>
-                    <button class="clear-cart-btn" onclick="clearCart()" id="clearButton">Clear Cart</button>
+
+                <div class="shpcrt-trust-section">
+                    <div class="shpcrt-trust-badge">
+                        <i data-lucide="shield-check" class="shpcrt-badge-icon"></i>
+                        <span>Secure Payment</span>
+                    </div>
+                    <div class="shpcrt-trust-badge">
+                        <i data-lucide="truck" class="shpcrt-badge-icon"></i>
+                        <span>Free Shipping</span>
+                    </div>
+                    <div class="shpcrt-trust-badge">
+                        <i data-lucide="rotate-ccw" class="shpcrt-badge-icon"></i>
+                        <span>Easy Returns</span>
+                    </div>
                 </div>
-            </div>
+            </aside>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
+    <div class="shpcrt-toast-notify" id="toast">
+        <span class="shpcrt-toast-icon-wrapper">
+            <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+        </span>
+        <span id="toastMessage"></span>
+    </div>
 
-    <script src="../assets/js/products-data.js"></script>
     <script>
-        // Cart data persisted in localStorage
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        // Shared dataset from products page
-        const products = window.ALL_PRODUCTS || [];
+        // Load products and cart from localStorage (populated by shop/products.php)
+        let products = [];
+        let cart = [];
+
+        function loadCartFromLocalStorage() {
+                const stored = JSON.parse(localStorage.getItem('cart')) || [];
+            products = stored.map(item => ({
+                id: item.id,
+                title: item.title,
+                category: item.category,
+                price: item.price,
+                image: item.image
+            }));
+            cart = stored.map(item => ({ id: item.id, quantity: item.quantity || 1, selected: true }));
+        }
+
+        function saveCartToLocalStorage() {
+            const merged = cart.map(item => {
+                const product = products.find(p => p.id === item.id);
+                return product ? { ...product, quantity: item.quantity } : null;
+            }).filter(Boolean);
+            localStorage.setItem('cart', JSON.stringify(merged));
+
+            // Update navbar cart count if present
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+                cartCount.textContent = totalItems;
+            }
+        }
 
         function updateCart() {
             const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
+            const totalItemsCount = document.getElementById('totalItemsCount');
+            const selectedItemsCount = document.getElementById('selectedItemsCount');
+            const savedItemsCount = document.getElementById('savedItemsCount');
+            const subtotalPrice = document.getElementById('subtotalPrice');
             const totalPrice = document.getElementById('totalPrice');
-            const cartSummary = document.getElementById('cartSummary');
-            const checkoutBtn = document.getElementById('checkoutBtn');
+            const summaryTotalItems = document.getElementById('summaryTotalItems');
+            const summarySelectedItems = document.getElementById('summarySelectedItems');
+            const excludedItemsNotice = document.getElementById('excludedItemsNotice');
             const checkoutButton = document.getElementById('checkoutButton');
             const clearButton = document.getElementById('clearButton');
 
-            // Save cart to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const selectedItems = cart.filter(item => item.selected);
+            const excludedItems = cart.filter(item => !item.selected);
+            const selectedCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+            const excludedCount = excludedItems.reduce((sum, item) => sum + item.quantity, 0);
 
-            // Update cart summary
-            if (totalItems === 0) {
-                cartSummary.textContent = 'Your cart is empty';
-            } else if (totalItems === 1) {
-                cartSummary.textContent = '1 item in your cart';
+            const subtotal = cart.reduce((sum, item) => {
+                const product = products.find(p => p.id === item.id);
+                return sum + (product ? product.price * item.quantity : 0);
+            }, 0);
+
+            const checkoutTotal = selectedItems.reduce((sum, item) => {
+                const product = products.find(p => p.id === item.id);
+                return sum + (product ? product.price * item.quantity : 0);
+            }, 0);
+
+            // Update stats
+            totalItemsCount.textContent = totalItems;
+            selectedItemsCount.textContent = selectedCount;
+            savedItemsCount.textContent = excludedCount;
+            subtotalPrice.textContent = `$${subtotal.toFixed(2)}`;
+            totalPrice.textContent = `$${checkoutTotal.toFixed(2)}`;
+            summaryTotalItems.textContent = totalItems;
+            summarySelectedItems.textContent = selectedCount;
+
+            // Show excluded items notice
+            if (excludedItems.length > 0) {
+                const excludedNames = excludedItems.map(item => {
+                    const product = products.find(p => p.id === item.id);
+                    return product ? product.title : 'Item';
+                }).join(', ');
+
+                excludedItemsNotice.innerHTML = `
+                    <div class="shpcrt-excluded-notice">
+                        <div class="shpcrt-excluded-heading">
+                            <i data-lucide="alert-circle" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-right: 0.25rem;"></i>
+                            Saved for Later (${excludedCount} item${excludedCount !== 1 ? 's' : ''})
+                        </div>
+                        <div class="shpcrt-excluded-list">${excludedNames}</div>
+                    </div>
+                `;
+                setTimeout(() => lucide.createIcons(), 0);
             } else {
-                cartSummary.textContent = `${totalItems} items in your cart`;
+                excludedItemsNotice.innerHTML = '';
             }
 
             if (cart.length === 0) {
                 cartItems.innerHTML = `
-                    <div class="cart-empty">
-                        <div class="cart-empty-icon">🛒</div>
+                    <div class="shpcrt-empty-state">
+                        <i data-lucide="shopping-cart" class="shpcrt-empty-icon-large"></i>
                         <h3>Your cart is empty</h3>
-                        <p>Add some products to get started!</p>
-                        <a href="products.php" class="nav-btn">Browse Products</a>
+                        <p>Add some amazing products to get started!</p>
+                        <a href="products.php" class="shpcrt-btn-base shpcrt-btn-primary-style">
+                            <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i>
+                            Browse Products
+                        </a>
                     </div>
                 `;
-                cartTotal.style.display = 'none';
-                checkoutBtn.style.display = 'none';
+                // Initialize Lucide icons for empty state
+                setTimeout(() => lucide.createIcons(), 0);
             } else {
                 cartItems.innerHTML = cart.map(item => {
                     const product = products.find(p => p.id === item.id);
                     if (!product) return '';
 
+                    const itemSubtotal = product.price * item.quantity;
+
                     return `
-                        <div class="cart-item">
-                            <div class="cart-item-icon"><img src="${product.image || '../assets/images/scotch-tape-roll.png'}" alt="Item"></div>
-                            <div class="cart-item-details">
-                                <div class="cart-item-title">${product.title}</div>
-                                <div class="cart-item-category">${product.category}</div>
-                                <div class="cart-item-price">$${product.price}</div>
-                            </div>
-                            <div class="cart-item-actions">
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-                                    <span class="quantity">${item.quantity}</span>
-                                    <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        <div class="shpcrt-single-item ${!item.selected ? 'shpcrt-item-excluded' : ''}">
+                            <div class="shpcrt-checkbox-area">
+                                <div class="shpcrt-checkbox-holder">
+                                    <input type="checkbox"
+                                           id="item-${item.id}"
+                                           ${item.selected ? 'checked' : ''}
+                                           onchange="toggleItemSelection(${item.id})">
                                 </div>
-                                <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+                            </div>
+                            <div class="shpcrt-item-info-wrapper">
+                                <div class="shpcrt-product-image">
+                                    <img src="${product.image}" alt="${product.title}">
+                                </div>
+                                <div class="shpcrt-product-info">
+                                    <div class="shpcrt-product-name">${product.title}</div>
+                                    <div class="shpcrt-product-category">${product.category}</div>
+                                    <div class="shpcrt-product-price">
+                                        $${product.price.toFixed(2)}
+                                        <div class="shpcrt-price-subtotal">Subtotal: $${itemSubtotal.toFixed(2)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="shpcrt-item-controls">
+                                <div class="shpcrt-qty-adjuster">
+                                    <button class="shpcrt-qty-button" onclick="updateQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>
+                                        <i data-lucide="minus" style="width: 16px; height: 16px;"></i>
+                                    </button>
+                                    <span class="shpcrt-qty-display">${item.quantity}</span>
+                                    <button class="shpcrt-qty-button" onclick="updateQuantity(${item.id}, 1)">
+                                        <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                                    </button>
+                                </div>
+                                <button class="shpcrt-remove-button" onclick="removeFromCart(${item.id})">
+                                    <i data-lucide="trash-2" style="width: 14px; height: 14px; display: inline; vertical-align: middle; margin-right: 0.25rem;"></i>
+                                    Remove
+                                </button>
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                totalPrice.textContent = `$${total.toFixed(2)}`;
-                cartTotal.style.display = 'block';
-                checkoutBtn.style.display = 'inline-block';
+                // Initialize Lucide icons after rendering cart items
+                setTimeout(() => lucide.createIcons(), 0);
             }
 
-            // Enable/disable buttons
-            const hasItems = cart.length > 0;
-            checkoutButton.disabled = !hasItems;
-            clearButton.disabled = !hasItems;
+            // Enable/disable checkout button
+            checkoutButton.disabled = selectedItems.length === 0;
+            clearButton.disabled = cart.length === 0;
+
+            // Persist changes to localStorage and navbar count
+            saveCartToLocalStorage();
+        }
+
+        function toggleItemSelection(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.selected = !item.selected;
+                updateCart();
+                const product = products.find(p => p.id === productId);
+                const action = item.selected ? 'selected for checkout' : 'saved for later';
+                showToast(`${product.title} ${action}`, item.selected ? 'success' : 'warning');
+            }
+        }
+
+        function selectAll() {
+            cart.forEach(item => item.selected = true);
+            updateCart();
+            showToast('All items selected for checkout', 'success');
+        }
+
+        function deselectAll() {
+            cart.forEach(item => item.selected = false);
+            updateCart();
+            showToast('All items saved for later', 'warning');
         }
 
         function updateQuantity(productId, delta) {
@@ -568,23 +319,23 @@
                 if (item.quantity <= 0) {
                     removeFromCart(productId);
                 } else {
-                    updateCart();
-                    showToast(`Quantity updated`, 'success');
+                updateCart();
+                showToast('Quantity updated', 'success');
                 }
             }
         }
 
         function removeFromCart(productId) {
             const product = products.find(p => p.id === productId);
-            cart = cart.filter(item => item.id !== productId);
-            updateCart();
-            showToast(`${product ? product.title : 'Item'} removed from cart`, 'success');
+                cart = cart.filter(item => item.id !== productId);
+                updateCart();
+                showToast(`${product ? product.title : 'Item'} removed from cart`, 'success');
         }
 
         function clearCart() {
             if (cart.length === 0) return;
 
-            if (confirm('Are you sure you want to clear your cart? This action cannot be undone.')) {
+            if (confirm('Are you sure you want to clear your entire cart? This cannot be undone.')) {
                 cart = [];
                 updateCart();
                 showToast('Cart cleared', 'success');
@@ -592,16 +343,20 @@
         }
 
         function proceedToCheckout() {
-            if (cart.length === 0) {
-                showToast('Your cart is empty!', 'error');
+            const selectedItems = cart.filter(item => item.selected);
+
+            if (selectedItems.length === 0) {
+                showToast('Please select at least one item to checkout', 'error');
                 return;
             }
 
-            // In a real app, this would redirect to a checkout page
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            showToast(`Redirecting to checkout... Total: $${total.toFixed(2)}`, 'success');
-            
-            // Simulate redirect
+            const total = selectedItems.reduce((sum, item) => {
+                const product = products.find(p => p.id === item.id);
+                return sum + (product ? product.price * item.quantity : 0);
+            }, 0);
+
+            showToast(`Processing ${selectedItems.length} item(s)... Total: $${total.toFixed(2)}`, 'success');
+
             setTimeout(() => {
                 window.location.href = 'checkout.php';
             }, 1500);
@@ -609,27 +364,38 @@
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type}`;
-            toast.classList.add('show');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('.shpcrt-toast-icon-wrapper i');
+
+            const icons = {
+                success: 'check-circle',
+                error: 'x-circle',
+                warning: 'alert-triangle'
+            };
+
+            toastMessage.textContent = message;
+            toastIcon.setAttribute('data-lucide', icons[type] || icons.success);
+            toast.className = `shpcrt-toast-notify shpcrt-toast-${type}`;
+            toast.classList.add('shpcrt-toast-show');
+
+            // Re-initialize the icon
+            lucide.createIcons();
 
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.remove('shpcrt-toast-show');
             }, 3000);
         }
 
         // Initialize cart on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Simulate loading delay for better UX
-            setTimeout(() => {
-                updateCart();
-            }, 500);
-        });
+            // Initialize Lucide icons
+            lucide.createIcons();
 
-        // Handle browser back/forward navigation
-        window.addEventListener('popstate', function() {
+            // Load from localStorage and render
+            loadCartFromLocalStorage();
             updateCart();
         });
     </script>
+    <?php include '../includes/footer.php'; ?>
 </body>
 </html>
