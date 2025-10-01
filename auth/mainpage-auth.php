@@ -10,4 +10,8 @@ if (isset($_SESSION['user_id'])) {
 $profileImage = !empty($user['profile_image'])
     ? "../assets/profile-pics/" . htmlspecialchars($user['profile_image'])
     : "../assets/images/default.png";
+
+    if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
  ?>

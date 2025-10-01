@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/database.php';
-require_once __DIR__ . '/../auth/auth.php';
+include('auth.php');
 
 $pdo = connect();
 $user_id = $user['user_id'];
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$cart_id, $user_id]);
         }
 
-        header("Location: order-history-test.php");
+        header("Location: ../pages/order-history-test.php");
         exit;
 
     } catch (PDOException $e) {

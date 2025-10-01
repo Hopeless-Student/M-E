@@ -11,7 +11,7 @@
         <a href="index.php">Home</a>
         <a href="products.php">Products</a>
         <a href="about.php">About Us</a>
-        <a href="../test-files/order-history-test.php" class="mobile-only mobile-nav-cart">Cart</a>
+        <a href="order-history-test.php" class="mobile-only mobile-nav-cart">Cart</a>
         <?php if (isset($_SESSION['user_id'])): ?>
         <div class="user-menu mobile-user-menu">
             <a href="../user/profile.php" class="user-avatar">
@@ -31,7 +31,7 @@
     <div class="header-actions">
       <?php if (isset($_SESSION['user_id'])): ?>
         <div class="cart">
-          <a href="../test-files/order-history-test.php">
+          <a href="order-history-test.php">
             <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
           </a>
           <?php else: ?>
