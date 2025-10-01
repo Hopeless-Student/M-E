@@ -188,17 +188,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cart badge demo
   if (cart) {
-    let cartCount = 0;
+    let cartCount = parseInt(cart.getAttribute("data-count")) || 0;
+
     const updateCartBadge = () => {
       cart.setAttribute("data-count", cartCount);
     };
     updateCartBadge();
 
-    document.querySelectorAll(".cart-btn a").forEach((btn) => {
+    document.querySelectorAll(".cart-btn, .cart-btn a, .cart-btn button").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        cartCount++;
-        updateCartBadge();
+
+        if (btn.tagName === "A") {
+          e.preventDefault();
+          cartCount++;
+          updateCartBadge();
+        }
+
       });
     });
   }
