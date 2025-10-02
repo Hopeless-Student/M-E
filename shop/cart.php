@@ -220,7 +220,7 @@
                         <i data-lucide="shopping-cart" class="shpcrt-empty-icon-large"></i>
                         <h3>Your cart is empty</h3>
                         <p>Add some amazing products to get started!</p>
-                        <a href="products.php" class="shpcrt-btn-base shpcrt-btn-primary-style">
+                        <a href="../pages/products.php" class="shpcrt-btn-base shpcrt-btn-primary-style">
                             <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i>
                             Browse Products
                         </a>
