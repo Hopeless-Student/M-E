@@ -1,7 +1,7 @@
 <?php
   function connect(){
     $db_server = "localhost";
-    $db_name = "m_e";
+    $db_name = "m&e";
     $db_user = "root";
     $db_pass = "";
 

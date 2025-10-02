@@ -188,17 +188,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cart badge demo
   if (cart) {
-    let cartCount = 0;
+    let cartCount = parseInt(cart.getAttribute("data-count")) || 0;
+
     const updateCartBadge = () => {
       cart.setAttribute("data-count", cartCount);
     };
     updateCartBadge();
 
-    document.querySelectorAll(".cart-btn a").forEach((btn) => {
+    document.querySelectorAll(".cart-btn, .cart-btn a, .cart-btn button").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        cartCount++;
-        updateCartBadge();
+
+        if (btn.tagName === "A") {
+          e.preventDefault();
+          cartCount++;
+          updateCartBadge();
+        }
+
       });
     });
   }
@@ -251,22 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
       termsModal.style.display = "none";
     }
   });
-  // No need PHP ang backend
-  // if (loginForm) {
-  //   loginForm.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-  //     const username = loginForm.username?.value.trim() || "";
-  //     const password = loginForm.password?.value.trim() || "";
-  //
-  //     if (username && password) {
-  //       alert(`Logging in as ${username}`);
-  //       loginModal.style.display = "none";
-  //       loginForm.reset();
-  //     } else {
-  //       alert("Please fill out all fields.");
-  //     }
-  //   });
-  // }
 
   // Signup modal logic
   if (openSignupModalLink && signupModal) {
@@ -291,44 +280,29 @@ document.addEventListener("DOMContentLoaded", () => {
       loginModal.style.display = "block";
     });
   }
+  const loginError = document.querySelector("#loginModal .error-message");
+  if (loginError) {
+    loginModal.style.display = "block";
+  }
+  const togglePassword = document.getElementById("togglePassword");
+  const loginPassword = document.getElementById("loginpassword");
 
+  if (togglePassword && loginPassword) {
+  togglePassword.addEventListener("click", () => {
+    const isPassword = loginPassword.type === "password";
+    loginPassword.type = isPassword ? "text" : "password";
+
+    togglePassword.src = isPassword
+      ? "../assets/svg/eye.svg"
+      : "../assets/svg/eye-slash.svg";
+  });
+}
   if (termsCheckbox && verifyEmailBtn) {
     verifyEmailBtn.disabled = !termsCheckbox.checked;
     termsCheckbox.addEventListener("change", () => {
       verifyEmailBtn.disabled = !termsCheckbox.checked;
     });
   }
-
-  // if (signupForm) {
-  //   signupForm.addEventListener("submit", (e) => {
-  //     const firstName = firstNameInput?.value.trim() || "";
-  //     const lastName = lastNameInput?.value.trim() || "";
-  //     const email = signupEmailInput?.value.trim() || "";
-  //     const password = signupPasswordInput?.value.trim() || "";
-  //     const confirmPassword = signupConfirmPasswordInput?.value.trim() || "";
-  //     const agreed = termsCheckbox?.checked || false;
-  //
-  //     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-  //       alert("Please fill out all fields.");
-  //       return;
-  //     }
-  //
-  //     if (password !== confirmPassword) {
-  //       alert("Passwords do not match.");
-  //       return;
-  //     }
-  //
-  //     if (!agreed) {
-  //       alert("You must agree to the Terms and Conditions.");
-  //       return;
-  //     }
-  //
-  //     alert(`Verification email sent to ${email}`);
-  //     signupForm.reset();
-  //     verifyEmailBtn.disabled = true;
-  //     signupModal.style.display = "none";
-  //   });
-  // }
 
   // Mobile login link inside hamburger
   const mobileLoginLink = document.getElementById("mobileLoginLink");
@@ -401,39 +375,6 @@ const alerts = document.querySelectorAll(".alert-message");
       alert.remove();
     });
   });
-
-// Handle form submission
-// if (customRequestForm) {
-//   customRequestForm.addEventListener("submit", (e) => {
-//     // e.preventDefault();
-//     //
-//     // const requestType = document.getElementById("requestType").value;
-//     // const subject = document.getElementById("requestSubject").value.trim();
-//     // const message = requestMessage.value.trim();
-//     //
-//     // if (!requestType || !subject || !message) {
-//     //   alert("Please fill out all required fields.");
-//     //   return;
-//     // }
-//     //
-//     // if (message.length < 10) {
-//     //   alert("Please provide a more detailed message (at least 10 characters).");
-//     //   return;
-//     // }
-//     //
-//     // // Submit the form (this will go to your PHP handler)
-//     // // For now, we'll show a confirmation
-//     // alert(`Request submitted successfully!\n\nType: ${requestType}\nSubject: ${subject}\n\nWe'll get back to you soon!`);
-//
-//     // Uncomment this line to actually submit the form:
-//     // customRequestForm.submit();
-//
-//     // Reset form and close modal
-//     // customRequestForm.reset();
-//     // charCount.textContent = "0";
-//     // customRequestModal.style.display = "none";
-//   });
-// }
 
 // Close modals when clicking outside
 window.addEventListener("click", (event) => {

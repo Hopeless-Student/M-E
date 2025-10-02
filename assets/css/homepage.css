@@ -7,18 +7,7 @@
 body {
     background-color: #E8E8E8;
 }
-/* .avatar{
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  vertical-align: middle;
-  margin-top: -2px;
-  margin-right: 8px;
-  display: block;
-} */
+
 .avatar:hover{
   background-color: rgb(166, 186, 255);
 }
@@ -252,10 +241,41 @@ nav .mobile-user-menu {
         top: -100px;
     }
 }
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+.eye-icon {
+  position: absolute;
+  top: 0%;
+  right: -30%;
+  transform: translateY(-55%);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
 @media (max-width: 768px){
   header nav.active ~ .alert-message {
   z-index: 998;
   }
+
+  .products .cart-btn {
+        right: 10px;
+        bottom: 15px;
+        height: 38px;
+        width: 38px;
+    }
+
+    .products .cart-btn img {
+        height: 24px;
+        margin: 0;
+    }
 
 }
 @media (max-width: 768px) {
@@ -668,26 +688,35 @@ section {
 }
 
 .products .cart-btn {
-    position: absolute;
-    right: 15px;
-    bottom: 18px;
-    background-color: #ffffff;
-    border-radius: 50%;
-    height: 45px;
-    width: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
+  position: absolute;
+  right: 15px;
+  bottom: 18px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  height: 45px;
+  width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 400ms;
 }
 
-.products .cart-btn a {
+.products .cart-btn a,
+.products .cart-btn button {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
     border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }
 
 .products .cart-btn img {
@@ -695,6 +724,7 @@ section {
     height: 27px;
     margin-top: 5px;
     object-fit: contain;
+    pointer-events: none;
 }
 
 .products .cart-btn:hover {

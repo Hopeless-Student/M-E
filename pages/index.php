@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../auth/mainpage-auth.php';
 
   try {
-    $featured_products = $pdo->query("SELECT product_id, product_name, price FROM products WHERE is_featured = 1")->fetchAll(PDO::FETCH_ASSOC);
+    $featured_products = $pdo->query("SELECT product_id, product_name, price, product_image FROM products WHERE is_featured = 1")->fetchAll(PDO::FETCH_ASSOC);
     // var_dump($featured_products);
   } catch (PDOException $e) {
     echo "Database Error: " . $e->getMessage();
@@ -73,7 +73,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                   <?php foreach ($featured_products as $products): ?>
                       <div class="product-card">
                           <a class="card-link" href="#">
-                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/scotch-tape-roll.png"/>
+                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/products/<?= htmlspecialchars($products['product_image']) ?>"/>
 
                               <div class="product-info">
                                   <h3><?= htmlspecialchars($products['product_name']); ?></h3>
@@ -312,9 +312,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
         <?php include '../includes/footer.php';?>
 
-        <!-- <?php include('login-modal.php'); ?> -->
-
-
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn" id="closeLoginModal">&times;</span>
@@ -325,11 +322,16 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                 <form id="loginForm" action="../auth/login_handler.php" method="post">
                     <input type="text" placeholder="Username or Email" name="login_id" id="username" required/>
-
-                    <input type="password" placeholder="Password" id="loginpassword" name="password" required/>
-
-                    <button type="submit">Log In</button>
-
+                    <!-- <input type="password" placeholder="Password" id="loginpassword" name="password" required/> -->
+                    <div class="password-wrapper" style="position: relative;">
+                      <input type="password" placeholder="Password" id="loginpassword" name="password"
+                             style="padding-right: 40px;" required />
+                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye.svg" alt="Toggle Password" />
+                    </div>
+                                        <button type="submit">Log In</button>
+                    <?php if (isset($_SESSION['loginFailed'])): ?>
+                      <p class="error-message" style="color:red; margin-top:10px; font-size:0.9rem; text-align:center"> <?php echo $_SESSION['loginFailed']; unset($_SESSION['loginFailed']);?> </p>
+                    <?php endif; ?>
                     <p class="modal-switch-text">
                         Don't have an account?
                         <a href="#" id="openSignupModal">Create Your Account here</a>
