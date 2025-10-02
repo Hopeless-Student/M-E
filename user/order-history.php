@@ -202,8 +202,6 @@ $pdo = connect();
       </div>
 
 
-
-      <!-- Example Order Card -->
       <?php if (!empty($order_history)): ?>
 
       <?php foreach ($order_history as $orders): ?>

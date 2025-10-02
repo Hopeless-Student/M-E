@@ -207,9 +207,9 @@
     </div>
 
     <nav>
-        <a href="index.php">Home</a>
-        <a href="products.php">Products</a>
-        <a href="about.php">About Us</a>
+        <a href="../pages/index.php">Home</a>
+        <a href="../pages/products.php">Products</a>
+        <a href="../pages/about.php">About Us</a>
         <a href="order-history-test.php" class="mobile-only mobile-nav-cart">Cart</a>
         <?php if (isset($_SESSION['user_id'])): ?>
         <div class="user-menu mobile-user-menu">

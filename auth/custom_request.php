@@ -20,6 +20,9 @@ require_once __DIR__ .'/../auth/mainpage-auth.php';
     if (strlen($message) < 10 || strlen($message) > 1000) {
         $errors[] = "Message must be between 10–1000 characters";
     }
+    if(empty($_SESSION['user_id']) && $user_id == null){
+      $errors[] = "You must login first before sending a request!";
+    }
 
     if (!empty($errors)) {
     $_SESSION['request_error'] = implode(', ', $errors);
