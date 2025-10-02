@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../auth/mainpage-auth.php';
 
   try {
-    $featured_products = $pdo->query("SELECT product_id, product_name, price FROM products WHERE is_featured = 1")->fetchAll(PDO::FETCH_ASSOC);
+    $featured_products = $pdo->query("SELECT product_id, product_name, price, product_image FROM products WHERE is_featured = 1")->fetchAll(PDO::FETCH_ASSOC);
     // var_dump($featured_products);
   } catch (PDOException $e) {
     echo "Database Error: " . $e->getMessage();
@@ -73,7 +73,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                   <?php foreach ($featured_products as $products): ?>
                       <div class="product-card">
                           <a class="card-link" href="#">
-                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/scotch-tape-roll.png"/>
+                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/products/<?= htmlspecialchars($products['product_image']) ?>"/>
 
                               <div class="product-info">
                                   <h3><?= htmlspecialchars($products['product_name']); ?></h3>
