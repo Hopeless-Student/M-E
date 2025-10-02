@@ -227,7 +227,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <h2>About Us</h2>
                     <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
 
-                    <a class="about-btn" href="#">Read more About Us</a>
+                    <a class="about-btn" href="about.php">Read more About Us</a>
                 </div>
             </div>
         </section>
