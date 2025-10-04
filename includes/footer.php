@@ -143,18 +143,18 @@ footer {
                 <div class="footer-column">
                     <h4>Navigation</h4>
                     <ul>
-                        <li><a href="/pages/products.php#school">School</a></li>
-                        <li><a href="/pages/products.php#office">Office</a></li>
-                        <li><a href="/pages/products.php#sanitary">Sanitary</a></li>
+                        <li><a href="../pages/products.php">School</a></li>
+                        <li><a href="../pages/products.php">Office</a></li>
+                        <li><a href="../pages/products.php">Sanitary</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
                     <h4>Customer Support</h4>
                     <ul>
-                        <li><a href="/pages/faq.php">FAQs</a></li>
-                        <li><a href="#">Shipping</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="../pages/index.php">FAQs</a></li>
+                        <li><a href="../pages/index.php">Shipping</a></li>
+                        <li><a href="../pages/about.php">Contact Us</a></li>
                     </ul>
                 </div>
 
@@ -163,8 +163,8 @@ footer {
                     <ul>
                         <li><a href="about.php">About Us</a></li>
                         <li><a href="#">Our Store</a></li>
-                        <li><a href="#">Bulk Orders</a></li>
-                        <li><a href="#">Return & Refund Policy</a></li>
+                        <li><a href="../pages/products.php">Bulk Orders</a></li>
+                        <li><a href="../pages/terms-of-service.php">Return & Refund Policy</a></li>
                     </ul>
                 </div>
             </div>

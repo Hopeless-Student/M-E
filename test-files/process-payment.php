@@ -10,7 +10,8 @@ require_once __DIR__ .'/paymongo.php';
     $user_id = $user['user_id'];
     $payment_method = $_POST['payment_method'];
     $special_instructions = $_POST['instructions'];
-    $orderNumber = 'ORD-' . date("YmdHis"). '-' .  uniqid();
+    $lastId = $pdo->lastInsertId();
+    $orderNumber = 'ORD-' . date("ymd"). '-' .substr(uniqid(), -3);
     try {
       $pdo->beginTransaction();
       // galing sa cart --> transfer kay order table: state na binigay na kay cashier yung item

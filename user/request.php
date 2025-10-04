@@ -1,36 +1,196 @@
 <?php
 require_once __DIR__ . '/../includes/database.php';
-require_once __DIR__ . '/../auth/auth.php';
 include('../includes/user-sidebar.php');
-$user_id = $_SESSION['user_id'];
-  $stmt = $pdo->prepare("SELECT * FROM customer_request WHERE user_id =:user_id");
-  // var_dump($stmt);
-  $stmt->execute([':user_id'=>$user_id]);
-  $request = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  try {
+    $type = isset($_GET['type']) ? trim($_GET['type']) : null;
+    $status = isset($_GET['status']) ? trim($_GET['status']) : null;
+
+    $user_id = $_SESSION['user_id'];
+    $sql = "SELECT request_id, request_type, subject, message, status, created_at FROM customer_request WHERE user_id = :user_id";
+    $requestFilter = [':user_id'=>$user_id];
+
+    if($type){
+      $sql .= " AND request_type = :type"; $requestFilter[':type'] = $type;
+    }
+    if($status){
+      $sql .= " AND status = :status"; $requestFilter[':status'] = $status;
+    }
+    $stmtRequest = $pdo->prepare($sql);
+    $stmtRequest->execute($requestFilter);
+    $requests = $stmtRequest->fetchAll(PDO::FETCH_ASSOC);
+
+    $currentType = $type ? ucfirst(str_replace("_", " ", $type)) : "All Types";
+    $currentStatus = $status ? ucfirst(str_replace("-", " ", $status)) : "All Status";
+
+
+  } catch (PDOException $e) {
+    echo "Database Error: " . $e->getMessage();
+  }
+
  ?>
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Custom Request</title>
-    <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/user-sidebar.css">
-  </head>
-  <body>
-    <div class="container">
-      <div class="text-center">
-        <p>Coming Soon</p>
-        <h1>Your Custom Request</h1>
-        <div class="container-md" style="background:lightblue;">
-          <?php foreach ($request as $customer_request): ?>
-            <p>Request type: <?= htmlspecialchars($customer_request['request_type']); ?></p>
-            <p>Subject     : <?= htmlspecialchars($customer_request['subject']); ?></p>
-            <p>Message     : <?= htmlspecialchars($customer_request['message']); ?></p>
-            <p>Status      : <?= htmlspecialchars($customer_request['status']); ?></p> <br>
-            <!-- <p>Admin Response: <?= htmlspecialchars($customer_request['admin_response']); ?></p> -->
-          <?php endforeach; ?>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>
+ <!DOCTYPE html>
+ <html lang="en" dir="ltr">
+   <head>
+     <meta charset="utf-8">
+     <title>Request</title>
+     <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="../assets/css/user-sidebar.css">
+     <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .request-list {
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid #dee2e6;
+    }
+    .request-item {
+      cursor: pointer;
+      padding: 12px;
+      border-bottom: 1px solid #e9ecef;
+      transition: background-color 0.2s;
+    }
+    .request-item:hover {
+      background-color: #E7E7E7;
+      color: #1e40af;
+    }
+    .active-request {
+      background-color: #E7E7E7 !important;
+      color: #1e40af;
+    }
+    .request-detail {
+      padding: 20px;
+    }
+
+  </style>
+   </head>
+   <body>
+     <div class="main-content">
+
+       <div class="container-fluid">
+         <div class="row">
+           <div class="col-12 col-md-4 col-lg-3 request-list bg-white">
+             <h5 class="p-3 border-bottom text-center fw-bold" style="color: #1e40af;">My Requests</h5>
+
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                  <div class="dropdown">
+                    <a class="btn btn-primary dropdown-toggle" id="typeButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <?= htmlspecialchars($currentType) ?>
+                    </a>
+                    <ul class="dropdown-menu dropend">
+                      <li><a class="dropdown-item" href="request.php?status=<?= urlencode($status ?? '') ?>">All</a></li>
+                      <li><a class="dropdown-item" href="?type=inquiry&status=<?= urlencode($status ?? '') ?>">Inquiry</a></li>
+                      <li><a class="dropdown-item" href="?type=complaint&status=<?= urlencode($status ?? '') ?>">Complaint</a></li>
+                      <li><a class="dropdown-item" href="?type=custom_order&status=<?= urlencode($status ?? '') ?>">Custom Order</a></li>
+                      <li><a class="dropdown-item" href="?type=other&status=<?= urlencode($status ?? '') ?>">Other</a></li>
+                    </ul>
+                  </div>
+
+                  <div class="dropdown">
+                    <a class="btn btn-primary dropdown-toggle" id="statusButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <?= htmlspecialchars($currentStatus) ?>
+                    </a>
+                    <ul class="dropdown-menu dropend">
+                      <li><a class="dropdown-item" href="request.php?type=<?= urlencode($type ?? '') ?>">All</a></li>
+                      <li><a class="dropdown-item" href="?status=pending&type=<?= urlencode($type ?? '') ?>">Pending</a></li>
+                      <li><a class="dropdown-item" href="?status=in-progress&type=<?= urlencode($type ?? '') ?>">In-progress</a></li>
+                      <li><a class="dropdown-item" href="?status=resolved&type=<?= urlencode($type ?? '') ?>">Resolved</a></li>
+                      <li><a class="dropdown-item" href="?status=closed&type=<?= urlencode($type ?? '') ?>">Closed</a></li>
+                    </ul>
+
+                  </div>
+
+                </div>
+
+              <?php foreach ($requests as $index => $request): ?>
+                <div class="request-item <?= $index === 0 ? 'first-request' : '' ?>"
+                     data-title="<?= htmlspecialchars($request['subject']); ?>"
+                     data-message="<?= htmlspecialchars($request['message']); ?>"
+                     data-type="<?= htmlspecialchars($request['request_type']); ?>"
+                     data-status="<?= htmlspecialchars($request['status']); ?>"
+                     data-date="<?= date("M d, Y h:i A", strtotime($request['created_at'])) ?>"
+                     onclick="showRequestFromElement(this)">
+                  <strong class="subject"><?= htmlspecialchars($request['subject']); ?></strong>
+                  <div class="text-muted small message">
+                    <?= htmlspecialchars(mb_strimwidth($request['message'], 0, 50, '...')); ?>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+
+              <?php if (empty($requests)): ?>
+                <div class="text-center text-muted p-3">No requests found.</div>
+              <?php endif; ?>
+           </div>
+
+           <div class="col-12 col-md-8 col-lg-9 request-detail bg-light p-4">
+              <h4 id="requestTitle" style="color: #1e40af;"class="mb-3">Select a request</h4>
+
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <span id="requestType" class="badge bg-secondary text-capitalize">Type</span>
+                    <span id="requestStatus" class="badge bg-warning text-dark text-capitalize">Pending</span>
+                  </div>
+
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <?php if (empty($requests)): ?>
+                  <div class="text-center text-muted p-3">No requests found.</div>
+                <?php elseif (!empty($request)): ?>
+                  <h6 class="text-muted mb-2">Message</h6>
+                  <p id="requestContent" class="mb-3"></p>
+                  <h6 class="text-muted mb-2">Date Submitted</h6>
+                  <p id="requestDate" class="mb-0">—</p>
+                <?php endif; ?>
+                </div>
+              </div>
+            </div>
+
+
+         </div>
+       </div>
+
+     </div>
+
+         <script>
+         function showRequestFromElement(element) {
+            document.getElementById("requestTitle").innerText = element.dataset.title;
+            document.getElementById("requestContent").innerText = element.dataset.message;
+            document.getElementById("requestType").innerText = element.dataset.type;
+            document.getElementById("requestStatus").innerText = element.dataset.status;
+            document.getElementById("requestDate").innerText = element.dataset.date;
+            const typeButton = document.getElementById('typeButton');
+            const statusButton = document.getElementById('statusButton');
+
+            let items = document.querySelectorAll(".request-item");
+            items.forEach(el => el.classList.remove("active-request"));
+            element.classList.add("active-request");
+
+            const status = element.dataset.status.toLowerCase();
+            const statusBadge = document.getElementById("requestStatus");
+            statusBadge.className = "badge text-capitalize";
+
+            if (status === "pending") statusBadge.classList.add("bg-warning", "text-dark");
+            else if (status === "in-progress") statusBadge.classList.add("bg-info", "text-dark");
+            else if (status === "resolved") statusBadge.classList.add("bg-success");
+            else if (status === "closed") statusBadge.classList.add("bg-secondary");
+
+            const type = element.dataset.type.toLowerCase();
+            const typeBadge = document.getElementById("requestType");
+            typeBadge.className = "badge text-capitalize";
+
+            if (type === "inquiry") typeBadge.classList.add("bg-primary");
+            else if (type === "complaint") typeBadge.classList.add("bg-danger");
+            else if (type === "custom_order") typeBadge.classList.add("bg-success");
+            else if (type === "other") typeBadge.classList.add("bg-secondary");
+          }
+          window.addEventListener("DOMContentLoaded", function () {
+            const firstRequest = document.querySelector(".request-item.first-request");
+            if (firstRequest) {
+              showRequestFromElement(firstRequest);
+            }
+          });
+
+         </script>
+        <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+   </body>
+ </html>
