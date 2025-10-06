@@ -4,8 +4,14 @@ function showRequestFromElement(element) {
    document.getElementById("requestType").innerText = element.dataset.type;
    document.getElementById("requestStatus").innerText = element.dataset.status;
    document.getElementById("requestDate").innerText = element.dataset.date;
-   const typeButton = document.getElementById('typeButton');
-   const statusButton = document.getElementById('statusButton');
+
+   // document.getElementById("adminReply").innerText = element.dataset.admin_response;
+   const adminReply = document.getElementById("adminReply");
+   if(element.dataset.admin_response.trim()){
+     adminReply.innerText = element.dataset.admin_response;
+   }else {
+     adminReply.innerText = "No admin reply yet.";
+   }
 
    let items = document.querySelectorAll(".request-item");
    items.forEach(el => el.classList.remove("active-request"));

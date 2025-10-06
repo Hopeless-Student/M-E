@@ -7,7 +7,7 @@ include('../includes/user-sidebar.php');
     $status = isset($_GET['status']) ? trim($_GET['status']) : null;
 
     $user_id = $_SESSION['user_id'];
-    $sql = "SELECT request_id, request_type, subject, message, status, created_at FROM customer_request WHERE user_id = :user_id";
+    $sql = "SELECT request_id, request_type, subject, message, status, created_at, admin_response FROM customer_request WHERE user_id = :user_id";
     $requestFilter = [':user_id'=>$user_id];
 
     if($type){
@@ -82,6 +82,7 @@ include('../includes/user-sidebar.php');
                      data-message="<?= htmlspecialchars($request['message']); ?>"
                      data-type="<?= htmlspecialchars($request['request_type']); ?>"
                      data-status="<?= htmlspecialchars($request['status']); ?>"
+                     data-admin_response="<?= htmlspecialchars($request['admin_response']); ?>"
                      data-date="<?= date("M d, Y h:i A", strtotime($request['created_at'])) ?>"
                      onclick="showRequestFromElement(this)">
                   <strong class="subject"><?= htmlspecialchars($request['subject']); ?></strong>
@@ -104,7 +105,7 @@ include('../includes/user-sidebar.php');
                     <span id="requestStatus" class="badge bg-warning text-dark text-capitalize">Pending</span>
                   </div>
 
-              <div class="card shadow-sm">
+              <div class="card">
                 <div class="card-body">
                   <?php if (empty($requests)): ?>
                   <div class="text-center text-muted p-3">No requests found.</div>
@@ -113,7 +114,18 @@ include('../includes/user-sidebar.php');
                   <p id="requestContent" class="mb-3"></p>
                   <h6 class="text-muted mb-2">Date Submitted</h6>
                   <p id="requestDate" class="mb-0">—</p>
+                  <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button id="editBtn" class="btn btn-outline-primary btn-sm"> <img src="../assets/svg/edit.svg" alt="edit button"> </button>
+                    <button id="deleteBtn" class="btn btn-outline-danger btn-sm"> <img src="../assets/svg/delete.svg" alt="delete button"> </button>
+                  </div>
                 <?php endif; ?>
+                </div>
+              </div>
+              <div class="card mt-3">
+                <div class="card-body">
+                  <h6 class="text-muted mb-2">Admin’s Reply</h6>
+                    <p class="mb-0 text-body" id="adminReply">No admin reply yet.</p>
+
                 </div>
               </div>
             </div>

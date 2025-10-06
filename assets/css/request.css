@@ -23,3 +23,10 @@ body {
 .request-detail {
   padding: 20px;
 }
+.card-body{
+  border-radius: 8px;
+  border-left: 4px solid rgb(30, 64, 175);
+}
+.card{
+  border: none;
+}
