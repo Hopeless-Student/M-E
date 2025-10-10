@@ -326,7 +326,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <div class="password-wrapper" style="position: relative;">
                       <input type="password" placeholder="Password" id="loginpassword" name="password"
                              style="padding-right: 40px;" required />
-                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye.svg" alt="Toggle Password" />
+                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye-slash.svg" alt="Toggle Password" />
                     </div>
                                         <button type="submit">Log In</button>
                     <?php if (isset($_SESSION['loginFailed'])): ?>
