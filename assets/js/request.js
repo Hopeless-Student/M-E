@@ -179,8 +179,13 @@ deleteBtn.style.display = 'none';
   const cancelBtn = document.getElementById('cancelEditBtn');
 
   saveBtn.onclick = () => {
-    const newMessage = document.getElementById('editMessage').value.trim();
+    const newMessage = document.getElementById('editMessage');
 
+    editBtn.style.display = '';
+    deleteBtn.style.display = '';
+
+    content.classList.add('fade');
+    setTimeout(() => content.classList.remove('fade'), 200);
     fetch('../ajax/action-request.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -195,11 +200,6 @@ deleteBtn.style.display = 'none';
       if (data.success) {
         showNotif('Request updated successfully!', 'success');
         content.textContent = newMessage;
-        editBtn.style.display = '';
-        deleteBtn.style.display = '';
-
-        content.classList.add('fade');
-      setTimeout(() => content.classList.remove('fade'), 200);
         loadRequests(); // refresh after ng edit
       } else {
         showNotif('Error: ' + data.message, 'danger');
