@@ -77,7 +77,7 @@ window.addEventListener("DOMContentLoaded", function () {
         })
         .catch(err => {
           console.error("Fetch error:", err);
-          requestList.innerHTML = `<div class="text-center text-danger p-3">Error: ${err.message}</div>`;
+          requestList.innerHTML = `<div class="text-center text-danger p-3">Error: ${data.error}</div>`;
         });
     });
   });
@@ -146,4 +146,138 @@ window.addEventListener("DOMContentLoaded", function () {
     };
     return text.replace(/[&<>"']/g, m => map[m]);
   }
+  // pang edit delete naman
+  document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.action-btn'); // find button clicked
+  if (!btn) return;
+
+  const action = btn.dataset.action; // pag edit or delete
+  const form = btn.closest('form');
+  const requestId = form.querySelector('[name="request_id"]').value;
+
+  if (action === 'edit') {
+  const content = document.getElementById('requestContent');
+  const originalText = content.textContent.trim();
+
+  // Prevent duplicate edit boxes if already in edit mode
+  if (document.getElementById('editMessage')) return;
+
+  const editBtn = document.getElementById('editBtn');
+const deleteBtn = form.querySelector('[data-action="delete"]');
+editBtn.style.display = 'none';
+deleteBtn.style.display = 'none';
+
+  content.innerHTML = `
+    <textarea id="editMessage" class="form-control mb-2" rows="4">${originalText}</textarea>
+    <div class="d-flex justify-content-end gap-2">
+      <button id="saveEditBtn" class="btn btn-outline-primary btn-sm" type="button"><img src="../assets/svg/save.svg" alt="save button"> Save</button>
+      <button id="cancelEditBtn" class="btn btn-outline-danger btn-sm  btn-sm" type="button"><img src="../assets/svg/cancel.svg" alt="cancel button"> Cancel</button>
+    </div>
+  `;
+
+  const saveBtn = document.getElementById('saveEditBtn');
+  const cancelBtn = document.getElementById('cancelEditBtn');
+
+  saveBtn.onclick = () => {
+    const newMessage = document.getElementById('editMessage').value.trim();
+
+    fetch('../ajax/action-request.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        action: 'edit',
+        request_id: requestId,
+        message: newMessage
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showNotif('Request updated successfully!', 'success');
+        content.textContent = newMessage;
+        editBtn.style.display = '';
+        deleteBtn.style.display = '';
+
+        content.classList.add('fade');
+      setTimeout(() => content.classList.remove('fade'), 200);
+        loadRequests(); // refresh after ng edit
+      } else {
+        showNotif('Error: ' + data.message, 'danger');
+      }
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      showNotif('Error updating request.', 'danger');
+    });
+  };
+
+  cancelBtn.onclick = () => {
+    content.innerHTML = `<div class="mb-2">${originalText}</div>`;
+    editBtn.style.display = '';
+    deleteBtn.style.display = '';
+
+    content.classList.add('fade');
+  setTimeout(() => content.classList.remove('fade'), 200);
+  };
+
+  return; // stop here
+}
+
+
+  // delete logic
+  if (action === 'delete') {
+    fetch('../ajax/action-request.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        action: 'delete',
+        request_id: requestId
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showNotif('Request deleted successfully!', 'success');
+        loadRequests(); // reload the updated list
+      } else {
+        showNotif('Error: ' + data.message, 'danger');
+      }
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      showNotif('Error deleting request.', 'danger');
+    });
+  }
+});
+
+  // para s notif na bulok
+    function showNotif(message, type) {
+      const notifContainer = document.getElementById('notifContainer');
+      const alert = document.createElement('div');
+        alert.className = `alert alert-${type} shadow-sm fade show`;
+        alert.role = 'alert';
+      alert.textContent = message;
+      notifContainer.appendChild(alert);
+
+      setTimeout(() => {
+        alert.classList.remove('show');
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 300);
+      }, 3000);
+      }
+
+// pang reload
+    function loadRequests() {
+      fetch('../ajax/fetch-request.php')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          renderRequestList(data.requests);
+        } else {
+          console.error("Error:", data.error);
+        }
+      })
+      .catch(err => console.error("Fetch error:", err));
+    }
+
 });

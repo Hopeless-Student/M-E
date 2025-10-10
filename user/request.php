@@ -32,16 +32,15 @@
        <link rel="stylesheet" href="../assets/css/request.css">
      </head>
      <body>
+       <div id="notifContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>
        <div class="main-content">
-
          <div class="container-fluid">
            <div class="row">
              <div class="col-12 col-md-4 col-lg-3 request-list bg-white">
                <h5 class="p-3 border-bottom text-center fw-bold" style="color: #1e40af;">My Requests</h5>
 
-               <!-- FIXED DROPDOWN SECTION in request.php -->
                       <div class="d-flex justify-content-center gap-2 mb-3">
-                       <!-- TYPE FILTER DROPDOWN -->
+
                        <div class="dropdown">
                            <a class="btn btn-primary dropdown-toggle" id="typeButton" role="button"
                               data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,7 +55,7 @@
                            </ul>
                        </div>
 
-                       <!-- STATUS FILTER DROPDOWN -->
+
                        <div class="dropdown">
                            <a class="btn btn-primary dropdown-toggle" id="statusButton" role="button"
                               data-bs-toggle="dropdown" aria-expanded="false">
@@ -107,14 +106,21 @@
                   <div class="card-body">
                     <?php if (empty($requests)): ?>
                     <div class="text-center text-muted p-3">No requests found.</div>
-                  <?php elseif (!empty($request)): ?>
+                  <?php elseif (!empty($requests)): ?>
                     <h6 class="text-muted mb-2">Message</h6>
                     <p id="requestContent" class="mb-3"></p>
                     <h6 class="text-muted mb-2">Date Submitted</h6>
                     <p id="requestDate" class="mb-0">—</p>
                     <div class="d-flex justify-content-end gap-2 mt-3">
-                      <button id="editBtn" class="btn btn-outline-primary btn-sm"> <img src="../assets/svg/edit.svg" alt="edit button"> </button>
-                      <button id="deleteBtn" class="btn btn-outline-danger btn-sm"> <img src="../assets/svg/delete.svg" alt="delete button"> </button>
+                      <form id="requestActionForm">
+                        <input type="hidden" name="request_id" value="<?=$request['request_id'];?>">
+                        <button id="editBtn" class="btn btn-outline-primary btn-sm action-btn" type="button" data-action="edit">
+                          <img src="../assets/svg/edit.svg" alt="edit button"> Edit
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm action-btn" data-action="delete">
+                          <img src="../assets/svg/delete.svg" alt="delete button"> Delete
+                        </button>
+                      </form>
                     </div>
                   <?php endif; ?>
                   </div>
@@ -133,6 +139,25 @@
          </div>
 
        </div>
+       <!-- para sa delete modal -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete this request? This action cannot be undone.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
           <script src="../assets/js/request.js"></script>
           <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
      </body>
