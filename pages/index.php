@@ -159,7 +159,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                       <option value="inquiry">Inquiry</option>
                       <option value="complaint">Complaint</option>
                       <option value="custom_order">Custom Order</option>
-                      <option value="others">Others</option>
+                      <option value="other">Others</option>
                   </select>
 
                   <label for="requestSubject">Subject <span style="color:red;">*</span></label>

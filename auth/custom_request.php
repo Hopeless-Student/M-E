@@ -7,9 +7,9 @@ require_once __DIR__ .'/../auth/mainpage-auth.php';
     $subject = trim($_POST['subject'] ?? '');
     $message = trim($_POST['message'] ?? '');
     $user_id = $_SESSION['user_id'] ?? null;
-
+    var_dump($request_type);
     $errors = [];
-    if (empty($request_type) || !in_array($request_type, ['inquiry', 'complaint', 'custom_order', 'others'])) {
+    if (empty($request_type) || !in_array($request_type, ['inquiry', 'complaint', 'custom_order', 'other'])) {
         $errors[] = "Invalid request type";
     }
 
@@ -33,6 +33,7 @@ require_once __DIR__ .'/../auth/mainpage-auth.php';
 
           $sql = "INSERT INTO customer_request(user_id, request_type, subject, message, created_at)
                   VALUES(:user_id, :request_type, :subject, :message, NOW())";
+                  var_dump($sql);
           $stmt = $pdo->prepare($sql);
           $stmt->execute([
             ':user_id'=>$user_id,
@@ -41,9 +42,9 @@ require_once __DIR__ .'/../auth/mainpage-auth.php';
             ':message'=>$message,
           ]);
 
-          $_SESSION['request_success'] = "Your request has been submitted successfully! We'll get back to you soon.";
-          header('Location: ../pages/index.php');
-          exit;
+          // $_SESSION['request_success'] = "Your request has been submitted successfully! We'll get back to you soon.";
+          // header('Location: ../pages/index.php');
+          // exit;
       } catch (PDOException $e) {
         $_SESSION['request_error'] = "Error submitting request. Please try again later.";
         echo "Database Error: " . $e->getMessage();
