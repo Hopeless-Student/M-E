@@ -159,7 +159,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                       <option value="inquiry">Inquiry</option>
                       <option value="complaint">Complaint</option>
                       <option value="custom_order">Custom Order</option>
-                      <option value="others">Others</option>
+                      <option value="other">Others</option>
                   </select>
 
                   <label for="requestSubject">Subject <span style="color:red;">*</span></label>
@@ -227,7 +227,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <h2>About Us</h2>
                     <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
 
-                    <a class="about-btn" href="#">Read more About Us</a>
+                    <a class="about-btn" href="about.php">Read more About Us</a>
                 </div>
             </div>
         </section>
@@ -326,7 +326,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <div class="password-wrapper" style="position: relative;">
                       <input type="password" placeholder="Password" id="loginpassword" name="password"
                              style="padding-right: 40px;" required />
-                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye.svg" alt="Toggle Password" />
+                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye-slash.svg" alt="Toggle Password" />
                     </div>
                                         <button type="submit">Log In</button>
                     <?php if (isset($_SESSION['loginFailed'])): ?>
