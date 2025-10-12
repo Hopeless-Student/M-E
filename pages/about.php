@@ -5,6 +5,8 @@
         include '../includes/header.php';
     ?>
 
+    <link rel="stylesheet" href="../assets/css/about.css">
+
     <body>
         <?php include '../includes/navbar.php'; ?>
 
@@ -184,8 +186,10 @@
                 <h2 class="fw-bold mb-3">Ready to Order?</h2>
                 <p class="mb-4">Visit our shop or contact us for bulk orders and inquiries.<br>We're here to help you get the supplies you need, fast.</p>
 
-                <a href="products.php" class="btn btn-primary">Browse Products</a>
-                <a href="contact.php" class="btn btn-outline-primary">Contact Us</a>
+                <div class="cta">
+                    <a href="products.php" class="btn btn-primary">Browse Products</a>
+                    <a href="contact.php" class="btn btn-outline-primary">Contact Us</a>
+                </div>
             </div>
         </section>
 
