@@ -129,10 +129,73 @@
           include 'update-status.php';
     ?>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="delete-modal" id="deleteModal" onclick="closeDeleteModal(event)">
+    <div class="delete-modal-content" onclick="event.stopPropagation()">
+        <div class="delete-modal-header">
+            <div class="delete-icon-wrapper">
+                <i data-lucide="alert-triangle"></i>
+            </div>
+            <div class="delete-modal-title">
+                <h3>Delete Order</h3>
+                <p id="deleteModalSubtitle">This action cannot be undone</p>
+            </div>
+        </div>
+
+        <div class="delete-modal-body">
+            <!-- Warning section - Initially hidden -->
+            <div class="delete-warning" id="deleteWarning" style="display: none;">
+                <p>
+                    <i data-lucide="alert-circle"></i>
+                    <strong>Warning:</strong> You are about to permanently delete this order. This action is irreversible.
+                </p>
+            </div>
+
+            <div class="delete-order-info">
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Order ID:</span>
+                    <span class="delete-info-value" id="deleteOrderId">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Customer:</span>
+                    <span class="delete-info-value" id="deleteCustomerName">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Amount:</span>
+                    <span class="delete-info-value" id="deleteOrderAmount">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Status:</span>
+                    <span class="delete-info-value" id="deleteOrderStatus">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-modal-actions">
+            <button class="delete-btn-cancel" onclick="closeDeleteModal()">
+                <i data-lucide="x"></i>
+                Cancel
+            </button>
+            <!-- First delete button -->
+            <button class="delete-btn-confirm" id="firstDeleteBtn" onclick="showDeleteWarning()">
+                <i data-lucide="trash-2"></i>
+                Delete Order
+            </button>
+            <!-- Final confirm button - Initially hidden -->
+            <button class="delete-btn-confirm delete-btn-final" id="finalDeleteBtn" style="display: none;" onclick="confirmDelete()">
+                <i data-lucide="trash-2"></i>
+                Confirm Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+
     <script>
     lucide.createIcons();
 
     // Global variables for pagination and data
+
     let currentPage = 1;
     let totalPages = 1;
     let allOrders = [];
@@ -143,6 +206,12 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadOrdersData();
         updateStats();
+
+        // Add event listener to confirm delete button
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.onclick = confirmDelete;
+        }
     });
 
     function updateStats() {
@@ -241,13 +310,20 @@
                 <td><span class="status ${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
                 <td>
                     <div class="actions">
-                        <button class="action-btn secondary" onclick="openOrderModal('${order.id}')">View</button>
-                        <button class="action-btn primary" onclick="openUpdateModal('${order.id}')">Update</button>
-                        <button class="action-btn danger"  >Del</button>
+                    <button class="action-btn-icon secondary" onclick="openOrderModal('${order.id}')" title="View Order">
+                        <i data-lucide="eye"></i>
+                    </button>
+                    <button class="action-btn-icon primary" onclick="openUpdateModal('${order.id}')" title="Update Status">
+                        <i data-lucide="refresh-cw"></i>
+                    </button>
+                    <button class="action-btn-icon danger" onclick="openDeleteModal('${order.id}')" title="Delete Order">
+                        <i data-lucide="trash-2"></i>
+                    </button>
                     </div>
                 </td>
             </tr>
         `).join('');
+        lucide.createIcons();
     }
 
     function renderPagination() {
@@ -337,6 +413,11 @@
       if(updtbtn){
         updtbtn.onclick = () => openUpdateModal(orderId);
       }
+      const dltbtn = document.getElementById("deleteModal2");
+      if(dltbtn){
+        dltbtn.onclick = () => openDeleteModal(orderId);
+      }
+
 
         // Refresh Lucide icons for the modal
         setTimeout(() => {
@@ -567,11 +648,143 @@
         document.body.style.overflow = 'auto';
     }
 
+    // Delete Modal Functions
+    // Delete Modal Functions
+    let orderToDelete = null;
+    let deleteConfirmationStep = 1;
+
+    function openDeleteModal(orderId) {
+        const order = allOrders.find(o => o.id === orderId);
+        if (!order) {
+            showAlert('Order not found', 'error');
+            return;
+        }
+
+        orderToDelete = orderId;
+        deleteConfirmationStep = 1;
+
+        // Reset modal state
+        document.getElementById('deleteWarning').style.display = 'none';
+        document.getElementById('firstDeleteBtn').style.display = 'inline-flex';
+        document.getElementById('finalDeleteBtn').style.display = 'none';
+        document.getElementById('deleteModalSubtitle').textContent = 'This action cannot be undone';
+
+        // Populate delete modal with order data
+        document.getElementById('deleteOrderId').textContent = `#ORD-${order.id}`;
+        document.getElementById('deleteCustomerName').textContent = order.customer;
+        document.getElementById('deleteOrderAmount').textContent = `₱${parseInt(order.amount).toLocaleString()}`;
+        document.getElementById('deleteOrderStatus').textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+
+        // Show delete modal
+        document.getElementById('deleteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Refresh Lucide icons for the modal
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    }
+
+    function closeDeleteModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+
+        // Reset modal state
+        document.getElementById('deleteWarning').style.display = 'none';
+        document.getElementById('firstDeleteBtn').style.display = 'inline-flex';
+        document.getElementById('finalDeleteBtn').style.display = 'none';
+        document.getElementById('deleteModalSubtitle').textContent = 'This action cannot be undone';
+
+        document.getElementById('deleteModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        orderToDelete = null;
+        deleteConfirmationStep = 1;
+    }
+
+    function showDeleteWarning() {
+        // Show warning and change to final confirmation step
+        deleteConfirmationStep = 2;
+        document.getElementById('deleteWarning').style.display = 'block';
+        document.getElementById('firstDeleteBtn').style.display = 'none';
+        document.getElementById('finalDeleteBtn').style.display = 'inline-flex';
+        document.getElementById('deleteModalSubtitle').textContent = 'Are you absolutely sure?';
+
+        // Refresh Lucide icons
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    }
+
+    function confirmDelete() {
+        if (!orderToDelete || deleteConfirmationStep !== 2) return;
+
+        // Remove the order from the array
+        const index = allOrders.findIndex(o => o.id === orderToDelete);
+        if (index !== -1) {
+            allOrders.splice(index, 1);
+        }
+
+        // Update filtered orders and re-render
+        applyFilters();
+        updateStats();
+
+        // Show success message
+        showAlert('Order deleted successfully!', 'success');
+        const confirmBtn = document.getElementById('finalDeleteBtn');
+        if(confirmBtn){
+          orderModal.classList.remove('active');
+        }
+
+        // Close modal and reset
+        closeDeleteModal();
+
+    }
+
+    // Alert notification system
+    function showAlert(message, type = 'info') {
+        // Remove any existing alerts
+        const existingAlert = document.querySelector('.alert-notification');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        // Create alert element
+        const alert = document.createElement('div');
+        alert.className = `alert-notification alert-${type}`;
+
+        // Set icon based on type
+        let icon = 'info';
+        if (type === 'success') icon = 'check-circle';
+        if (type === 'error') icon = 'alert-circle';
+        if (type === 'warning') icon = 'alert-triangle';
+
+        alert.innerHTML = `
+            <div class="alert-content">
+                <i data-lucide="${icon}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(alert);
+
+        // Initialize Lucide icons for the alert
+        lucide.createIcons();
+
+        // Trigger animation
+        setTimeout(() => alert.classList.add('show'), 10);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
+        }, 3000);
+    }
 
     // Close modal with Escape key
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             closeModal();
+            closeDeleteModal();
+            closeUpdateModal();
         }
     });
     </script>

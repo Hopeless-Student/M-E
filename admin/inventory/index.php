@@ -27,20 +27,7 @@
                 </div>
             </div>
 
-            <div class="quick-actions">
-                <button class="quick-action-btn primary" onclick="openAdjustStockModalFromIndex()">
-                    <i data-lucide="plus"></i> Quick Stock Adjust
-                </button>
-                <button class="quick-action-btn" onclick="openStockMovementsModal()">
-                    <i data-lucide="activity"></i> View Movements
-                </button>
-                <button class="quick-action-btn" onclick="openBulkUpdateModal()">
-                    <i data-lucide="edit"></i> Bulk Update
-                </button>
-                <button class="quick-action-btn" onclick="generateReport()">
-                    <i data-lucide="download"></i> Generate Report
-                </button>
-            </div>
+
 
             <div class="stats-grid">
                 <div class="stat-card" onclick="filterByStatus('all')">
@@ -63,6 +50,20 @@
                     <div class="stat-value" id="totalValueStat">₱285K</div>
                     <div class="stat-subtitle">Current inventory</div>
                 </div>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action-btn primary" onclick="openAdjustStockModalFromIndex()">
+                    <i data-lucide="plus"></i> Quick Stock Adjust
+                </button>
+                <button class="quick-action-btn" onclick="openStockMovementsModal()">
+                    <i data-lucide="activity"></i> View Movements
+                </button>
+                <button class="quick-action-btn" onclick="openBulkUpdateModal()">
+                    <i data-lucide="edit"></i> Bulk Update
+                </button>
+                <button class="quick-action-btn" onclick="generateReport()">
+                    <i data-lucide="download"></i> Generate Report
+                </button>
             </div>
 
             <div class="charts-section">

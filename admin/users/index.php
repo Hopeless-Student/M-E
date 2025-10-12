@@ -398,13 +398,20 @@
                     <td><span class="status-badge ${customer.status}">${customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}</span></td>
                     <td>
                         <div class="actions">
-                            <button class="action-btn" onclick="openCustomerDetailsModal(${customer.id})">View</button>
-                            <button class="action-btn orders" onclick="openCustomerOrdersModal(${customer.id})">Orders</button>
-                            <button class="action-btn secondary" onclick="openCustomerEditModal(${customer.id})">Edit</button>
+                            <button class="action-btn-icon secondary" onclick="openCustomerDetailsModal(${customer.id})" title="View">
+                              <i data-lucide="eye"></i>
+                            </button>
+                            <button class="action-btn-icon orders" onclick="openCustomerOrdersModal(${customer.id})" title="Orders">
+                              <i data-lucide="package"></i>
+                            </button>
+                            <button class="action-btn-icon secondary" onclick="openCustomerEditModal(${customer.id})" title="Edit">
+                              <i data-lucide="user-pen"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
             `).join('');
+            lucide.createIcons();
         }
 
         function renderPagination() {
