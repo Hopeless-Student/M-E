@@ -642,6 +642,11 @@
             document.getElementById('customerDetailsModal').classList.remove('show');
             document.getElementById('customerOrdersModal').classList.remove('show');
 
+            const viewOrders = document.getElementById('UserOrder');
+            if(viewOrders){
+              viewOrders.onclick = () => openCustomerOrdersModal(customerId);
+            }
+
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
