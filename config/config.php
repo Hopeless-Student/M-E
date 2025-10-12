@@ -2,10 +2,11 @@
 $host = 'localhost';
 $user = 'root';
 $password = '';
-$dbname = 'me_interior_supplies';
+$dbname = 'm&e';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+
 try {
 
      $pdo = new PDO($dsn, $user, $password);

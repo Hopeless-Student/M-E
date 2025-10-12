@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2025 at 12:27 PM
+-- Generation Time: Oct 01, 2025 at 09:23 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,24 @@ SET time_zone = "+00:00";
 --
 -- Database: `m&e`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_user`
+--
+
+CREATE TABLE `admin_user` (
+  `admin_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `role` enum('admin','manager','staff') NOT NULL DEFAULT 'admin',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_active` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -90,6 +108,26 @@ INSERT INTO `cities` (`city_id`, `city_name`, `province_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `customer_request`
+--
+
+CREATE TABLE `customer_request` (
+  `request_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `request_type` enum('inquiry','complaint','custom_order','other') NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `status` enum('pending','in-progress','resolved','closed') DEFAULT 'pending',
+  `priority` enum('low','medium','high','urgent') DEFAULT 'medium',
+  `admin_response` text DEFAULT NULL,
+  `responded_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `responded_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `orders`
 --
 
@@ -102,6 +140,7 @@ CREATE TABLE `orders` (
   `final_amount` decimal(10,2) NOT NULL,
   `payment_method` enum('COD','Bank Transfer','GCash','Other') NOT NULL,
   `order_status` enum('Pending','Confirmed','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'Pending',
+  `payment_status` enum('Pending','Paid','Failed') NOT NULL DEFAULT 'Pending',
   `delivery_address` text NOT NULL,
   `contact_number` varchar(20) NOT NULL,
   `special_instructions` text DEFAULT NULL,
@@ -115,9 +154,9 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `user_id`, `order_number`, `total_amount`, `shipping_fee`, `final_amount`, `payment_method`, `order_status`, `delivery_address`, `contact_number`, `special_instructions`, `order_date`, `confirmed_at`, `delivered_at`, `admin_notes`) VALUES
-(1, 104, 'ORD-20250917094204', 2200.00, 75.00, 2275.00, 'COD', 'Pending', 'Caloocan High School 10th ave', '09164485649', 'None', '2025-09-17 07:42:04', NULL, NULL, 'Testing checkout order'),
-(2, 100, 'ORD-20250921143558', 68.00, 75.00, 143.00, 'COD', 'Pending', '759 lot 26 blk 4 Tupda Village', '09279754520', 'None', '2025-09-21 12:35:58', NULL, NULL, 'Testing checkout order');
+INSERT INTO `orders` (`order_id`, `user_id`, `order_number`, `total_amount`, `shipping_fee`, `final_amount`, `payment_method`, `order_status`, `payment_status`, `delivery_address`, `contact_number`, `special_instructions`, `order_date`, `confirmed_at`, `delivered_at`, `admin_notes`) VALUES
+(1, 100, 'ORD-20250927175655-68d8094757e14', 2005.00, 75.00, 2080.00, 'GCash', 'Confirmed', 'Paid', '759 lot 26 blk 4 Tupda Village', '+639279754520', 'Yehey testing order', '2025-09-27 15:56:55', NULL, NULL, 'Testing move cart to order'),
+(2, 100, 'ORD-20250928122018-68d90be2d7960', 2005.00, 75.00, 2080.00, 'COD', 'Pending', 'Pending', '759 lot 26 blk 4 Tupda Village', '+639279754520', 'Leave at the door', '2025-09-28 10:20:18', NULL, NULL, 'Testing move cart to order');
 
 -- --------------------------------------------------------
 
@@ -140,10 +179,12 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `product_name`, `product_price`, `quantity`) VALUES
-(1, 1, 6, 'Alcohol 70% Solution 500ml', 95.00, 20),
-(2, 1, 4, 'Notebook Spiral 100 Pages', 60.00, 5),
-(3, 2, 2, 'Ballpen Black', 12.00, 5),
-(4, 2, 9, 'Eraser White', 8.00, 1);
+(1, 1, 6, 'Alcohol 70% Solution 500ml', 95.00, 9),
+(2, 1, 5, 'Whiteboard Marker Blue', 35.00, 11),
+(3, 1, 3, 'Yellow Pad Paper', 45.00, 17),
+(4, 2, 6, 'Alcohol 70% Solution 500ml', 95.00, 9),
+(5, 2, 5, 'Whiteboard Marker Blue', 35.00, 11),
+(6, 2, 3, 'Yellow Pad Paper', 45.00, 17);
 
 -- --------------------------------------------------------
 
@@ -175,13 +216,13 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`product_id`, `category_id`, `product_name`, `product_code`, `description`, `price`, `stock_quantity`, `min_stock_level`, `product_image`, `is_featured`, `is_top_order`, `isActive`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Bond Paper A4 80gsm', 'BP-A480', 'High quality bond paper for school and office use', 250.00, 100, 20, 'bond_a4.jpg', 1, 1, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
 (2, 1, 'Ballpen Black', 'BP-BLK01', 'Smooth writing ballpen with black ink', 12.00, 200, 50, 'ballpen_black.jpg', 1, 0, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
-(3, 1, 'Yellow Pad Paper', 'YPP-01', 'Standard yellow pad paper, 80 sheets', 45.00, 150, 30, 'yellowpad.jpg', 0, 0, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
-(4, 2, 'Notebook Spiral 100 Pages', 'NB-SP100', 'Spiral notebook for note-taking', 60.00, 180, 40, 'notebook_spiral.jpg', 0, 1, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
-(5, 2, 'Whiteboard Marker Blue', 'WM-BLU', 'Erasable blue whiteboard marker', 35.00, 120, 25, 'marker_blue.jpg', 0, 0, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
+(3, 1, 'Yellow Pad Paper', 'YPP-01', 'Standard yellow pad paper, 80 sheets', 45.00, 150, 30, 'yellowpad.jpg', 1, 0, 1, '2025-09-12 23:58:03', '2025-09-30 02:53:53'),
+(4, 2, 'Notebook Spiral 100 Pages', 'NB-SP100', 'Spiral notebook for note-taking', 60.00, 180, 40, 'notebook_spiral.jpg', 1, 1, 1, '2025-09-12 23:58:03', '2025-09-30 16:11:49'),
+(5, 2, 'Whiteboard Marker Blue', 'WM-BLU', 'Erasable blue whiteboard marker', 35.00, 120, 25, 'marker_blue.jpg', 1, 0, 1, '2025-09-12 23:58:03', '2025-09-30 16:11:56'),
 (6, 3, 'Alcohol 70% Solution 500ml', 'ALC-500', 'Sanitary alcohol for disinfection', 95.00, 90, 15, 'alcohol500.jpg', 1, 1, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
 (7, 3, 'Face Mask Box (50pcs)', 'FM-50', 'Disposable face masks for sanitary use', 120.00, 60, 10, 'facemask.jpg', 1, 0, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
-(8, 1, 'Pencil No.2', 'PN-02', 'Standard HB pencil for writing and drawing', 10.00, 250, 60, 'pencil.jpg', 0, 0, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
-(9, 2, 'Eraser White', 'ER-WHT', 'High quality eraser for clean erasing', 8.00, 300, 70, 'eraser.jpg', 0, 0, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03'),
+(8, 1, 'Pencil No.2', 'PN-02', 'Standard HB pencil for writing and drawing', 10.00, 250, 60, 'pencil.jpg', 1, 0, 1, '2025-09-12 23:58:03', '2025-09-30 16:12:04'),
+(9, 2, 'Eraser White', 'ER-WHT', 'High quality eraser for clean erasing', 8.00, 300, 70, 'eraser.jpg', 1, 0, 1, '2025-09-12 23:58:03', '2025-09-30 16:09:00'),
 (10, 3, 'Hand Sanitizer 250ml', 'HS-250', 'Instant hand sanitizer gel', 75.00, 85, 15, 'handsanitizer.jpg', 1, 1, 1, '2025-09-12 23:58:03', '2025-09-12 15:58:03');
 
 -- --------------------------------------------------------
@@ -215,16 +256,6 @@ CREATE TABLE `shopping_cart` (
   `quantity` int(10) UNSIGNED NOT NULL DEFAULT 1,
   `added_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `shopping_cart`
---
-
-INSERT INTO `shopping_cart` (`cart_id`, `user_id`, `product_id`, `quantity`, `added_at`) VALUES
-(1, 100, 6, 12, '2025-09-21 12:40:16'),
-(2, 100, 5, 10, '2025-09-21 12:40:16'),
-(3, 100, 10, 15, '2025-09-21 13:21:41'),
-(4, 100, 3, 20, '2025-09-21 13:32:33');
 
 -- --------------------------------------------------------
 
@@ -261,13 +292,21 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `first_name`, `middle_name`, `last_name`, `gender`, `date_of_birth`, `is_verified`, `contact_number`, `address`, `created_at`, `updated_at`, `isActive`, `verification_token`, `token_created_at`, `profile_image`, `province_id`, `city_id`, `barangay_id`) VALUES
-(100, 'cjaygonzales', 'cjaygonzales1006@gmail.com', '$2y$10$EkFgxmD04s0tlKP.bmBbruTgMhDrKz2XXUZbWWZ/Na7Jio5f84ooW', 'C-jay', 'Bazar', 'Gonzales', 'Female', '2003-10-06', 1, '+639279754520', '759 lot 26 blk 4 Tupda Village', '2025-09-03 00:48:53', '2025-09-24 09:49:42', 1, '', '0000-00-00 00:00:00', 'user_100_1757265993.jpg', 1, 1, 5),
-(104, 'ezratess', 'ezratessalith@gmail.com', '$2y$10$BEAFEB.x93H4ATKg.2.5teNrLpCFHGAdEFVGO/ez1oSHT0X8A42aG', 'Ezra', '', 'Tessalith', 'Prefer not to say', NULL, 1, '09164485649', 'Caloocan High School 10th ave', '2025-09-04 00:43:41', '2025-09-07 11:51:54', 1, '', '0000-00-00 00:00:00', '', NULL, NULL, NULL),
-(111, 'jeremiah', 'jeremiahyee99@gmail.com', '$2y$10$TTv6/Vv9D5DICJ0vx9hXHuoZ.ZEHxnaOEp9oX8KqNJqF/h2GhgvBy', 'Jeremiah', 'Bert', 'Deplomo', 'Male', '0004-09-24', 1, '09123456789', '8th ave purok dos', '2025-09-23 15:57:08', '2025-09-24 08:17:34', 1, '', '0000-00-00 00:00:00', NULL, 1, 1, 1);
+(100, 'cjaygonzales', 'cjaygonzales1006@gmail.com', '$2y$10$EkFgxmD04s0tlKP.bmBbruTgMhDrKz2XXUZbWWZ/Na7Jio5f84ooW', 'C-jay', 'Bazar', 'Gonzales', 'Prefer not to say', '2003-10-06', 1, '+639279754520', '759 lot 26 blk 4 Tupda Village', '2025-09-03 00:48:53', '2025-09-28 18:25:24', 1, '', '0000-00-00 00:00:00', 'user_100_1759083924.jpg', 1, 1, 3),
+(104, 'ezratess', 'ezratessalith@gmail.com', '$2y$10$BEAFEB.x93H4ATKg.2.5teNrLpCFHGAdEFVGO/ez1oSHT0X8A42aG', 'Ezra', '', 'Tessalith', 'Female', '2004-12-12', 1, '+639164485649', 'Caloocan High School 10th ave', '2025-09-04 00:43:41', '2025-09-24 15:20:27', 1, '', '0000-00-00 00:00:00', '', 1, 1, 2),
+(114, 'jeremiah', 'jeremiahyee99@gmail.com', '$2y$10$u1JnE8uYIZNQFZ0AWagAGuQF/LCgThK0NQqh1g3vwvoj/V91usvny', 'Jeremiah', 'Pogi', 'Deplomo', 'Prefer not to say', '2025-09-29', 1, '+639123456789', '8th ave purok dos', '2025-09-29 00:46:22', '2025-09-30 17:10:35', 1, '', '0000-00-00 00:00:00', NULL, 1, 1, 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin_user`
+--
+ALTER TABLE `admin_user`
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `barangays`
@@ -288,6 +327,14 @@ ALTER TABLE `categories`
 ALTER TABLE `cities`
   ADD PRIMARY KEY (`city_id`),
   ADD KEY `province_id` (`province_id`);
+
+--
+-- Indexes for table `customer_request`
+--
+ALTER TABLE `customer_request`
+  ADD PRIMARY KEY (`request_id`),
+  ADD KEY `fk_customer_request_user` (`user_id`),
+  ADD KEY `fk_customer_request_admin` (`responded_by`);
 
 --
 -- Indexes for table `orders`
@@ -345,6 +392,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_user`
+--
+ALTER TABLE `admin_user`
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `barangays`
 --
 ALTER TABLE `barangays`
@@ -363,6 +416,12 @@ ALTER TABLE `cities`
   MODIFY `city_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `customer_request`
+--
+ALTER TABLE `customer_request`
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
@@ -372,7 +431,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -390,13 +449,13 @@ ALTER TABLE `provinces`
 -- AUTO_INCREMENT for table `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- Constraints for dumped tables
@@ -413,6 +472,13 @@ ALTER TABLE `barangays`
 --
 ALTER TABLE `cities`
   ADD CONSTRAINT `cities_ibfk_1` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`province_id`);
+
+--
+-- Constraints for table `customer_request`
+--
+ALTER TABLE `customer_request`
+  ADD CONSTRAINT `fk_customer_request_admin` FOREIGN KEY (`responded_by`) REFERENCES `admin_user` (`admin_id`),
+  ADD CONSTRAINT `fk_customer_request_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `orders`

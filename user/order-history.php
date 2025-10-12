@@ -202,8 +202,6 @@ $pdo = connect();
       </div>
 
 
-
-      <!-- Example Order Card -->
       <?php if (!empty($order_history)): ?>
 
       <?php foreach ($order_history as $orders): ?>
@@ -225,7 +223,7 @@ $pdo = connect();
         <?php foreach ($orders['items'] as $item): ?>
 
         <div class="item">
-          <img src="../assets/images/Hard-Copy.jpg" alt="item sample">
+          <img src="../assets/images/products/yellowpad.jpg" alt="item sample">
           <div class="item-text">
             <p><?= htmlspecialchars($item['product_name']) ?></p>
             <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>

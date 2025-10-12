@@ -188,17 +188,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cart badge demo
   if (cart) {
-    let cartCount = 0;
+    let cartCount = parseInt(cart.getAttribute("data-count")) || 0;
+
     const updateCartBadge = () => {
       cart.setAttribute("data-count", cartCount);
     };
     updateCartBadge();
 
-    document.querySelectorAll(".cart-btn a").forEach((btn) => {
+    document.querySelectorAll(".cart-btn, .cart-btn a, .cart-btn button").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        cartCount++;
-        updateCartBadge();
+
+        if (btn.tagName === "A") {
+          e.preventDefault();
+          cartCount++;
+          updateCartBadge();
+        }
+
       });
     });
   }
@@ -251,22 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
       termsModal.style.display = "none";
     }
   });
-  // No need PHP ang backend
-  // if (loginForm) {
-  //   loginForm.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-  //     const username = loginForm.username?.value.trim() || "";
-  //     const password = loginForm.password?.value.trim() || "";
-  //
-  //     if (username && password) {
-  //       alert(`Logging in as ${username}`);
-  //       loginModal.style.display = "none";
-  //       loginForm.reset();
-  //     } else {
-  //       alert("Please fill out all fields.");
-  //     }
-  //   });
-  // }
 
   // Signup modal logic
   if (openSignupModalLink && signupModal) {
@@ -291,44 +280,29 @@ document.addEventListener("DOMContentLoaded", () => {
       loginModal.style.display = "block";
     });
   }
+  const loginError = document.querySelector("#loginModal .error-message");
+  if (loginError) {
+    loginModal.style.display = "block";
+  }
+  const togglePassword = document.getElementById("togglePassword");
+  const loginPassword = document.getElementById("loginpassword");
 
+  if (togglePassword && loginPassword) {
+  togglePassword.addEventListener("click", () => {
+    const isPassword = loginPassword.type === "password";
+    loginPassword.type = isPassword ? "text" : "password";
+
+    togglePassword.src = isPassword
+      ? "../assets/svg/eye.svg"
+      : "../assets/svg/eye-slash.svg";
+  });
+}
   if (termsCheckbox && verifyEmailBtn) {
     verifyEmailBtn.disabled = !termsCheckbox.checked;
     termsCheckbox.addEventListener("change", () => {
       verifyEmailBtn.disabled = !termsCheckbox.checked;
     });
   }
-
-  // if (signupForm) {
-  //   signupForm.addEventListener("submit", (e) => {
-  //     const firstName = firstNameInput?.value.trim() || "";
-  //     const lastName = lastNameInput?.value.trim() || "";
-  //     const email = signupEmailInput?.value.trim() || "";
-  //     const password = signupPasswordInput?.value.trim() || "";
-  //     const confirmPassword = signupConfirmPasswordInput?.value.trim() || "";
-  //     const agreed = termsCheckbox?.checked || false;
-  //
-  //     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-  //       alert("Please fill out all fields.");
-  //       return;
-  //     }
-  //
-  //     if (password !== confirmPassword) {
-  //       alert("Passwords do not match.");
-  //       return;
-  //     }
-  //
-  //     if (!agreed) {
-  //       alert("You must agree to the Terms and Conditions.");
-  //       return;
-  //     }
-  //
-  //     alert(`Verification email sent to ${email}`);
-  //     signupForm.reset();
-  //     verifyEmailBtn.disabled = true;
-  //     signupModal.style.display = "none";
-  //   });
-  // }
 
   // Mobile login link inside hamburger
   const mobileLoginLink = document.getElementById("mobileLoginLink");
@@ -342,6 +316,97 @@ document.addEventListener("DOMContentLoaded", () => {
       hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
     });
   }
+
+  const toggleLogin = document.getElementById("toggleLogin");
+  if (toggleLogin) {
+    toggleLogin.addEventListener("click", (event) => {
+      event.preventDefault();
+      signupModal.style.display = "none";
+      loginModal.style.display = "block";
+      nav.classList.remove("active");
+      hamburger.classList.remove("active");
+      hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
+    });
+  }
+
+  const floatingRequestBtn = document.getElementById("floatingRequestBtn");
+const customRequestModal = document.getElementById("customRequestModal");
+const closeRequestModal = document.getElementById("closeRequestModal");
+const customRequestForm = document.getElementById("customRequestForm");
+const requestMessage = document.getElementById("requestMessage");
+const charCount = document.getElementById("charCount");
+
+if (floatingRequestBtn && customRequestModal) {
+  floatingRequestBtn.addEventListener("click", () => {
+    customRequestModal.style.display = "block";
+  });
+}
+
+if (closeRequestModal && customRequestModal) {
+  closeRequestModal.addEventListener("click", () => {
+    customRequestModal.style.display = "none";
+  });
+}
+
+if (requestMessage && charCount) {
+  requestMessage.addEventListener("input", () => {
+    const count = requestMessage.value.length;
+    charCount.textContent = count;
+
+    if (count > 900) {
+      charCount.style.color = "#ff0000";
+    } else if (count > 800) {
+      charCount.style.color = "#ff9900";
+    } else {
+      charCount.style.color = "#999";
+    }
+  });
+}
+
+const alerts = document.querySelectorAll(".alert-message");
+  alerts.forEach(alert => {
+    alert.addEventListener("animationend", (e) => {
+      if (e.animationName === "fadeOut") {
+        alert.remove();
+      }
+    });
+
+    alert.addEventListener("click", () => {
+      alert.remove();
+    });
+  });
+
+// Close modals when clicking outside
+window.addEventListener("click", (event) => {
+  if (event.target === customRequestModal) {
+    customRequestModal.style.display = "none";
+  }
+});
+
+// Hide floating button when modals are open to avoid overlap
+const allModals = [loginModal, signupModal, customRequestModal];
+const observer = new MutationObserver(() => {
+  const anyModalOpen = allModals.some(modal =>
+    modal && modal.style.display === "block"
+  );
+
+  if (floatingRequestBtn) {
+    if (anyModalOpen && customRequestModal.style.display !== "block") {
+      floatingRequestBtn.style.opacity = "0.3";
+      floatingRequestBtn.style.pointerEvents = "none";
+    } else {
+      floatingRequestBtn.style.opacity = "1";
+      floatingRequestBtn.style.pointerEvents = "auto";
+    }
+  }
+});
+
+// Observe each modal for display changes
+allModals.forEach(modal => {
+  if (modal) {
+    observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+  }
+});
 
   // Mobile cart link
   const mobileCartLink = document.querySelector(".mobile-nav-cart");
