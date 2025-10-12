@@ -682,7 +682,7 @@
                     </div>
 
                     <!-- Admin Controls -->
-                    <h4 class="customer-edit-section-header">
+                    <!-- <h4 class="customer-edit-section-header">
                         <i data-lucide="settings"></i>
                         Admin Controls
                     </h4>
@@ -736,7 +736,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Permissions & Restrictions -->
                     <h4 class="customer-edit-section-header">

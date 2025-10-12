@@ -495,6 +495,18 @@
             document.getElementById('customerDetailsModal').classList.add('show');
             document.body.style.overflow = 'hidden';
 
+            document.getElementById('customerOrdersModal').classList.remove('show');
+            document.body.style.overflow = 'hidden';
+
+            const viewOrderbtn = document.getElementById('viewOrders');
+            if(viewOrderbtn){
+              viewOrderbtn.onclick = () => openCustomerOrdersModal(customerId);
+            }
+            const edituserbtn = document.getElementById('editUser');
+            if(edituserbtn){
+              edituserbtn.onclick = () => openCustomerEditModal(customerId);
+            }
+
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
@@ -559,6 +571,18 @@
             document.getElementById('customerOrdersModal').classList.add('show');
             document.body.style.overflow = 'hidden';
 
+            document.getElementById('customerDetailsModal').classList.remove('show');
+
+            const viewprofile = document.getElementById('viewProfile');
+            if(viewprofile){
+              viewprofile.onclick = () => openCustomerDetailsModal(customerId);
+            }
+            const editprofile = document.getElementById('editCustomer');
+            if(editprofile){
+              editprofile.onclick = () => openCustomerEditModal(customerId);
+            }
+
+
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
@@ -614,6 +638,9 @@
             populateCustomerEditModal(customer);
             document.getElementById('customerEditModal').classList.add('show');
             document.body.style.overflow = 'hidden';
+
+            document.getElementById('customerDetailsModal').classList.remove('show');
+            document.getElementById('customerOrdersModal').classList.remove('show');
 
             setTimeout(() => {
                 lucide.createIcons();
