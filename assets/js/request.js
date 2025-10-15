@@ -48,8 +48,8 @@ function showRequestFromElement(element) {
 
   fetch('../ajax/mark-seen.php', {
     method: 'POST',
-    header: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body:`request_id=${encodeURIComponent(hiddenInput)}`
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body:`request_id=${encodeURIComponent(hiddenInput.value)}`
   })
   .then(res => res.json())
   .then(data => {
