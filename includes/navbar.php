@@ -219,6 +219,7 @@
             <ul class="dropdown">
                 <li><a href="../user/profile.php">My Profile</a></li>
                 <li><a href="../user/order-history.php">My Orders</a></li>
+                <li><a href="../user/request.php">Request</a></li>
                 <li><a href="../auth/logout.php">Logout</a></li>
             </ul>
         </div>
@@ -253,6 +254,7 @@
             <ul class="dropdown">
             <li><a href="../user/profile.php">My Profile</a></li>
             <li><a href="../user/order-history.php">My Orders</a></li>
+            <li><a href="../user/request.php">Request</a></li>
             <li><a href="../auth/logout.php">Logout</a></li>
           </ul>
           </div>
