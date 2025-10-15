@@ -6,7 +6,7 @@
   $status = isset($_GET['status']) ? trim($_GET['status']) : null;
   $user_id = $_SESSION['user_id'];
 
-  $sql = "SELECT request_id, request_type, subject, message, status, created_at, admin_response FROM customer_request WHERE user_id = :user_id";
+  $sql = "SELECT request_id, request_type, subject, message, status, created_at, admin_response, user_seen_reply FROM customer_request WHERE user_id = :user_id";
   $requestFilter = [':user_id'=>$user_id];
 
   if($type){
@@ -72,26 +72,35 @@
                       </div>
 
                   <div id="requestItemsContainer">
-                     <?php foreach ($requests as $index => $request): ?>
-                       <div class="request-item <?= $index === 0 ? 'first-request' : '' ?>"
-                            data-title="<?= htmlspecialchars($request['subject']); ?>"
-                            data-message="<?= htmlspecialchars($request['message']); ?>"
-                            data-type="<?= htmlspecialchars($request['request_type']); ?>"
-                            data-status="<?= htmlspecialchars($request['status']); ?>"
-                            data-admin_response="<?= htmlspecialchars($request['admin_response']); ?>"
-                            data-date="<?= date("M d, Y h:i A", strtotime($request['created_at'])) ?>"
-                            onclick="showRequestFromElement(this)">
-                         <strong class="subject"><?= htmlspecialchars($request['subject']); ?></strong>
-                         <div class="text-muted small message">
-                           <?= htmlspecialchars(mb_strimwidth($request['message'], 0, 50, '...')); ?>
-                         </div>
-                       </div>
-                     <?php endforeach; ?>
+                      <?php foreach ($requests as $index => $request): ?>
+                        <?php
+                            $hasReply = !empty($request['admin_response']);
+                            $unseen = $hasReply && $request['user_seen_reply'] == 0;
+                        ?>
+                          <div class="request-item <?= $index === 0 ? 'first-request' : '' ?> <?= $unseen ? 'fw-bold bg-light' : '' ?>"
+                               data-request-id="<?= htmlspecialchars($request['request_id']); ?>"
+                               data-title="<?= htmlspecialchars($request['subject']); ?>"
+                               data-message="<?= htmlspecialchars($request['message']); ?>"
+                               data-type="<?= htmlspecialchars($request['request_type']); ?>"
+                               data-status="<?= htmlspecialchars($request['status']); ?>"
+                               data-admin_response="<?= htmlspecialchars($request['admin_response']); ?>"
+                               data-date="<?= date("M d, Y h:i A", strtotime($request['created_at'])) ?>"
+                               onclick="showRequestFromElement(this)">
+                              <strong class="subject"><?= htmlspecialchars($request['subject']); ?>
+                                <?php if ($unseen): ?>
+                                  <span class="badge bg-success ms-2">New reply</span>
+                                <?php endif; ?>
+                              </strong>
+                              <div class="text-muted small message">
+                                  <?= htmlspecialchars(mb_strimwidth($request['message'], 0, 50, '...')); ?>
+                              </div>
+                          </div>
+                      <?php endforeach; ?>
 
-                     <?php if (empty($requests)): ?>
-                       <div class="text-center text-muted p-3">No requests found.</div>
-                     <?php endif; ?>
-                   </div>
+                      <?php if (empty($requests)): ?>
+                          <div class="text-center text-muted p-3">No requests found.</div>
+                      <?php endif; ?>
+                  </div>
                  </div>
 
              <div class="col-12 col-md-8 col-lg-9 request-detail bg-light p-4">
@@ -141,21 +150,24 @@
        </div>
        <!-- para sa delete modal -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-              <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Confirm Deletion</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                Are you sure you want to delete this request? This action cannot be undone.
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
-              </div>
-            </div>
-          </div>
+         <div class="modal-dialog modal-dialog-centered">
+           <div class="modal-content rounded-3 shadow">
+             <div class="modal-header">
+               <h5 class="modal-title text-danger"> <img src="../assets/svg/delete.svg" style="padding:5px; height:30px;" alt="delete">Confirm Delete Request</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+             </div>
+             <div class="modal-body text-center">
+               <div class="modal-warning">
+                 <img src="../assets/svg/warning.svg" style="height:20px;" alt=""><span style="color:#751400; padding:2px; font-weight:bold;">Warning</span>
+                 <p style="color:#751400;">By deleting this Request, you won't be able to access it, and it will be deleted from the admin's record.</p>
+               </div>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+               <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">Confirm</button>
+             </div>
+           </div>
+         </div>
         </div>
 
           <script src="../assets/js/request.js"></script>
