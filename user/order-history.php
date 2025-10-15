@@ -225,7 +225,7 @@ $pdo = connect();
         <div class="item">
           <img src="../assets/images/products/yellowpad.jpg" alt="item sample">
           <div class="item-text">
-            <p><?= htmlspecialchars($item['product_name']) ?></p>
+            <p class="mb-2"><?= htmlspecialchars($item['product_name']) ?></p>
             <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>
           </div>
           <!-- <button class="btn-details">Order Details</button> -->
@@ -249,6 +249,55 @@ $pdo = connect();
           <p class="fs-3 fw-bold" style="color: #002366;">No Orders Found for this Status</p>
         </div>
     <?php endif; ?>
+    <!-- Modal Structure -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header" style="background-color:#002366; color:white;">
+        <h5 class="modal-title" id="orderDetailsLabel">Order Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="orderDetailsContent">
+          <p class="text-center text-muted">Loading details...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+  const detailButtons = document.querySelectorAll(".btn-details");
+  const modal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
+  const modalContent = document.getElementById("orderDetailsContent");
+
+  detailButtons.forEach(button => {
+    button.addEventListener("click", function(e) {
+      e.preventDefault();
+      const orderNumber = this.href.split('order_id=')[1];
+
+      modalContent.innerHTML = `<p class="text-center text-muted">Loading details...</p>`;
+      modal.show();
+
+      fetch(`order-details.php?order_id=${encodeURIComponent(orderNumber)}`)
+        .then(response => response.text())
+        .then(data => {
+          modalContent.innerHTML = data;
+        })
+        .catch(err => {
+          console.error(err);
+          modalContent.innerHTML = `<p class="text-danger text-center">Failed to load order details.</p>`;
+        });
+    });
+  });
+});
+</script>
+
   <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
 </body>
 </html>

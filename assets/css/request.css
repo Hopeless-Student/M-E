@@ -30,3 +30,52 @@ body {
 .card{
   border: none;
 }
+.dropdown-item:hover{
+  background-color: rgb(231, 231, 231);
+  color: rgb(30, 64, 175);
+  font-weight: bold;
+  cursor: pointer;
+}
+.alert {
+  transition: opacity 0.3s ease-in-out;
+}
+#requestContent {
+  white-space: pre-line;
+  margin-bottom: .5rem;
+}
+#notifContainer {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1055;
+  width: 320px;
+}
+
+#notifContainer .alert {
+  margin-bottom: 10px;
+  animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateX(50px); }
+}
+.modal-warning{
+  border-left: 5px solid #FF5533;
+  background-color:#FFC3B8;
+  text-align: left;
+  padding: 10px;
+}
+.request-item.fw-bold {
+  font-weight: 600;
+  background-color: #f8f9fa; /* subtle highlight */
+  border-left: 4px solid #198754; /* green accent */
+}
+.request-item .badge.bg-success {
+  font-size: 0.7rem;
+  vertical-align: middle;
+}

@@ -11,7 +11,7 @@ header('Content-Type: application/json');
     $status = isset($_GET['status']) ? trim($_GET['status']) : null;
     $user_id = $_SESSION['user_id'];
 
-    $sql = "SELECT request_id, request_type, subject, message, status, created_at, admin_response FROM customer_request WHERE user_id = :user_id";
+    $sql = "SELECT request_id, request_type, subject, message, status, created_at, admin_response, user_seen_reply FROM customer_request WHERE user_id = :user_id";
     $requestFilter = [':user_id'=>$user_id];
 
     if($type){
