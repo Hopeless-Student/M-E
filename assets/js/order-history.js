@@ -80,7 +80,8 @@ const modalContent = document.getElementById("orderDetailsContent");
         <hr>
         ${order.items.map(item => `
           <div class="item">
-            <img src="../assets/images/products/yellowpad.jpg" alt="item sample">
+            <img src="../assets/images/products/${item.product_image || 'default.png'}" alt="item sample
+            onerror="this.src='../assets/images/products/default.png'">
             <div class="item-text">
               <p class="mb-2">${item.product_name}</p>
               <sub>₱ ${Number(item.price).toFixed(2)} × ${item.qty}</sub>

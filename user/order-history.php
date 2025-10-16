@@ -18,11 +18,13 @@ $pdo = connect();
     o.order_number, o.final_amount,
     o.order_status, o.payment_method,
     o.order_date,
-    oi.product_name, oi.product_price,
+    oi.product_name, oi.product_price, p.product_image,
     oi.quantity, oi.subtotal
     FROM orders o
     JOIN order_items oi
     ON o.order_id = oi.order_id
+    JOIN products p
+    ON oi.product_id = p.product_id
     WHERE o.user_id = :user_id
     ";
     // ORDER BY o.order_date DESC, o.order_id DESC;
@@ -55,6 +57,7 @@ $pdo = connect();
 
     $order_history[$orderId]['items'][] = [
         'product_name' => $items['product_name'],
+        'product_image' => $items['product_image'],
         'price' => $items['product_price'],
         'qty' => $items['quantity'],
         'subtotal' => $items['subtotal']
@@ -74,41 +77,6 @@ $pdo = connect();
   <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/user-sidebar.css">
   <link rel="stylesheet" href="../assets/css/order-history.css">
-  <style media="screen">
-
-  #order-list {
-    transition: opacity 0.3s ease;
-    min-height: 200px;
-  }
-
-  #order-list.loading {
-    opacity: 0.5;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-  }
-  #loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-  }
-  #loading-overlay .spinner-border {
-    width: 3rem;
-    height: 3rem;
-    animation: fadeSpin 0.3s ease-in-out;
-  }
-
-  @keyframes fadeSpin {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  </style>
 </head>
 <body>
   <div class="container py-4">
@@ -146,7 +114,13 @@ $pdo = connect();
                     <?php foreach ($orders['items'] as $item): ?>
 
                       <div class="item">
-                        <img src="../assets/images/products/yellowpad.jpg" alt="item sample">
+                        <?php
+                        $imagePath = '../assets/images/products/' .$item['product_image'];
+                         if (empty($item['product_image']) || !file_exists($imagePath)) {
+                             $imagePath = '../assets/images/products/default.png';
+                         }
+                         ?>
+                        <img src="<?= $imagePath ?>" alt="item sample">
                         <div class="item-text">
                           <p class="mb-2"><?= htmlspecialchars($item['product_name']) ?></p>
                           <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>

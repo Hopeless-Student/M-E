@@ -19,11 +19,13 @@ $status = isset($_GET['status']) ? trim($_GET['status']) : 'All';
     o.order_number, o.final_amount,
     o.order_status, o.payment_method,
     o.order_date,
-    oi.product_name, oi.product_price,
+    oi.product_name, oi.product_price, p.product_image,
     oi.quantity, oi.subtotal
     FROM orders o
     JOIN order_items oi
     ON o.order_id = oi.order_id
+    JOIN products p
+    ON oi.product_id = p.product_id
     WHERE o.user_id = :user_id
     ";
     // ORDER BY o.order_date DESC, o.order_id DESC;
@@ -56,6 +58,7 @@ $status = isset($_GET['status']) ? trim($_GET['status']) : 'All';
 
     $order_history[$orderId]['items'][] = [
         'product_name' => $items['product_name'],
+        'product_image'=> $items['product_image'],
         'price' => $items['product_price'],
         'qty' => $items['quantity'],
         'subtotal' => $items['subtotal']
