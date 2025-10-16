@@ -1,0 +1,126 @@
+body {
+  background-color: #f4f7fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.order-content {
+  margin-left: 240px;
+  padding: 40px 20px;
+}
+
+.order-title {
+  font-weight: 700;
+  color: #002366;
+  margin-bottom: 15px;
+}
+
+.status {
+  margin-bottom: 25px;
+}
+
+.status a {
+  text-decoration: none;
+  color: #444;
+  font-weight: 500;
+  margin-right: 12px;
+  transition: 0.2s;
+}
+
+.status a:hover {
+  color: #002366;
+}
+
+.items-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.items-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.order-header p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.order-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 30px;
+  color: white;
+}
+
+.status-pending { background-color: #ffc107; }
+.status-delivered { background-color: #28a745; }
+.status-shipped { background-color: #4169E1; }
+.status-confirmed { background-color: #8AFF8A; }
+.status a.active {
+  color: #002366;
+  font-weight: 700;
+}
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.item-text {
+  flex-grow: 1;
+}
+
+.item-text p {
+  margin: 0;
+  font-weight: 600;
+  color: #222;
+}
+
+.item-text sub {
+  color: #666;
+}
+
+.btn-details {
+  background-color: #002366;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.btn-details:hover {
+  background-color: #001c4d;
+  color: white;
+}
+#order-list {
+  transition: opacity 0.3s ease;
+  min-height: 200px;
+}
+
+#order-list.loading {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}

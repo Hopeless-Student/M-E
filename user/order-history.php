@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../includes/database.php';
 include('../includes/user-sidebar.php');
 
+$user_id = $_SESSION['user_id'];
+$status = isset($_GET['status']) ? trim($_GET['status']) : 'All';
+
+
 $pdo = connect();
   try {
 
@@ -69,123 +73,41 @@ $pdo = connect();
   <title>Order History</title>
   <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/user-sidebar.css">
-  <style>
-    body {
-      background-color: #f4f7fa;
-      font-family: 'Segoe UI', sans-serif;
-    }
+  <link rel="stylesheet" href="../assets/css/order-history.css">
+  <style media="screen">
 
-    .order-content {
-      margin-left: 240px;
-      padding: 40px 20px;
-    }
+  #order-list {
+    transition: opacity 0.3s ease;
+    min-height: 200px;
+  }
 
-    .order-title {
-      font-weight: 700;
-      color: #002366;
-      margin-bottom: 15px;
-    }
+  #order-list.loading {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  #loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  #loading-overlay .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    animation: fadeSpin 0.3s ease-in-out;
+  }
 
-    .status {
-      margin-bottom: 25px;
-    }
-
-    .status a {
-      text-decoration: none;
-      color: #444;
-      font-weight: 500;
-      margin-right: 12px;
-      transition: 0.2s;
-    }
-
-    .status a:hover {
-      color: #002366;
-    }
-
-    .items-container {
-      background-color: #ffffff;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s ease-in-out;
-    }
-
-    .items-container:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    }
-
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .order-header p {
-      margin: 0;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    .order-status {
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 30px;
-      color: white;
-    }
-
-    .status-pending { background-color: #ffc107; }
-    .status-delivered { background-color: #28a745; }
-    .status-shipped { background-color: #4169E1; }
-    .status-confirmed { background-color: #8AFF8A; }
-    .status a.active {
-      color: #002366;
-      font-weight: 700;
-    }
-    .item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .item img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-right: 20px;
-    }
-
-    .item-text {
-      flex-grow: 1;
-    }
-
-    .item-text p {
-      margin: 0;
-      font-weight: 600;
-      color: #222;
-    }
-
-    .item-text sub {
-      color: #666;
-    }
-
-    .btn-details {
-      background-color: #002366;
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 8px;
-      transition: background 0.2s;
-    }
-
-    .btn-details:hover {
-      background-color: #001c4d;
-      color: white;
-    }
+  @keyframes fadeSpin {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
   </style>
 </head>
 <body>
@@ -201,54 +123,57 @@ $pdo = connect();
         <a href="?status=Confirmed" class="<?= $status === 'Confirmed' ? 'active' : '' ?>">Confirmed</a>
       </div>
 
+      <div id="order-list">
+        <div id="order-container">
+          <?php if (!empty($order_history)): ?>
 
-      <?php if (!empty($order_history)): ?>
+            <?php foreach ($order_history as $orders): ?>
+              <div class="items-container">
+                <div class="order-header">
+                  <p><?= date("m/d/Y", strtotime($orders['order_date'])) ?> | Order No: <?= htmlspecialchars($orders['order_number']) ?></p>
+                  <p>Total: ₱ <strong><?= number_format($orders['final_amount'], 2) ?></strong></p>
+                </div>
+                <span class="order-status
+                <?= $orders['order_status'] === 'Pending' ? 'status-pending' : (
+                  $orders['order_status'] === 'Delivered' ? 'status-delivered' : (
+                    $orders['order_status'] === 'Confirmed' ? 'status-confirmed' : (
+                      $orders['order_status'] === 'Shipped' ? 'status-shipped' :
+                      'status-cancelled'))) ?>">
+                      <?= $orders['order_status'] ?>
+                    </span>
 
-      <?php foreach ($order_history as $orders): ?>
-      <div class="items-container">
-        <div class="order-header">
-          <p><?= date("m/d/Y", strtotime($orders['order_date'])) ?> | Order No: <?= htmlspecialchars($orders['order_number']) ?></p>
-          <p>Total: ₱ <strong><?= number_format($orders['final_amount'], 2) ?></strong></p>
+                    <hr>
+                    <?php foreach ($orders['items'] as $item): ?>
+
+                      <div class="item">
+                        <img src="../assets/images/products/yellowpad.jpg" alt="item sample">
+                        <div class="item-text">
+                          <p class="mb-2"><?= htmlspecialchars($item['product_name']) ?></p>
+                          <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>
+                        </div>
+                        <!-- <button class="btn-details">Order Details</button> -->
+                      </div>
+                    <?php endforeach; ?>
+                    <div class="text-end mt-3">
+                      <a href="order-details.php?order_id=<?= urlencode($orders['order_number']) ?>" class="btn btn-details">Order Details</a>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
         </div>
-        <span class="order-status
-          <?= $orders['order_status'] === 'Pending' ? 'status-pending' : (
-              $orders['order_status'] === 'Delivered' ? 'status-delivered' : (
-               $orders['order_status'] === 'Confirmed' ? 'status-confirmed' : (
-                 $orders['order_status'] === 'Shipped' ? 'status-shipped' :
-                 'status-cancelled'))) ?>">
-          <?= $orders['order_status'] ?>
-        </span>
+            <?php elseif ($status === 'All'): ?>
+              <div class="text-center">
+                <img src="../assets/images/order-history.png" class="img-fluid" style="max-height:250px;" alt="order history">
+                <p class="fs-3 fw-bold" style="color: #002366;">You Have No Order History</p>
+                <small>You haven't order anything yet. <br>Your Order History will appear here once you have!</small>
+              </div>
 
-        <hr>
-        <?php foreach ($orders['items'] as $item): ?>
-
-        <div class="item">
-          <img src="../assets/images/products/yellowpad.jpg" alt="item sample">
-          <div class="item-text">
-            <p class="mb-2"><?= htmlspecialchars($item['product_name']) ?></p>
-            <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>
-          </div>
-          <!-- <button class="btn-details">Order Details</button> -->
-        </div>
-      <?php endforeach; ?>
-        <div class="text-end mt-3">
-          <a href="order-details.php?order_id=<?= urlencode($orders['order_number']) ?>" class="btn btn-details">Order Details</a>
-        </div>
+            <?php else: ?>
+              <div class="text-center">
+                <img src="../assets/images/order-history.png" class="img-fluid" style="max-height:250px;" alt="order history">
+                <p class="fs-3 fw-bold" style="color: #002366;">No Orders Found for this Status</p>
+              </div>
+            <?php endif; ?>
       </div>
-      <?php endforeach; ?>
-    <?php elseif ($status === 'All'): ?>
-      <div class="text-center">
-        <img src="../assets/images/order-history.png" class="img-fluid" style="max-height:250px;" alt="order history">
-        <p class="fs-3 fw-bold" style="color: #002366;">You Have No Order History</p>
-        <small>You haven't order anything yet. <br>Your Order History will appear here once you have!</small>
-      </div>
-
-      <?php else: ?>
-        <div class="text-center">
-          <img src="../assets/images/order-history.png" class="img-fluid" style="max-height:250px;" alt="order history">
-          <p class="fs-3 fw-bold" style="color: #002366;">No Orders Found for this Status</p>
-        </div>
-    <?php endif; ?>
     <!-- Modal Structure -->
 <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -269,35 +194,7 @@ $pdo = connect();
   </div>
 </div>
 
-<script>
-
-document.addEventListener("DOMContentLoaded", function() {
-  const detailButtons = document.querySelectorAll(".btn-details");
-  const modal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
-  const modalContent = document.getElementById("orderDetailsContent");
-
-  detailButtons.forEach(button => {
-    button.addEventListener("click", function(e) {
-      e.preventDefault();
-      const orderNumber = this.href.split('order_id=')[1];
-
-      modalContent.innerHTML = `<p class="text-center text-muted">Loading details...</p>`;
-      modal.show();
-
-      fetch(`order-details.php?order_id=${encodeURIComponent(orderNumber)}`)
-        .then(response => response.text())
-        .then(data => {
-          modalContent.innerHTML = data;
-        })
-        .catch(err => {
-          console.error(err);
-          modalContent.innerHTML = `<p class="text-danger text-center">Failed to load order details.</p>`;
-        });
-    });
-  });
-});
-</script>
-
+  <script src="../assets/js/order-history.js"></script>
   <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
 </body>
 </html>
