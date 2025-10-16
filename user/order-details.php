@@ -4,6 +4,7 @@ $pdo = connect();
 
 if (!isset($_GET['order_id'])) {
     echo "<p class='text-danger'>Invalid order request.</p>";
+    header("Location: ../pages/index.php");
     exit;
 }
 
