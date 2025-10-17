@@ -200,6 +200,7 @@
     let totalPages = 1;
     let allOrders = [];
     let filteredOrders = [];
+    let apiTotal = 0; // total items from API for current server-side filters
     const ordersPerPage = 8;
 
     // Load orders data on page load
@@ -229,22 +230,44 @@
 
     async function loadOrdersData() {
         try {
-            // Replace this with actual API call
-            // const response = await fetch('/api/orders.php');
-            // const result = await response.json();
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const statusFilter = document.getElementById('statusFilter').value;
 
-            // Mock data for now
-            const result = {
-                success: true,
-                data: {
-                    orders: generateMockOrders(25), // Generate 25 sample orders
-                    total: 25
-                }
-            };
+            const params = new URLSearchParams({
+                page: String(currentPage),
+                pageSize: String(ordersPerPage)
+            });
+            if (statusFilter) params.set('status', statusFilter);
+            if (searchTerm) params.set('q', searchTerm);
 
-            allOrders = result.data.orders;
-            filteredOrders = [...allOrders];
-            totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+            const response = await fetch(`../../api/orders/list.php?${params.toString()}`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error('Network response was not ok');
+            const result = await response.json();
+
+            // Map API items to UI-friendly structure
+            const items = Array.isArray(result.items) ? result.items : [];
+            allOrders = items.map(o => ({
+                id: String(o.order_id),
+                customer: o.customer_name || '',
+                category: o.category || '',
+                items: Number(o.item_count || 0),
+                amount: String((o.final_amount ?? o.total_amount ?? 0)),
+                date: o.order_date ? new Date(o.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+                status: (o.order_status || '').toLowerCase(),
+                // Keep raw for detail modal
+                _raw: o
+            }));
+
+            // Apply client-side category filter only
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            filteredOrders = categoryFilter
+                ? allOrders.filter(o => (o.category || '').toLowerCase() === categoryFilter.toLowerCase())
+                : [...allOrders];
+
+            apiTotal = Number(result.total || 0);
+            totalPages = Number(result.totalPages || Math.max(1, Math.ceil(apiTotal / ordersPerPage)));
 
             renderOrders();
             renderPagination();
@@ -330,10 +353,14 @@
         const paginationInfo = document.querySelector('.pagination-info');
         const paginationControls = document.querySelector('.pagination-controls');
 
-        const startItem = ((currentPage - 1) * ordersPerPage) + 1;
-        const endItem = Math.min(currentPage * ordersPerPage, filteredOrders.length);
-
-        paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredOrders.length} orders`;
+        // Use API total for precise range text (status/search filters are server-side)
+        if (apiTotal === 0) {
+            paginationInfo.textContent = 'Showing 0-0 of 0 orders';
+        } else {
+            const startItem = ((currentPage - 1) * ordersPerPage) + 1;
+            const endItem = Math.min(currentPage * ordersPerPage, apiTotal);
+            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${apiTotal} orders`;
+        }
 
         // Generate page buttons
         let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
@@ -358,30 +385,13 @@
     function goToPage(page) {
         if (page < 1 || page > totalPages) return;
         currentPage = page;
-        renderOrders();
-        renderPagination();
+        loadOrdersData();
     }
 
     function applyFilters() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const categoryFilter = document.getElementById('categoryFilter').value;
-
-        filteredOrders = allOrders.filter(order => {
-          const matchesSearch = !searchTerm ||
-              order.customer.toLowerCase().includes(searchTerm) ||
-              order.id.includes(searchTerm);
-
-            const matchesStatus = !statusFilter || order.status === statusFilter;
-            const matchesCategory = !categoryFilter || order.category.toLowerCase() === categoryFilter.toLowerCase();;
-
-            return matchesSearch && matchesStatus && matchesCategory;
-        });
-
-        totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-        currentPage = 1; // Reset to first page when filtering
-        renderOrders();
-        renderPagination();
+        // Server-side filters for search and status; client-side for category
+        currentPage = 1;
+        loadOrdersData();
     }
 
     // Search functionality
@@ -395,43 +405,62 @@
     }
 
     // Modal Functions
-    function openOrderModal(orderId) {
-      const order = allOrders.find(o => o.id === orderId);
-      if (!order) {
-        alert('Order not found');
-        return;
-      }
+    async function openOrderModal(orderId) {
+      try {
+        const response = await fetch(`../../api/orders/show.php?id=${encodeURIComponent(orderId)}`, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) throw new Error('Failed to load order');
+        const data = await response.json();
 
-      // Populate modal with order data
-      populateModalData(order);
+        const order = data.order || {};
+        const items = Array.isArray(data.items) ? data.items : [];
 
-      // Show only the order details modal
-      document.getElementById('orderModal').classList.add('active');
-      document.body.style.overflow = 'hidden';
+        // Populate modal with order data
+        populateModalData({
+          id: String(order.order_id || orderId),
+          customer: order.customer_name || '',
+          category: order.category || '',
+          items: items.length,
+          amount: String(order.final_amount ?? order.total_amount ?? 0),
+          date: order.order_date ? new Date(order.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+          status: (order.order_status || '').toLowerCase(),
+          email: order.email || '',
+          phone: order.contact_number || '',
+          company: '',
+          address: order.delivery_address || '',
+          trackingNumber: order.tracking_number || '',
+          paymentMethod: order.payment_method || '',
+          transactionId: order.transaction_id || '',
+          notes: order.admin_notes || '',
+          _items: items
+        });
 
-      const updtbtn = document.getElementById("updateModal");
-      if(updtbtn){
-        updtbtn.onclick = () => openUpdateModal(orderId);
-      }
-      const dltbtn = document.getElementById("deleteModal2");
-      if(dltbtn){
-        dltbtn.onclick = () => openDeleteModal(orderId);
-      }
+        // Show only the order details modal
+        document.getElementById('orderModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
 
+        const updtbtn = document.getElementById("updateModal");
+        if(updtbtn){
+          updtbtn.onclick = () => openUpdateModal(String(order.order_id || orderId));
+        }
+        const dltbtn = document.getElementById("deleteModal2");
+        if(dltbtn){
+          dltbtn.onclick = () => openDeleteModal(String(order.order_id || orderId));
+        }
 
         // Refresh Lucide icons for the modal
         setTimeout(() => {
           lucide.createIcons();
         }, 100);
+      } catch (e) {
+        console.error(e);
+        showError('Failed to load order details.');
+      }
     }
 
+    let currentUpdateOrderId = null;
     function openUpdateModal(orderId) {
-      const order = allOrders.find(o => o.id === orderId);
-      if (!order) {
-        alert('Order not found');
-        return;
-      }
-
+      const order = allOrders.find(o => o.id === orderId) || filteredOrders.find(o => o.id === orderId) || { id: orderId };
+      currentUpdateOrderId = orderId;
       populateUpdateData(order);
 
       // Close the order details modal
@@ -450,15 +479,38 @@
       }, 100);
     }
 
-    function submitStatusUpdate(orderId) {
-      alert("Order Updated Successfully!");
-
-      const modal = document.getElementById("updateStatusModal");
-      if (modal) {
-        modal.classList.remove("active");
+    async function submitStatusUpdate() {
+      if (!currentUpdateOrderId) return;
+      const selected = document.querySelector('input[name="orderStatus"]:checked');
+      if (!selected) {
+        showAlert('Please select a new status', 'warning');
+        return;
       }
 
-      document.body.style.overflow = ''; // restore scrolling
+      try {
+        const payload = { order_id: Number(currentUpdateOrderId), order_status: selected.value };
+        const res = await fetch('../../api/orders/update-status.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Failed to update status');
+
+        // Update in-memory list
+        const idx = allOrders.findIndex(o => o.id === String(currentUpdateOrderId));
+        if (idx !== -1) allOrders[idx].status = selected.value;
+        applyFilters();
+        updateStats();
+
+        showAlert('Order updated successfully!', 'success');
+      } catch (e) {
+        console.error(e);
+        showAlert('Failed to update order status', 'error');
+      } finally {
+        const modal = document.getElementById("updateStatusModal");
+        if (modal) { modal.classList.remove("active"); }
+        document.body.style.overflow = '';
+      }
     }
 
 
@@ -526,21 +578,23 @@
     function populateOrderItems(order) {
         const itemsContainer = document.getElementById('orderItems');
 
-        // Generate mock items based on category and amount
-        const mockItems = generateMockItems(order.category, order.items, order.amount);
+        const apiItems = Array.isArray(order._items) ? order._items : [];
 
         let itemsHTML = '';
         let total = 0;
 
-        mockItems.forEach(item => {
-            const subtotal = item.quantity * item.price;
+        apiItems.forEach(item => {
+            const name = item.product_name || `#${item.product_id}`;
+            const quantity = Number(item.quantity || 0);
+            const price = Number(item.product_price || 0);
+            const subtotal = Number(item.subtotal != null ? item.subtotal : (quantity * price));
             total += subtotal;
 
             itemsHTML += `
                 <tr>
-                    <td>${item.name}</td>
-                    <td>${item.quantity} ${item.unit}</td>
-                    <td>₱${item.price.toLocaleString()}</td>
+                    <td>${name}</td>
+                    <td>${quantity}</td>
+                    <td>₱${price.toLocaleString()}</td>
                     <td>₱${subtotal.toLocaleString()}</td>
                 </tr>
             `;

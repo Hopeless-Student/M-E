@@ -192,6 +192,7 @@
         let totalPages = 1;
         let allProducts = [];
         let filteredProducts = [];
+        let apiTotal = 0;
         const productsPerPage = 6;
         let deleteConfirmationStep = 0; // Track delete confirmation step
         let productToDelete = null; // Store product ID to delete
@@ -207,13 +208,41 @@
             setupEventListeners();
         });
 
-        function loadProductsData() {
-            allProducts = generateMockProducts(12);
-            filteredProducts = [...allProducts];
-            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            renderProducts();
-            renderPagination();
-            updateStats();
+        async function loadProductsData() {
+            try {
+                const q = document.getElementById('searchInput').value.trim();
+                const category = document.getElementById('categoryFilter').value; // office|school|sanitary|''
+                const stock = document.getElementById('stockFilter').value; // in-stock|low-stock|out-of-stock|''
+
+                const params = new URLSearchParams({ page: String(currentPage), pageSize: String(productsPerPage) });
+                if (q) params.set('q', q);
+                if (category) params.set('category', category);
+                if (stock) params.set('stock', stock);
+
+                const res = await fetch(`../../api/admin/products/list.php?${params.toString()}`, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) throw new Error('Failed to load products');
+                const data = await res.json();
+
+                allProducts = (data.items || []).map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    description: p.description || '',
+                    category: mapCategoryToKey(p.category),
+                    price: Number(p.price || 0),
+                    stock: Number(p.stock || 0),
+                    image: p.image || "../../assets/images/products/placeholder.png"
+                }));
+                filteredProducts = [...allProducts];
+                apiTotal = Number(data.total || 0);
+                totalPages = Number(data.totalPages || Math.max(1, Math.ceil(apiTotal / productsPerPage)));
+
+                renderProducts();
+                renderPagination();
+                updateStats();
+            } catch (e) {
+                console.error(e);
+                showAlert('Error loading products', 'error');
+            }
         }
 
         function generateMockProducts(count) {
@@ -435,10 +464,13 @@
             const paginationInfo = document.getElementById('paginationInfo');
             const paginationControls = document.getElementById('paginationControls');
 
-            const startItem = ((currentPage - 1) * productsPerPage) + 1;
-            const endItem = Math.min(currentPage * productsPerPage, filteredProducts.length);
-
-            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredProducts.length} products`;
+            if (apiTotal === 0) {
+                paginationInfo.textContent = 'Showing 0-0 of 0 products';
+            } else {
+                const startItem = ((currentPage - 1) * productsPerPage) + 1;
+                const endItem = Math.min(currentPage * productsPerPage, apiTotal);
+                paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${apiTotal} products`;
+            }
 
             let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
 
@@ -461,35 +493,20 @@
         function goToPage(page) {
             if (page < 1 || page > totalPages) return;
             currentPage = page;
-            renderProducts();
-            renderPagination();
+            loadProductsData();
         }
 
         function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const stockFilter = document.getElementById('stockFilter').value;
-
-            filteredProducts = allProducts.filter(product => {
-                const matchesSearch = !searchTerm ||
-                    product.name.toLowerCase().includes(searchTerm) ||
-                    product.description.toLowerCase().includes(searchTerm);
-
-                const matchesCategory = !categoryFilter || product.category === categoryFilter;
-
-                let matchesStock = true;
-                if (stockFilter) {
-                    const stockStatus = getStockStatus(product.stock);
-                    matchesStock = stockStatus === stockFilter;
-                }
-
-                return matchesSearch && matchesCategory && matchesStock;
-            });
-
-            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
             currentPage = 1;
-            renderProducts();
-            renderPagination();
+            loadProductsData();
+        }
+
+        function mapCategoryToKey(category) {
+            const c = (category || '').toLowerCase();
+            if (c.includes('office')) return 'Office';
+            if (c.includes('school')) return 'School';
+            if (c.includes('sanitary') || c.includes('hygiene')) return 'Sanitary';
+            return 'Office';
         }
 
         function viewProduct(id) {
@@ -594,18 +611,24 @@
             }
         }
 
-        function deleteProduct(productId) {
+        async function deleteProduct(productId) {
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
-
-            const productIndex = allProducts.findIndex(p => p.id === productId);
-            if (productIndex > -1) {
-                allProducts.splice(productIndex, 1);
-                applyFilters();
-                updateStats();
+            try {
+                const res = await fetch('../../api/admin/products/delete.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: productId })
+                });
+                if (!res.ok) throw new Error('Failed to delete');
+                showAlert(`Product "${product.name}" has been deleted successfully.`, 'success');
                 closeDeleteModal();
                 closeProductModal();
-                showAlert(`Product "${product.name}" has been deleted successfully.`, 'success');
+                applyFilters();
+                updateStats();
+            } catch (e) {
+                console.error(e);
+                showAlert('Failed to delete product', 'error');
             }
         }
 
@@ -691,48 +714,25 @@
             });
 
             // Handle form submission
-            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+            document.getElementById('editProductForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-
                 const productId = parseInt(this.dataset.productId);
-                const productIndex = allProducts.findIndex(p => p.id === productId);
-
-                if (productIndex === -1) {
-                    showAlert('Product not found', 'error');
-                    return;
-                }
-
-                // Update product data
                 const formData = new FormData(this);
-                const updatedProduct = {
-                    ...allProducts[productIndex],
-                    name: formData.get('product_name'),
-                    category: formData.get('category'),
-                    price: parseFloat(formData.get('price')),
-                    description: formData.get('description')
-                };
-
-                // Handle image update if new image was selected
-                const imageFile = formData.get('product_image');
-                if (imageFile && imageFile.size > 0) {
-                    // In a real application, you'd upload the image to server
-                    // For demo purposes, we'll use the preview URL
-                    const preview = document.getElementById('imagePreview');
-                    if (preview.src && preview.src !== window.location.href) {
-                        updatedProduct.image = preview.src;
-                    }
+                formData.append('id', String(productId));
+                try {
+                    const res = await fetch('../../api/admin/products/update.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (!res.ok) throw new Error('Failed to update');
+                    closeEditModal();
+                    showAlert('Product updated successfully!', 'success');
+                    applyFilters();
+                    updateStats();
+                } catch (err) {
+                    console.error(err);
+                    showAlert('Failed to update product', 'error');
                 }
-
-                // Update the product in the array
-                allProducts[productIndex] = updatedProduct;
-
-                // Refresh the display
-                applyFilters();
-                updateStats();
-
-                // Close modal and show success message
-                closeEditModal();
-                showAlert(`Product "${updatedProduct.name}" updated successfully!`, 'success');
             });
 
             // Add ESC key support for closing modal

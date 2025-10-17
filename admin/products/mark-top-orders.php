@@ -159,121 +159,44 @@
 
     <script>
         lucide.createIcons();
-        // Sample products data
-        const products = [
-            {
-                id: 'PRD-001',
-                name: 'Ballpoint Pens Set',
-                description: 'Premium quality ballpoint pens (Pack of 50)',
-                category: 'office',
-                price: 850,
-                originalPrice: 950,
-                stock: 245,
-                sales: 189,
-                trend: 'up',
-                featured: true,
-                image: '🖊️'
-            },
-            {
-                id: 'PRD-002',
-                name: 'Bond Paper A4',
-                description: 'High quality bond paper 500 sheets',
-                category: 'office',
-                price: 320,
-                originalPrice: null,
-                stock: 156,
-                sales: 143,
-                trend: 'up',
-                featured: false,
-                image: '📄'
-            },
-            {
-                id: 'PRD-003',
-                name: 'Hand Sanitizer',
-                description: 'Antibacterial hand sanitizer 500ml',
-                category: 'hygiene',
-                price: 125,
-                originalPrice: 150,
-                stock: 89,
-                sales: 267,
-                trend: 'up',
-                featured: true,
-                image: '🧴'
-            },
-            {
-                id: 'PRD-004',
-                name: 'Notebooks Set',
-                description: 'Spiral notebooks for students (Pack of 5)',
-                category: 'school',
-                price: 450,
-                originalPrice: null,
-                stock: 78,
-                sales: 198,
-                trend: 'up',
-                featured: true,
-                image: '📔'
-            },
-            {
-                id: 'PRD-005',
-                name: 'File Folders',
-                description: 'Expandable file folders (Pack of 10)',
-                category: 'office',
-                price: 280,
-                originalPrice: 320,
-                stock: 34,
-                sales: 87,
-                trend: 'down',
-                featured: false,
-                image: '📁'
-            },
-            {
-                id: 'PRD-006',
-                name: 'Pencils HB',
-                description: 'Drawing pencils HB grade (Pack of 12)',
-                category: 'school',
-                price: 180,
-                originalPrice: null,
-                stock: 156,
-                sales: 234,
-                trend: 'up',
-                featured: false,
-                image: '✏️'
-            },
-            {
-                id: 'PRD-007',
-                name: 'Tissue Paper',
-                description: 'Soft facial tissue (Pack of 6)',
-                category: 'hygiene',
-                price: 95,
-                originalPrice: 110,
-                stock: 0,
-                sales: 145,
-                trend: 'down',
-                featured: false,
-                image: '🧻'
-            },
-            {
-                id: 'PRD-008',
-                name: 'Erasers Premium',
-                description: 'Premium quality erasers (Pack of 20)',
-                category: 'school',
-                price: 65,
-                originalPrice: null,
-                stock: 298,
-                sales: 156,
-                trend: 'up',
-                featured: true,
-                image: '🔴'
-            }
-        ];
+        // Products data loaded from API
+        let products = [];
 
         let selectedProducts = new Set();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            renderProducts();
+            loadProducts();
             setupEventListeners();
         });
+
+        async function loadProducts() {
+            try {
+                const res = await fetch(`../../api/admin/products/list.php?page=1&pageSize=200&_=${Date.now()}`, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to load products');
+                const data = await res.json();
+                products = (data.items || []).map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    description: p.description || '',
+                    category: (p.category || '').toLowerCase().includes('office') ? 'office' : (p.category || '').toLowerCase().includes('school') ? 'school' : 'hygiene',
+                    price: Number(p.price || 0),
+                    originalPrice: null,
+                    stock: Number(p.stock || 0),
+                    sales: 0,
+                    trend: 'up',
+                    featured: !!p.featured,
+                    image: p.image ? `<img src="${p.image}" alt="${p.name}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;" />` : '📦'
+                }));
+                // reset selection after reload
+                selectedProducts.clear();
+                renderProducts();
+                updateSelectionUI();
+            } catch (e) {
+                console.error(e);
+                showAlert('Failed to load products', 'error');
+            }
+        }
 
         function setupEventListeners() {
             document.getElementById('autoFeatureForm').addEventListener('submit', handleAutoFeature);
@@ -398,36 +321,40 @@
             document.getElementById('removeFeaturedBtn').disabled = !hasSelection;
         }
 
-        function markSelectedAsFeatured() {
+        async function markSelectedAsFeatured() {
             if (selectedProducts.size === 0) return;
-
-            // Update products
-            products.forEach(product => {
-                if (selectedProducts.has(product.id)) {
-                    product.featured = true;
-                }
-            });
-
-            showAlert(`Successfully marked ${selectedProducts.size} products as featured!`, 'success');
-            clearSelection();
-            renderProducts();
-            updateStats();
+            try {
+                const res = await fetch('../../api/admin/products/feature.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: Array.from(selectedProducts), featured: 1 })
+                });
+                if (!res.ok) throw new Error('Feature failed');
+                showAlert(`Successfully marked ${selectedProducts.size} products as featured!`, 'success');
+                clearSelection();
+                await loadProducts();
+            } catch (err) {
+                console.error(err);
+                showAlert('Failed to mark as featured', 'error');
+            }
         }
 
-        function removeFeaturedStatus() {
+        async function removeFeaturedStatus() {
             if (selectedProducts.size === 0) return;
-
-            // Update products
-            products.forEach(product => {
-                if (selectedProducts.has(product.id)) {
-                    product.featured = false;
-                }
-            });
-
-            showAlert(`Removed featured status from ${selectedProducts.size} products!`, 'success');
-            clearSelection();
-            renderProducts();
-            updateStats();
+            try {
+                const res = await fetch('../../api/admin/products/feature.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: Array.from(selectedProducts), featured: 0 })
+                });
+                if (!res.ok) throw new Error('Unfeature failed');
+                showAlert(`Removed featured status from ${selectedProducts.size} products!`, 'success');
+                clearSelection();
+                await loadProducts();
+            } catch (err) {
+                console.error(err);
+                showAlert('Failed to remove featured', 'error');
+            }
         }
 
         function clearSelection() {
