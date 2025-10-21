@@ -83,39 +83,28 @@ $pdo = connect();
     <div class="order-content">
       <h2 class="order-title">Order History</h2>
       <hr>
-      <!-- <div class="status">
-        <a href="?status=All" class="<?= $status === 'All' ? 'active' : '' ?>">All</a> |
-        <img src="../assets/svg/pending.svg" alt="testing" class="status-icon">
-        <a href="?status=Pending" class="<?= $status === 'Pending' ? 'active' : '' ?>">Pending</a> |
-        <img src="../assets/svg/confirmed.svg" alt="testing" class="status-icon">
-        <a href="?status=Confirmed" class="<?= $status === 'Confirmed' ? 'active' : '' ?>">Confirmed</a> |
-        <img src="../assets/svg/shipped.svg" alt="testing" class="status-icon">
-        <a href="?status=Shipped" class="<?= $status === 'Shipped' ? 'active' : '' ?>">Shipped</a> |
-        <img src="../assets/svg/delivered.svg" alt="testing" class="status-icon">
-        <a href="?status=Delivered" class="<?= $status === 'Delivered' ? 'active' : '' ?>">Delivered</a>
-      </div> -->
 
       <div class="status d-flex flex-wrap align-items-center gap-3 mb-3">
-  <a href="?status=All" class="status-link <?= $status === 'All' ? 'active' : '' ?>">
-    All
-  </a>
-  <a href="?status=Pending" class="status-link <?= $status === 'Pending' ? 'active' : '' ?>">
-    <img src="../assets/svg/pending.svg" alt="" class="status-icon">
-    Pending
-  </a>
-  <a href="?status=Confirmed" class="status-link <?= $status === 'Confirmed' ? 'active' : '' ?>">
-    <img src="../assets/svg/confirmed.svg" alt="" class="status-icon">
-    Confirmed
-  </a>
-  <a href="?status=Shipped" class="status-link <?= $status === 'Shipped' ? 'active' : '' ?>">
-    <img src="../assets/svg/shipped.svg" alt="" class="status-icon">
-    Shipped
-  </a>
-  <a href="?status=Delivered" class="status-link <?= $status === 'Delivered' ? 'active' : '' ?>">
-    <img src="../assets/svg/delivered.svg" alt="" class="status-icon">
-    Delivered
-  </a>
-</div>
+        <a href="?status=All" class="status-link <?= $status === 'All' ? 'active' : '' ?>">
+          All
+        </a>
+        <a href="?status=Pending" class="status-link <?= $status === 'Pending' ? 'active' : '' ?>">
+          <img src="../assets/svg/pending.svg" alt="" class="status-icon">
+          Pending
+        </a>
+        <a href="?status=Confirmed" class="status-link <?= $status === 'Confirmed' ? 'active' : '' ?>">
+          <img src="../assets/svg/confirmed.svg" alt="" class="status-icon">
+          Confirmed
+        </a>
+        <a href="?status=Shipped" class="status-link <?= $status === 'Shipped' ? 'active' : '' ?>">
+          <img src="../assets/svg/shipped.svg" alt="" class="status-icon">
+          Shipped
+        </a>
+        <a href="?status=Delivered" class="status-link <?= $status === 'Delivered' ? 'active' : '' ?>">
+          <img src="../assets/svg/delivered.svg" alt="" class="status-icon">
+          Delivered
+        </a>
+      </div>
 
       <div id="order-list">
         <div id="order-container">

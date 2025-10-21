@@ -91,10 +91,11 @@ body {
   color: white;
 }
 
-.status-pending { background-color: #ffc107; }
-.status-delivered { background-color: #28a745; }
-.status-shipped { background-color: #4169E1; }
-.status-confirmed { background-color: #8AFF8A; }
+.status-pending { background-color: #ffc107; color: #000; }
+.status-delivered { background-color: #28a745; color: #fff; }
+.status-shipped { background-color: #4169E1; color: #fff; }
+.status-confirmed { background-color: #8AFF8A; color: #000; }
+.status-default { background-color: #6c757d; color: #fff; }
 .status a.active {
   color: #002366;
   font-weight: 700;
@@ -159,4 +160,7 @@ body {
 .status-link:hover .status-icon,
 .status-link.active .status-icon {
   filter: brightness(0) invert(1);
+}
+.badge{
+  border-radius: 30px;
 }
