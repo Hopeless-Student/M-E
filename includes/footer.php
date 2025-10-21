@@ -1,6 +1,4 @@
-
-    <style>
-
+<style media="screen">
 footer {
     background-color: #002366;
     color: #fff;
@@ -14,7 +12,6 @@ footer {
     flex-wrap: wrap;
     max-width: 1200px;
     gap: 50px;
-    margin-bottom: 40px;
 }
 
 .footer-brand {
@@ -128,62 +125,98 @@ footer {
     color: #A6BAFF;
     text-align: center;
 }
-    </style>
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-brand">
-                <div class="brand-top">
-                    <img alt="M&E Logo" class="footer-logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
-                    <h3>Interior Supplies Trading</h3>
-                </div>
+@media (max-width: 768px) {
+    footer {
+        padding: 20px 20px;
+        text-align: center;
+    }
+    .footer-container {
+        flex-direction: column;
+        text-align: left;
+        gap: 30px;
+    }
+    .footer-brand .brand-top {
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    .brand-top h3 {
+        white-space: nowrap;
+        direction: ltr;
+    }
+    .footer-links {
+        margin: 0 60px;
+        flex-direction: row;
+        gap: 80px;
+        align-content: center;
+        text-align: left;
+    }
+    .footer-column h4 {
+        font-size: 17px;
+    }
+    .footer-column ul li a {
+        font-size: 15px;
+    }
+    .footer-copy p {
+        margin-top: 60px;
+    }
+}
+</style>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="brand-top">
+                <img alt="M&E Logo" class="footer-logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
+                <h3>Interior Supplies Trading</h3>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="../pages/products.php">School</a></li>
+                    <li><a href="../pages/products.php">Office</a></li>
+                    <li><a href="../pages/products.php">Sanitary</a></li>
+                </ul>
             </div>
 
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h4>Navigation</h4>
-                    <ul>
-                        <li><a href="../pages/products.php">School</a></li>
-                        <li><a href="../pages/products.php">Office</a></li>
-                        <li><a href="../pages/products.php">Sanitary</a></li>
-                    </ul>
-                </div>
+            <div class="footer-column">
+                <h4>Customer Support</h4>
+                <ul>
+                    <li><a href="../pages/index.php">FAQs</a></li>
+                    <li><a href="../pages/index.php">Shipping</a></li>
+                    <li><a href="../pages/contact.php">Contact Us</a></li>
+                </ul>
+            </div>
 
-                <div class="footer-column">
-                    <h4>Customer Support</h4>
-                    <ul>
-                        <li><a href="../pages/index.php">FAQs</a></li>
-                        <li><a href="../pages/index.php">Shipping</a></li>
-                        <li><a href="../pages/about.php">Contact Us</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h4>Company Info</h4>
-                    <ul>
-                        <li><a href="about.php">About Us</a></li>
-                        <li><a href="#">Our Store</a></li>
-                        <li><a href="../pages/products.php">Bulk Orders</a></li>
-                        <li><a href="../pages/terms-of-service.php">Return & Refund Policy</a></li>
-                    </ul>
-                </div>
+            <div class="footer-column">
+                <h4>Company Info</h4>
+                <ul>
+                    <li><a href="about.php">About Us</a></li>
+                    <li><a href="#">Our Store</a></li>
+                    <li><a href="../pages/products.php">Bulk Orders</a></li>
+                    <li><a href="../pages/terms-of-service.php">Return & Refund Policy</a></li>
+                </ul>
             </div>
         </div>
+    </div>
 
-        <hr class="footer-divider"/>
+    <hr class="footer-divider"/>
 
-        <div class="footer-socials">
-            <h4>Stay Connected</h4>
-            <p>Follow us for the latest deals & updates!</p>
+    <div class="footer-socials">
+        <h4>Stay Connected</h4>
+        <p>Follow us for the latest deals & updates!</p>
 
-            <a class="fb-btn" href="https://www.facebook.com/youronlineshooping" target="_blank">
-                <img alt="Facebook Link" src="../assets/images/Facebook_Logo_2023.png"/>
-                <span>Follow us on Facebook</span>
-            </a>
-        </div>
+        <a class="fb-btn" href="https://www.facebook.com/youronlineshooping" target="_blank">
+            <img alt="Facebook Link" src="../assets/images/Facebook_Logo_2023.png"/>
+            <span>Follow us on Facebook</span>
+        </a>
+    </div>
 
-        <div class="footer-copy">
-            <p>© Copyright <?php echo date("Y"); ?> M&E Interior Supplies Trading, All rights reserved.</p>
-        </div>
-    </footer>
-    <?php
+    <div class="footer-copy">
+        <p>© Copyright <?php echo date("Y"); ?> M&E Interior Supplies Trading, All rights reserved.</p>
+    </div>
+</footer>
+<?php
