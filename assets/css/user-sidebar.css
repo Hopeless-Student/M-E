@@ -1,11 +1,12 @@
 /* Sidebar Styling */
 .sidebar {
-width: 260px;
-min-height: 100vh;
-background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
-padding: 20px;
-box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-position: fixed;
+  width: 260px;
+    min-height: 100vh;
+    background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    position: fixed;
+    transition: transform 0.3s ease-in-out;
 }
 
 .sidebar .profile {
@@ -57,23 +58,105 @@ background-color: #e0e7ff;
 color: #1e40af;
 }
 
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1400;
+  transition: opacity 0.3s;
+}
+
+.sidebar.active + .sidebar-overlay {
+  display: block;
+  opacity: 1;
+}
+
 /* For main content spacing */
 .main-content {
-  margin-left: 240px;        /* push aside for sidebar */
-  padding: 40px 20px;        /* spacing */
-  display: flex;             /* enable flexbox */
-  justify-content: center;   /* center horizontally */
+  margin-left: 240px;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .profile-card {
-  width: 100%;    /* let it shrink on small screens */
-  max-width: 1000px;   /* limit on big screens */
+  width: 100%;
+  max-width: 1000px;
   border-radius: 12px;
 }
-
+.sidebar-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1050;
+  background-color: #002366;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 1rem;
+}
+.sidebar-toggle:hover {
+  background-color: #274dcf;
+}
 .profile-img {
   width: 150px;
   height: 150px;
   object-fit: cover;
   border-radius: 50%;
+}
+@media (max-width: 992px) {
+  .user-sidebar {
+    position: relative !important;
+  }
+  .order-content {
+    padding-top: 130px;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1500;
+  }
+  .sidebar.active {
+   transform: translateX(0);
+ }
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-top: 60px;
+  }
+  .sidebar-nav ul {
+   text-align: center;
+ }
+
+ .sidebar-nav a {
+   display: inline-block;
+   width: 80%;
+   text-align: center;
+   font-size: 1rem;
+ }
+}
+
+@media (max-width: 768px) {
+  .sidebar .avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .sidebar .username {
+    font-size: 1rem;
+  }
+
+  .sidebar .role {
+    font-size: 0.8rem;
+  }
 }
