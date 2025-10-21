@@ -1,13 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Header & nav elements
-  const hamburger = document.querySelector(".hamburger");
-  const hamburgerIcon = document.querySelector(".hamburger-icon");
-  const nav = document.querySelector("header nav");
+  
 
   // Search elements
-  const searchBar =
-    document.querySelector(".hero-search-bar") ||
-    document.querySelector(".header-actions .search-bar");
+  const searchBar = document.querySelector(".hero-search-bar")
   const searchInput = document.querySelector("#search-input");
   const searchIcon = document.querySelector(".hero-search-bar .search-icon");
   const suggestionsBox = document.querySelector(".search-suggestions");
@@ -16,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const cart = document.querySelector(".cart");
   const heroCTA = document.querySelector(".hero-cta");
   const faqQuestions = document.querySelectorAll(".faq-question");
-  const header = document.querySelector("header");
 
   // Login modal elements
   const loginModal = document.getElementById("loginModal");
@@ -52,27 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     (termsModal && termsModal.querySelector(".close")) ||
     document.getElementById("closeTermsModal");
 
-  // 🔥 Hamburger toggle
-  if (hamburger && nav && hamburgerIcon) {
-    hamburger.addEventListener("click", () => {
-      nav.classList.toggle("active");
-      hamburger.classList.toggle("active");
 
-      // Switch icon
-      hamburgerIcon.src = nav.classList.contains("active")
-        ? "../assets/svg/hamburger-menu-active.svg"
-        : "../assets/svg/hamburger-menu.svg";
-    });
-
-    // Close nav when a link is clicked
-    nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("active");
-        hamburger.classList.remove("active");
-        hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
-      });
-    });
-  }
 
   // Mobile search toggle
   if (searchBar && searchIcon && searchInput) {
@@ -97,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       searchInput.style.display = "none";
     }
   }
+  
 
   // Search suggestions
   const products = [
@@ -113,6 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "Folder Manila",
     "Correction Tape",
   ];
+
+  
 
   if (searchInput && suggestionsBox) {
     searchInput.addEventListener("input", () => {
@@ -220,16 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Header color transition
-  if (header) {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 700) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
-    });
-  }
+
 
   // Login modal logic
   if (btnLogin && loginModal) {
