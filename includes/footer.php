@@ -187,7 +187,7 @@ footer {
                 <ul>
                     <li><a href="../pages/index.php">FAQs</a></li>
                     <li><a href="../pages/index.php">Shipping</a></li>
-                    <li><a href="../pages/about.php">Contact Us</a></li>
+                    <li><a href="../pages/contact.php">Contact Us</a></li>
                 </ul>
             </div>
 
