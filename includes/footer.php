@@ -163,18 +163,11 @@ footer {
 }
 </style>
 
-<?php
-    function getBaseUrl() {
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'];
-        return $protocol . '://' . $host . '/PHP_projects/M&E_project/M-E';
-    }
-?>
 <footer>
     <div class="footer-container">
         <div class="footer-brand">
             <div class="brand-top">
-                <img alt="M&E Logo" class="footer-logo" src="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/assets/images/M&E_LOGO-semi-transparent.png' : '/assets/images/M&E_LOGO-semi-transparent.png'); ?>"/>
+                <img alt="M&E Logo" class="footer-logo" src="../assets/images/M&E_LOGO-semi-transparent.png"/>
                 <h3>Interior Supplies Trading</h3>
             </div>
         </div>
@@ -183,28 +176,28 @@ footer {
             <div class="footer-column">
                 <h4>Navigation</h4>
                 <ul>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/products.php?category=school' : '/pages/products.php?category=school'); ?>">School</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/products.php?category=office' : '/pages/products.php?category=office'); ?>">Office</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/products.php?category=sanitary' : '/pages/products.php?category=sanitary'); ?>">Sanitary</a></li>
+                    <li><a href="../pages/products.php">School</a></li>
+                    <li><a href="../pages/products.php">Office</a></li>
+                    <li><a href="../pages/products.php">Sanitary</a></li>
                 </ul>
             </div>
 
             <div class="footer-column">
                 <h4>Customer Support</h4>
                 <ul>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/faq.php' : '/pages/faq.php'); ?>">FAQs</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/shipping.php' : '/pages/shipping.php'); ?>">Shipping</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/contact.php' : '/pages/contact.php'); ?>">Contact Us</a></li>
+                    <li><a href="../pages/faq.php">FAQs</a></li>
+                    <li><a href="../pages/shipping.php">Shipping</a></li>
+                    <li><a href="../pages/contact.php">Contact Us</a></li>
                 </ul>
             </div>
 
             <div class="footer-column">
                 <h4>Company Info</h4>
                 <ul>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/about.php' : '/pages/about.php'); ?>">About Us</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/contact.php#location' : '/pages/contact.php#location'); ?>">Our Store</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/contact.php#bulk-orders' : '/pages/contact.php#bulk-orders'); ?>">Bulk Orders</a></li>
-                    <li><a href="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/pages/terms-of-service.php' : '/pages/terms-of-service.php'); ?>">Return & Refund Policy</a></li>
+                    <li><a href="../pages/about.php">About Us</a></li>
+                    <li><a href="../pages/contact.php">Our Store</a></li>
+                    <li><a href="../pages/contact.php">Bulk Orders</a></li>
+                    <li><a href="../pages/terms-of-service.php">Return & Refund Policy</a></li>
                 </ul>
             </div>
         </div>
@@ -217,7 +210,7 @@ footer {
         <p>Follow us for the latest deals & updates!</p>
 
         <a class="fb-btn" href="https://www.facebook.com/youronlineshooping" target="_blank">
-            <img alt="Facebook Link" src="<?php echo getBaseUrl() . (isset($isAdmin) && $isAdmin ? '/assets/images/Facebook_Logo_2023.png' : '/assets/images/Facebook_Logo_2023.png'); ?>"/>
+            <img alt="Facebook Link" src="../assets/images/Facebook_Logo_2023.png"/>
             <span>Follow us on Facebook</span>
         </a>
     </div>
