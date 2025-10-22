@@ -301,7 +301,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 </div>
 
                 <div class="faqs-more">
-                    <a href="#">More about FAQs
+                    <a href="faq.php">More about FAQs
                         <img alt="More" src="../assets/svg/right-arrow.svg"/>
                     </a>
                 </div>
