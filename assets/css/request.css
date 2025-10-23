@@ -10,11 +10,28 @@ body {
   cursor: pointer;
   padding: 12px;
   border-bottom: 1px solid #e9ecef;
+  transition: all 0.25s ease-in-out;
   transition: background-color 0.2s;
 }
 .request-item:hover {
-  background-color: #E7E7E7;
-  color: #1e40af;
+  background-color: #eaf1ff;
+ color: #1e40af;
+}
+.btn-primary {
+  background-color: #1e40af;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #002366;
+}
+.badge.bg-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  border-radius: 30px;
+}
+.badge.bg-success {
+  background-color: #28a745 !important;
+  border-radius: 30px;
 }
 .active-request {
   background-color: #E7E7E7 !important;
@@ -78,4 +95,157 @@ body {
 .request-item .badge.bg-success {
   font-size: 0.7rem;
   vertical-align: middle;
+}
+
+
+/* Responsive improvements */
+@media (max-width: 992px) {
+  .user-sidebar {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 10px;
+  }
+  .request-list {
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .request-item {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .request-detail {
+    padding: 15px;
+  }
+
+  .card-body {
+    padding: 15px;
+  }
+
+  .dropdown .btn {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+
+  .dropdown-menu {
+    font-size: 0.9rem;
+  }
+}
+/* --- Final responsive fix for sidebar overlap --- */
+@media (max-width: 992px) {
+  .user-sidebar {
+    position: relative !important;
+    width: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: auto !important;
+    z-index: 1000 !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 1;
+  }
+
+  /* Force request list and detail to stack correctly */
+  .request-list,
+  .request-detail {
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .request-list {
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    display: block !important;
+  }.main-content,
+  .user-sidebar {
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  .user-sidebar {
+    z-index: 1000;
+  }
+
+  .main-content {
+    z-index: 1;
+  }
+  .main-content {
+    padding: 10px;
+  }
+
+  .request-list {
+    margin-bottom: 15px;
+  }
+
+  .request-detail h4 {
+    text-align: center;
+    font-size: 1.25rem;
+  }
+
+  .d-flex.gap-3 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #requestType, #requestStatus {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+
+  .card-body {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .modal-dialog {
+    margin: 0 10px;
+  }
+
+  .modal-content {
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .request-list h5 {
+    font-size: 1rem;
+  }
+
+  .dropdown .btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .request-item strong {
+    font-size: 0.9rem;
+  }
+
+  .request-item .message {
+    font-size: 0.8rem;
+  }
+
+  #notifContainer {
+    width: 90%;
+    right: 5%;
+  }
 }

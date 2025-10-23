@@ -137,4 +137,12 @@ try {
   <h5 class="fw-bold mt-2">Total Amount:</h5>
   <h4> <span class="text-success">₱<?= number_format($order['final_amount'], 2) ?></span> </h4>
   </div>
+
+  <a href="../includes/receipt.php?order_id=<?= $order['order_id'] ?>"
+     target="_blank"
+     class="btn btn-sm btn-outline-success mt-3 d-flex align-items-center justify-content-center gap-2">
+    <img src="../assets/svg/receipt.svg" alt="PDF" width="18">
+    <span>Download Receipt</span>
+  </a>
+
 </div>

@@ -3,7 +3,10 @@
       ? "../assets/profile-pics/" . htmlspecialchars($user['profile_image'])
       : "../assets/images/default.png";
   ?>
-        <aside class="sidebar">
+    <button id="sidebarToggle" class="sidebar-toggle d-lg-none">
+    ☰ Menu
+  </button>
+        <aside class="sidebar" id="sidebar">
         <div class="profile text-center">
             <img src="<?php echo $profileImage; ?>"
                  alt="User Avatar"
@@ -24,3 +27,24 @@
             </ul>
         </nav>
       </aside>
+      <div class="sidebar-overlay d-lg-none"></div>
+
+      <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("sidebarToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.querySelector(".sidebar-overlay");
+
+  toggleBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+    toggleBtn.style.display = sidebar.classList.contains("active") ? "none" : "block";
+  });
+
+  if (overlay) {
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      toggleBtn.style.display = "block";
+    });
+  }
+});
+</script>
