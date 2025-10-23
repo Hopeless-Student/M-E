@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Header & nav elements
-  
+
 
   // Search elements
   const searchBar = document.querySelector(".hero-search-bar")
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       searchInput.style.display = "none";
     }
   }
-  
+
 
   // Search suggestions
   const products = [
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Correction Tape",
   ];
 
-  
+
 
   if (searchInput && suggestionsBox) {
     searchInput.addEventListener("input", () => {
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const href = this.getAttribute("href");
       if (href && href.startsWith("#")) {
         e.preventDefault();
-        const target = document.querySelector(href);
+        const target = document.querySelector("href");
         if (target) target.scrollIntoView({ behavior: "smooth" });
       }
     });

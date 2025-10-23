@@ -1,3 +1,5 @@
+<?php require_once __DIR__ . '/../includes/database.php';
+require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -67,6 +69,8 @@
             </div>
         </section>
 
+        <?php include '../includes/login-modal.php';?>
         <?php include '../includes/footer.php'; ?>
+        <script src="../assets/js/homepage.js"></script>
     </body>
 </html>

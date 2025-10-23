@@ -7,7 +7,7 @@
 body {
     background-color: #E8E8E8;
 }
-
+/* css for the avatar hover 
 .avatar:hover{
   background-color: rgb(166, 186, 255);
 }
@@ -62,7 +62,7 @@ body {
 
 nav .mobile-user-menu {
     display: none !important;
-}
+} */
 
 .floating-request-btn {
     position: fixed;
@@ -252,7 +252,7 @@ nav .mobile-user-menu {
   padding-right: 40px;
   box-sizing: border-box;
 }
-.eye-icon {
+/* .eye-icon {
   position: absolute;
   top: 0%;
   right: -30%;
@@ -260,7 +260,7 @@ nav .mobile-user-menu {
   cursor: pointer;
   width: 24px;
   height: 24px;
-}
+} */
 
 section {
     background-color: #ffffff;
@@ -991,8 +991,8 @@ section {
 }
 
 
-
-.modal {
+ /* css for modal log in */
+/* .modal {
     display: none;
     position: fixed;
     z-index: 2000;
@@ -1142,7 +1142,7 @@ section {
 #termsModal ol li {
     color: #4169E1;
     font-weight: bold;
-}
+} */
 
 nav .mobile-only {
     display: none !important;
