@@ -1,3 +1,5 @@
+<?php require_once __DIR__ . '/../includes/database.php';
+require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -32,7 +34,7 @@
             <div class="faq-content">
                 <section id="ordering" class="faq-section">
                     <h2>Ordering & Payment</h2>
-                    
+
                     <div class="faq-group">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -73,7 +75,7 @@
 
                 <section id="shipping" class="faq-section">
                     <h2>Shipping & Delivery</h2>
-                    
+
                     <div class="faq-group">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -105,7 +107,7 @@
 
                 <section id="products" class="faq-section">
                     <h2>Products & Stock</h2>
-                    
+
                     <div class="faq-group">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -138,7 +140,7 @@
 
                 <section id="bulk" class="faq-section">
                     <h2>Bulk Orders</h2>
-                    
+
                     <div class="faq-group">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -172,7 +174,7 @@
 
                 <section id="returns" class="faq-section">
                     <h2>Returns & Refunds</h2>
-                    
+
                     <div class="faq-group">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -206,7 +208,7 @@
 
                 <section id="account" class="faq-section">
                     <h2>Account & Security</h2>
-                    
+
                     <div class="faq-group">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -252,11 +254,13 @@
 
             <div class="cta-buttons">
                 <a href="../pages/contact.php" class="btn-primary">Contact Us</a>
-                <button class="btn-secondary" id="customRequestBtn">Send Custom Request</button>
+                <!-- <button class="btn-secondary" id="customRequestBtn">Send Custom Request</button> -->
+                <a href="../pages/index.php" class="btn-secondary" id="customRequestBtn">Send Custom Request</a>
             </div>
         </section>
-
+        <?php include '../includes/login-modal.php';?>
         <?php include '../includes/footer.php'; ?>
         <script src="../assets/js/faq.js"></script>
+        <script src="../assets/js/homepage.js"></script>
     </body>
 </html>

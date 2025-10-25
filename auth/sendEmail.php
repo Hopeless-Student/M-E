@@ -47,13 +47,13 @@ $dotenv->load();
       </div>";
         $mail->AltBody = "Hello $fname! Copy and paste this link to verify your email: $verifylink";
         if(!$mail->send()){
-          echo "Mailer Error: ".$mail->ErrorInfo;
+          error_log("Mailer Error: " . $mail->ErrorInfo);
+           return false;
         } else {
-          echo "Verification Sent!";
           return true;
         }
       } catch (\Exception $e) {
-        echo "Exception: " . $e->getMessage();
+        error_log("Mailer Exception: " . $e->getMessage());
         return false;
       }
 
