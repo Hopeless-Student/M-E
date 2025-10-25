@@ -197,7 +197,7 @@ footer {
                     <li><a href="../pages/about.php">About Us</a></li>
                     <li><a href="../pages/contact.php">Our Store</a></li>
                     <li><a href="../pages/contact.php">Bulk Orders</a></li>
-                    <li><a href="../pages/terms-of-service.php">Return & Refund Policy</a></li>
+                    <li><a href="../pages/terms-of-service.php" target="_blank">Return & Refund Policy</a></li>
                 </ul>
             </div>
         </div>
