@@ -297,6 +297,16 @@ document.addEventListener("DOMContentLoaded", () => {
       hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
     });
   }
+  const mobileUserMenu = document.querySelector('.mobile-user-menu');
+  if (mobileUserMenu) {
+    const userAvatar = mobileUserMenu.querySelector('.user-avatar');
+    const dropdown = mobileUserMenu.querySelector('.dropdown');
+
+    userAvatar.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropdown.classList.toggle('active');
+    });
+  }
 
   const floatingRequestBtn = document.getElementById("floatingRequestBtn");
 const customRequestModal = document.getElementById("customRequestModal");

@@ -8,6 +8,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
     ?>
 
     <link rel="stylesheet" href="../assets/css/about.css">
+    <link rel="stylesheet" href="../assets/css/navbar.css">
     <body>
         <?php include '../includes/navbar.php'; ?>
 
@@ -195,6 +196,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
         </section>
         <?php include '../includes/footer.php'; ?>
         <?php include '../includes/login-modal.php'; ?>
+        <script src="../assets/js/navbar.js"></script>
         <script src="../assets/js/homepage.js"></script>
     </body>
 </html>

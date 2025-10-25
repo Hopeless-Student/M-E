@@ -243,7 +243,7 @@
 }
 
 nav .mobile-user-menu {
-    display: none !important;
+    display: none;
 }
 
 </style>

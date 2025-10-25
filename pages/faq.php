@@ -5,6 +5,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
         <link rel="stylesheet" href="../assets/css/faq.css"/>
+        <link rel="stylesheet" href="../assets/css/navbar.css"/>
         <title>M&E: Frequently Asked Questions</title>
     </head>
 
@@ -260,6 +261,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
         </section>
         <?php include '../includes/login-modal.php';?>
         <?php include '../includes/footer.php'; ?>
+        <script src="../assets/js/navbar.js"></script>
         <script src="../assets/js/faq.js"></script>
         <script src="../assets/js/homepage.js"></script>
     </body>
