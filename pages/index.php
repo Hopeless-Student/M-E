@@ -153,6 +153,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               <h2>Custom Request</h2>
               <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
 
+
               <form id="customRequestForm" action="../auth/custom_request.php" method="post">
                   <label for="requestType">Request Type <span style="color:red;">*</span></label>
                   <select id="requestType" name="request_type" required>

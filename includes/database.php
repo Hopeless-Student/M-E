@@ -4,7 +4,7 @@
     $db_name = "m&e";
     $db_user = "root";
     $db_pass = "";
-
+    date_default_timezone_set('Asia/Manila');
       try {
         $dsn = "mysql:host=$db_server;dbname=$db_name;charset=utf8mb4";
         $options = [

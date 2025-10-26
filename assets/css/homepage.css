@@ -1,3 +1,8 @@
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
 * {
     margin: 0;
     padding: 0;
@@ -43,7 +48,7 @@ body {
 /* Request Modal */
 .request-modal-content {
     max-width: 600px;
-    max-height: 90vh;
+    max-height: 90%;
     overflow-y: auto;
 }
 
@@ -126,7 +131,7 @@ body {
     font-weight: 500;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 9999;
-    animation: slideDown 0.4s ease, fadeOut 0.4s ease 4.6s
+    animation: slideDown 0.4s ease, fadeOut 0.4s ease 4.6s;
     opacity: 1;
     text-align: left;
     line-height: 1.5;
@@ -896,9 +901,9 @@ section {
 }
 
 /* Hide mobile-only items on desktop */
-nav .mobile-only {
-    display: none !important;
-}
+/* nav .mobile-only {
+    display: none;
+} */
 nav .mobile-user-menu .dropdown {
   display: none;
   transition: all 0.3s ease;

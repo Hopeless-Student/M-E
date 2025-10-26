@@ -359,7 +359,7 @@ body {
     font-weight: 500;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 9999;
-    animation: slideDown 0.4s ease forwards;
+    animation: slideDown 0.4s ease, fadeOut 0.4s ease 4.6s;
     opacity: 1;
     text-align: left;
     line-height: 1.5;
