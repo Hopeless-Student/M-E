@@ -1,78 +1,82 @@
 <style media="screen">
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  inset: 0; /* replaces top/left/right/bottom */
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 500px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  font-family: 'Poppins', sans-serif;
+  position: relative;
 }
 
 .close-btn {
-    color: #4169E1;
-    float: right;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
+  color: #4169E1;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
 }
 
 .close-btn:hover {
-    transition: 400ms ease;
-    color: #002366;
+  color: #002366;
+  transition: 400ms ease;
 }
 
 .modal-content img {
-    height: 150px;
-    margin: 30px 147px 15px;
-    display: block;
+  display: block;
+  height: 120px;
+  margin: 20px auto 15px;
 }
 
 .modal-content h2 {
-    text-align: center;
-    font-size: 32px;
-    margin: 20px 0;
-    color: #4169E1;
+  text-align: center;
+  font-size: 28px;
+  margin: 15px 0;
+  color: #4169E1;
 }
 
 .modal-content label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: 600;
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 600;
 }
 
 .modal-content input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #4169E1;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 16px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #4169E1;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
 }
 
 .modal-content button {
-    width: 100%;
-    padding: 12px;
-    background-color: #4169E1;
-    color: white;
-    border: none;
-    font-weight: bold;
-    font-size: 18px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.4s ease;
+  width: 100%;
+  padding: 12px;
+  background-color: #4169E1;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
 }
 
 .modal-content button:hover {
@@ -150,14 +154,17 @@
     color: #4169E1;
     font-weight: bold;
 }
+.password-wrapper{
+  position: relative;
+}
 .eye-icon {
   position: absolute;
-  top: 0%;
-  right: -30%;
+  right: 10px;
+  top: 15%;
   transform: translateY(-55%);
   cursor: pointer;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 
 .user-avatar .avatar {
@@ -243,9 +250,52 @@
 }
 
 nav .mobile-user-menu {
-    display: none !important;
+    display: none;
+}
+@media (max-width: 425px) {
+  .modal-content {
+    padding: 20px 15px;
+    max-width: 90%;
+  }
+  .modal-content img {
+    height: 90px;
+    margin: 10px auto;
+  }
+  .modal-content h2 {
+    font-size: 22px;
+  }
+  .modal-content input {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .modal-content button {
+    font-size: 16px;
+    padding: 10px;
+  }
 }
 
+@media (max-width: 375px) {
+  .modal-content {
+    width: 92%;
+    padding: 18px 12px;
+  }
+  .modal-content h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .modal-content {
+    width: 95%;
+    padding: 15px 10px;
+  }
+  .modal-content h2 {
+    font-size: 18px;
+  }
+  .modal-content button {
+    font-size: 15px;
+  }
+}
 </style>
 <div id="loginModal" class="modal">
     <div class="modal-content">

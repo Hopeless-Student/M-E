@@ -9,6 +9,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop - Catalog</title>
     <link rel="stylesheet" href="../assets/css/products.css">
+    <link rel="stylesheet" href="../assets/css/navbar.css">
     <link rel="stylesheet" href="../assets/css/homepage.css">
 
 </head>
@@ -329,6 +330,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         updateCart();
     </script>
     <script src="../assets/js/homepage.js"></script>
+    <script src="../assets/js/navbar.js"></script>
     <?php include '../includes/footer.php'; ?>
 </body>
 </html>

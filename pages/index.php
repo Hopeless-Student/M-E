@@ -16,6 +16,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
         <link href="../assets/css/homepage.css" rel="stylesheet"/>
+        <link href="../assets/css/navbar.css" rel="stylesheet"/>
         <title>M&E: Interior Supplies Trading</title>
     </head>
 
@@ -151,6 +152,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
               <h2>Custom Request</h2>
               <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
+
 
               <form id="customRequestForm" action="../auth/custom_request.php" method="post">
                   <label for="requestType">Request Type <span style="color:red;">*</span></label>
@@ -310,10 +312,10 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
 
 
-        <?php include '../includes/footer.php';?>
-        <?php include '../includes/login-modal.php';?>
-
         <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
         <script src="../assets/js/homepage.js"></script>
+        <script src="../assets/js/navbar.js"></script>
+        <?php include '../includes/footer.php';?>
+        <?php include '../includes/login-modal.php';?>
     </body>
 </html>
