@@ -47,10 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   document.addEventListener('hidden.bs.modal', function (event) {
-  // When any modal hides, remove focus from inside it
+
   document.activeElement.blur();
 
-  // Optionally, set focus back to the body or sidebar button for better UX
   const toggleBtn = document.querySelector('.sidebar-toggle');
   if (toggleBtn) toggleBtn.focus();
 });

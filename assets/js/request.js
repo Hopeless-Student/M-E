@@ -7,7 +7,7 @@ function showRequestFromElement(element) {
   if (isEditMode) {
     cancelEdit();
   }
-
+  // pang set the data
   document.getElementById("requestTitle").innerText = element.dataset.title;
   document.getElementById("requestContent").innerText = element.dataset.message;
   document.getElementById("requestType").innerText = element.dataset.type;
@@ -17,17 +17,23 @@ function showRequestFromElement(element) {
   const hiddenInput = document.querySelector('#requestActionForm input[name="request_id"]');
   if (hiddenInput) hiddenInput.value = element.dataset.requestId;
 
+  // admin reply
   const adminReply = document.getElementById("adminReply");
   if (element.dataset.admin_response && element.dataset.admin_response.trim()) {
     adminReply.innerText = element.dataset.admin_response;
   } else {
     adminReply.innerText = "No admin reply yet.";
   }
+  // pang disable ng edit kapag nag iba na status or may reply na admin
+  const editBtn = document.getElementById('editBtn');
+  const deleteBtn = document.querySelector('[data-action="delete"]');
 
+  // pang set ng 1st active request
   let items = document.querySelectorAll(".request-item");
   items.forEach(el => el.classList.remove("active-request"));
   element.classList.add("active-request");
 
+  // para sa badge colors and set
   const status = element.dataset.status.toLowerCase();
   const statusBadge = document.getElementById("requestStatus");
   statusBadge.className = "badge text-capitalize";
@@ -45,7 +51,17 @@ function showRequestFromElement(element) {
   else if (type === "other") typeBadge.classList.add("bg-secondary");
 
   console.log(`Viewing request: type="${type}" | status="${status}"`);
+  if(editBtn){
+    const hasReply = element.dataset.admin_response && element.dataset.admin_response.trim().length > 0;
 
+    if (status === "in-progress" || status === "resolved" || status === "closed" || hasReply) {
+    editBtn.style.display = "none";
+    } else {
+      editBtn.style.display = "";
+      if (deleteBtn) deleteBtn.style.display = "";
+    }
+  }
+  // kapag na seen na
   fetch('../ajax/mark-seen.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -109,35 +125,56 @@ window.addEventListener("DOMContentLoaded", function () {
 
       console.log(`Filtering: type="${currentType}" | status="${currentStatus}"`);
       fetch(`../ajax/fetch-request.php?type=${currentType}&status=${currentStatus}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            renderRequestList(data.requests);
-          } else {
-            console.error("Error:", data.error);
-            requestList.innerHTML = `<div class="text-center text-danger p-3">Error: ${data.error}</div>`;
-          }
-        })
-        .catch(err => {
-          console.error("Fetch error:", err);
-          requestList.innerHTML = `<div class="text-center text-danger p-3">Error: ${data.error}</div>`;
-        });
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (data.requests.length === 0) {
+        requestList.innerHTML = `
+          <div class="text-center text-muted p-4">
+            <i class="bi bi-inbox fs-2 mb-2"></i><br>
+            <strong>No requests yet</strong><br>
+            <small>You haven’t made any requests. Click “New Request” to get started.</small>
+          </div>
+        `;
+      } else {
+        renderRequestList(data.requests);
+      }
+    } else {
+      requestList.innerHTML = `
+        <div class="text-center text-danger p-3">
+          <i class="bi bi-exclamation-triangle"></i><br>
+          <strong>Couldn’t load your requests</strong><br>
+          <small>${data.error || 'Please try again later.'}</small>
+        </div>
+      `;
+    }
+  })
+  .catch(err => {
+    console.error("Fetch error:", err);
+    requestList.innerHTML = `
+      <div class="text-center text-muted p-3">
+        <i class="bi bi-wifi-off fs-2 mb-2"></i><br>
+        <strong>Connection problem</strong><br>
+        <small>Check your internet connection and try again.</small>
+      </div>
+    `;
+  });
+
     });
   });
 
   function renderRequestList(requests) {
     requestList.innerHTML = "";
 
-    if (!requests || requests.length === 0) {
-      requestList.innerHTML = `<div class="text-center text-muted p-3">No requests found.</div>`;
+    if (document.getElementById("requestTitle")) {
       document.getElementById("requestTitle").innerText = "No requests found";
       document.getElementById("requestContent").innerText = "Try adjusting your filters";
       document.getElementById("requestType").innerText = "-";
       document.getElementById("requestStatus").innerText = "-";
       document.getElementById("requestDate").innerText = "-";
       document.getElementById("adminReply").innerText = "-";
-      return;
     }
+
 
     requests.forEach((req, index) => {
       const div = document.createElement("div");
@@ -194,7 +231,16 @@ window.addEventListener("DOMContentLoaded", function () {
 
     const action = btn.dataset.action;
     const form = btn.closest('form');
-    const requestId = form.querySelector('[name="request_id"]').value;
+    if (!form) {
+      console.warn('Cannot take your action for the action button: request is empty', btn);
+      return;
+    }
+    // const requestId = form.querySelector('[name="request_id"]').value;
+    const requestId = btn.dataset.requestId || (form ? form.querySelector('[name="request_id"]').value : null);
+    if (!requestId) {
+      console.warn('Request ID not found for action:', action);
+      return;
+    }
 
     if (action === 'edit') {
       const content = document.getElementById('requestContent');
@@ -219,28 +265,28 @@ window.addEventListener("DOMContentLoaded", function () {
       textarea.value = originalText; // this preserves formatting (line breaks, dashes, etc.)
       content.appendChild(textarea);
 
-      const btnContainer = document.createElement('div');
-      btnContainer.className = 'd-flex justify-content-end gap-2';
-      btnContainer.innerHTML = `
-        <button id="saveEditBtn" class="btn btn-outline-primary btn-sm action-btn" type="button">
-          <img src="../assets/svg/save.svg" alt="save"> Save
-        </button>
-        <button id="cancelEditBtn" class="btn btn-outline-danger btn-sm" type="button">
-          <img src="../assets/svg/cancel.svg" alt="cancel"> Cancel
-        </button>
-      `;
-      content.appendChild(btnContainer);
-      // content.innerHTML = `
-      //   <textarea id="editMessage" class="form-control mb-2" rows="4">${originalText}</textarea>
-      //   <div class="d-flex justify-content-end gap-2">
-      //     <button id="saveEditBtn" class="btn btn-outline-primary btn-sm action-btn" type="button">
-      //       <img src="../assets/svg/save.svg" alt="save"> Save
-      //     </button>
-      //     <button id="cancelEditBtn" class="btn btn-outline-danger btn-sm" type="button">
-      //       <img src="../assets/svg/cancel.svg" alt="cancel"> Cancel
-      //     </button>
-      //   </div>
+      // const btnContainer = document.createElement('div');
+      // btnContainer.className = 'd-flex justify-content-end gap-2';
+      // btnContainer.innerHTML = `
+      //   <button id="saveEditBtn" class="btn btn-outline-primary btn-sm action-btn" type="button">
+      //     <img src="../assets/svg/save.svg" alt="save"> Save
+      //   </button>
+      //   <button id="cancelEditBtn" class="btn btn-outline-danger btn-sm" type="button">
+      //     <img src="../assets/svg/cancel.svg" alt="cancel"> Cancel
+      //   </button>
       // `;
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'd-flex justify-content-end gap-2';
+        btnContainer.innerHTML = `
+          <button id="saveEditBtn" class="btn btn-outline-primary btn-sm action-btn" type="button" data-request-id="${requestId}">
+            <img src="../assets/svg/save.svg" alt="save"> Save
+          </button>
+          <button id="cancelEditBtn" class="btn btn-outline-danger btn-sm" type="button">
+            <img src="../assets/svg/cancel.svg" alt="cancel"> Cancel
+          </button>
+        `;
+
+      content.appendChild(btnContainer);
       document.getElementById('saveEditBtn').onclick = () => {
         // const newMessage = document.getElementById('editMessage').value.trim();
         const newMessage = textarea.value.trim();
@@ -304,7 +350,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
         confirmBtn.onclick = () => {
           confirmModal.hide();
-
+          document.activeElement.blur();
           fetch('../ajax/action-request.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -334,6 +380,7 @@ window.addEventListener("DOMContentLoaded", function () {
   // notif pantanga
   function showNotif(message, type) {
     const notifContainer = document.getElementById('notifContainer');
+    if (!notifContainer) return;
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} shadow-sm alert-dismissible fade show`;
     alert.role = 'alert';
