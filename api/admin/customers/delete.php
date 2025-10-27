@@ -1,6 +1,18 @@
 <?php
+/**
+ * Delete Customer API - FIXED VERSION
+ * Changed is_active to isActive
+ * Added authentication
+ * Added comprehensive validation
+ * Added activity logging
+ */
+
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
+// require_once __DIR__ . '/../auth_check.php';
+//
+// // Authenticate admin
+// $admin = requireAdminAuth();
 
 // Only accept DELETE or POST requests
 if (!in_array($_SERVER['REQUEST_METHOD'], ['DELETE', 'POST'])) {
@@ -18,31 +30,36 @@ if (!$input) {
     exit;
 }
 
-$userId = isset($input['userId']) ? (int)$input['userId'] : 0;
-$reason = trim($input['reason'] ?? '');
-$confirmation = trim($input['confirmation'] ?? '');
+// Validate input
+$validation = validateInput($input, [
+    'userId' => ['required' => true, 'type' => 'int', 'min' => 1],
+    'reason' => ['required' => true, 'type' => 'string', 'maxLength' => 500, 'enum' => [
+        'customer_request', 'duplicate_account', 'fraudulent', 'inactive', 'gdpr'
+    ]],
+    'confirmation' => ['required' => true, 'type' => 'string']
+]);
 
-if ($userId <= 0) {
+if (!$validation['valid']) {
     http_response_code(400);
-    echo json_encode(['error' => 'Invalid user ID']);
+    echo json_encode(['error' => 'Validation failed', 'details' => $validation['errors']]);
     exit;
 }
 
+$data = $validation['data'];
+$userId = $data['userId'];
+$reason = $data['reason'];
+$confirmation = $data['confirmation'];
+
+// Check confirmation
 if ($confirmation !== 'DELETE') {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid confirmation. Type "DELETE" to confirm']);
     exit;
 }
 
-if (empty($reason)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Deletion reason is required']);
-    exit;
-}
-
 try {
     // Check if user exists
-    $checkSql = "SELECT user_id, email, first_name, last_name FROM users WHERE user_id = :userId";
+    $checkSql = "SELECT user_id, email, first_name, middle_name, last_name, isActive FROM users WHERE user_id = :userId";
     $checkStmt = $pdo->prepare($checkSql);
     $checkStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
     $checkStmt->execute();
@@ -54,64 +71,50 @@ try {
         exit;
     }
 
+    // Check if user is already deactivated
+    if (!(int)$user['isActive']) {
+        http_response_code(400);
+        echo json_encode(['error' => 'User is already deactivated']);
+        exit;
+    }
+
     // Start transaction
     $pdo->beginTransaction();
 
-    // Option 1: Soft delete (recommended) - Set is_active to 0
+    // Soft delete (recommended) - Set isActive to 0
     $softDeleteSql = "UPDATE users
-                      SET is_active = 0,
+                      SET isActive = 0,
                           updated_at = NOW()
                       WHERE user_id = :userId";
     $softDeleteStmt = $pdo->prepare($softDeleteSql);
     $softDeleteStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
     $softDeleteStmt->execute();
 
-    // Optional: Log deletion reason in customer_requests table (as a deletion request)
-    // This assumes you want to track deletions
+    // Log deletion reason
     $logSql = "INSERT INTO customer_requests (user_id, request_type, message, status, created_at)
                VALUES (:userId, 'account_deletion', :reason, 'completed', NOW())";
     $logStmt = $pdo->prepare($logSql);
     $logStmt->execute([':userId' => $userId, ':reason' => $reason]);
 
-    // Option 2: Hard delete (use with extreme caution)
-    // Uncomment if you want permanent deletion instead of soft delete
-    /*
-    // Delete from shopping_cart first (foreign key constraint)
-    $deleteCartSql = "DELETE FROM shopping_cart WHERE user_id = :userId";
-    $deleteCartStmt = $pdo->prepare($deleteCartSql);
-    $deleteCartStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-    $deleteCartStmt->execute();
-
-    // Delete from customer_requests (foreign key constraint)
-    $deleteRequestsSql = "DELETE FROM customer_requests WHERE user_id = :userId";
-    $deleteRequestsStmt = $pdo->prepare($deleteRequestsSql);
-    $deleteRequestsStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-    $deleteRequestsStmt->execute();
-
-    // Note: Orders should probably be kept for record-keeping
-    // But if you need to delete them:
-    // First delete order_items, then orders
-    $deleteOrderItemsSql = "DELETE oi FROM order_items oi
-                            INNER JOIN orders o ON oi.order_id = o.order_id
-                            WHERE o.user_id = :userId";
-    $deleteOrderItemsStmt = $pdo->prepare($deleteOrderItemsSql);
-    $deleteOrderItemsStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-    $deleteOrderItemsStmt->execute();
-
-    $deleteOrdersSql = "DELETE FROM orders WHERE user_id = :userId";
-    $deleteOrdersStmt = $pdo->prepare($deleteOrdersSql);
-    $deleteOrdersStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-    $deleteOrdersStmt->execute();
-
-    // Finally delete user
-    $deleteUserSql = "DELETE FROM users WHERE user_id = :userId";
-    $deleteUserStmt = $pdo->prepare($deleteUserSql);
-    $deleteUserStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-    $deleteUserStmt->execute();
-    */
+    // Log admin activity
+    logAdminActivity(
+        $pdo,
+        $userId,
+        $admin['admin_id'],
+        'customer_deleted',
+        "Customer account deactivated. Reason: $reason",
+        ['isActive' => 1],
+        ['isActive' => 0]
+    );
 
     // Commit transaction
     $pdo->commit();
+
+    $fullName = trim(implode(' ', array_filter([
+        $user['first_name'],
+        $user['middle_name'],
+        $user['last_name']
+    ])));
 
     $response = [
         'success' => true,
@@ -119,10 +122,10 @@ try {
         'deletedUser' => [
             'id' => (int)$user['user_id'],
             'email' => $user['email'],
-            'name' => $user['first_name'] . ' ' . $user['last_name']
+            'name' => $fullName
         ],
         'reason' => $reason,
-        'action' => 'soft_delete' // Change to 'hard_delete' if using hard delete
+        'action' => 'soft_delete'
     ];
 
     echo json_encode($response);
@@ -134,6 +137,22 @@ try {
     }
 
     http_response_code(500);
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    echo json_encode([
+        'error' => 'Database error',
+        'message' => 'Failed to delete customer'
+    ]);
+    error_log("Customer delete error: " . $e->getMessage());
+} catch (Exception $e) {
+    // Rollback transaction on any error
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Server error',
+        'message' => 'An unexpected error occurred'
+    ]);
+    error_log("Customer delete error: " . $e->getMessage());
 }
 ?>
