@@ -407,9 +407,8 @@
             const noProducts = document.getElementById('noProducts');
             const paginationContainer = document.getElementById('paginationContainer');
 
-            const startIndex = (currentPage - 1) * productsPerPage;
-            const endIndex = startIndex + productsPerPage;
-            const pageProducts = filteredProducts.slice(startIndex, endIndex);
+            // Use allProducts directly since we're getting paginated data from API
+            const pageProducts = allProducts;
 
             if (pageProducts.length === 0) {
                 grid.style.display = 'none';

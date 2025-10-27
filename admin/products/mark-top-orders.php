@@ -142,10 +142,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Additional Criteria</label>
-                    <textarea class="form-textarea" id="autoFeatureNotes" placeholder="Add any specific criteria or notes for auto-featuring products..."></textarea>
-                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn btn-gold">Apply Auto Feature</button>
@@ -172,7 +168,7 @@
 
         async function loadProducts() {
             try {
-                const res = await fetch(`../../api/admin/products/list.php?page=1&pageSize=200&_=${Date.now()}`, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+                const res = await fetch(`../../api/admin/products/list.php?page=1&pageSize=1000&_=${Date.now()}`, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
                 if (!res.ok) throw new Error('Failed to load products');
                 const data = await res.json();
                 products = (data.items || []).map(p => ({

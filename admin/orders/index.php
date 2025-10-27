@@ -216,11 +216,11 @@
     });
 
     function updateStats() {
-        // Calculate stats from all orders
-        const pending = allOrders.filter(o => o.status === 'pending').length;
-        const processing = allOrders.filter(o => o.status === 'processing').length;
-        const shipped = allOrders.filter(o => o.status === 'shipped').length;
-        const delivered = allOrders.filter(o => o.status === 'delivered').length;
+
+        const pending = filteredOrders.filter(o => o.status === 'pending').length;
+        const processing = filteredOrders.filter(o => o.status === 'processing').length;
+        const shipped = filteredOrders.filter(o => o.status === 'shipped').length;
+        const delivered = filteredOrders.filter(o => o.status === 'delivered').length;
 
         document.getElementById('totalPending').textContent = pending;
         document.getElementById('totalProcessing').textContent = processing;
@@ -232,6 +232,7 @@
         try {
             const searchTerm = document.getElementById('searchInput').value.trim();
             const statusFilter = document.getElementById('statusFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
 
             const params = new URLSearchParams({
                 page: String(currentPage),
@@ -261,7 +262,6 @@
             }));
 
             // Apply client-side category filter only
-            const categoryFilter = document.getElementById('categoryFilter').value;
             filteredOrders = categoryFilter
                 ? allOrders.filter(o => (o.category || '').toLowerCase() === categoryFilter.toLowerCase())
                 : [...allOrders];
@@ -278,44 +278,11 @@
         }
     }
 
-    function generateMockOrders(count) {
-        const customers = ['Cjay Gonzales', 'Joshua Lapitan', 'Prince Ace Masinsin', 'Gillian Lorenzo', 'Kenji Chua', 'Angel Bien', 'Miguel Torres', 'Carmen Lopez'];
-        const categories = ['School Supplies', 'Office Supplies', 'Sanitary Supplies'];
-        const statuses = ['pending', 'processing', 'shipped', 'delivered'];
-        const orders = [];
-
-        for (let i = 1; i <= count; i++) {
-            orders.push({
-                id: String(i).padStart(3, '0'),
-                customer: customers[Math.floor(Math.random() * customers.length)],
-                category: categories[Math.floor(Math.random() * categories.length)],
-                items: Math.floor(Math.random() * 5) + 1,
-                amount: (Math.random() * 20000 + 1000).toFixed(0),
-                date: new Date(2024, 8, Math.floor(Math.random() * 30) + 1).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                }),
-                status: statuses[Math.floor(Math.random() * statuses.length)],
-                // Additional details for modal
-                email: customers[Math.floor(Math.random() * customers.length)].toLowerCase().replace(' ', '.') + '@email.com',
-                phone: '+63 9' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0'),
-                company: 'Company ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)),
-                address: Math.floor(Math.random() * 999) + ' Business Street, Quezon City, Metro Manila',
-                trackingNumber: 'ME-TRK-2024-' + String(i).padStart(3, '0'),
-                paymentMethod: ['Bank Transfer', 'Credit Card', 'Cash'][Math.floor(Math.random() * 3)],
-                transactionId: 'TXN-' + Date.now() + i,
-                notes: 'Customer requested priority delivery for business opening.'
-            });
-        }
-        return orders;
-    }
-
     function renderOrders() {
         const tbody = document.querySelector('.orders-table tbody');
-        const startIndex = (currentPage - 1) * ordersPerPage;
-        const endIndex = startIndex + ordersPerPage;
-        const pageOrders = filteredOrders.slice(startIndex, endIndex);
+
+        // Since we're doing server-side pagination, just show all filtered orders (no slicing)
+        const pageOrders = filteredOrders;
 
         if (pageOrders.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8" class="loading">No orders found</td></tr>';
@@ -336,12 +303,22 @@
                     <button class="action-btn-icon secondary" onclick="openOrderModal('${order.id}')" title="View Order">
                         <i data-lucide="eye"></i>
                     </button>
-                    <button class="action-btn-icon primary" onclick="openUpdateModal('${order.id}')" title="Update Status">
-                        <i data-lucide="refresh-cw"></i>
-                    </button>
-                    <button class="action-btn-icon danger" onclick="openDeleteModal('${order.id}')" title="Delete Order">
-                        <i data-lucide="trash-2"></i>
-                    </button>
+                    ${order.status === 'delivered'
+                        ? `<button class="action-btn-icon primary" disabled style="opacity: 0.5; cursor: not-allowed;" title="Cannot update delivered orders">
+                            <i data-lucide="refresh-cw"></i>
+                           </button>`
+                        : `<button class="action-btn-icon primary" onclick="openUpdateModal('${order.id}')" title="Update Status">
+                            <i data-lucide="refresh-cw"></i>
+                           </button>`
+                    }
+                    ${order.status === 'delivered'
+                        ? `<button class="action-btn-icon danger" disabled style="opacity: 0.5; cursor: not-allowed;" title="Cannot delete delivered orders">
+                            <i data-lucide="trash-2"></i>
+                           </button>`
+                        : `<button class="action-btn-icon danger" onclick="openDeleteModal('${order.id}')" title="Delete Order">
+                            <i data-lucide="trash-2"></i>
+                           </button>`
+                    }
                     </div>
                 </td>
             </tr>
@@ -440,11 +417,39 @@
 
         const updtbtn = document.getElementById("updateModal");
         if(updtbtn){
-          updtbtn.onclick = () => openUpdateModal(String(order.order_id || orderId));
+          // Disable update button if order is delivered
+          if (order.order_status && order.order_status.toLowerCase() === 'delivered') {
+            updtbtn.disabled = true;
+            updtbtn.style.opacity = '0.5';
+            updtbtn.style.cursor = 'not-allowed';
+            updtbtn.onclick = (e) => {
+              e.preventDefault();
+              showAlert('Cannot update status of delivered orders', 'warning');
+            };
+          } else {
+            updtbtn.disabled = false;
+            updtbtn.style.opacity = '1';
+            updtbtn.style.cursor = 'pointer';
+            updtbtn.onclick = () => openUpdateModal(String(order.order_id || orderId));
+          }
         }
         const dltbtn = document.getElementById("deleteModal2");
         if(dltbtn){
-          dltbtn.onclick = () => openDeleteModal(String(order.order_id || orderId));
+          // Disable delete button if order is delivered
+          if (order.order_status && order.order_status.toLowerCase() === 'delivered') {
+            dltbtn.disabled = true;
+            dltbtn.style.opacity = '0.5';
+            dltbtn.style.cursor = 'not-allowed';
+            dltbtn.onclick = (e) => {
+              e.preventDefault();
+              showAlert('Cannot delete delivered orders', 'warning');
+            };
+          } else {
+            dltbtn.disabled = false;
+            dltbtn.style.opacity = '1';
+            dltbtn.style.cursor = 'pointer';
+            dltbtn.onclick = () => openDeleteModal(String(order.order_id || orderId));
+          }
         }
 
         // Refresh Lucide icons for the modal
@@ -460,6 +465,13 @@
     let currentUpdateOrderId = null;
     function openUpdateModal(orderId) {
       const order = allOrders.find(o => o.id === orderId) || filteredOrders.find(o => o.id === orderId) || { id: orderId };
+
+      // Check if order is delivered
+      if (order.status === 'delivered') {
+        showAlert('Cannot update status of delivered orders', 'warning');
+        return;
+      }
+
       currentUpdateOrderId = orderId;
       populateUpdateData(order);
 
@@ -610,45 +622,6 @@
         itemsContainer.innerHTML = itemsHTML;
     }
 
-    function generateMockItems(category, itemCount, totalAmount) {
-        const itemsMap = {
-            'School Supplies': [
-                { name: 'Vinyl Planks', unit: 'sqm' },
-                { name: 'Ceramic Tiles', unit: 'sqm' },
-                { name: 'Hardwood Flooring', unit: 'sqm' }
-            ],
-            'Office Supplies': [
-                { name: 'Ceramic Wall Tiles', unit: 'sqm' },
-                { name: 'Porcelain Floor Tiles', unit: 'sqm' },
-                { name: 'Mosaic Tiles', unit: 'sqm' }
-            ],
-            'Sanitary Supplies': [
-                { name: 'LED Light Fixtures', unit: 'pcs' },
-                { name: 'Ceiling Fans', unit: 'pcs' },
-                { name: 'Wall Sconces', unit: 'pcs' }
-            ]
-        };
-
-        const availableItems = itemsMap[category] || itemsMap['Fixtures'];
-        const items = [];
-        const targetAmount = parseInt(totalAmount);
-
-        for (let i = 0; i < itemCount; i++) {
-            const item = availableItems[i % availableItems.length];
-            const quantity = Math.floor(Math.random() * 10) + 1;
-            const price = Math.floor((targetAmount / itemCount) / quantity);
-
-            items.push({
-                name: item.name,
-                quantity: quantity,
-                unit: item.unit,
-                price: price
-            });
-        }
-
-        return items;
-    }
-
     function populateOrderTimeline(order) {
         const timeline = document.getElementById('orderTimeline');
         const statuses = ['Order Placed', 'Payment Confirmed', 'Processing Started', 'Shipped', 'Delivered'];
@@ -703,7 +676,6 @@
     }
 
     // Delete Modal Functions
-    // Delete Modal Functions
     let orderToDelete = null;
     let deleteConfirmationStep = 1;
 
@@ -711,6 +683,12 @@
         const order = allOrders.find(o => o.id === orderId);
         if (!order) {
             showAlert('Order not found', 'error');
+            return;
+        }
+
+        // Check if order is delivered
+        if (order.status === 'delivered') {
+            showAlert('Cannot delete delivered orders', 'warning');
             return;
         }
 
@@ -785,7 +763,8 @@
         showAlert('Order deleted successfully!', 'success');
         const confirmBtn = document.getElementById('finalDeleteBtn');
         if(confirmBtn){
-          orderModal.classList.remove('active');
+          const orderModal = document.getElementById('orderModal');
+          if(orderModal) orderModal.classList.remove('active');
         }
 
         // Close modal and reset

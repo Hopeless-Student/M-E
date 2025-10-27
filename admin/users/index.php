@@ -9,6 +9,12 @@
 </head>
 <body>
     <div class="dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" data-sidebar-toggle="open">
+            <i data-lucide="menu"></i>
+        </button>
+
+        <!-- Sidebar -->
       <?php include '../../includes/admin_sidebar.php' ?>
 
         <!-- Main Content -->
@@ -197,167 +203,70 @@
 
         async function loadCustomersData() {
             try {
-                // Replace this with actual API call
-                // const response = await fetch('/api/customers.php');
-                // const result = await response.json();
+                const q = document.getElementById('searchInput').value.trim();
+                const status = document.getElementById('statusFilter').value;
+                const sortBy = 'created_at'; // Default sort
 
-                // Mock data for now - using your existing data structure
-                const result = {
-                    success: true,
-                    data: {
-                        customers: [
-                            {
-                                id: 1,
-                                name: "Juan Dela Cruz",
-                                email: "juan.delacruz@email.com",
-                                phone: "+63 917 123 4567",
-                                location: "Olongapo City",
-                                orders: 8,
-                                totalSpent: 4250,
-                                status: "active",
-                                avatar: "JD",
-                                memberSince: "Aug 2024",
-                                dob: "June 15, 1985",
-                                gender: "Male",
-                                streetAddress: "123 Main Street",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 2,
-                                name: "Roberto Garcia",
-                                email: "roberto.garcia@email.com",
-                                phone: "+63 919 345 6789",
-                                location: "Olongapo City",
-                                orders: 5,
-                                totalSpent: 2180,
-                                status: "active",
-                                avatar: "RG",
-                                memberSince: "Jun 2024",
-                                dob: "July 20, 1990",
-                                gender: "Male",
-                                streetAddress: "456 Oak Avenue",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 3,
-                                name: "Ana Reyes",
-                                email: "ana.reyes@email.com",
-                                phone: "+63 920 456 7890",
-                                location: "Olongapo City",
-                                orders: 2,
-                                totalSpent: 1850,
-                                status: "new",
-                                avatar: "AR",
-                                memberSince: "Aug 2025",
-                                dob: "January 10, 1995",
-                                gender: "Female",
-                                streetAddress: "789 Pine Lane",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 4,
-                                name: "Carlos Mendoza",
-                                email: "carlos.mendoza@email.com",
-                                phone: "+63 921 567 8901",
-                                location: "Olongapo City",
-                                orders: 15,
-                                totalSpent: 8900,
-                                status: "active",
-                                avatar: "CM",
-                                memberSince: "May 2024",
-                                dob: "March 5, 1980",
-                                gender: "Male",
-                                streetAddress: "101 Elm Street",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 5,
-                                name: "Lisa Fernandez",
-                                email: "lisa.fernandez@email.com",
-                                phone: "+63 922 678 9012",
-                                location: "Olongapo City",
-                                orders: 3,
-                                totalSpent: 1200,
-                                status: "inactive",
-                                avatar: "LF",
-                                memberSince: "Apr 2024",
-                                dob: "November 22, 1992",
-                                gender: "Female",
-                                streetAddress: "202 Birch Road",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 6,
-                                name: "Miguel Torres",
-                                email: "miguel.torres@email.com",
-                                phone: "+63 923 789 0123",
-                                location: "Olongapo City",
-                                orders: 7,
-                                totalSpent: 3450,
-                                status: "active",
-                                avatar: "MT",
-                                memberSince: "Mar 2024",
-                                dob: "September 1, 1988",
-                                gender: "Male",
-                                streetAddress: "303 Cedar Street",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 7,
-                                name: "Carmen Lopez",
-                                email: "carmen.lopez@email.com",
-                                phone: "+63 924 890 1234",
-                                location: "Olongapo City",
-                                orders: 1,
-                                totalSpent: 450,
-                                status: "new",
-                                avatar: "CL",
-                                memberSince: "Aug 2025",
-                                dob: "April 18, 1998",
-                                gender: "Female",
-                                streetAddress: "404 Willow Drive",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 8,
-                                name: "Maria Santos",
-                                email: "maria.santos@email.com",
-                                phone: "+63 918 234 5678",
-                                location: "Olongapo City",
-                                orders: 12,
-                                totalSpent: 6780,
-                                status: "active",
-                                avatar: "MS",
-                                memberSince: "Jul 2024",
-                                dob: "December 12, 1983",
-                                gender: "Female",
-                                streetAddress: "505 Maple Avenue",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            }
-                        ],
-                        total: 8
+                const params = new URLSearchParams({ 
+                    page: String(currentPage), 
+                    pageSize: String(customersPerPage) 
+                });
+                if (q) params.set('q', q);
+                if (status) params.set('status', status);
+                if (sortBy) params.set('sortBy', sortBy);
+
+                const response = await fetch(`../../api/admin/customers/list.php?${params.toString()}`, { 
+                    headers: { 'Accept': 'application/json' } 
+                });
+                
+                if (!response.ok) throw new Error('Failed to load customers');
+                const result = await response.json();
+
+                // Transform API data to match existing structure
+                allCustomers = (result.items || []).map(customer => {
+                    const nameParts = customer.name.split(' ');
+                    const firstName = nameParts[0] || '';
+                    const lastName = nameParts[nameParts.length - 1] || '';
+                    const avatar = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+                    
+                    // Determine status based on data
+                    let status = 'active';
+                    if (!customer.isActive) {
+                        status = 'inactive';
+                    } else if (customer.totalOrders === 0) {
+                        status = 'new';
                     }
-                };
+                    
+                    // Format member since date
+                    const createdDate = new Date(customer.createdAt);
+                    const memberSince = createdDate.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        year: 'numeric' 
+                    });
 
-                allCustomers = result.data.customers;
+                    return {
+                        id: customer.id,
+                        name: customer.name,
+                        email: customer.email,
+                        phone: customer.contactNumber,
+                        location: customer.location || 'N/A',
+                        orders: customer.totalOrders,
+                        totalSpent: customer.totalSpent,
+                        status: status,
+                        avatar: avatar,
+                        memberSince: memberSince,
+                        dob: customer.dateOfBirth || 'N/A',
+                        gender: customer.gender || 'N/A',
+                        streetAddress: customer.address || 'N/A',
+                        province: customer.location || 'N/A',
+                        postalCode: 'N/A',
+                        country: 'Philippines',
+                        isVerified: customer.isVerified
+                    };
+                });
+
                 filteredCustomers = [...allCustomers];
-                totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+                totalPages = result.totalPages || Math.ceil(result.total / customersPerPage);
 
                 renderCustomers();
                 renderPagination();
@@ -370,9 +279,8 @@
 
         function renderCustomers() {
             const tbody = document.querySelector('.customers-table tbody');
-            const startIndex = (currentPage - 1) * customersPerPage;
-            const endIndex = startIndex + customersPerPage;
-            const pageCustomers = filteredCustomers.slice(startIndex, endIndex);
+            // Use allCustomers directly since we're getting paginated data from API
+            const pageCustomers = allCustomers;
 
             if (pageCustomers.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" class="loading">No customers found</td></tr>';
@@ -419,9 +327,9 @@
             const paginationControls = document.querySelector('.pagination-controls');
 
             const startItem = ((currentPage - 1) * customersPerPage) + 1;
-            const endItem = Math.min(currentPage * customersPerPage, filteredCustomers.length);
+            const endItem = Math.min(currentPage * customersPerPage, allCustomers.length);
 
-            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredCustomers.length} customers`;
+            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${allCustomers.length} customers`;
 
             // Generate page buttons
             let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
@@ -446,30 +354,12 @@
         function goToPage(page) {
             if (page < 1 || page > totalPages) return;
             currentPage = page;
-            renderCustomers();
-            renderPagination();
+            loadCustomersData();
         }
 
         function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-            const locationFilter = document.getElementById('locationFilter').value;
-
-            filteredCustomers = allCustomers.filter(customer => {
-                const matchesSearch = !searchTerm ||
-                    customer.name.toLowerCase().includes(searchTerm) ||
-                    customer.email.toLowerCase().includes(searchTerm);
-
-                const matchesStatus = !statusFilter || customer.status === statusFilter;
-                const matchesLocation = !locationFilter || customer.location.toLowerCase() === locationFilter.toLowerCase();
-
-                return matchesSearch && matchesStatus && matchesLocation;
-            });
-
-            totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
             currentPage = 1; // Reset to first page when filtering
-            renderCustomers();
-            renderPagination();
+            loadCustomersData();
         }
 
         // Search and filter functionality
