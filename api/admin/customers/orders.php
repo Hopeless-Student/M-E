@@ -1,7 +1,5 @@
 <?php
-/**
- * Customer Orders API - FIXED VERSION
- */
+
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
