@@ -1,11 +1,5 @@
 <?php
-/**
- * Customer List API - FIXED VERSION
- * All is_active changed to isActive
- * Added authentication
- * Added validation
- * Fixed SQL injection risks
- */
+
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';

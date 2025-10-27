@@ -1,11 +1,4 @@
 <?php
-/**
- * Delete Customer API - FIXED VERSION
- * Changed is_active to isActive
- * Added authentication
- * Added comprehensive validation
- * Added activity logging
- */
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
