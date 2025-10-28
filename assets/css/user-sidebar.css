@@ -1,71 +1,88 @@
-/* Sidebar Styling */
+
 .sidebar {
   width: 260px;
-    min-height: 100vh;
-    background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-    position: fixed;
-    transition: transform 0.3s ease-in-out;
+  min-height: 100vh;
+  background-image: linear-gradient(to bottom, #4169E1, #C6D7FF);
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1500;
 }
 
 .sidebar .profile {
-text-align: center;
-margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .sidebar .avatar {
-width: 80px;
-height: 80px;
-border-radius: 50%;
-object-fit: cover;
-margin-bottom: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
 
 .sidebar .username {
-font-size: 1.2rem;
-margin: 0;
-color: black;
+  font-size: 1.2rem;
+  color: black;
+  margin: 0;
 }
 
 .sidebar .role {
-font-size: 0.85rem;
-color: black;
+  font-size: 0.85rem;
+  color: black;
 }
 
 .sidebar-nav ul {
-list-style: none;
-padding: 0;
-margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar-nav li {
-margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .sidebar-nav a {
-text-decoration: none;
-color: black;
-font-weight: 500;
-display: block;
-padding: 8px 12px;
-border-radius: 5px;
-transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
 }
-
+.sidebar-nav a img {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) saturate(100%) invert(14%) sepia(78%) saturate(2603%) hue-rotate(219deg) brightness(92%) contrast(95%);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
 .sidebar-nav a:hover {
-background-color: #e0e7ff;
-color: #1e40af;
+  background-color: #e0e7ff;
+  color: #1e40af;
 }
-
+.sidebar-nav a:hover img {
+  filter: brightness(0) saturate(100%) invert(26%) sepia(79%) saturate(4028%) hue-rotate(225deg) brightness(92%) contrast(92%);
+  transform: translateX(3px);
+}
+.sidebar-nav a.active {
+  background-color: #c7d2fe;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+.sidebar-nav a.active img {
+  filter: brightness(0) saturate(100%) invert(21%) sepia(83%) saturate(3294%) hue-rotate(224deg) brightness(96%) contrast(94%);
+}
+/* Overlay for mobile sidebar */
 .sidebar-overlay {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.4);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1400;
   transition: opacity 0.3s;
 }
@@ -75,12 +92,12 @@ color: #1e40af;
   opacity: 1;
 }
 
-/* For main content spacing */
 .main-content {
-  margin-left: 240px;
+  margin-left: 260px;
   padding: 40px 20px;
   display: flex;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .profile-card {
@@ -92,60 +109,66 @@ color: #1e40af;
   position: fixed;
   top: 15px;
   left: 15px;
-  z-index: 1050;
+  z-index: 1600;
   background-color: #002366;
   color: #fff;
   border: none;
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 1rem;
+  cursor: pointer;
 }
+
 .sidebar-toggle:hover {
   background-color: #274dcf;
 }
+
 .profile-img {
   width: 150px;
   height: 150px;
-  object-fit: cover;
   border-radius: 50%;
-}
-@media (max-width: 992px) {
-  .user-sidebar {
-    position: relative !important;
-  }
-  .order-content {
-    padding-top: 130px;
-  }
+  object-fit: cover;
 }
 
+  /* tablet view */
 @media (max-width: 992px) {
   .sidebar {
     transform: translateX(-100%);
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1500;
   }
+
   .sidebar.active {
-   transform: translateX(0);
- }
+    transform: translateX(0);
+  }
+
   .main-content {
     margin-left: 0 !important;
     width: 100% !important;
-    padding-top: 60px;
+    padding-top: 70px;
   }
-  .sidebar-nav ul {
-   text-align: center;
- }
 
- .sidebar-nav a {
-   display: inline-block;
-   width: 80%;
-   text-align: center;
-   font-size: 1rem;
- }
+  .sidebar-nav ul {
+    text-align: center;
+  }
+
+  .sidebar-nav a {
+    display: inline-block;
+    width: 80%;
+    font-size: 1rem;
+  }
+}
+/* Ensure Bootstrap modals always appear above sidebar */
+.modal-backdrop {
+  z-index: 2000 !important; /* higher than sidebar (1500) */
 }
 
+.modal {
+  z-index: 2050 !important; /* above the backdrop */
+}
+
+  /* mobile view */
 @media (max-width: 768px) {
   .sidebar .avatar {
     width: 60px;
@@ -158,5 +181,128 @@ color: #1e40af;
 
   .sidebar .role {
     font-size: 0.8rem;
+  }
+
+  .profile-img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .profile-card {
+    max-width: 95%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+  .sidebar-nav a {
+    font-size: 0.95rem;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .sidebar-nav a img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 425px) {
+  .main-content {
+    padding: 20px 10px;
+  }
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .profile-card {
+    padding: 15px;
+  }
+
+  .profile-img {
+    width: 100px;
+    height: 100px;
+  }
+
+  h3#header-text {
+    font-size: 1.2rem;
+  }
+
+  form .form-control,
+  form .form-select {
+    font-size: 0.9rem;
+  }
+  .sidebar-nav a {
+    font-size: 0.9rem;
+    padding: 8px 8px;
+  }
+
+  .sidebar-nav a img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 375px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .profile-card {
+    padding: 12px;
+  }
+
+  .profile-img {
+    width: 90px;
+    height: 90px;
+  }
+
+  h3#header-text {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+  }
+
+  form .form-control,
+  form .form-select {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .sidebar {
+    width: 180px;
+    padding: 15px;
+  }
+
+  .profile-card {
+    padding: 10px;
+  }
+
+  .profile-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  h3#header-text {
+    font-size: 1rem;
+  }
+
+  form .form-control,
+  form .form-select {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 6px 10px;
   }
 }

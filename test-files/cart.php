@@ -134,72 +134,17 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         let products = [];
         let cart = [];
 
-        // function loadCartFromLocalStorage() {
-        //         const stored = JSON.parse(localStorage.getItem('cart')) || [];
-        //     products = stored.map(item => ({
-        //         id: item.id,
-        //         title: item.title,
-        //         category: item.category,
-        //         price: item.price,
-        //         image: item.image
-        //     }));
-        //     cart = stored.map(item => ({ id: item.id, quantity: item.quantity || 1, selected: true }));
-        // }
-      //   async function loadCartFromDatabase() {
-      //   try {
-      //     const response = await fetch('../ajax/fetch-cart.php');
-      //     const data = await response.json();
-      //
-      //     products = data.cart.map(item => ({
-      //       id: item.product_id,
-      //       title: item.product_name,
-      //       price: parseFloat(item.price),
-      //       image: `../assets/images/products/${item.product_image || 'default.jpg'}`
-      //     }));
-      //
-      //     cart = data.cart.map(item => ({
-      //       id: item.product_id,
-      //       quantity: item.quantity,
-      //       selected: true
-      //     }));
-      //
-      //     updateCart();
-      //     saveCartToLocalStorage();
-      //   } catch (err) {
-      //     console.error('Error fetching cart:', err);
-      //   }
-      // }
-      function loadCartFromDatabase() {
-      const cartItems = document.getElementById('cartItems');
-      cartItems.innerHTML = `
-          <div class="shpcrt-loading-state">
-              <div class="shpcrt-spinner"></div>
-              <span>Refreshing cart...</span>
-          </div>
-      `;
-
-      fetch('../ajax/fetch-cart.php')
-          .then(res => res.json())
-          .then(data => {
-              products = data.cart.map(item => ({
-                  id: item.product_id,
-                  title: item.product_name,
-                  price: parseFloat(item.price),
-                  image: `../assets/images/products/${item.product_image || 'default.jpg'}`
-              }));
-
-              cart = data.cart.map(item => ({
-                  id: item.product_id,
-                  quantity: item.quantity,
-                  selected: true
-              }));
-
-              updateCart(); // render cart UI
-              updateCartCount(data.count); // update navbar count
-          })
-          .catch(err => console.error('Fetch cart failed:', err));
-  }
-
+        function loadCartFromLocalStorage() {
+                const stored = JSON.parse(localStorage.getItem('cart')) || [];
+            products = stored.map(item => ({
+                id: item.id,
+                title: item.title,
+                category: item.category,
+                price: item.price,
+                image: item.image
+            }));
+            cart = stored.map(item => ({ id: item.id, quantity: item.quantity || 1, selected: true }));
+        }
 
         function saveCartToLocalStorage() {
             const merged = cart.map(item => {
@@ -218,7 +163,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
         function updateCart() {
             const cartItems = document.getElementById('cartItems');
-            cartItems.innerHTML = ''; // clear old DOM before re-render
             const totalItemsCount = document.getElementById('totalItemsCount');
             const selectedItemsCount = document.getElementById('selectedItemsCount');
             const savedItemsCount = document.getElementById('savedItemsCount');
@@ -309,7 +253,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                             </div>
                             <div class="shpcrt-item-info-wrapper">
                                 <div class="shpcrt-product-image">
-                                <img src="${product.image}" alt="${product.title}" onerror="this.src='../assets/images/products/default.jpg'">
+                                    <img src="${product.image}" alt="${product.title}">
                                 </div>
                                 <div class="shpcrt-product-info">
                                     <div class="shpcrt-product-name">${product.title}</div>
@@ -374,125 +318,35 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             showToast('All items saved for later', 'warning');
         }
 
-        // async function updateQuantity(productId, delta) {
-        //   const item = cart.find(item => item.id === productId);
-        //   if (item) {
-        //     item.quantity += delta;
-        //     if (item.quantity <= 0) {
-        //       removeFromCart(productId);
-        //       return;
-        //     }
-        //
-        //     updateCart();
-        //
-        //     // Sync to backend
-        //     await fetch('../ajax/update-cart.php', {
-        //       method: 'POST',
-        //       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        //       body: new URLSearchParams({ product_id: productId, quantity: item.quantity })
-        //     });
-        //   }
-        // }
-        function updateQuantity(product_id, delta) {
-            const item = cart.find(i => i.id === product_id);
-            if (!item) return;
-
-            const newQty = item.quantity + delta;
-            if (newQty <= 0) {
-                removeFromCart(product_id);
-                return;
+        function updateQuantity(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                updateCart();
+                showToast('Quantity updated', 'success');
+                }
             }
-
-            // Immediately update the number visually
-            item.quantity = newQty;
-            updateCart();
-
-            fetch('../ajax/update-cart.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ product_id, quantity: newQty })
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                  showToast('Quantity updated', 'success');
-                  updateCart(); // reflect change immediately, skip reload
-            
-              } else {
-                  showToast(data.message || 'Failed to update quantity', 'error');
-              }
-          })
-            .catch(err => console.error('Update error:', err));
         }
 
+        function removeFromCart(productId) {
+            const product = products.find(p => p.id === productId);
+                cart = cart.filter(item => item.id !== productId);
+                updateCart();
+                showToast(`${product ? product.title : 'Item'} removed from cart`, 'success');
+        }
 
+        function clearCart() {
+            if (cart.length === 0) return;
 
-        function fetchCart() {
-          fetch('../ajax/fetch-cart.php')
-              .then(res => res.json())
-              .then(data => {
-                  updateCartCount(data.count);
-              })
-              .catch(err => console.error('Fetch cart count failed:', err));
-      }
-      function updateCartCount(count) {
-          const cartCount = document.getElementById('cartCount');
-          if (cartCount) {
-              cartCount.textContent = count > 0 ? count : '';
-          }
-      }
-
-      function removeFromCart(product_id) {
-          fetch('../ajax/remove-from-cart.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: new URLSearchParams({ product_id })
-          })
-          .then(res => res.json())
-          .then(data => {
-              if (data.success) {
-                  showToast('Item removed', 'success');
-                  setTimeout(() => loadCartFromDatabase(), 150);
-              } else {
-                  showToast(data.message || 'Failed to remove item', 'error');
-              }
-          })
-          .catch(err => console.error('Remove error:', err));
-      }
-
-function clearCart() {
-    if (!confirm('Clear all items from cart?')) return;
-
-    fetch('../ajax/clear-cart.php', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Cart cleared');
-                loadCartFromDatabase();
-            } else {
-                showToast('Failed to clear cart');
+            if (confirm('Are you sure you want to clear your entire cart? This cannot be undone.')) {
+                cart = [];
+                updateCart();
+                showToast('Cart cleared', 'success');
             }
-        })
-        .catch(err => console.error(err));
-}
-        // function removeFromCart(productId) {
-        //     const product = products.find(p => p.id === productId);
-        //         cart = cart.filter(item => item.id !== productId);
-        //         updateCart();
-        //         showToast(`${product ? product.title : 'Item'} removed from cart`, 'success');
-        // }
-
-
-
-        // function clearCart() {
-        //     if (cart.length === 0) return;
-        //
-        //     if (confirm('Are you sure you want to clear your entire cart? This cannot be undone.')) {
-        //         cart = [];
-        //         updateCart();
-        //         showToast('Cart cleared', 'success');
-        //     }
-        // }
+        }
 
         function proceedToCheckout() {
             const selectedItems = cart.filter(item => item.selected);
@@ -515,41 +369,38 @@ function clearCart() {
         }
 
         function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    let toastIcon = toast.querySelector('.shpcrt-toast-icon-wrapper i')
-                   || toast.querySelector('.shpcrt-toast-icon-wrapper svg'); // fallback
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('.shpcrt-toast-icon-wrapper i');
 
-    const icons = {
-        success: 'check-circle',
-        error: 'x-circle',
-        warning: 'alert-triangle'
-    };
+            const icons = {
+                success: 'check-circle',
+                error: 'x-circle',
+                warning: 'alert-triangle'
+            };
 
-    toastMessage.textContent = message;
+            toastMessage.textContent = message;
+            toastIcon.setAttribute('data-lucide', icons[type] || icons.success);
+            toast.className = `shpcrt-toast-notify shpcrt-toast-${type}`;
+            toast.classList.add('shpcrt-toast-show');
 
-    // Replace icon wrapper contents entirely (so lucide can regenerate)
-    toast.querySelector('.shpcrt-toast-icon-wrapper').innerHTML =
-        `<i data-lucide="${icons[type] || icons.success}" style="width: 20px; height: 20px;"></i>`;
+            // Re-initialize the icon
+            lucide.createIcons();
 
-    toast.className = `shpcrt-toast-notify shpcrt-toast-${type}`;
-    toast.classList.add('shpcrt-toast-show');
-
-    lucide.createIcons();
-
-    setTimeout(() => {
-        toast.classList.remove('shpcrt-toast-show');
-    }, 3000);
-}
-
+            setTimeout(() => {
+                toast.classList.remove('shpcrt-toast-show');
+            }, 3000);
+        }
 
         // Initialize cart on page load
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
             lucide.createIcons();
-            loadCartFromDatabase();
+
+            // Load from localStorage and render
+            loadCartFromLocalStorage();
+            updateCart();
         });
-
-
     </script>
     <script src="../assets/js/homepage.js">
 

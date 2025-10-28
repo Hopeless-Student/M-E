@@ -72,7 +72,7 @@ $pdo = connect();
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="utf-8">
+  <meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0">
   <title>Order History</title>
   <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/user-sidebar.css">

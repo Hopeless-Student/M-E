@@ -19,11 +19,11 @@
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="../pages/index.php">Home</a></li>
-                <li><a href="profile.php">Profile</a></li>
-                <li><a href="../user/order-history.php">Orders</a></li>
-                <li><a href="../user/request.php">Request</a></li>
-                <li><a href="../auth/logout.php">Logout</a></li>
+                <li>  <a href="../pages/index.php"><img src="../assets/svg/home.svg" alt="home icon"> Home</a></li>
+                <li>  <a href="profile.php"><img src="../assets/svg/profile.svg" alt="profile icon"> Profile</a></li>
+                <li>  <a href="../user/order-history.php"><img src="../assets/svg/orders.svg" alt="orders icon"> Orders</a></li>
+                <li>  <a href="../user/request.php"><img src="../assets/svg/request.svg" alt="request icon"> Request</a></li>
+                <li>  <a href="../auth/logout.php"><img src="../assets/svg/logout.svg" alt="logout icon"> Logout</a></li>
             </ul>
         </nav>
       </aside>
@@ -46,5 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleBtn.style.display = "block";
     });
   }
+  document.addEventListener('hidden.bs.modal', function (event) {
+
+  document.activeElement.blur();
+
+  const toggleBtn = document.querySelector('.sidebar-toggle');
+  if (toggleBtn) toggleBtn.focus();
+});
+
 });
 </script>

@@ -89,8 +89,8 @@ body {
 }
 .request-item.fw-bold {
   font-weight: 600;
-  background-color: #f8f9fa; /* subtle highlight */
-  border-left: 4px solid #198754; /* green accent */
+  background-color: #f8f9fa;
+  border-left: 4px solid #198754;
 }
 .request-item .badge.bg-success {
   font-size: 0.7rem;
@@ -98,7 +98,7 @@ body {
 }
 
 
-/* Responsive improvements */
+/* Responsive */
 @media (max-width: 992px) {
   .user-sidebar {
     position: relative !important;
@@ -134,8 +134,13 @@ body {
   }
 
   .dropdown-menu {
-    font-size: 0.9rem;
-  }
+  z-index: 1056 !important;
+  position: absolute !important;
+}
+
+.request-list {
+  overflow: visible !important;
+}
 }
 /* --- Final responsive fix for sidebar overlap --- */
 @media (max-width: 992px) {
@@ -155,7 +160,7 @@ body {
     z-index: 1;
   }
 
-  /* Force request list and detail to stack correctly */
+  /* request list and detail to stack correctly */
   .request-list,
   .request-detail {
     width: 100% !important;
@@ -207,7 +212,12 @@ body {
     font-size: 0.85rem;
     padding: 6px 10px;
   }
-
+  #notifContainer {
+    top: 65px;
+    right: 10px;
+    width: 90%;
+    z-index: 2000 !important;
+  }
   .card-body {
     font-size: 0.9rem;
   }
@@ -224,6 +234,14 @@ body {
   .modal-content {
     border-radius: 10px;
   }
+  .dropdown-menu {
+  z-index: 1056 !important;
+  position: absolute !important;
+}
+
+.request-list {
+  overflow: visible !important;
+}
 }
 
 @media (max-width: 576px) {
@@ -247,5 +265,25 @@ body {
   #notifContainer {
     width: 90%;
     right: 5%;
+  }
+  .dropdown-menu {
+  z-index: 1056 !important;
+  position: absolute !important;
+}
+
+  .request-list {
+    overflow: visible !important;
+  }
+}
+/* cropped filters pang 1024px */
+@media (max-width: 1200px) {
+  .request-list .d-flex {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  .request-list .dropdown .btn {
+    min-width: 130px;
+    margin-bottom: 6px;
   }
 }

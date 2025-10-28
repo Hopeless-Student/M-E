@@ -72,7 +72,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
     <script>
         let products = [];
-        // let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let filters = { category: 'all', price: 'all' };
         let sortMethod = 'default';
         let currentPage = 1;
@@ -159,10 +159,8 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             }, 300);
         }
 
-        console.log(products[0]);
-
-        function viewProduct(product_id) {
-            const product = products.find(p => p.id === product_id);
+        function viewProduct(productId) {
+            const product = products.find(p => p.id === productId);
 
             const detailsHTML = `
                 <div class="product-details">
@@ -183,7 +181,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     </div>
 
                     <div class="product-actions">
-                        <button class="add-to-cart-btn" onclick="addToCart(${product.id}); closeProductModal()">
+                        <button class="add-to-cart-btn" onclick="addToCart(${productId}); closeProductModal()">
                             Add to Cart
                         </button>
                     </div>
@@ -247,141 +245,58 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 toast.classList.remove('show');
             }, 2000);
         }
-        console.log("addToCart function is loaded into memory");
 
-        // c convert to ajax
-        function addToCart(product_id, quantity = 1) {
-          console.log("addToCart triggered:", product_id);
-        // intentionally break here for debug
-        console.log("Sending request with:", product_id, quantity);
-        // debugger;
-          fetch('../ajax/add-to-cart.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: new URLSearchParams({ product_id: product_id, quantity: 1 })
-          })
-          .then(res => res.json())
-          .then(data => {
-            console.log("Response from server:", data);
-              if (data.success) {
-                  showToast(data.message ||'Added to cart');
-                  fetchCart();
-              } else {
-                  showToast(data.message || 'Failed to add to cart');
-              }
-          })
-          .catch(err => console.error(err));
-      }
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
 
-      // fetch ng cart counter
-      function fetchCart() {
-    fetch('../ajax/fetch-cart.php')
-        .then(res => res.json())
-        .then(data => {
-            const cartCount = document.getElementById('cartCount');
-            cartCount.textContent = data.count || 0;
-        });
-}
-  // fetch ng removeFromCart
-    function removeFromCart(product_id) {
-        fetch('../ajax/remove-from-cart.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ product_id })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Item removed');
-                fetchCart();
+            if (existingItem) {
+                existingItem.quantity++;
+                showToast(`${product.title} quantity increased`);
             } else {
-                showToast(data.message || 'Failed to remove item');
+                cart.push({ ...product, quantity: 1 });
+                showToast(`${product.title} added to cart`);
             }
-        })
-        .catch(err => console.error(err));
-    }
-      function updateQuantity(product_id, delta) {
-      fetch('../ajax/update-cart.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ product_id, delta })
-      })
-      .then(res => res.json())
-      .then(data => {
-          if (data.success) {
-              fetchCart();
-          } else {
-              showToast(data.message || 'Update failed');
-          }
-      })
-      .catch(err => console.error(err));
-  }
 
-  function clearCart() {
-    if (!confirm('Clear all items from cart?')) return;
-    fetch('../ajax/clear-cart.php', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart = cart.filter(item => item.id !== productId);
+            showToast(`${product.title} removed from cart`);
+            updateCart();
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCart();
+                }
+            }
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                updateCart();
                 showToast('Cart cleared');
-                fetchCart();
-            } else {
-                showToast('Failed to clear cart');
             }
-        });
-}
-function showCartPreview() {
-    fetch('../ajax/fetch-cart.php')
-        .then(res => res.json())
-        .then(data => {
-            const list = document.getElementById('cartPreviewList');
-            list.innerHTML = data.cart.map(item => `
-                <div class="cart-item">
-                    <img src="../${item.product_image}" width="40">
-                    <span>${item.product_name}</span>
-                    <span>x${item.quantity}</span>
-                </div>
-            `).join('');
-        });
-}
+        }
 
-        // c convert to ajax
-        // function removeFromCart(product_id) {
-        //     const product = products.find(p => p.id === product_id);
-        //     cart = cart.filter(item => item.id !== product_id);
-        //     showToast(`${product.title} removed from cart`);
-        //     updateCart();
-        // }
-        // c convert to ajax
-        // function updateQuantity(product_id, delta) {
-        //     const item = cart.find(item => item.id === product_id);
-        //     if (item) {
-        //         item.quantity += delta;
-        //         if (item.quantity <= 0) {
-        //             removeFromCart(productId);
-        //         } else {
-        //             updateCart();
-        //         }
-        //     }
-        // }
-        // c convert to ajax
-        // function clearCart() {
-        //     if (cart.length === 0) return;
-        //
-        //     if (confirm('Are you sure you want to clear your cart?')) {
-        //         cart = [];
-        //         updateCart();
-        //         showToast('Cart cleared');
-        //     }
-        // }
-        // c convert to ajax
-        // function updateCart() {
-        //     const cartCount = document.getElementById('cartCount');
-        //     localStorage.setItem('cart', JSON.stringify(cart));
-        //
-        //     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        //     cartCount.textContent = totalItems;
-        // }
+        function updateCart() {
+            const cartCount = document.getElementById('cartCount');
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
 
         document.getElementById('productModal').addEventListener('click', function(e) {
             if (e.target === this) {
@@ -412,7 +327,7 @@ function showCartPreview() {
         }
 
         fetchProducts();
-        fetchCart();
+        updateCart();
     </script>
     <script src="../assets/js/homepage.js"></script>
     <script src="../assets/js/navbar.js"></script>

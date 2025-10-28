@@ -222,6 +222,12 @@ header .logo {
 nav .mobile-user-menu {
     display: none;
 }
+.cart-count {
+  visibility: hidden;
+}
+.cart-count.loaded {
+  visibility: visible;
+}
 
 /* ========== TABLET STYLES ========== */
 @media (max-width: 1024px) {
