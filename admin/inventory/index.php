@@ -88,8 +88,8 @@
                     </div>
                     <select class="filter-select" id="categoryFilter">
                         <option value="">All Categories</option>
-                        <option value="office">Office Supplies</option>
-                        <option value="school">School Supplies</option>
+                        <option value="office-supplies">Office Supplies</option>
+                        <option value="school-supplies">School Supplies</option>
                         <option value="sanitary">Sanitary Supplies</option>
                     </select>
                     <select class="filter-select" id="stockFilter">
@@ -457,8 +457,8 @@
                 labels: ['Office Supplies', 'School Supplies', 'Sanitary Supplies'],
                 datasets: [{
                     data: [
-                        inventoryData.filter(item => item.category === 'office').reduce((sum, item) => sum + item.stock, 0),
-                        inventoryData.filter(item => item.category === 'school').reduce((sum, item) => sum + item.stock, 0),
+                        inventoryData.filter(item => item.category === 'office-supplies').reduce((sum, item) => sum + item.stock, 0),
+                        inventoryData.filter(item => item.category === 'school-supplies').reduce((sum, item) => sum + item.stock, 0),
                         inventoryData.filter(item => item.category === 'sanitary').reduce((sum, item) => sum + item.stock, 0)
                     ],
                     backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
