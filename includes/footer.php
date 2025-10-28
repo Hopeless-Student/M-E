@@ -195,8 +195,8 @@ footer {
                 <h4>Company Info</h4>
                 <ul>
                     <li><a href="../pages/about.php">About Us</a></li>
-                    <li><a href="../pages/contact.php">Our Store</a></li>
-                    <li><a href="../pages/contact.php">Bulk Orders</a></li>
+                    <li><a href="../pages/contact.php#location">Our Store</a></li>
+                    <li><a href="../pages/contact.php#bulk-orders">Bulk Orders</a></li>
                     <li><a href="../pages/terms-of-service.php" target="_blank">Return & Refund Policy</a></li>
                 </ul>
             </div>
