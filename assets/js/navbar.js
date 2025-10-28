@@ -23,14 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
             hamburger.classList.toggle("active");
         });
 
-        // Close nav when a link is clicked (except mobile user menu)
         nav.querySelectorAll("a").forEach((link) => {
             link.addEventListener("click", (e) => {
-                // Don't close if it's the mobile login link
+
                 if (link.id === 'mobileLoginLink') {
                     return;
                 }
-                // Don't close if it's inside the mobile user menu
+
                 if (link.closest('.mobile-user-menu')) {
                     return;
                 }
@@ -45,10 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mobileLoginLink) {
         mobileLoginLink.addEventListener('click', (e) => {
             e.preventDefault();
-            // Close mobile menu
+
             nav.classList.remove("active");
             hamburger.classList.remove("active");
-            // Open login modal
+
             const loginModal = document.getElementById('loginModal');
             if (loginModal) {
                 loginModal.style.display = 'block';
@@ -56,19 +55,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Mobile user menu toggle (NEW)
+    // Mobile user menu toggle
     const mobileUserMenu = document.querySelector('.mobile-user-menu');
     if (mobileUserMenu) {
         const userAvatar = mobileUserMenu.querySelector('.user-avatar');
         const dropdown = mobileUserMenu.querySelector('.dropdown');
 
         if (userAvatar && dropdown) {
-            // Make dropdown visible by default on mobile (already in CSS)
-            // But add toggle functionality if you want to collapse/expand it
             userAvatar.addEventListener('click', (e) => {
                 e.preventDefault();
                 dropdown.classList.toggle('expanded');
             });
         }
     }
+    function fetchCart() {
+    fetch("../ajax/fetch-cart.php")
+      .then((res) => res.json())
+      .then((data) => {
+        const countElement = document.querySelector(".cart-count");
+        if (countElement) {
+          countElement.textContent = data.count > 0 ? data.count : "";
+          countElement.classList.add("loaded");
+        }
+      })
+      .catch((err) => console.error("Fetch cart failed:", err));
+  }
+
+  fetchCart();
+  setInterval(fetchCart, 15000);
+
 });

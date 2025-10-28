@@ -40,14 +40,14 @@
                 <div class="cart">
                     <a href="../shop/cart.php">
                         <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
-                        <span id="cartCount" class="cart-count">0</span>
+                        <span id="cartCount" class="cart-count"></span>
                     </a>
                 </div>
             <?php else: ?>
                 <div class="cart">
                     <a href="#" id="toggleLogin">
                         <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
-                        <span id="cartCount" class="cart-count">0</span>
+                        <span id="cartCount" class="cart-count"></span>
                     </a>
                 </div>
             <?php endif; ?>
