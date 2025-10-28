@@ -83,7 +83,7 @@ $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // FIXED: Absolute path for images
-$baseImg = '/assets/images/products/';
+$baseImg = '../../assets/images/products/';
 $items = array_map(function ($r) use ($baseImg) {
     $img = $r['product_image'] ? ($baseImg . $r['product_image']) : null;
     $stock = (int)$r['stock_quantity'];
