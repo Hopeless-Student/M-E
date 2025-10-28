@@ -682,7 +682,7 @@
                     </div>
 
                     <!-- Admin Controls -->
-                    <h4 class="customer-edit-section-header">
+                    <!-- <h4 class="customer-edit-section-header">
                         <i data-lucide="settings"></i>
                         Admin Controls
                     </h4>
@@ -736,7 +736,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Permissions & Restrictions -->
                     <h4 class="customer-edit-section-header">
@@ -814,7 +814,7 @@
                             <button type="button" class="customer-edit-btn customer-edit-btn-secondary" onclick="showCustomerEditSubModal('emailModal')">
                                 <i data-lucide="mail"></i> Send Email
                             </button>
-                            <button type="button" class="customer-edit-btn customer-edit-btn-secondary">
+                            <button type="button" class="customer-edit-btn customer-edit-btn-secondary" id="UserOrder"onclick="openCustomerOrdersModal()">
                                 <i data-lucide="clipboard-list"></i> View Orders
                             </button>
                             <button type="button" class="customer-edit-btn customer-edit-btn-secondary" onclick="showCustomerEditSubModal('reportModal')">

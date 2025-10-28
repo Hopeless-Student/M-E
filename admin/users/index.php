@@ -9,6 +9,12 @@
 </head>
 <body>
     <div class="dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" data-sidebar-toggle="open">
+            <i data-lucide="menu"></i>
+        </button>
+
+        <!-- Sidebar -->
       <?php include '../../includes/admin_sidebar.php' ?>
 
         <!-- Main Content -->
@@ -166,688 +172,895 @@
           include './user-details.php';
           include './user-orders.php';
           ?>
-    <script>
+  <script>
+  // Close customer details modal
+function closeCustomerDetailsModal(event) {
+    const modal = document.getElementById('customerDetailsModal');
+    if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-details-close-btn'))) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Open customer orders modal
+async function openCustomerOrdersModal(customerId) {
+    const modal = document.getElementById('customerOrdersModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    const modalBody = modal.querySelector('.customer-orders-modal-body');
+    const loadingOverlay = showLoading(modalBody);
+
+    try {
+        const data = await apiRequest(`../../api/admin/customers/orders.php?id=${customerId}`);
+        populateCustomerOrdersModal(data);
+
+        const viewProfileBtn = modal.querySelector('#viewProfile');
+        if (viewProfileBtn) {
+            viewProfileBtn.onclick = () => {
+                closeCustomerOrdersModal();
+                openCustomerDetailsModal(customerId);
+            };
+        }
+
+        const editCustomerBtn = modal.querySelector('#editCustomer');
+        if (editCustomerBtn) {
+            editCustomerBtn.onclick = () => {
+                closeCustomerOrdersModal();
+                openCustomerEditModal(customerId);
+            };
+        }
+    } catch (error) {
+        showToast('Error loading orders: ' + error.message, 'error');
+        closeCustomerOrdersModal();
+    } finally {
+        hideLoading(loadingOverlay);
         lucide.createIcons();
+    }
+}
 
-        // Global variables for pagination and data management
-        let currentPage = 1;
-        let totalPages = 1;
-        let allCustomers = [];
-        let filteredCustomers = [];
-        const customersPerPage = 8;
+// Populate customer orders modal
+function populateCustomerOrdersModal(data) {
+    const modal = document.getElementById('customerOrdersModal');
+    const customer = data.user;
 
-        // Load customers data on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCustomersData();
-            updateStats();
-            setupModalClickOutside(); // Call this once on DOMContentLoaded
+    const nameParts = customer.name.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts[nameParts.length - 1] || '';
+    const avatar = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+
+    modal.querySelector('.customer-orders-avatar-large').textContent = avatar;
+    modal.querySelector('.customer-orders-modal-title h3').textContent = `${customer.name} - Orders`;
+    modal.querySelector('.customer-orders-modal-title p').textContent = `Customer ID: #CUS-${String(customer.id).padStart(3, '0')} • Member since ${customer.memberSince}`;
+
+    // Update order summary
+    const summaryItems = modal.querySelectorAll('.customer-orders-summary-item');
+    if (summaryItems[0]) {
+        summaryItems[0].querySelector('.customer-orders-summary-value').textContent = data.statistics.completed.count;
+        summaryItems[0].querySelector('.customer-orders-summary-label').textContent = `Completed (₱${data.statistics.completed.amount.toLocaleString()})`;
+    }
+    if (summaryItems[1]) {
+        summaryItems[1].querySelector('.customer-orders-summary-value').textContent = data.statistics.pending.count;
+        summaryItems[1].querySelector('.customer-orders-summary-label').textContent = `Pending (₱${data.statistics.pending.amount.toLocaleString()})`;
+    }
+    if (summaryItems[2]) {
+        summaryItems[2].querySelector('.customer-orders-summary-value').textContent = data.statistics.processing.count;
+        summaryItems[2].querySelector('.customer-orders-summary-label').textContent = `Processing (₱${data.statistics.processing.amount.toLocaleString()})`;
+    }
+    if (summaryItems[3]) {
+        summaryItems[3].querySelector('.customer-orders-summary-value').textContent = data.statistics.cancelled.count;
+        summaryItems[3].querySelector('.customer-orders-summary-label').textContent = `Cancelled (₱${data.statistics.cancelled.amount.toLocaleString()})`;
+    }
+
+    // Update orders table
+    const ordersTableBody = modal.querySelector('.customer-orders-orders-table tbody');
+    if (data.orders && data.orders.length > 0) {
+        ordersTableBody.innerHTML = data.orders.map(order => `
+            <tr>
+                <td><a href="#" class="customer-orders-order-id">#${order.orderNumber}</a></td>
+                <td>${order.orderDateFormatted}</td>
+                <td>
+                    <div class="customer-orders-order-items">
+                        <div class="customer-orders-item-count">${order.itemCount} item${order.itemCount !== 1 ? 's' : ''}</div>
+                        <div class="customer-orders-item-list">${order.itemNames}</div>
+                    </div>
+                </td>
+                <td><span class="customer-orders-order-total">₱${order.finalAmount.toLocaleString()}</span></td>
+                <td>${order.paymentMethod || 'N/A'}</td>
+                <td><span class="customer-orders-order-status ${order.orderStatus.toLowerCase()}">${order.orderStatus}</span></td>
+                <td><a href="#" class="customer-orders-action-btn">View</a></td>
+            </tr>
+        `).join('');
+    } else {
+        ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 1rem;">No orders found</td></tr>';
+    }
+
+    // Update pagination info
+    const paginationInfo = modal.querySelector('.customer-orders-pagination-info');
+    const pagination = data.pagination;
+    const startItem = ((pagination.page - 1) * pagination.pageSize) + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, pagination.total);
+    paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${pagination.total} orders`;
+}
+
+// Close customer orders modal
+function closeCustomerOrdersModal(event) {
+    const modal = document.getElementById('customerOrdersModal');
+    if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-orders-close-btn'))) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Open customer edit modal
+async function openCustomerEditModal(customerId) {
+    const modal = document.getElementById('customerEditModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    const modalBody = modal.querySelector('.customer-edit-modal-body');
+    const loadingOverlay = showLoading(modalBody);
+
+    try {
+        const customer = await apiRequest(`../../api/admin/customers/get.php?id=${customerId}`);
+        populateCustomerEditModal(customer);
+
+        // Setup form submission
+        const form = modal.querySelector('#editCustomerForm');
+        form.onsubmit = (e) => handleCustomerUpdate(e, customerId);
+
+        const viewOrdersBtn = modal.querySelector('#UserOrder');
+        if (viewOrdersBtn) {
+            viewOrdersBtn.onclick = () => {
+                closeCustomerEditModal();
+                openCustomerOrdersModal(customerId);
+            };
+        }
+    } catch (error) {
+        showToast('Error loading customer: ' + error.message, 'error');
+        closeCustomerEditModal();
+    } finally {
+        hideLoading(loadingOverlay);
+        lucide.createIcons();
+    }
+}
+
+// Populate customer edit modal
+function populateCustomerEditModal(customer) {
+    const modal = document.getElementById('customerEditModal');
+
+    const nameParts = customer.name.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts[nameParts.length - 1] || '';
+    const avatar = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+
+    modal.querySelector('.customer-edit-avatar-large').textContent = avatar;
+    modal.querySelector('.customer-edit-modal-title h3').textContent = `Edit Customer - ${customer.name}`;
+    modal.querySelector('#customerEditID').textContent = `#CUS-${String(customer.id).padStart(3, '0')}`;
+
+    // Update stats
+    const stats = modal.querySelectorAll('.customer-edit-stat-value');
+    if (stats[0]) stats[0].textContent = customer.statistics.totalOrders;
+    if (stats[1]) stats[1].textContent = `₱${customer.statistics.totalSpent.toLocaleString()}`;
+    if (stats[2]) stats[2].textContent = customer.memberSince;
+    if (stats[3]) {
+        const days = customer.statistics.daysSinceLastOrder;
+        stats[3].textContent = days !== null ? `${days} day${days !== 1 ? 's' : ''} ago` : 'Never';
+    }
+
+    // Update customer info (read-only)
+    const infoValues = modal.querySelectorAll('.customer-edit-info-display .customer-edit-info-value');
+    if (infoValues[0]) infoValues[0].textContent = customer.name;
+    if (infoValues[1]) infoValues[1].textContent = customer.email;
+    if (infoValues[2]) infoValues[2].textContent = customer.contactNumber || 'N/A';
+    if (infoValues[3]) infoValues[3].textContent = new Date(customer.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    if (infoValues[4]) infoValues[4].textContent = customer.location || 'N/A';
+    if (infoValues[5]) infoValues[5].textContent = customer.updatedAt ? new Date(customer.updatedAt).toLocaleString('en-US') : 'N/A';
+
+    // Populate admin settings if available
+    if (customer.adminSettings) {
+        const settings = customer.adminSettings;
+
+        // Permissions checkboxes
+        const checkboxes = {
+            'allow_bulk_orders': settings.permissions.allowBulkOrders,
+            'allow_credit_purchases': settings.permissions.allowCreditPurchases,
+            'require_order_approval': settings.permissions.requireOrderApproval,
+            'block_new_orders': settings.permissions.blockNewOrders,
+            'receive_marketing_emails': settings.permissions.receiveMarketingEmails,
+            'access_wholesale_prices': settings.permissions.accessWholesalePrices
+        };
+
+        Object.entries(checkboxes).forEach(([name, value]) => {
+            const checkbox = modal.querySelector(`input[type="checkbox"][data-permission="${name}"]`);
+            if (checkbox) checkbox.checked = value;
         });
 
-        function updateStats() {
-            const total = allCustomers.length;
-            const active = allCustomers.filter(c => c.status === 'active').length;
-            const inactive = allCustomers.filter(c => c.status === 'inactive').length;
-            const newCustomers = allCustomers.filter(c => c.status === 'new').length;
+        // Financial summary
+        const financialValues = modal.querySelectorAll('.customer-edit-financial-value');
+        if (financialValues[0]) financialValues[0].textContent = `₱${settings.outstandingBalance.toLocaleString()}`;
+        if (financialValues[1]) financialValues[1].textContent = `₱${settings.availableCredit.toLocaleString()}`;
+        if (financialValues[2]) financialValues[2].textContent = `₱${customer.statistics.totalSpent.toLocaleString()}`;
 
-            document.getElementById('totalCustomers').textContent = total;
-            document.getElementById('activeCustomers').textContent = active;
-            document.getElementById('inactiveCustomers').textContent = inactive;
-            document.getElementById('newCustomers').textContent = newCustomers;
+        // Admin notes
+        const adminNotesTextarea = modal.querySelector('textarea[name="admin_notes"]');
+        if (adminNotesTextarea) adminNotesTextarea.value = settings.adminNotes || '';
+    }
+
+    // Add data attributes for permissions checkboxes
+    modal.querySelectorAll('.customer-edit-checkbox-item input[type="checkbox"]').forEach((checkbox, index) => {
+        const permissions = ['allow_bulk_orders', 'allow_credit_purchases', 'require_order_approval', 'block_new_orders', 'receive_marketing_emails', 'access_wholesale_prices'];
+        if (permissions[index]) {
+            checkbox.setAttribute('data-permission', permissions[index]);
         }
+    });
 
-        async function loadCustomersData() {
-            try {
-                // Replace this with actual API call
-                // const response = await fetch('/api/customers.php');
-                // const result = await response.json();
+    // Sub-modal email field
+    const emailSubModalInput = modal.querySelector('#emailModal .customer-edit-form-input[type="email"]');
+    if (emailSubModalInput) emailSubModalInput.value = customer.email;
 
-                // Mock data for now - using your existing data structure
-                const result = {
-                    success: true,
-                    data: {
-                        customers: [
-                            {
-                                id: 1,
-                                name: "Juan Dela Cruz",
-                                email: "juan.delacruz@email.com",
-                                phone: "+63 917 123 4567",
-                                location: "Olongapo City",
-                                orders: 8,
-                                totalSpent: 4250,
-                                status: "active",
-                                avatar: "JD",
-                                memberSince: "Aug 2024",
-                                dob: "June 15, 1985",
-                                gender: "Male",
-                                streetAddress: "123 Main Street",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 2,
-                                name: "Roberto Garcia",
-                                email: "roberto.garcia@email.com",
-                                phone: "+63 919 345 6789",
-                                location: "Olongapo City",
-                                orders: 5,
-                                totalSpent: 2180,
-                                status: "active",
-                                avatar: "RG",
-                                memberSince: "Jun 2024",
-                                dob: "July 20, 1990",
-                                gender: "Male",
-                                streetAddress: "456 Oak Avenue",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 3,
-                                name: "Ana Reyes",
-                                email: "ana.reyes@email.com",
-                                phone: "+63 920 456 7890",
-                                location: "Olongapo City",
-                                orders: 2,
-                                totalSpent: 1850,
-                                status: "new",
-                                avatar: "AR",
-                                memberSince: "Aug 2025",
-                                dob: "January 10, 1995",
-                                gender: "Female",
-                                streetAddress: "789 Pine Lane",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 4,
-                                name: "Carlos Mendoza",
-                                email: "carlos.mendoza@email.com",
-                                phone: "+63 921 567 8901",
-                                location: "Olongapo City",
-                                orders: 15,
-                                totalSpent: 8900,
-                                status: "active",
-                                avatar: "CM",
-                                memberSince: "May 2024",
-                                dob: "March 5, 1980",
-                                gender: "Male",
-                                streetAddress: "101 Elm Street",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 5,
-                                name: "Lisa Fernandez",
-                                email: "lisa.fernandez@email.com",
-                                phone: "+63 922 678 9012",
-                                location: "Olongapo City",
-                                orders: 3,
-                                totalSpent: 1200,
-                                status: "inactive",
-                                avatar: "LF",
-                                memberSince: "Apr 2024",
-                                dob: "November 22, 1992",
-                                gender: "Female",
-                                streetAddress: "202 Birch Road",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 6,
-                                name: "Miguel Torres",
-                                email: "miguel.torres@email.com",
-                                phone: "+63 923 789 0123",
-                                location: "Olongapo City",
-                                orders: 7,
-                                totalSpent: 3450,
-                                status: "active",
-                                avatar: "MT",
-                                memberSince: "Mar 2024",
-                                dob: "September 1, 1988",
-                                gender: "Male",
-                                streetAddress: "303 Cedar Street",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 7,
-                                name: "Carmen Lopez",
-                                email: "carmen.lopez@email.com",
-                                phone: "+63 924 890 1234",
-                                location: "Olongapo City",
-                                orders: 1,
-                                totalSpent: 450,
-                                status: "new",
-                                avatar: "CL",
-                                memberSince: "Aug 2025",
-                                dob: "April 18, 1998",
-                                gender: "Female",
-                                streetAddress: "404 Willow Drive",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            },
-                            {
-                                id: 8,
-                                name: "Maria Santos",
-                                email: "maria.santos@email.com",
-                                phone: "+63 918 234 5678",
-                                location: "Olongapo City",
-                                orders: 12,
-                                totalSpent: 6780,
-                                status: "active",
-                                avatar: "MS",
-                                memberSince: "Jul 2024",
-                                dob: "December 12, 1983",
-                                gender: "Female",
-                                streetAddress: "505 Maple Avenue",
-                                province: "Zambales",
-                                postalCode: "2200",
-                                country: "Philippines"
-                            }
-                        ],
-                        total: 8
-                    }
-                };
+    // Sub-modal password reset email field
+    const passwordSubModalInput = modal.querySelector('#passwordModal .customer-edit-form-input[type="email"]');
+    if (passwordSubModalInput) passwordSubModalInput.value = customer.email;
+}
 
-                allCustomers = result.data.customers;
-                filteredCustomers = [...allCustomers];
-                totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+// Handle customer update
+async function handleCustomerUpdate(event, customerId) {
+    event.preventDefault();
 
-                renderCustomers();
-                renderPagination();
-                updateStats();
-            } catch (error) {
-                console.error('Error loading customers:', error);
-                showError('Error loading customer data.');
+    const modal = document.getElementById('customerEditModal');
+    const form = event.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Saving...';
+    lucide.createIcons();
+
+    try {
+        // Collect form data
+        const formData = {
+            userId: customerId,
+            adminNotes: form.querySelector('textarea[name="admin_notes"]')?.value || ''
+        };
+
+        // Collect permissions
+        modal.querySelectorAll('input[type="checkbox"][data-permission]').forEach(checkbox => {
+            const permission = checkbox.getAttribute('data-permission');
+            const camelCase = permission.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+            formData[camelCase] = checkbox.checked;
+        });
+
+        const result = await apiRequest('../../api/admin/customers/update.php', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+
+        showToast('Customer updated successfully!', 'success');
+        closeCustomerEditModal();
+        loadCustomersData(); // Refresh the list
+
+    } catch (error) {
+        showToast('Error updating customer: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        lucide.createIcons();
+    }
+}
+
+// Close customer edit modal
+function closeCustomerEditModal(event) {
+    const modal = document.getElementById('customerEditModal');
+    if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-edit-close-btn'))) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+        const form = modal.querySelector('form');
+        if (form) form.reset();
+    }
+}
+
+// Show customer edit sub-modal
+function showCustomerEditSubModal(modalId) {
+    const subModal = document.getElementById(modalId);
+    if (subModal) {
+        subModal.classList.add('show');
+
+        // Setup delete confirmation
+        if (modalId === 'deleteModal') {
+            const deleteForm = subModal.querySelector('#deleteForm');
+            if (deleteForm) {
+                deleteForm.onsubmit = handleCustomerDelete;
             }
         }
+    }
+}
 
-        function renderCustomers() {
-            const tbody = document.querySelector('.customers-table tbody');
-            const startIndex = (currentPage - 1) * customersPerPage;
-            const endIndex = startIndex + customersPerPage;
-            const pageCustomers = filteredCustomers.slice(startIndex, endIndex);
+// Close customer edit sub-modal
+function closeCustomerEditSubModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        const form = modal.querySelector('form');
+        if (form) form.reset();
+    }
+}
 
-            if (pageCustomers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="loading">No customers found</td></tr>';
-                return;
-            }
+// Handle customer delete
+async function handleCustomerDelete(event) {
+    event.preventDefault();
 
-            tbody.innerHTML = pageCustomers.map(customer => `
-                <tr>
-                    <td>
-                        <div class="customer-info">
-                            <div class="customer-avatar">${customer.avatar}</div>
-                            <div class="customer-details">
-                                <h4>${customer.name}</h4>
-                                <p>Member since ${customer.memberSince}</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${customer.email}</td>
-                    <td>${customer.phone}</td>
-                    <td>${customer.location}</td>
-                    <td>${customer.orders}</td>
-                    <td><strong>₱${customer.totalSpent.toLocaleString()}</strong></td>
-                    <td><span class="status-badge ${customer.status}">${customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}</span></td>
-                    <td>
-                        <div class="actions">
-                            <button class="action-btn" onclick="openCustomerDetailsModal(${customer.id})">View</button>
-                            <button class="action-btn orders" onclick="openCustomerOrdersModal(${customer.id})">Orders</button>
-                            <button class="action-btn secondary" onclick="openCustomerEditModal(${customer.id})">Edit</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
+    const form = event.target;
+    const modal = document.getElementById('customerEditModal');
+    const customerIdText = modal.querySelector('#customerEditID').textContent;
+    const customerId = parseInt(customerIdText.replace(/[^0-9]/g, ''));
 
-        function renderPagination() {
-            const paginationInfo = document.querySelector('.pagination-info');
-            const paginationControls = document.querySelector('.pagination-controls');
+    const reasonSelect = form.querySelector('select');
+    const confirmationInput = form.querySelector('input[type="text"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-            const startItem = ((currentPage - 1) * customersPerPage) + 1;
-            const endItem = Math.min(currentPage * customersPerPage, filteredCustomers.length);
+    const reason = reasonSelect.value;
+    const confirmation = confirmationInput.value;
 
-            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredCustomers.length} customers`;
+    if (confirmation !== 'DELETE') {
+        showToast('Please type DELETE to confirm', 'error');
+        return;
+    }
 
-            // Generate page buttons
-            let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Deleting...';
+    lucide.createIcons();
 
-            for (let i = 1; i <= totalPages; i++) {
-                buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-            }
+    try {
+        const result = await apiRequest('../../api/admin/customers/delete.php', {
+            method: 'POST',
+            body: JSON.stringify({
+                userId: customerId,
+                reason: reason,
+                confirmation: confirmation
+            })
+        });
 
-            buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
+        showToast('Customer deactivated successfully!', 'success');
+        closeCustomerEditSubModal('deleteModal');
+        closeCustomerEditModal();
+        loadCustomersData(); // Refresh the list
 
-            paginationControls.innerHTML = buttonsHTML;
+    } catch (error) {
+        showToast('Error deleting customer: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        lucide.createIcons();
+    }
+}
 
-            // Add event listeners
-            document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
-            document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
+// Add customer modal functions
+function showAddCustomerModal() {
+    document.getElementById('addCustomerModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
 
-            document.querySelectorAll('[data-page]').forEach(btn => {
-                btn.onclick = () => goToPage(parseInt(btn.dataset.page));
+function closeAddCustomerModal() {
+    const modal = document.getElementById('addCustomerModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.getElementById('addCustomerForm').reset();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Setup modal click outside handlers
+function setupModalClickOutside() {
+    const modals = [
+        'addCustomerModal',
+        'customerDetailsModal',
+        'customerOrdersModal',
+        'customerEditModal',
+        'emailModal',
+        'reportModal',
+        'passwordModal',
+        'deleteModal'
+    ];
+
+    modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (modalId === 'addCustomerModal') closeAddCustomerModal();
+                    else if (modalId === 'customerDetailsModal') closeCustomerDetailsModal();
+                    else if (modalId === 'customerOrdersModal') closeCustomerOrdersModal();
+                    else if (modalId === 'customerEditModal') closeCustomerEditModal();
+                    else closeCustomerEditSubModal(modalId);
+                }
             });
         }
+    });
+}
 
-        function goToPage(page) {
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            renderCustomers();
-            renderPagination();
+// Add customer form submission
+document.getElementById('addCustomerForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    showToast('Add customer functionality not yet implemented', 'error');
+    // TODO: Implement add customer API endpoint and connect here
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const addModal = document.getElementById('addCustomerModal');
+        if (addModal?.classList.contains('show')) {
+            closeAddCustomerModal();
+            return;
         }
 
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-            const locationFilter = document.getElementById('locationFilter').value;
-
-            filteredCustomers = allCustomers.filter(customer => {
-                const matchesSearch = !searchTerm ||
-                    customer.name.toLowerCase().includes(searchTerm) ||
-                    customer.email.toLowerCase().includes(searchTerm);
-
-                const matchesStatus = !statusFilter || customer.status === statusFilter;
-                const matchesLocation = !locationFilter || customer.location.toLowerCase() === locationFilter.toLowerCase();
-
-                return matchesSearch && matchesStatus && matchesLocation;
-            });
-
-            totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
-            currentPage = 1; // Reset to first page when filtering
-            renderCustomers();
-            renderPagination();
+        const detailsModal = document.getElementById('customerDetailsModal');
+        if (detailsModal?.classList.contains('show')) {
+            closeCustomerDetailsModal();
+            return;
         }
 
-        // Search and filter functionality
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
-        document.getElementById('statusFilter').addEventListener('change', applyFilters);
-        document.getElementById('locationFilter').addEventListener('change', applyFilters);
-
-        function showError(message) {
-            const tbody = document.querySelector('.customers-table tbody');
-            tbody.innerHTML = `<tr><td colspan="8" class="error" style="text-align: center; padding: 2rem; color: #dc2626;">${message}</td></tr>`;
+        const ordersModal = document.getElementById('customerOrdersModal');
+        if (ordersModal?.classList.contains('show')) {
+            closeCustomerOrdersModal();
+            return;
         }
 
-        // Modal Functions - These will open your existing modals
-
-        function openCustomerDetailsModal(customerId) {
-            const customer = allCustomers.find(c => c.id === customerId);
-            if (!customer) {
-                alert('Customer not found');
-                return;
+        const editModal = document.getElementById('customerEditModal');
+        if (editModal?.classList.contains('show')) {
+            const subModals = editModal.querySelectorAll('.customer-edit-sub-modal.show');
+            if (subModals.length > 0) {
+                subModals.forEach(subModal => closeCustomerEditSubModal(subModal.id));
+            } else {
+                closeCustomerEditModal();
             }
+            return;
+        }
+    }
 
+    if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('searchInput')?.focus();
+    }
+
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        showAddCustomerModal();
+    }
+});
+
+// Event listeners
+document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+document.getElementById('statusFilter')?.addEventListener('change', applyFilters);
+document.getElementById('locationFilter')?.addEventListener('change', applyFilters);
+
+lucide.createIcons();
+
+// Global variables
+let currentPage = 1;
+let totalPages = 1;
+let allCustomers = [];
+const customersPerPage = 8;
+
+// Toast notification system
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Add CSS for animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+    }
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #1e40af;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
+
+// Loading indicator
+function showLoading(element) {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.innerHTML = '<div class="spinner"></div>';
+    element.style.position = 'relative';
+    element.appendChild(overlay);
+    return overlay;
+}
+
+function hideLoading(overlay) {
+    if (overlay && overlay.parentNode) {
+        overlay.remove();
+    }
+}
+
+// API helper function
+async function apiRequest(url, options = {}) {
+    try {
+        console.log('API Request:', url); // Debug log
+
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+
+        const text = await response.text();
+        console.log('API Response Status:', response.status); // Debug log
+        console.log('API Response Text:', text.substring(0, 200)); // Debug log
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (parseError) {
+            console.error('JSON Parse Error:', parseError);
+            console.error('Full response:', text);
+            throw new Error('Server returned invalid JSON: ' + text.substring(0, 100));
+        }
+
+        if (!response.ok) {
+            // Create error with additional details
+            const error = new Error(data.error || data.message || 'Request failed');
+            error.details = data.sqlError || data.details || null;
+            error.code = data.sqlCode || null;
+            throw error;
+        }
+
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+// Load customers data
+async function loadCustomersData() {
+    const tbody = document.querySelector('.customers-table tbody');
+    const loadingOverlay = showLoading(tbody.closest('.table-container'));
+
+    try {
+        const q = document.getElementById('searchInput').value.trim();
+        const status = document.getElementById('statusFilter').value;
+        const location = document.getElementById('locationFilter').value;
+
+        const params = new URLSearchParams({
+            page: String(currentPage),
+            pageSize: String(customersPerPage)
+        });
+        if (q) params.set('q', q);
+        if (status) params.set('status', status);
+        if (location) params.set('location', location);
+
+        const result = await apiRequest(`../../api/admin/customers/list.php?${params.toString()}`);
+
+        allCustomers = result.items || [];
+        totalPages = result.totalPages || 1;
+
+        renderCustomers();
+        renderPagination();
+        updateStats();
+    } catch (error) {
+        showToast('Error loading customers: ' + error.message, 'error');
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #dc2626;">Failed to load customers</td></tr>';
+    } finally {
+        hideLoading(loadingOverlay);
+    }
+}
+
+// Update statistics
+function updateStats() {
+    const total = allCustomers.length;
+    const active = allCustomers.filter(c => c.status === 'active').length;
+    const inactive = allCustomers.filter(c => c.status === 'inactive').length;
+    const newCustomers = allCustomers.filter(c => c.status === 'new').length;
+
+    document.getElementById('totalCustomers').textContent = total;
+    document.getElementById('activeCustomers').textContent = active;
+    document.getElementById('inactiveCustomers').textContent = inactive;
+    document.getElementById('newCustomers').textContent = newCustomers;
+}
+
+// Render customers table
+function renderCustomers() {
+    const tbody = document.querySelector('.customers-table tbody');
+
+    if (allCustomers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">No customers found</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = allCustomers.map(customer => {
+        const nameParts = customer.name.split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts[nameParts.length - 1] || '';
+        const avatar = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+
+        return `
+            <tr>
+                <td>
+                    <div class="customer-info">
+                        <div class="customer-avatar">${avatar}</div>
+                        <div class="customer-details">
+                            <h4>${customer.name}</h4>
+                            <p>Member since ${customer.memberSince}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>${customer.email}</td>
+                <td>${customer.contactNumber || 'N/A'}</td>
+                <td>${customer.location || 'N/A'}</td>
+                <td>${customer.totalOrders}</td>
+                <td><strong>₱${customer.totalSpent.toLocaleString()}</strong></td>
+                <td><span class="status-badge ${customer.status}">${customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn-icon secondary" onclick="openCustomerDetailsModal(${customer.id})" title="View">
+                            <i data-lucide="eye"></i>
+                        </button>
+                        <button class="action-btn-icon orders" onclick="openCustomerOrdersModal(${customer.id})" title="Orders">
+                            <i data-lucide="package"></i>
+                        </button>
+                        <button class="action-btn-icon secondary" onclick="openCustomerEditModal(${customer.id})" title="Edit">
+                            <i data-lucide="user-pen"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    lucide.createIcons();
+}
+
+// Render pagination
+function renderPagination() {
+    const paginationInfo = document.querySelector('.pagination-info');
+    const paginationControls = document.querySelector('.pagination-controls');
+
+    const startItem = ((currentPage - 1) * customersPerPage) + 1;
+    const endItem = Math.min(currentPage * customersPerPage, allCustomers.length);
+
+    paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${allCustomers.length} customers`;
+
+    let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
+
+    for (let i = 1; i <= totalPages; i++) {
+        if (totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+            buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        } else if (i === currentPage - 2 || i === currentPage + 2) {
+            buttonsHTML += '<span style="padding: 0 0.5rem;">...</span>';
+        }
+    }
+
+    buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
+    paginationControls.innerHTML = buttonsHTML;
+
+    document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
+    document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
+
+    document.querySelectorAll('[data-page]').forEach(btn => {
+        btn.onclick = () => goToPage(parseInt(btn.dataset.page));
+    });
+}
+
+// Go to page
+function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    loadCustomersData();
+}
+
+// Apply filters
+function applyFilters() {
+    currentPage = 1;
+    loadCustomersData();
+}
+
+// Open customer details modal
+async function openCustomerDetailsModal(customerId) {
+    const modal = document.getElementById('customerDetailsModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    const modalBody = modal.querySelector('.customer-details-modal-body');
+    const loadingOverlay = showLoading(modalBody);
+
+    try {
+        const customer = await apiRequest(`../../api/admin/customers/get.php?id=${customerId}`);
+
+        // Only populate if we got valid data
+        if (customer) {
             populateCustomerDetailsModal(customer);
-            document.getElementById('customerDetailsModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
 
-            setTimeout(() => {
-                lucide.createIcons();
-            }, 100);
-        }
-
-        function populateCustomerDetailsModal(customer) {
-            const modal = document.getElementById('customerDetailsModal');
-            if (!modal) return;
-
-            modal.querySelector('.customer-details-avatar-large').textContent = customer.avatar;
-            modal.querySelector('.customer-details-modal-title h3').textContent = customer.name;
-            modal.querySelector('.customer-details-modal-title p').textContent = `Customer ID: #CUS-00${customer.id}`;
-
-            // Update stats
-            const stats = modal.querySelectorAll('.customer-details-stat-value');
-            if (stats[0]) stats[0].textContent = customer.orders;
-            if (stats[1]) stats[1].textContent = `₱${customer.totalSpent.toLocaleString()}`;
-            if (stats[2]) stats[2].textContent = `₱${Math.round(customer.totalSpent / customer.orders).toLocaleString()}`;
-            // Last order is hardcoded in HTML, would need dynamic data for this
-
-            // Update personal info
-            const personalInfoRows = modal.querySelectorAll('.customer-details-info-section .customer-details-info-row');
-            if (personalInfoRows[0]) personalInfoRows[0].querySelector('.customer-details-info-value').textContent = customer.name;
-            if (personalInfoRows[1]) personalInfoRows[1].querySelector('.customer-details-info-value').textContent = customer.email;
-            if (personalInfoRows[2]) personalInfoRows[2].querySelector('.customer-details-info-value').textContent = customer.phone;
-            if (personalInfoRows[3]) personalInfoRows[3].querySelector('.customer-details-info-value').textContent = customer.dob;
-            if (personalInfoRows[4]) personalInfoRows[4].querySelector('.customer-details-info-value').textContent = customer.gender;
-            if (personalInfoRows[5]) personalInfoRows[5].querySelector('.customer-details-info-value').textContent = customer.memberSince;
-
-            // Update address info
-            const addressInfoRows = modal.querySelectorAll('.customer-details-info-section:nth-of-type(2) .customer-details-info-row');
-            if (addressInfoRows[0]) addressInfoRows[0].querySelector('.customer-details-info-value').textContent = customer.streetAddress;
-            if (addressInfoRows[1]) addressInfoRows[1].querySelector('.customer-details-info-value').textContent = customer.location; // Assuming location is city
-            if (addressInfoRows[2]) addressInfoRows[2].querySelector('.customer-details-info-value').textContent = customer.province;
-            if (addressInfoRows[3]) addressInfoRows[3].querySelector('.customer-details-info-value').textContent = customer.postalCode;
-            if (addressInfoRows[4]) addressInfoRows[4].querySelector('.customer-details-info-value').textContent = customer.country;
-            if (addressInfoRows[5]) {
-                const statusBadge = addressInfoRows[5].querySelector('.customer-details-status-badge');
-                statusBadge.textContent = customer.status.charAt(0).toUpperCase() + customer.status.slice(1) + ' Customer';
-                statusBadge.className = `customer-details-status-badge ${customer.status}`;
-            }
-
-            // Recent orders and activity timeline are hardcoded, would need dynamic data for these
-        }
-
-        function closeCustomerDetailsModal(event) {
-            const modal = document.getElementById('customerDetailsModal');
-            if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-details-close-btn'))) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function openCustomerOrdersModal(customerId) {
-            const customer = allCustomers.find(c => c.id === customerId);
-            if (!customer) {
-                alert('Customer not found');
-                return;
-            }
-
-            populateCustomerOrdersModal(customer);
-            document.getElementById('customerOrdersModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
-
-            setTimeout(() => {
-                lucide.createIcons();
-            }, 100);
-        }
-
-        function populateCustomerOrdersModal(customer) {
-            const modal = document.getElementById('customerOrdersModal');
-            if (!modal) return;
-
-            modal.querySelector('.customer-orders-avatar-large').textContent = customer.avatar;
-            modal.querySelector('.customer-orders-modal-title h3').textContent = `${customer.name} - Orders`;
-            modal.querySelector('.customer-orders-modal-title p').textContent = `Customer ID: #CUS-00${customer.id} • Member since ${customer.memberSince}`;
-
-            // Update order summary (hardcoded values, would need dynamic data)
-            // For demonstration, let's assume completed orders are customer.orders and cancelled is 1 if status is inactive
-            const completedOrders = customer.orders - (customer.status === 'inactive' ? 1 : 0);
-            const cancelledOrders = (customer.status === 'inactive' ? 1 : 0);
-            const completedSpent = customer.totalSpent - (cancelledOrders > 0 ? 300 : 0); // Example deduction for cancelled
-
-            const summaryValues = modal.querySelectorAll('.customer-orders-summary-value');
-            const summaryLabels = modal.querySelectorAll('.customer-orders-summary-label');
-
-            if (summaryValues[0]) summaryValues[0].textContent = completedOrders;
-            if (summaryLabels[0]) summaryLabels[0].textContent = `Completed (₱${completedSpent.toLocaleString()})`;
-
-            if (summaryValues[1]) summaryValues[1].textContent = 0; // Pending
-            if (summaryLabels[1]) summaryLabels[1].textContent = `Pending (₱0)`;
-
-            if (summaryValues[2]) summaryValues[2].textContent = 0; // Processing
-            if (summaryLabels[2]) summaryLabels[2].textContent = `Processing (₱0)`;
-
-            if (summaryValues[3]) summaryValues[3].textContent = cancelledOrders;
-            if (summaryLabels[3]) summaryLabels[3].textContent = `Cancelled (₱${(cancelledOrders > 0 ? 300 : 0).toLocaleString()})`;
-
-            // Orders table is hardcoded, would need dynamic data for these
-        }
-
-        function closeCustomerOrdersModal(event) {
-            const modal = document.getElementById('customerOrdersModal');
-            if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-orders-close-btn'))) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function openCustomerEditModal(customerId) {
-            const customer = allCustomers.find(c => c.id === customerId);
-            if (!customer) {
-                alert('Customer not found');
-                return;
-            }
-
-            populateCustomerEditModal(customer);
-            document.getElementById('customerEditModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
-
-            setTimeout(() => {
-                lucide.createIcons();
-            }, 100);
-        }
-
-        function populateCustomerEditModal(customer) {
-            const modal = document.getElementById('customerEditModal');
-            if (!modal) return;
-
-            modal.querySelector('.customer-edit-avatar-large').textContent = customer.avatar;
-            modal.querySelector('.customer-edit-modal-title h3').textContent = `Edit Customer - ${customer.name}`;
-            modal.querySelector('#customerEditID').textContent = `#CUS-00${customer.id}`;
-
-            // Update stats
-            const stats = modal.querySelectorAll('.customer-edit-stat-value');
-            if (stats[0]) stats[0].textContent = customer.orders;
-            if (stats[1]) stats[1].textContent = `₱${customer.totalSpent.toLocaleString()}`;
-            if (stats[2]) stats[2].textContent = customer.memberSince;
-            // Last order is hardcoded in HTML, would need dynamic data for this
-
-            // Update customer info in read-only fields
-            const infoValues = modal.querySelectorAll('.customer-edit-info-display .customer-edit-info-value');
-            if (infoValues[0]) infoValues[0].textContent = customer.name;
-            if (infoValues[1]) infoValues[1].textContent = customer.email;
-            if (infoValues[2]) infoValues[2].textContent = customer.phone;
-            // Registration Date, Location, Last Login are hardcoded, would need dynamic data
-
-            // Update form fields (example for account status and customer type)
-            const accountStatusSelect = modal.querySelector('select[name="account_status"]');
-            if (accountStatusSelect) accountStatusSelect.value = customer.status;
-
-            // Financial summary (hardcoded, would need dynamic data)
-            const financialValues = modal.querySelectorAll('.customer-edit-financial-value');
-            if (financialValues[2]) financialValues[2].textContent = `₱${customer.totalSpent.toLocaleString()}`;
-
-            // Sub-modal email field
-            const emailSubModalInput = document.querySelector('#emailModal .customer-edit-form-input[type="email"]');
-            if (emailSubModalInput) emailSubModalInput.value = customer.email;
-
-            // Sub-modal password reset email field
-            const passwordSubModalInput = document.querySelector('#passwordModal .customer-edit-form-input[type="email"]');
-            if (passwordSubModalInput) passwordSubModalInput.value = customer.email;
-        }
-
-        function closeCustomerEditModal(event) {
-            const modal = document.getElementById('customerEditModal');
-            if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-edit-close-btn'))) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-                const form = modal.querySelector('form');
-                if (form) {
-                    form.reset();
-                }
-            }
-        }
-
-        function showCustomerEditSubModal(modalId) {
-            document.getElementById(modalId).classList.add('show');
-            document.body.style.overflow = 'hidden'; // Keep main body locked
-        }
-
-        function closeCustomerEditSubModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('show');
-                // Only unlock body if no other modals are open
-                if (!document.querySelector('.customer-edit-modal-base.show')) {
-                    document.body.style.overflow = 'auto';
-                }
-                const form = modal.querySelector('form');
-                if (form) {
-                    form.reset();
-                }
-            }
-        }
-
-        function closeAddCustomerModal() {
-            const modal = document.getElementById('addCustomerModal');
-            if (modal) {
-                modal.classList.remove('show');
-                document.getElementById('addCustomerForm').reset();
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function setupModalClickOutside() {
-            // Add Customer Modal
-            const addCustomerModal = document.getElementById('addCustomerModal');
-            if (addCustomerModal) {
-                addCustomerModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeAddCustomerModal();
-                    }
-                });
-            }
-
-            // Customer Details Modal
-            const customerDetailsModal = document.getElementById('customerDetailsModal');
-            if (customerDetailsModal) {
-                customerDetailsModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerDetailsModal();
-                    }
-                });
-            }
-
-            // Customer Orders Modal
-            const customerOrdersModal = document.getElementById('customerOrdersModal');
-            if (customerOrdersModal) {
-                customerOrdersModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerOrdersModal();
-                    }
-                });
-            }
-
-            // Customer Edit Modal
-            const customerEditModal = document.getElementById('customerEditModal');
-            if (customerEditModal) {
-                customerEditModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerEditModal();
-                    }
-                });
-            }
-
-            // Sub-modals for Edit Customer Modal
-            const emailModal = document.getElementById('emailModal');
-            if (emailModal) {
-                emailModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerEditSubModal('emailModal');
-                    }
-                });
-            }
-            const reportModal = document.getElementById('reportModal');
-            if (reportModal) {
-                reportModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerEditSubModal('reportModal');
-                    }
-                });
-            }
-            const passwordModal = document.getElementById('passwordModal');
-            if (passwordModal) {
-                passwordModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerEditSubModal('passwordModal');
-                    }
-                });
-            }
-            const deleteModal = document.getElementById('deleteModal');
-            if (deleteModal) {
-                deleteModal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeCustomerEditSubModal('deleteModal');
-                    }
-                });
-            }
-        }
-
-
-        // Modal functions for add customer
-        function showAddCustomerModal() {
-            document.getElementById('addCustomerModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Add customer form submission
-        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Show loading state
-            const submitBtn = this.querySelector('.btn-primary');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Adding...';
-            submitBtn.disabled = true;
-
-            // Simulate API call
-            setTimeout(() => {
-                alert('Customer added successfully!');
-                closeAddCustomerModal();
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                // In a real app, you would refresh the table or add the new row
-                loadCustomersData(); // Reload data to include new customer
-            }, 1500);
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // ESC to close modals
-            if (e.key === 'Escape') {
-                // Close Add Customer Modal
-                const addModal = document.getElementById('addCustomerModal');
-                if (addModal && addModal.classList.contains('show')) {
-                    closeAddCustomerModal();
-                    return;
-                }
-
-                // Close Customer Details Modal
-                const detailsModal = document.getElementById('customerDetailsModal');
-                if (detailsModal && detailsModal.classList.contains('show')) {
+            const viewOrdersBtn = modal.querySelector('#viewOrders');
+            if (viewOrdersBtn) {
+                viewOrdersBtn.onclick = () => {
                     closeCustomerDetailsModal();
-                    return;
-                }
-
-                // Close Customer Orders Modal
-                const ordersModal = document.getElementById('customerOrdersModal');
-                if (ordersModal && ordersModal.classList.contains('show')) {
-                    closeCustomerOrdersModal();
-                    return;
-                }
-
-                // Close Customer Edit Modal (and its sub-modals first)
-                const editModal = document.getElementById('customerEditModal');
-                if (editModal && editModal.classList.contains('show')) {
-                    const subModals = editModal.querySelectorAll('.customer-edit-sub-modal.show');
-                    if (subModals.length > 0) {
-                        subModals.forEach(subModal => closeCustomerEditSubModal(subModal.id));
-                    } else {
-                        closeCustomerEditModal();
-                    }
-                    return;
-                }
+                    openCustomerOrdersModal(customerId);
+                };
             }
-            // Ctrl+K to focus search
-            if (e.ctrlKey && e.key === 'k') {
-                e.preventDefault();
-                document.getElementById('searchInput').focus();
-            }
-            // Ctrl+N to add customer
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                showAddCustomerModal();
-            }
-        });
 
-        // Initialize the page
+            const editUserBtn = modal.querySelector('#editUser');
+            if (editUserBtn) {
+                editUserBtn.onclick = () => {
+                    closeCustomerDetailsModal();
+                    openCustomerEditModal(customerId);
+                };
+            }
+        }
+    } catch (error) {
+        console.error('Customer details error:', error); // Add logging
+
+        // Show detailed error if available
+        let errorMessage = 'Error loading customer details: ' + error.message;
+        if (error.details) {
+            console.error('Error details:', error.details);
+            errorMessage += '\n\nDetails: ' + error.details;
+        }
+
+        showToast(errorMessage, 'error');
+        closeCustomerDetailsModal();
+    } finally {
+        // Only hide loading if overlay still exists
+        if (loadingOverlay && loadingOverlay.parentNode) {
+            hideLoading(loadingOverlay);
+        }
         lucide.createIcons();
-    </script>
+    }
+}
+// Populate customer details modal
+function populateCustomerDetailsModal(customer) {
+    const modal = document.getElementById('customerDetailsModal');
+
+    const nameParts = customer.name.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts[nameParts.length - 1] || '';
+    const avatar = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+
+    modal.querySelector('.customer-details-avatar-large').textContent = avatar;
+    modal.querySelector('.customer-details-modal-title h3').textContent = customer.name;
+    modal.querySelector('.customer-details-modal-title p').textContent = `Customer ID: #CUS-${String(customer.id).padStart(3, '0')}`;
+
+    // Update stats
+    const stats = modal.querySelectorAll('.customer-details-stat-value');
+    if (stats[0]) stats[0].textContent = customer.statistics.totalOrders;
+    if (stats[1]) stats[1].textContent = `₱${customer.statistics.totalSpent.toLocaleString()}`;
+    if (stats[2]) stats[2].textContent = `₱${Math.round(customer.statistics.averageOrder).toLocaleString()}`;
+    if (stats[3]) {
+        const days = customer.statistics.daysSinceLastOrder;
+        stats[3].textContent = days !== null ? `${days} day${days !== 1 ? 's' : ''}` : 'Never';
+    }
+
+    // Update personal info
+    const personalInfoRows = modal.querySelectorAll('.customer-details-info-section:nth-of-type(1) .customer-details-info-row');
+    if (personalInfoRows[0]) personalInfoRows[0].querySelector('.customer-details-info-value').textContent = customer.name;
+    if (personalInfoRows[1]) personalInfoRows[1].querySelector('.customer-details-info-value').textContent = customer.email;
+    if (personalInfoRows[2]) personalInfoRows[2].querySelector('.customer-details-info-value').textContent = customer.contactNumber || 'N/A';
+    if (personalInfoRows[3]) personalInfoRows[3].querySelector('.customer-details-info-value').textContent = customer.dateOfBirth || 'N/A';
+    if (personalInfoRows[4]) personalInfoRows[4].querySelector('.customer-details-info-value').textContent = customer.gender || 'N/A';
+    if (personalInfoRows[5]) personalInfoRows[5].querySelector('.customer-details-info-value').textContent = customer.memberSince;
+
+    // Update address info
+    const addressInfoRows = modal.querySelectorAll('.customer-details-info-section:nth-of-type(2) .customer-details-info-row');
+    if (addressInfoRows[0]) addressInfoRows[0].querySelector('.customer-details-info-value').textContent = customer.address || 'N/A';
+    if (addressInfoRows[1]) addressInfoRows[1].querySelector('.customer-details-info-value').textContent = customer.cityName || 'N/A';
+    if (addressInfoRows[2]) addressInfoRows[2].querySelector('.customer-details-info-value').textContent = customer.provinceName || 'N/A';
+    if (addressInfoRows[3]) addressInfoRows[3].querySelector('.customer-details-info-value').textContent = 'N/A'; // Postal code not in API
+    if (addressInfoRows[4]) addressInfoRows[4].querySelector('.customer-details-info-value').textContent = 'Philippines';
+    if (addressInfoRows[5]) {
+        const statusBadge = addressInfoRows[5].querySelector('.customer-details-status-badge');
+        statusBadge.textContent = customer.status.charAt(0).toUpperCase() + customer.status.slice(1) + ' Customer';
+        statusBadge.className = `customer-details-status-badge ${customer.status}`;
+    }
+
+    // Update recent orders
+    const ordersTableBody = modal.querySelector('.customer-details-orders-table tbody');
+    if (customer.recentOrders && customer.recentOrders.length > 0) {
+        ordersTableBody.innerHTML = customer.recentOrders.map(order => `
+            <tr>
+                <td><a href="#" class="customer-details-order-id">#${order.orderNumber}</a></td>
+                <td>${order.orderDateFormatted}</td>
+                <td>${order.itemCount} item${order.itemCount !== 1 ? 's' : ''}</td>
+                <td><strong>₱${order.finalAmount.toLocaleString()}</strong></td>
+                <td><span class="customer-details-order-status ${order.orderStatus.toLowerCase()}">${order.orderStatus}</span></td>
+            </tr>
+        `).join('');
+    } else {
+        ordersTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1rem;">No orders found</td></tr>';
+    }
+
+    // Update activity timeline
+    const timelineContainer = modal.querySelector('.customer-details-activity-timeline .customer-details-info-section');
+    const existingItems = timelineContainer.querySelectorAll('.customer-details-timeline-item');
+    existingItems.forEach(item => item.remove());
+
+    if (customer.activities && customer.activities.length > 0) {
+        customer.activities.forEach(activity => {
+            const item = document.createElement('div');
+            item.className = 'customer-details-timeline-item';
+            item.innerHTML = `
+                <div class="customer-details-timeline-content">
+                    <div class="customer-details-timeline-title">${formatActivityTitle(activity.type)}</div>
+                    <div class="customer-details-timeline-desc">${activity.description}</div>
+                    <div class="customer-details-timeline-time">${activity.timeAgo}</div>
+                </div>
+            `;
+            timelineContainer.appendChild(item);
+        });
+    }
+}
+
+// Format activity title
+function formatActivityTitle(type) {
+    const titles = {
+        'order_completed': 'Order Completed',
+        'order_confirmed': 'Order Confirmed',
+        'order_placed': 'Order Placed',
+        'profile_updated': 'Profile Updated',
+        'request_submitted': 'Request Submitted'
+    };
+    return titles[type] || type;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCustomersData();
+    setupModalClickOutside();
+    lucide.createIcons();
+});
+
+  </script>
 </body>
 </html>

@@ -172,71 +172,40 @@
 
     <script>
         lucide.createIcons();
-        // Sample products data
-        const products = [
-            {
-                id: 1,
-                name: "Ballpoint Pens (Pack of 12)",
-                category: "office",
-                categoryLabel: "Office Supplies",
-                price: 180,
-                stock: 150,
-                image: "🖊️"
-            },
-            {
-                id: 2,
-                name: "Bond Paper (1 Ream)",
-                category: "office",
-                categoryLabel: "Office Supplies",
-                price: 320,
-                stock: 75,
-                image: "📄"
-            },
-            {
-                id: 3,
-                name: "File Folders (Pack of 10)",
-                category: "office",
-                categoryLabel: "Office Supplies",
-                price: 250,
-                stock: 8,
-                image: "📁"
-            },
-            {
-                id: 4,
-                name: "Spiral Notebooks (Pack of 5)",
-                category: "school",
-                categoryLabel: "School Supplies",
-                price: 125,
-                stock: 200,
-                image: "📓"
-            },
-            {
-                id: 5,
-                name: "No. 2 Pencils (Pack of 24)",
-                category: "school",
-                categoryLabel: "School Supplies",
-                price: 95,
-                stock: 120,
-                image: "✏️"
-            },
-            {
-                id: 6,
-                name: "Hand Sanitizer (500ml)",
-                category: "sanitary",
-                categoryLabel: "Sanitary Supplies",
-                price: 145,
-                stock: 90,
-                image: "🧴"
-            }
-        ];
+        // Products data loaded from API
+        let products = [];
 
         let selectedProducts = new Set();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            renderProducts();
+            loadProducts();
             setupEventListeners();
         });
+
+        async function loadProducts() {
+            try {
+                const res = await fetch(`../../api/admin/products/list.php?page=1&pageSize=200&_=${Date.now()}` , { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to load products');
+                const data = await res.json();
+                products = (data.items || []).map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    category: (p.category || '').toLowerCase().includes('office') ? 'office' : (p.category || '').toLowerCase().includes('school') ? 'school' : 'sanitary',
+                    categoryLabel: p.categoryLabel || p.category || '',
+                    price: Number(p.price || 0),
+                    stock: Number(p.stock || 0),
+                    image: p.image ? `<img src="${p.image}" alt="${p.name}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;" />` : '📦'
+                }));
+                // reset selection after reload
+                selectedProducts.clear();
+                renderProducts();
+                updateSelectionUI();
+            } catch (e) {
+                console.error(e);
+                showAlert('Failed to load products', 'error');
+            }
+        }
 
         function setupEventListeners() {
             document.getElementById('editForm').addEventListener('submit', handleEdit);
@@ -412,41 +381,75 @@
             }
         }
 
-        function handleEdit(e) {
+        async function handleEdit(e) {
             e.preventDefault();
 
             const category = document.getElementById('editCategory').value;
             const priceAdjustment = document.getElementById('priceAdjustment').value;
 
-            // Simulate processing - in real app, send to backend
-            let message = `Successfully updated ${selectedProducts.size} products!`;
-            if (category) message += ` Category changed to ${category}.`;
-            if (priceAdjustment) message += ` Price adjusted by ${priceAdjustment}%.`;
-
-            showAlert(message, 'success');
-            closeModal('edit');
+            try {
+                const res = await fetch('../../api/admin/products/bulk-update.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ids: Array.from(selectedProducts),
+                        category,
+                        priceAdjustment: priceAdjustment ? parseFloat(priceAdjustment) : null
+                    })
+                });
+                if (!res.ok) throw new Error('Bulk update failed');
+                showAlert(`Successfully updated ${selectedProducts.size} products!`, 'success');
+                closeModal('edit');
+                await loadProducts();
+            } catch (err) {
+                console.error(err);
+                showAlert('Bulk update failed', 'error');
+            }
         }
 
-        function handleStockUpdate(e) {
+        async function handleStockUpdate(e) {
             e.preventDefault();
 
             const action = document.getElementById('stockAction').value;
             const quantity = parseInt(document.getElementById('stockQuantity').value);
 
-            // Simulate processing - in real app, send to backend
-            let actionText = action === 'set' ? 'set' : action === 'add' ? 'increased' : 'decreased';
-            showAlert(`Stock ${actionText} for ${selectedProducts.size} products!`, 'success');
-            closeModal('stock');
+            try {
+                const res = await fetch('../../api/admin/products/bulk-stock.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ids: Array.from(selectedProducts),
+                        action,
+                        quantity
+                    })
+                });
+                if (!res.ok) throw new Error('Bulk stock update failed');
+                showAlert(`Stock ${action === 'set' ? 'set' : action === 'add' ? 'increased' : 'decreased'} for ${selectedProducts.size} products!`, 'success');
+                closeModal('stock');
+                await loadProducts();
+            } catch (err) {
+                console.error(err);
+                showAlert('Bulk stock update failed', 'error');
+            }
         }
 
-        function confirmDelete() {
-            // Simulate deletion - in real app, send to backend
-            showAlert(`Successfully deleted ${selectedProducts.size} products!`, 'success');
-
-            // Clear selection and update UI
-            selectedProducts.clear();
-            updateSelectionUI();
-            closeModal('delete');
+        async function confirmDelete() {
+            try {
+                const res = await fetch('../../api/admin/products/delete.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: Array.from(selectedProducts) })
+                });
+                if (!res.ok) throw new Error('Bulk delete failed');
+                showAlert(`Successfully deleted ${selectedProducts.size} products!`, 'success');
+                selectedProducts.clear();
+                updateSelectionUI();
+                closeModal('delete');
+                await loadProducts();
+            } catch (err) {
+                console.error(err);
+                showAlert('Bulk delete failed', 'error');
+            }
         }
 
         function showAlert(message, type) {

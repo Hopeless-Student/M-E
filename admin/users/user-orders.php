@@ -699,10 +699,10 @@
                 <button class="customer-orders-btn customer-orders-btn-secondary" onclick="closeCustomerOrdersModal()">
                     <i data-lucide="x"></i> Close
                 </button>
-                <button class="customer-orders-btn customer-orders-btn-secondary">
+                <button class="customer-orders-btn customer-orders-btn-secondary" id="viewProfile" onclick="openCustomerOrdersModal()">
                     <i data-lucide="user"></i> View Profile
                 </button>
-                <button class="customer-orders-btn customer-orders-btn-primary">
+                <button class="customer-orders-btn customer-orders-btn-primary" id="editCustomer" onclick="openCustomerEditModal()">
                     <i data-lucide="edit"></i> Edit Customer
                 </button>
             </div>

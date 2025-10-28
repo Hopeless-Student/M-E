@@ -462,19 +462,22 @@
         }
 
         // Form submission
-        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+        document.getElementById('addProductForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Get form data
             const formData = new FormData(this);
 
-            // Simulate form submission (replace with actual AJAX call)
-            showAlert('Product added successfully!', 'success');
-
-            // Reset form after success
-            setTimeout(() => {
-                window.location.href = './index.php';
-            }, 1500);
+            try {
+                const res = await fetch('../../api/admin/products/create.php', { method: 'POST', body: formData });
+                if (!res.ok) throw new Error('Failed to create');
+                const data = await res.json();
+                if (!data.success) throw new Error('Create failed');
+                showAlert('Product added successfully!', 'success');
+                setTimeout(() => { window.location.href = './index.php'; }, 1200);
+            } catch (err) {
+                console.error(err);
+                showAlert('Failed to add product', 'error');
+            }
         });
 
         function showAlert(message, type) {

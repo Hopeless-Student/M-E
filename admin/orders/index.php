@@ -129,28 +129,98 @@
           include 'update-status.php';
     ?>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="delete-modal" id="deleteModal" onclick="closeDeleteModal(event)">
+    <div class="delete-modal-content" onclick="event.stopPropagation()">
+        <div class="delete-modal-header">
+            <div class="delete-icon-wrapper">
+                <i data-lucide="alert-triangle"></i>
+            </div>
+            <div class="delete-modal-title">
+                <h3>Delete Order</h3>
+                <p id="deleteModalSubtitle">This action cannot be undone</p>
+            </div>
+        </div>
+
+        <div class="delete-modal-body">
+            <!-- Warning section - Initially hidden -->
+            <div class="delete-warning" id="deleteWarning" style="display: none;">
+                <p>
+                    <i data-lucide="alert-circle"></i>
+                    <strong>Warning:</strong> You are about to permanently delete this order. This action is irreversible.
+                </p>
+            </div>
+
+            <div class="delete-order-info">
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Order ID:</span>
+                    <span class="delete-info-value" id="deleteOrderId">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Customer:</span>
+                    <span class="delete-info-value" id="deleteCustomerName">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Amount:</span>
+                    <span class="delete-info-value" id="deleteOrderAmount">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Status:</span>
+                    <span class="delete-info-value" id="deleteOrderStatus">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-modal-actions">
+            <button class="delete-btn-cancel" onclick="closeDeleteModal()">
+                <i data-lucide="x"></i>
+                Cancel
+            </button>
+            <!-- First delete button -->
+            <button class="delete-btn-confirm" id="firstDeleteBtn" onclick="showDeleteWarning()">
+                <i data-lucide="trash-2"></i>
+                Delete Order
+            </button>
+            <!-- Final confirm button - Initially hidden -->
+            <button class="delete-btn-confirm delete-btn-final" id="finalDeleteBtn" style="display: none;" onclick="confirmDelete()">
+                <i data-lucide="trash-2"></i>
+                Confirm Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+
     <script>
     lucide.createIcons();
 
     // Global variables for pagination and data
+
     let currentPage = 1;
     let totalPages = 1;
     let allOrders = [];
     let filteredOrders = [];
+    let apiTotal = 0; // total items from API for current server-side filters
     const ordersPerPage = 8;
 
     // Load orders data on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadOrdersData();
         updateStats();
+
+        // Add event listener to confirm delete button
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.onclick = confirmDelete;
+        }
     });
 
     function updateStats() {
-        // Calculate stats from all orders
-        const pending = allOrders.filter(o => o.status === 'pending').length;
-        const processing = allOrders.filter(o => o.status === 'processing').length;
-        const shipped = allOrders.filter(o => o.status === 'shipped').length;
-        const delivered = allOrders.filter(o => o.status === 'delivered').length;
+
+        const pending = filteredOrders.filter(o => o.status === 'pending').length;
+        const processing = filteredOrders.filter(o => o.status === 'processing').length;
+        const shipped = filteredOrders.filter(o => o.status === 'shipped').length;
+        const delivered = filteredOrders.filter(o => o.status === 'delivered').length;
 
         document.getElementById('totalPending').textContent = pending;
         document.getElementById('totalProcessing').textContent = processing;
@@ -160,22 +230,44 @@
 
     async function loadOrdersData() {
         try {
-            // Replace this with actual API call
-            // const response = await fetch('/api/orders.php');
-            // const result = await response.json();
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
 
-            // Mock data for now
-            const result = {
-                success: true,
-                data: {
-                    orders: generateMockOrders(25), // Generate 25 sample orders
-                    total: 25
-                }
-            };
+            const params = new URLSearchParams({
+                page: String(currentPage),
+                pageSize: String(ordersPerPage)
+            });
+            if (statusFilter) params.set('status', statusFilter);
+            if (searchTerm) params.set('q', searchTerm);
 
-            allOrders = result.data.orders;
-            filteredOrders = [...allOrders];
-            totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+            const response = await fetch(`../../api/orders/list.php?${params.toString()}`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error('Network response was not ok');
+            const result = await response.json();
+
+            // Map API items to UI-friendly structure
+            const items = Array.isArray(result.items) ? result.items : [];
+            allOrders = items.map(o => ({
+                id: String(o.order_id),
+                customer: o.customer_name || '',
+                category: o.category || '',
+                items: Number(o.item_count || 0),
+                amount: String((o.final_amount ?? o.total_amount ?? 0)),
+                date: o.order_date ? new Date(o.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+                status: (o.order_status || '').toLowerCase(),
+                // Keep raw for detail modal
+                _raw: o
+            }));
+
+            // Apply client-side category filter only
+            filteredOrders = categoryFilter
+                ? allOrders.filter(o => (o.category || '').toLowerCase() === categoryFilter.toLowerCase())
+                : [...allOrders];
+
+            apiTotal = Number(result.total || 0);
+            totalPages = Number(result.totalPages || Math.max(1, Math.ceil(apiTotal / ordersPerPage)));
 
             renderOrders();
             renderPagination();
@@ -186,44 +278,11 @@
         }
     }
 
-    function generateMockOrders(count) {
-        const customers = ['Cjay Gonzales', 'Joshua Lapitan', 'Prince Ace Masinsin', 'Gillian Lorenzo', 'Kenji Chua', 'Angel Bien', 'Miguel Torres', 'Carmen Lopez'];
-        const categories = ['School Supplies', 'Office Supplies', 'Sanitary Supplies'];
-        const statuses = ['pending', 'processing', 'shipped', 'delivered'];
-        const orders = [];
-
-        for (let i = 1; i <= count; i++) {
-            orders.push({
-                id: String(i).padStart(3, '0'),
-                customer: customers[Math.floor(Math.random() * customers.length)],
-                category: categories[Math.floor(Math.random() * categories.length)],
-                items: Math.floor(Math.random() * 5) + 1,
-                amount: (Math.random() * 20000 + 1000).toFixed(0),
-                date: new Date(2024, 8, Math.floor(Math.random() * 30) + 1).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                }),
-                status: statuses[Math.floor(Math.random() * statuses.length)],
-                // Additional details for modal
-                email: customers[Math.floor(Math.random() * customers.length)].toLowerCase().replace(' ', '.') + '@email.com',
-                phone: '+63 9' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0'),
-                company: 'Company ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)),
-                address: Math.floor(Math.random() * 999) + ' Business Street, Quezon City, Metro Manila',
-                trackingNumber: 'ME-TRK-2024-' + String(i).padStart(3, '0'),
-                paymentMethod: ['Bank Transfer', 'Credit Card', 'Cash'][Math.floor(Math.random() * 3)],
-                transactionId: 'TXN-' + Date.now() + i,
-                notes: 'Customer requested priority delivery for business opening.'
-            });
-        }
-        return orders;
-    }
-
     function renderOrders() {
         const tbody = document.querySelector('.orders-table tbody');
-        const startIndex = (currentPage - 1) * ordersPerPage;
-        const endIndex = startIndex + ordersPerPage;
-        const pageOrders = filteredOrders.slice(startIndex, endIndex);
+
+        // Since we're doing server-side pagination, just show all filtered orders (no slicing)
+        const pageOrders = filteredOrders;
 
         if (pageOrders.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8" class="loading">No orders found</td></tr>';
@@ -241,23 +300,44 @@
                 <td><span class="status ${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
                 <td>
                     <div class="actions">
-                        <button class="action-btn secondary" onclick="openOrderModal('${order.id}')">View</button>
-                        <button class="action-btn primary" onclick="openUpdateModal('${order.id}')">Update</button>
-                        <button class="action-btn danger"  >Del</button>
+                    <button class="action-btn-icon secondary" onclick="openOrderModal('${order.id}')" title="View Order">
+                        <i data-lucide="eye"></i>
+                    </button>
+                    ${order.status === 'delivered'
+                        ? `<button class="action-btn-icon primary" disabled style="opacity: 0.5; cursor: not-allowed;" title="Cannot update delivered orders">
+                            <i data-lucide="refresh-cw"></i>
+                           </button>`
+                        : `<button class="action-btn-icon primary" onclick="openUpdateModal('${order.id}')" title="Update Status">
+                            <i data-lucide="refresh-cw"></i>
+                           </button>`
+                    }
+                    ${order.status === 'delivered'
+                        ? `<button class="action-btn-icon danger" disabled style="opacity: 0.5; cursor: not-allowed;" title="Cannot delete delivered orders">
+                            <i data-lucide="trash-2"></i>
+                           </button>`
+                        : `<button class="action-btn-icon danger" onclick="openDeleteModal('${order.id}')" title="Delete Order">
+                            <i data-lucide="trash-2"></i>
+                           </button>`
+                    }
                     </div>
                 </td>
             </tr>
         `).join('');
+        lucide.createIcons();
     }
 
     function renderPagination() {
         const paginationInfo = document.querySelector('.pagination-info');
         const paginationControls = document.querySelector('.pagination-controls');
 
-        const startItem = ((currentPage - 1) * ordersPerPage) + 1;
-        const endItem = Math.min(currentPage * ordersPerPage, filteredOrders.length);
-
-        paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredOrders.length} orders`;
+        // Use API total for precise range text (status/search filters are server-side)
+        if (apiTotal === 0) {
+            paginationInfo.textContent = 'Showing 0-0 of 0 orders';
+        } else {
+            const startItem = ((currentPage - 1) * ordersPerPage) + 1;
+            const endItem = Math.min(currentPage * ordersPerPage, apiTotal);
+            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${apiTotal} orders`;
+        }
 
         // Generate page buttons
         let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
@@ -282,30 +362,13 @@
     function goToPage(page) {
         if (page < 1 || page > totalPages) return;
         currentPage = page;
-        renderOrders();
-        renderPagination();
+        loadOrdersData();
     }
 
     function applyFilters() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const categoryFilter = document.getElementById('categoryFilter').value;
-
-        filteredOrders = allOrders.filter(order => {
-          const matchesSearch = !searchTerm ||
-              order.customer.toLowerCase().includes(searchTerm) ||
-              order.id.includes(searchTerm);
-
-            const matchesStatus = !statusFilter || order.status === statusFilter;
-            const matchesCategory = !categoryFilter || order.category.toLowerCase() === categoryFilter.toLowerCase();;
-
-            return matchesSearch && matchesStatus && matchesCategory;
-        });
-
-        totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-        currentPage = 1; // Reset to first page when filtering
-        renderOrders();
-        renderPagination();
+        // Server-side filters for search and status; client-side for category
+        currentPage = 1;
+        loadOrdersData();
     }
 
     // Search functionality
@@ -319,38 +382,97 @@
     }
 
     // Modal Functions
-    function openOrderModal(orderId) {
-      const order = allOrders.find(o => o.id === orderId);
-      if (!order) {
-        alert('Order not found');
-        return;
-      }
+    async function openOrderModal(orderId) {
+      try {
+        const response = await fetch(`../../api/orders/show.php?id=${encodeURIComponent(orderId)}`, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) throw new Error('Failed to load order');
+        const data = await response.json();
 
-      // Populate modal with order data
-      populateModalData(order);
+        const order = data.order || {};
+        const items = Array.isArray(data.items) ? data.items : [];
 
-      // Show only the order details modal
-      document.getElementById('orderModal').classList.add('active');
-      document.body.style.overflow = 'hidden';
+        // Populate modal with order data
+        populateModalData({
+          id: String(order.order_id || orderId),
+          customer: order.customer_name || '',
+          category: order.category || '',
+          items: items.length,
+          amount: String(order.final_amount ?? order.total_amount ?? 0),
+          date: order.order_date ? new Date(order.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+          status: (order.order_status || '').toLowerCase(),
+          email: order.email || '',
+          phone: order.contact_number || '',
+          company: '',
+          address: order.delivery_address || '',
+          trackingNumber: order.tracking_number || '',
+          paymentMethod: order.payment_method || '',
+          transactionId: order.transaction_id || '',
+          notes: order.admin_notes || '',
+          _items: items
+        });
 
-      const updtbtn = document.getElementById("updateModal");
-      if(updtbtn){
-        updtbtn.onclick = () => openUpdateModal(orderId);
-      }
+        // Show only the order details modal
+        document.getElementById('orderModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        const updtbtn = document.getElementById("updateModal");
+        if(updtbtn){
+          // Disable update button if order is delivered
+          if (order.order_status && order.order_status.toLowerCase() === 'delivered') {
+            updtbtn.disabled = true;
+            updtbtn.style.opacity = '0.5';
+            updtbtn.style.cursor = 'not-allowed';
+            updtbtn.onclick = (e) => {
+              e.preventDefault();
+              showAlert('Cannot update status of delivered orders', 'warning');
+            };
+          } else {
+            updtbtn.disabled = false;
+            updtbtn.style.opacity = '1';
+            updtbtn.style.cursor = 'pointer';
+            updtbtn.onclick = () => openUpdateModal(String(order.order_id || orderId));
+          }
+        }
+        const dltbtn = document.getElementById("deleteModal2");
+        if(dltbtn){
+          // Disable delete button if order is delivered
+          if (order.order_status && order.order_status.toLowerCase() === 'delivered') {
+            dltbtn.disabled = true;
+            dltbtn.style.opacity = '0.5';
+            dltbtn.style.cursor = 'not-allowed';
+            dltbtn.onclick = (e) => {
+              e.preventDefault();
+              showAlert('Cannot delete delivered orders', 'warning');
+            };
+          } else {
+            dltbtn.disabled = false;
+            dltbtn.style.opacity = '1';
+            dltbtn.style.cursor = 'pointer';
+            dltbtn.onclick = () => openDeleteModal(String(order.order_id || orderId));
+          }
+        }
 
         // Refresh Lucide icons for the modal
         setTimeout(() => {
           lucide.createIcons();
         }, 100);
+      } catch (e) {
+        console.error(e);
+        showError('Failed to load order details.');
+      }
     }
 
+    let currentUpdateOrderId = null;
     function openUpdateModal(orderId) {
-      const order = allOrders.find(o => o.id === orderId);
-      if (!order) {
-        alert('Order not found');
+      const order = allOrders.find(o => o.id === orderId) || filteredOrders.find(o => o.id === orderId) || { id: orderId };
+
+      // Check if order is delivered
+      if (order.status === 'delivered') {
+        showAlert('Cannot update status of delivered orders', 'warning');
         return;
       }
 
+      currentUpdateOrderId = orderId;
       populateUpdateData(order);
 
       // Close the order details modal
@@ -369,15 +491,38 @@
       }, 100);
     }
 
-    function submitStatusUpdate(orderId) {
-      alert("Order Updated Successfully!");
-
-      const modal = document.getElementById("updateStatusModal");
-      if (modal) {
-        modal.classList.remove("active");
+    async function submitStatusUpdate() {
+      if (!currentUpdateOrderId) return;
+      const selected = document.querySelector('input[name="orderStatus"]:checked');
+      if (!selected) {
+        showAlert('Please select a new status', 'warning');
+        return;
       }
 
-      document.body.style.overflow = ''; // restore scrolling
+      try {
+        const payload = { order_id: Number(currentUpdateOrderId), order_status: selected.value };
+        const res = await fetch('../../api/orders/update-status.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Failed to update status');
+
+        // Update in-memory list
+        const idx = allOrders.findIndex(o => o.id === String(currentUpdateOrderId));
+        if (idx !== -1) allOrders[idx].status = selected.value;
+        applyFilters();
+        updateStats();
+
+        showAlert('Order updated successfully!', 'success');
+      } catch (e) {
+        console.error(e);
+        showAlert('Failed to update order status', 'error');
+      } finally {
+        const modal = document.getElementById("updateStatusModal");
+        if (modal) { modal.classList.remove("active"); }
+        document.body.style.overflow = '';
+      }
     }
 
 
@@ -445,21 +590,23 @@
     function populateOrderItems(order) {
         const itemsContainer = document.getElementById('orderItems');
 
-        // Generate mock items based on category and amount
-        const mockItems = generateMockItems(order.category, order.items, order.amount);
+        const apiItems = Array.isArray(order._items) ? order._items : [];
 
         let itemsHTML = '';
         let total = 0;
 
-        mockItems.forEach(item => {
-            const subtotal = item.quantity * item.price;
+        apiItems.forEach(item => {
+            const name = item.product_name || `#${item.product_id}`;
+            const quantity = Number(item.quantity || 0);
+            const price = Number(item.product_price || 0);
+            const subtotal = Number(item.subtotal != null ? item.subtotal : (quantity * price));
             total += subtotal;
 
             itemsHTML += `
                 <tr>
-                    <td>${item.name}</td>
-                    <td>${item.quantity} ${item.unit}</td>
-                    <td>₱${item.price.toLocaleString()}</td>
+                    <td>${name}</td>
+                    <td>${quantity}</td>
+                    <td>₱${price.toLocaleString()}</td>
                     <td>₱${subtotal.toLocaleString()}</td>
                 </tr>
             `;
@@ -473,45 +620,6 @@
         `;
 
         itemsContainer.innerHTML = itemsHTML;
-    }
-
-    function generateMockItems(category, itemCount, totalAmount) {
-        const itemsMap = {
-            'School Supplies': [
-                { name: 'Vinyl Planks', unit: 'sqm' },
-                { name: 'Ceramic Tiles', unit: 'sqm' },
-                { name: 'Hardwood Flooring', unit: 'sqm' }
-            ],
-            'Office Supplies': [
-                { name: 'Ceramic Wall Tiles', unit: 'sqm' },
-                { name: 'Porcelain Floor Tiles', unit: 'sqm' },
-                { name: 'Mosaic Tiles', unit: 'sqm' }
-            ],
-            'Sanitary Supplies': [
-                { name: 'LED Light Fixtures', unit: 'pcs' },
-                { name: 'Ceiling Fans', unit: 'pcs' },
-                { name: 'Wall Sconces', unit: 'pcs' }
-            ]
-        };
-
-        const availableItems = itemsMap[category] || itemsMap['Fixtures'];
-        const items = [];
-        const targetAmount = parseInt(totalAmount);
-
-        for (let i = 0; i < itemCount; i++) {
-            const item = availableItems[i % availableItems.length];
-            const quantity = Math.floor(Math.random() * 10) + 1;
-            const price = Math.floor((targetAmount / itemCount) / quantity);
-
-            items.push({
-                name: item.name,
-                quantity: quantity,
-                unit: item.unit,
-                price: price
-            });
-        }
-
-        return items;
     }
 
     function populateOrderTimeline(order) {
@@ -567,11 +675,149 @@
         document.body.style.overflow = 'auto';
     }
 
+    // Delete Modal Functions
+    let orderToDelete = null;
+    let deleteConfirmationStep = 1;
+
+    function openDeleteModal(orderId) {
+        const order = allOrders.find(o => o.id === orderId);
+        if (!order) {
+            showAlert('Order not found', 'error');
+            return;
+        }
+
+        // Check if order is delivered
+        if (order.status === 'delivered') {
+            showAlert('Cannot delete delivered orders', 'warning');
+            return;
+        }
+
+        orderToDelete = orderId;
+        deleteConfirmationStep = 1;
+
+        // Reset modal state
+        document.getElementById('deleteWarning').style.display = 'none';
+        document.getElementById('firstDeleteBtn').style.display = 'inline-flex';
+        document.getElementById('finalDeleteBtn').style.display = 'none';
+        document.getElementById('deleteModalSubtitle').textContent = 'This action cannot be undone';
+
+        // Populate delete modal with order data
+        document.getElementById('deleteOrderId').textContent = `#ORD-${order.id}`;
+        document.getElementById('deleteCustomerName').textContent = order.customer;
+        document.getElementById('deleteOrderAmount').textContent = `₱${parseInt(order.amount).toLocaleString()}`;
+        document.getElementById('deleteOrderStatus').textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+
+        // Show delete modal
+        document.getElementById('deleteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Refresh Lucide icons for the modal
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    }
+
+    function closeDeleteModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+
+        // Reset modal state
+        document.getElementById('deleteWarning').style.display = 'none';
+        document.getElementById('firstDeleteBtn').style.display = 'inline-flex';
+        document.getElementById('finalDeleteBtn').style.display = 'none';
+        document.getElementById('deleteModalSubtitle').textContent = 'This action cannot be undone';
+
+        document.getElementById('deleteModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        orderToDelete = null;
+        deleteConfirmationStep = 1;
+    }
+
+    function showDeleteWarning() {
+        // Show warning and change to final confirmation step
+        deleteConfirmationStep = 2;
+        document.getElementById('deleteWarning').style.display = 'block';
+        document.getElementById('firstDeleteBtn').style.display = 'none';
+        document.getElementById('finalDeleteBtn').style.display = 'inline-flex';
+        document.getElementById('deleteModalSubtitle').textContent = 'Are you absolutely sure?';
+
+        // Refresh Lucide icons
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    }
+
+    function confirmDelete() {
+        if (!orderToDelete || deleteConfirmationStep !== 2) return;
+
+        // Remove the order from the array
+        const index = allOrders.findIndex(o => o.id === orderToDelete);
+        if (index !== -1) {
+            allOrders.splice(index, 1);
+        }
+
+        // Update filtered orders and re-render
+        applyFilters();
+        updateStats();
+
+        // Show success message
+        showAlert('Order deleted successfully!', 'success');
+        const confirmBtn = document.getElementById('finalDeleteBtn');
+        if(confirmBtn){
+          const orderModal = document.getElementById('orderModal');
+          if(orderModal) orderModal.classList.remove('active');
+        }
+
+        // Close modal and reset
+        closeDeleteModal();
+
+    }
+
+    // Alert notification system
+    function showAlert(message, type = 'info') {
+        // Remove any existing alerts
+        const existingAlert = document.querySelector('.alert-notification');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        // Create alert element
+        const alert = document.createElement('div');
+        alert.className = `alert-notification alert-${type}`;
+
+        // Set icon based on type
+        let icon = 'info';
+        if (type === 'success') icon = 'check-circle';
+        if (type === 'error') icon = 'alert-circle';
+        if (type === 'warning') icon = 'alert-triangle';
+
+        alert.innerHTML = `
+            <div class="alert-content">
+                <i data-lucide="${icon}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(alert);
+
+        // Initialize Lucide icons for the alert
+        lucide.createIcons();
+
+        // Trigger animation
+        setTimeout(() => alert.classList.add('show'), 10);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
+        }, 3000);
+    }
 
     // Close modal with Escape key
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             closeModal();
+            closeDeleteModal();
+            closeUpdateModal();
         }
     });
     </script>

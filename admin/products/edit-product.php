@@ -328,9 +328,9 @@
                             <label class="form-label required" for="productCategory">Category</label>
                             <select class="form-select" id="productCategory" name="category" required>
                                 <option value="">Select Category</option>
-                                <option value="office">Office Supplies</option>
-                                <option value="school">School Supplies</option>
-                                <option value="sanitary">Sanitary Supplies</option>
+                                <option value="Office">Office Supplies</option>
+                                <option value="School">School Supplies</option>
+                                <option value="Sanitary">Sanitary Supplies</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -363,7 +363,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-                    <button type="button" class="btn btn-danger" onclick="openDeleteModal()">
+                    <button type="button" class="btn btn-danger" id="deleteModal2" onclick="openDeleteModal()">
                         <i data-lucide="trash-2"></i>
                         Delete
                     </button>

@@ -532,7 +532,7 @@
                     <i data-lucide="printer"></i>
                     Print Invoice
                 </button>
-                <button class="action-btn-s danger-s" onclick="cancelOrder()">
+                <button class="action-btn-s danger-s" id="deleteModal2" onclick="openDeleteModal()">
                     <i data-lucide="x-circle"></i>
                     Cancel Order
                 </button>

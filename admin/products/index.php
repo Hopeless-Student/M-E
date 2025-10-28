@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" id="viewModal"onclick="closeProductModal()">Close</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeProductModal()">Close</button>
                 <button class="modal-btn modal-btn-edit" id="EditModal">Edit</button>
                 <button class="modal-btn modal-btn-delete" id="modalDeleteBtn">
                     <i data-lucide="trash-2"></i> Delete Product
@@ -156,7 +156,9 @@
                 <div class="delete-product-info" id="deleteProductInfo">
                     <!-- Product info will be loaded here -->
                 </div>
-                <div class="delete-warning">
+
+                <!-- Hidden warning message - shows after first delete click -->
+                <div class="delete-warning" id="deleteWarning" style="display: none;">
                     <div class="delete-warning-title">
                         <i data-lucide="triangle-alert"></i> Warning
                     </div>
@@ -164,6 +166,7 @@
                         This action cannot be undone. The product will be permanently removed from your inventory and all associated data will be lost.
                     </div>
                 </div>
+
                 <div class="delete-modal-actions">
                     <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteModal()">
                         Cancel
@@ -184,35 +187,62 @@
     <script>
         lucide.createIcons();
 
-        // Global variables for pagination and data
+        // Global variables
         let currentPage = 1;
         let totalPages = 1;
         let allProducts = [];
         let filteredProducts = [];
+        let apiTotal = 0;
         const productsPerPage = 6;
+        let deleteConfirmationStep = 0; // Track delete confirmation step
+        let productToDelete = null; // Store product ID to delete
 
-        // Category mappings
         const categoryLabels = {
             'School': 'School supplies',
             'Office': 'Office supplies',
             'Sanitary': 'Sanitary supplies'
         };
 
-        // Load products data on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadProductsData();
             setupEventListeners();
         });
 
-        function loadProductsData() {
-            // Generate mock products data (12 products for pagination demo)
-            allProducts = generateMockProducts(12);
-            filteredProducts = [...allProducts];
-            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+        async function loadProductsData() {
+            try {
+                const q = document.getElementById('searchInput').value.trim();
+                const category = document.getElementById('categoryFilter').value; // office|school|sanitary|''
+                const stock = document.getElementById('stockFilter').value; // in-stock|low-stock|out-of-stock|''
 
-            renderProducts();
-            renderPagination();
-            updateStats();
+                const params = new URLSearchParams({ page: String(currentPage), pageSize: String(productsPerPage) });
+                if (q) params.set('q', q);
+                if (category) params.set('category', category);
+                if (stock) params.set('stock', stock);
+
+                const res = await fetch(`../../api/admin/products/list.php?${params.toString()}`, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) throw new Error('Failed to load products');
+                const data = await res.json();
+
+                allProducts = (data.items || []).map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    description: p.description || '',
+                    category: mapCategoryToKey(p.category),
+                    price: Number(p.price || 0),
+                    stock: Number(p.stock || 0),
+                    image: p.image || "../../assets/images/products/placeholder.png"
+                }));
+                filteredProducts = [...allProducts];
+                apiTotal = Number(data.total || 0);
+                totalPages = Number(data.totalPages || Math.max(1, Math.ceil(apiTotal / productsPerPage)));
+
+                renderProducts();
+                renderPagination();
+                updateStats();
+            } catch (e) {
+                console.error(e);
+                showAlert('Error loading products', 'error');
+            }
         }
 
         function generateMockProducts(count) {
@@ -220,11 +250,11 @@
                 {
                     id: 1,
                     name: "Scotch tape",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ",
+                    description: "High-quality adhesive tape for office and school use. Strong hold and easy to tear.",
                     category: "Office",
                     price: 1250,
                     stock: 150,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 2,
@@ -233,16 +263,16 @@
                     category: "School",
                     price: 850,
                     stock: 75,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 3,
-                    name: "LED Ceiling Light Fixture",
+                    name: "LED Ceiling Light",
                     description: "Modern LED ceiling fixture with dimmer control. Energy efficient and long-lasting.",
                     category: "Sanitary",
                     price: 2200,
                     stock: 8,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 4,
@@ -251,16 +281,16 @@
                     category: "Sanitary",
                     price: 980,
                     stock: 200,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 5,
                     name: "Porcelain Floor Tiles",
                     description: "Durable porcelain tiles with anti-slip surface. Perfect for high-traffic areas.",
-                    category: "office",
+                    category: "Office",
                     price: 1450,
                     stock: 120,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 6,
@@ -269,7 +299,7 @@
                     category: "School",
                     price: 650,
                     stock: 0,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 7,
@@ -278,7 +308,7 @@
                     category: "Sanitary",
                     price: 3200,
                     stock: 45,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 8,
@@ -287,7 +317,7 @@
                     category: "Office",
                     price: 420,
                     stock: 180,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 9,
@@ -296,7 +326,7 @@
                     category: "School",
                     price: 1100,
                     stock: 25,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 10,
@@ -305,7 +335,7 @@
                     category: "Sanitary",
                     price: 1680,
                     stock: 12,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 11,
@@ -314,7 +344,7 @@
                     category: "Office",
                     price: 890,
                     stock: 65,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 },
                 {
                     id: 12,
@@ -323,20 +353,17 @@
                     category: "Sanitary",
                     price: 750,
                     stock: 38,
-                    image: "../../assets/images/scotch-tape-roll.png"
+                    image: "../../assets/images/products/scotch-tape-roll.png"
                 }
             ];
-
             return products.slice(0, count);
         }
 
         function setupEventListeners() {
-            // Search and filter functionality
             document.getElementById('searchInput').addEventListener('input', applyFilters);
             document.getElementById('categoryFilter').addEventListener('change', applyFilters);
             document.getElementById('stockFilter').addEventListener('change', applyFilters);
 
-            // Modal close functionality
             document.getElementById('productModal').addEventListener('click', function(e) {
                 if (e.target === this) closeProductModal();
             });
@@ -345,7 +372,6 @@
                 if (e.target === this) closeDeleteModal();
             });
 
-            // ESC key to close modals
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeProductModal();
@@ -381,9 +407,8 @@
             const noProducts = document.getElementById('noProducts');
             const paginationContainer = document.getElementById('paginationContainer');
 
-            const startIndex = (currentPage - 1) * productsPerPage;
-            const endIndex = startIndex + productsPerPage;
-            const pageProducts = filteredProducts.slice(startIndex, endIndex);
+            // Use allProducts directly since we're getting paginated data from API
+            const pageProducts = allProducts;
 
             if (pageProducts.length === 0) {
                 grid.style.display = 'none';
@@ -402,9 +427,9 @@
                 const stockLabel = getStockLabel(product.stock);
 
                 return `
-                    <div class="product-card" data-category="${product.category}">
+                    <div class="product-card">
                         <div class="product-image-container">
-                            <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" onerror="this.src='./images/placeholder.png'">
+                            <img src="${product.image}" alt="${product.name}" onerror="this.src='./images/placeholder.png'">
                             <div class="stock-status ${stockStatus}">${stockLabel}</div>
                         </div>
                         <div class="product-info">
@@ -416,9 +441,15 @@
                                 <span class="product-stock">Stock: ${product.stock}</span>
                             </div>
                             <div class="product-actions">
-                                <button class="action-btn" onclick="viewProduct(${product.id})">View</button>
-                                <button class="action-btn primary" onclick="openEditProd(${product.id})">Edit</button>
-                                <button class="action-btn danger" onclick="showDeleteModal(${product.id})">Delete</button>
+                                <button class="action-btn action-btn-view" onclick="viewProduct(${product.id})" title="View Product">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                                <button class="action-btn action-btn-edit" onclick="openEditProd(${product.id})" title="Edit Product">
+                                    <i data-lucide="pencil"></i>
+                                </button>
+                                <button class="action-btn action-btn-delete" onclick="showDeleteModal(${product.id})" title="Delete Product">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -426,6 +457,178 @@
             }).join('');
 
             lucide.createIcons();
+        }
+
+        function renderPagination() {
+            const paginationInfo = document.getElementById('paginationInfo');
+            const paginationControls = document.getElementById('paginationControls');
+
+            if (apiTotal === 0) {
+                paginationInfo.textContent = 'Showing 0-0 of 0 products';
+            } else {
+                const startItem = ((currentPage - 1) * productsPerPage) + 1;
+                const endItem = Math.min(currentPage * productsPerPage, apiTotal);
+                paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${apiTotal} products`;
+            }
+
+            let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
+
+            for (let i = 1; i <= totalPages; i++) {
+                buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+
+            buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
+
+            paginationControls.innerHTML = buttonsHTML;
+
+            document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
+            document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
+
+            document.querySelectorAll('[data-page]').forEach(btn => {
+                btn.onclick = () => goToPage(parseInt(btn.dataset.page));
+            });
+        }
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadProductsData();
+        }
+
+        function applyFilters() {
+            currentPage = 1;
+            loadProductsData();
+        }
+
+        function mapCategoryToKey(category) {
+            const c = (category || '').toLowerCase();
+            if (c.includes('office')) return 'Office';
+            if (c.includes('school')) return 'School';
+            if (c.includes('sanitary') || c.includes('hygiene')) return 'Sanitary';
+            return 'Office';
+        }
+
+        function viewProduct(id) {
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+
+            const stockStatus = getStockStatus(product.stock);
+            const stockLabel = getStockLabel(product.stock);
+
+            const modalContent = `
+                <div class="modal-header-section">
+                    <div class="modal-image-section">
+                        <img src="${product.image}" alt="${product.name}" class="modal-product-image" onerror="this.src='./images/placeholder.png'">
+                    </div>
+                    <div class="modal-basic-info">
+                        <div class="modal-category-badge">${categoryLabels[product.category]}</div>
+                        <h3>${product.name}</h3>
+                        <div class="modal-description">
+                            <p>${product.description}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-details-section">
+                    <div class="product-detail-row">
+                        <span class="detail-label">Product ID</span>
+                        <span class="detail-value">#${String(product.id).padStart(4, '0')}</span>
+                    </div>
+                    <div class="product-detail-row">
+                        <span class="detail-label">Price</span>
+                        <span class="detail-value price">₱${product.price.toLocaleString()}</span>
+                    </div>
+                    <div class="product-detail-row">
+                        <span class="detail-label">Stock Quantity</span>
+                        <span class="detail-value stock">${product.stock} units</span>
+                    </div>
+                    <div class="product-detail-row">
+                        <span class="detail-label">Stock Status</span>
+                        <span class="stock-indicator ${stockStatus}">${stockLabel}</span>
+                    </div>
+                    <div class="product-detail-row">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value">${categoryLabels[product.category]}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('EditModal').onclick = () => openEditProd(id);
+            document.getElementById('modalDeleteBtn').onclick = () => showDeleteModal(product.id);
+
+            openProductModal();
+        }
+
+        function showDeleteModal(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            // Reset delete confirmation step
+            deleteConfirmationStep = 0;
+            productToDelete = productId;
+
+            const deleteProductInfo = `
+                <div class="delete-product-name">${product.name}</div>
+                <div class="delete-product-details">
+                    <span>ID: #${String(product.id).padStart(4, '0')}</span>
+                    <span>Stock: ${product.stock} units</span>
+                </div>
+                <div class="delete-product-details">
+                    <span>Price: ₱${product.price.toLocaleString()}</span>
+                    <span>Category: ${categoryLabels[product.category]}</span>
+                </div>
+            `;
+
+            document.getElementById('deleteProductInfo').innerHTML = deleteProductInfo;
+            document.getElementById('deleteWarning').style.display = 'none';
+
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.innerHTML = '<i data-lucide="trash-2"></i> Delete Product';
+
+            // Remove previous event listeners by cloning the button
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+            newConfirmBtn.onclick = handleDeleteConfirmation;
+
+            openDeleteModal();
+            lucide.createIcons();
+        }
+
+        function handleDeleteConfirmation() {
+            if (deleteConfirmationStep === 0) {
+                // First click - show warning
+                document.getElementById('deleteWarning').style.display = 'block';
+                const confirmBtn = document.getElementById('confirmDeleteBtn');
+                confirmBtn.innerHTML = '<i data-lucide="alert-triangle"></i> Confirm Delete';
+                confirmBtn.classList.add('warning-state');
+                deleteConfirmationStep = 1;
+                lucide.createIcons();
+            } else {
+                // Second click - actually delete
+                deleteProduct(productToDelete);
+            }
+        }
+
+        async function deleteProduct(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+            try {
+                const res = await fetch('../../api/admin/products/delete.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: productId })
+                });
+                if (!res.ok) throw new Error('Failed to delete');
+                showAlert(`Product "${product.name}" has been deleted successfully.`, 'success');
+                closeDeleteModal();
+                closeProductModal();
+                applyFilters();
+                updateStats();
+            } catch (e) {
+                console.error(e);
+                showAlert('Failed to delete product', 'error');
+            }
         }
 
         function openEditProd(id) {
@@ -462,6 +665,10 @@
                 // Store the product ID for later use in form submission
                 document.getElementById('editProductForm').dataset.productId = id;
 
+                const dltbtn = document.getElementById('deleteModal2');
+                if(dltbtn){
+                  dltbtn.onclick = () => showDeleteModal(id);
+                }
                 // Initialize Lucide icons after modal is shown
                 setTimeout(() => {
                     lucide.createIcons();
@@ -506,48 +713,25 @@
             });
 
             // Handle form submission
-            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+            document.getElementById('editProductForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-
                 const productId = parseInt(this.dataset.productId);
-                const productIndex = allProducts.findIndex(p => p.id === productId);
-
-                if (productIndex === -1) {
-                    showAlert('Product not found', 'error');
-                    return;
-                }
-
-                // Update product data
                 const formData = new FormData(this);
-                const updatedProduct = {
-                    ...allProducts[productIndex],
-                    name: formData.get('product_name'),
-                    category: formData.get('category'),
-                    price: parseFloat(formData.get('price')),
-                    description: formData.get('description')
-                };
-
-                // Handle image update if new image was selected
-                const imageFile = formData.get('product_image');
-                if (imageFile && imageFile.size > 0) {
-                    // In a real application, you'd upload the image to server
-                    // For demo purposes, we'll use the preview URL
-                    const preview = document.getElementById('imagePreview');
-                    if (preview.src && preview.src !== window.location.href) {
-                        updatedProduct.image = preview.src;
-                    }
+                formData.append('id', String(productId));
+                try {
+                    const res = await fetch('../../api/admin/products/update.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (!res.ok) throw new Error('Failed to update');
+                    closeEditModal();
+                    showAlert('Product updated successfully!', 'success');
+                    applyFilters();
+                    updateStats();
+                } catch (err) {
+                    console.error(err);
+                    showAlert('Failed to update product', 'error');
                 }
-
-                // Update the product in the array
-                allProducts[productIndex] = updatedProduct;
-
-                // Refresh the display
-                applyFilters();
-                updateStats();
-
-                // Close modal and show success message
-                closeEditModal();
-                showAlert(`Product "${updatedProduct.name}" updated successfully!`, 'success');
             });
 
             // Add ESC key support for closing modal
@@ -556,189 +740,16 @@
                     closeEditModal();
                 }
             });
-        function renderPagination() {
-            const paginationInfo = document.getElementById('paginationInfo');
-            const paginationControls = document.getElementById('paginationControls');
 
-            const startItem = ((currentPage - 1) * productsPerPage) + 1;
-            const endItem = Math.min(currentPage * productsPerPage, filteredProducts.length);
-
-            paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${filteredProducts.length} products`;
-
-            // Generate page buttons
-            let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
-
-            for (let i = 1; i <= totalPages; i++) {
-                buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-            }
-
-            buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
-
-            paginationControls.innerHTML = buttonsHTML;
-
-            // Add event listeners
-            document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
-            document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
-
-            document.querySelectorAll('[data-page]').forEach(btn => {
-                btn.onclick = () => goToPage(parseInt(btn.dataset.page));
-            });
-        }
-
-        function goToPage(page) {
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            renderProducts();
-            renderPagination();
-        }
-
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const stockFilter = document.getElementById('stockFilter').value;
-
-            filteredProducts = allProducts.filter(product => {
-                const matchesSearch = !searchTerm ||
-                    product.name.toLowerCase().includes(searchTerm) ||
-                    product.description.toLowerCase().includes(searchTerm);
-
-                const matchesCategory = !categoryFilter || product.category === categoryFilter;
-
-                let matchesStock = true;
-                if (stockFilter) {
-                    const stockStatus = getStockStatus(product.stock);
-                    matchesStock = stockStatus === stockFilter;
-                }
-
-                return matchesSearch && matchesCategory && matchesStock;
-            });
-
-            totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            currentPage = 1; // Reset to first page when filtering
-            renderProducts();
-            renderPagination();
-        }
-
-        function viewProduct(id) {
-            const product = allProducts.find(p => p.id === id);
-            if (!product) return;
-
-            const stockStatus = getStockStatus(product.stock);
-            const stockLabel = getStockLabel(product.stock);
-
-            const modalContent = `
-                <div class="modal-header-section">
-                    <div class="modal-image-section">
-                    <img src="${product.image || './images/placeholder.png'}" alt="${product.name}" class="modal-product-image" onerror="this.src='./images/placeholder.png'">
-                    </div>
-                    <div class="modal-basic-info">
-                        <div class="modal-category-badge">${categoryLabels[product.category]}</div>
-                        <h3>${product.name}</h3>
-                        <div class="modal-description">
-                            <p>${product.description}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-details-section">
-                    <div class="product-detail-row">
-                        <span class="detail-label">Product ID</span>
-                        <span class="detail-value">#${String(product.id).padStart(4, '0')}</span>
-                    </div>
-
-                    <div class="product-detail-row">
-                        <span class="detail-label">Price</span>
-                        <span class="detail-value price">₱${product.price.toLocaleString()}</span>
-                    </div>
-
-                    <div class="product-detail-row">
-                        <span class="detail-label">Stock Quantity</span>
-                        <span class="detail-value stock">${product.stock} units</span>
-                    </div>
-
-                    <div class="product-detail-row">
-                        <span class="detail-label">Stock Status</span>
-                        <span class="stock-indicator ${stockStatus}">${stockLabel}</span>
-                    </div>
-
-                    <div class="product-detail-row">
-                        <span class="detail-label">Category</span>
-                        <span class="detail-value">${categoryLabels[product.category]}</span>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('modalContent').innerHTML = modalContent;
-
-            document.getElementById('EditModal').onclick = function(){
-                openEditProd(id);
-                const editbtn = document.getElementById("updateModal");
-
-                if(editbtn){
-                  editbtn.onclick = () => openUpdateModal(orderId);
-                }
-            }
-            document.getElementById('modalDeleteBtn').onclick = function() {
-                showDeleteModal(product.id);
-            };
-
-            openProductModal();
-        }
-
-        function showDeleteModal(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
-
-            const deleteProductInfo = `
-                <div class="delete-product-name">${product.name}</div>
-                <div class="delete-product-details">
-                    <span>ID: #${String(product.id).padStart(4, '0')}</span>
-                    <span>Stock: ${product.stock} units</span>
-                </div>
-                <div class="delete-product-details">
-                    <span>Price: ₱${product.price.toLocaleString()}</span>
-                    <span>Category: ${categoryLabels[product.category]}</span>
-                </div>
-            `;
-
-            document.getElementById('deleteProductInfo').innerHTML = deleteProductInfo;
-
-            // Set up confirm delete button
-            document.getElementById('confirmDeleteBtn').onclick = function() {
-                deleteProduct(product.id);
-            };
-
-            openDeleteModal();
-        }
-
-        function deleteProduct(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
-
-            // Remove from arrays
-            const productIndex = allProducts.findIndex(p => p.id === productId);
-            if (productIndex > -1) {
-                allProducts.splice(productIndex, 1);
-
-                // Update filtered products and recalculate pagination
-                applyFilters();
-                updateStats();
-
-                // Close modals and show success message
-                closeDeleteModal();
-                closeProductModal();
-
-                showAlert(`Product "${product.name}" has been deleted successfully.`, 'success');
-            }
-        }
 
         function openDeleteModal() {
             document.getElementById('deleteModal').classList.add('active');
-            lucide.createIcons();
         }
 
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.remove('active');
+            deleteConfirmationStep = 0;
+            productToDelete = null;
         }
 
         function openProductModal() {
@@ -760,6 +771,7 @@
 
             setTimeout(() => {
                 alert.classList.remove('show');
+                alert.classList.add('after');
             }, 3000);
         }
     </script>

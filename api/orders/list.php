@@ -43,7 +43,7 @@ foreach ($params as $k => $v) { $stmt->bindValue($k, $v); }
 $stmt->execute();
 $total = (int)$stmt->fetchColumn();
 
-$sql = "SELECT 
+$sql = "SELECT
                o.order_id,
                o.user_id,
                o.order_number,
@@ -65,13 +65,16 @@ $sql = "SELECT
                (SELECT COALESCE(SUM(oi.quantity), 0)
                   FROM order_items oi
                  WHERE oi.order_id = o.order_id) AS item_count,
-               -- aggregated categories for the order
+               -- majority category (category with highest total quantity)
                (
-                 SELECT GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_name SEPARATOR ', ')
+                 SELECT c.category_name
                    FROM order_items oi2
                    INNER JOIN products p2 ON p2.product_id = oi2.product_id
                    INNER JOIN categories c ON c.category_id = p2.category_id
                   WHERE oi2.order_id = o.order_id
+                  GROUP BY c.category_id, c.category_name
+                  ORDER BY SUM(oi2.quantity) DESC, c.category_name ASC
+                  LIMIT 1
                ) AS category
         FROM orders o
         LEFT JOIN users u ON u.user_id = o.user_id
@@ -93,5 +96,3 @@ echo json_encode([
     'totalPages' => max(1, (int)ceil($total / $pageSize)),
 ]);
 ?>
-
-

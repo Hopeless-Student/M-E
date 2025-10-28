@@ -10,15 +10,18 @@ if ($id <= 0) {
 }
 
 // Order
-$sql = "SELECT 
+$sql = "SELECT
             o.*,
             COALESCE(CONCAT(u.first_name, ' ', u.last_name), u.username, u.email, '') AS customer_name,
             (
-              SELECT GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_name SEPARATOR ', ')
-              FROM order_items oi
-              INNER JOIN products p ON p.product_id = oi.product_id
-              INNER JOIN categories c ON c.category_id = p.category_id
-              WHERE oi.order_id = o.order_id
+              SELECT c.category_name
+                FROM order_items oi
+                INNER JOIN products p ON p.product_id = oi.product_id
+                INNER JOIN categories c ON c.category_id = p.category_id
+               WHERE oi.order_id = o.order_id
+               GROUP BY c.category_id, c.category_name
+               ORDER BY SUM(oi.quantity) DESC, c.category_name ASC
+               LIMIT 1
             ) AS category
          FROM orders o
          LEFT JOIN users u ON u.user_id = o.user_id
@@ -44,5 +47,3 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 echo json_encode(['order' => $order, 'items' => $items]);
 ?>
-
-
