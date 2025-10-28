@@ -18,7 +18,7 @@ $pdo = connect();
     o.order_number, o.final_amount,
     o.order_status, o.payment_method,
     o.order_date,
-    oi.product_name, oi.product_price, p.product_image,
+    oi.product_name, oi.product_price, p.product_image, p.unit,
     oi.quantity, oi.subtotal
     FROM orders o
     JOIN order_items oi
@@ -59,6 +59,7 @@ $pdo = connect();
         'product_name' => $items['product_name'],
         'product_image' => $items['product_image'],
         'price' => $items['product_price'],
+        'unit' => $items['unit'],
         'qty' => $items['quantity'],
         'subtotal' => $items['subtotal']
     ];
@@ -138,7 +139,7 @@ $pdo = connect();
                         <img src="<?= $imagePath ?>" alt="item sample">
                         <div class="item-text">
                           <p class="mb-2"><?= htmlspecialchars($item['product_name']) ?></p>
-                          <sub>₱ <?= number_format($item['price'], 2) ?> × <?= htmlspecialchars($item['qty']) ?></sub>
+                          <sub>₱ <?= number_format($item['price'], 2) ?> / <?= htmlspecialchars($item['unit'] ?? '') ?> × <?= htmlspecialchars($item['qty']) ?></sub>
                         </div>
                         <!-- <button class="btn-details">Order Details</button> -->
                       </div>
