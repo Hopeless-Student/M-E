@@ -583,7 +583,14 @@ data.forEach(item => {
     row.innerHTML = `
         <td>
             <div class="low-stock-alerts-product-cell">
-                <div class="low-stock-alerts-product-icon">${item.icon || '📦'}</div>
+                <div class="low-stock-alerts-product-icon">
+
+                ${item.image
+                    ? `<img src="${item.image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">`
+                    : '📦'
+                }
+
+                </div>
                 <div class="low-stock-alerts-product-info">
                     <h4>${item.name}</h4>
                     <p>${item.sku}</p>
@@ -693,7 +700,13 @@ filteredLowStockAlertsData.forEach(item => {
     itemEntry.className = 'low-stock-alerts-item-entry';
     itemEntry.innerHTML = `
         <div class="low-stock-alerts-item-info">
-            <div class="low-stock-alerts-item-name">${item.icon} ${item.name}</div>
+            <div class="low-stock-alerts-item-name">
+            ${item.image
+                ? `<img src="${item.image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">`
+                : '📦'
+            }
+
+            </div>
             <div class="low-stock-alerts-item-details">Current: ${item.currentStock} | Min: ${item.minStock} | SKU: ${item.sku}</div>
         </div>
         <div>
