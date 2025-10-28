@@ -138,7 +138,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                                 <p class="card-description">${product.description}</p>
                                 <div class="card-footer">
                                     <div class="price-row">
-                                        <span class="price">$${product.price}</span>
+                                        <span class="price">$${product.price} / ${product.unit}</span>
                                     </div>
                                     <div class="card-actions">
                                         <button class="view-more-btn" onclick="viewProduct(${product.id})">View More</button>
@@ -173,7 +173,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                         <div class="product-info">
                             <h3>${product.title}</h3>
                             <span class="category-badge">${product.category}</span>
-                            <div class="product-price-large">$${product.price}</div>
+                            <div class="product-price-large">$${product.price} / ${product.unit}</div>
                         </div>
                     </div>
 
@@ -251,10 +251,11 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
         // c convert to ajax
         function addToCart(product_id, quantity = 1) {
-          console.log("addToCart triggered:", product_id);
-        // intentionally break here for debug
-        console.log("Sending request with:", product_id, quantity);
-        // debugger;
+          const product = products.find(p => p.id === product_id);
+        //   console.log("addToCart triggered:", product_id);
+        // // intentionally break here for debug
+        // console.log("Sending request with:", product_id, quantity);
+        // // debugger;
           fetch('../ajax/add-to-cart.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -264,7 +265,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
           .then(data => {
             console.log("Response from server:", data);
               if (data.success) {
-                  showToast(data.message ||'Added to cart');
+                  showToast(`${product ? product.title : 'Item'} added to cart`);
                   fetchCart();
               } else {
                   showToast(data.message || 'Failed to add to cart');

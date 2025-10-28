@@ -134,41 +134,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         let products = [];
         let cart = [];
 
-        // function loadCartFromLocalStorage() {
-        //         const stored = JSON.parse(localStorage.getItem('cart')) || [];
-        //     products = stored.map(item => ({
-        //         id: item.id,
-        //         title: item.title,
-        //         category: item.category,
-        //         price: item.price,
-        //         image: item.image
-        //     }));
-        //     cart = stored.map(item => ({ id: item.id, quantity: item.quantity || 1, selected: true }));
-        // }
-      //   async function loadCartFromDatabase() {
-      //   try {
-      //     const response = await fetch('../ajax/fetch-cart.php');
-      //     const data = await response.json();
-      //
-      //     products = data.cart.map(item => ({
-      //       id: item.product_id,
-      //       title: item.product_name,
-      //       price: parseFloat(item.price),
-      //       image: `../assets/images/products/${item.product_image || 'default.jpg'}`
-      //     }));
-      //
-      //     cart = data.cart.map(item => ({
-      //       id: item.product_id,
-      //       quantity: item.quantity,
-      //       selected: true
-      //     }));
-      //
-      //     updateCart();
-      //     saveCartToLocalStorage();
-      //   } catch (err) {
-      //     console.error('Error fetching cart:', err);
-      //   }
-      // }
       function loadCartFromDatabase() {
       const cartItems = document.getElementById('cartItems');
       cartItems.innerHTML = `
@@ -181,11 +146,14 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
       fetch('../ajax/fetch-cart.php')
           .then(res => res.json())
           .then(data => {
+            console.log(data.cart);
               products = data.cart.map(item => ({
                   id: item.product_id,
                   title: item.product_name,
                   price: parseFloat(item.price),
-                  image: `../assets/images/products/${item.product_image || 'default.jpg'}`
+                  image: `../assets/images/products/${item.product_image || 'default.jpg'}`,
+                  category: item.category_name || 'Uncategorized',
+                  unit: item.unit || 'piece'
               }));
 
               cart = data.cart.map(item => ({
@@ -312,7 +280,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                                 <img src="${product.image}" alt="${product.title}" onerror="this.src='../assets/images/products/default.jpg'">
                                 </div>
                                 <div class="shpcrt-product-info">
-                                    <div class="shpcrt-product-name">${product.title}</div>
+                                    <div class="shpcrt-product-name">${product.title} /per ${product.unit}</div>
                                     <div class="shpcrt-product-category">${product.category}</div>
                                     <div class="shpcrt-product-price">
                                         $${product.price.toFixed(2)}
@@ -417,7 +385,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               if (data.success) {
                   showToast('Quantity updated', 'success');
                   updateCart(); // reflect change immediately, skip reload
-            
+
               } else {
                   showToast(data.message || 'Failed to update quantity', 'error');
               }
