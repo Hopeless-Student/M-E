@@ -252,17 +252,6 @@ body {
   margin-bottom: clamp(8px, 1vw, 12px);
 }
 
-.team-member .badge {
-  display: inline-block;
-  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-  padding: clamp(4px, 0.8vw, 6px) clamp(12px, 2vw, 18px);
-  border-radius: clamp(12px, 2vw, 16px);
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(65,105,225,0.10);
-  background-color: #F3F4F6;
-  color: #4169E1;
-}
-
 .testimonials {
   background: #4169E1;
   color: #FFFFFF;

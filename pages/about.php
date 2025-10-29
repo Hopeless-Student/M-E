@@ -25,29 +25,39 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
             <div class="journey-content">
                 <h2>Our Journey</h2>
                 <p>
-                    Founded in 2022, M&E Trading started as a small local shop with a big vision:
-                    to make high-quality supplies accessible to every Filipino household, school,
-                    and business. Today, we serve thousands of customers with fast and reliable delivery.
+                    It was pandemic when the owner, Mr. Coma started to venture from different kinds of business.
+                    He used to be an OFW in Dubai wayback 2019 - 2020 then pandemic happened,
+                    he experiences company retrenchment and need to go back in the Philippines.
+                    Together with his wife they start to sell online – healthy juices, pastries and beddings.
+                    Just like any other small venture business, due to lack of manpower to produce customers need
+                    they must stop the online business.
                 </p>
 
                 <ul class="timeline">
                     <li>
-                        <span class="timeline-year">2022</span>
-                        <p>Launched our first online store.</p>
-                    </li>
-                    <li>
                         <span class="timeline-year">2023</span>
-                        <p>Expanded product catalog to 5,000+ items and partnered with schools.</p>
+                        <p>Mr. Coma returned to his hometown Olongapo City Zambales for good.
+                            Settling down with His wife and son, having work from home job under US account/night shift/weekend shift.
+                            During weekdays he has nothing to do with his time while his wife work in Subic bay Freeport Zone.
+                            This set up makes him think again about building new business.
+                        </p>
                     </li>
                     <li>
                         <span class="timeline-year">2024</span>
-                        <p>Introduced bulk order discounts and next-day delivery.</p>
-                    </li>
-                    <li>
-                        <span class="timeline-year">2025</span>
-                        <p>Surpassed 10,000 products sold and 1,500+ happy customers.</p>
+                        <p>Since his previous business fail due to manpower & production – he tries trading business.
+                            Trading is buying and selling different commodities, but he focusses on selling office supplies.
+                            Their target market is the offices and companies inside Subic Bay Freeport Zone.
+                            He also sells supplies to the different retail shops in Olongapo. In trading industry,
+                            having a good relationship with your suppliers and customers is necessary.
+                            This helps your business a good network.
+                        </p>
                     </li>
                 </ul>
+
+                <p>
+                    Now, Mr. Coma is no longer connected to His corporate job – instead he focus on building and expanding his business.
+                    Truly that business is a trial and error process, just learn how to risk.
+                </p>
             </div>
 
             <div class="journey-image" style="background-image:url('../assets/images/mockup-image.png');"></div>
@@ -92,22 +102,25 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
                 <div class="team-member">
                     <img src="../assets/svg/person.svg" alt="Elbar Coma">
                     <h3>Elbar Coma</h3>
-                    <p>Founder & Owner</p>
-                    <span class="badge">E-commerce Visionary</span>
+                    <p>Owner</p>
                 </div>
 
                 <div class="team-member">
-                    <img src="../assets/svg/person.svg" alt="Maria Santos">
-                    <h3>Maria Santos</h3>
-                    <p>Sales Manager</p>
-                    <span class="badge">Customer Champion</span>
+                    <img src="../assets/svg/person.svg" alt="Melody Coma">
+                    <h3>Melody Coma</h3>
+                    <p>Admin / Finance</p>
                 </div>
 
                 <div class="team-member">
-                    <img src="../assets/svg/person.svg" alt="Daniel Cruz">
-                    <h3>Daniel Cruz</h3>
-                    <p>Logistics Lead</p>
-                    <span class="badge">Delivery Expert</span>
+                    <img src="../assets/svg/person.svg" alt="Omar">
+                    <h3>Omar</h3>
+                    <p>Deliveryman / Driver</p>
+                </div>
+
+                <div class="team-member">
+                    <img src="../assets/svg/person.svg" alt="Rose">
+                    <h3>Rose</h3>
+                    <p>Book Keeper</p>
                 </div>
             </div>
         </section>
@@ -173,7 +186,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
 
                 <div class="document-card">
                     <h3>Business Permit</h3>
-                    
+
                     <div class="document-image">
                         <img src="../assets/images/BIR-edited.jpg" alt="Business Permit">
                     </div>
