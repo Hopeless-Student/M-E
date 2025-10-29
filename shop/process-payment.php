@@ -92,6 +92,10 @@ try {
             break;
 
         case 'COD':
+              $codToken = bin2hex(random_bytes(16));
+              $pdo->prepare("UPDATE orders SET cod_token=? WHERE order_id=?")
+              ->execute([$codToken, $orderId]);
+
             // Remove only mga selected items sa cart
             $placeholders = implode(',', array_fill(0, count($selectedItems), '?'));
             $ids = array_column($selectedItems, 'product_id');
@@ -100,7 +104,7 @@ try {
             $stmt->execute(array_merge([$user_id], $ids));
 
             $pdo->commit();
-            header("Location: cod.php?order_id=$orderId");
+            header("Location: cod.php?order_id=$orderId&token=$codToken");
             exit;
 
         default:
