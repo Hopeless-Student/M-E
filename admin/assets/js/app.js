@@ -356,7 +356,6 @@ const appState = {
                 subject,
                 status,
                 priority,
-                currentMessage.template_id
             );
 
             if (result.success) {
