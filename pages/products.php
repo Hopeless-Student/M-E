@@ -11,13 +11,19 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <link rel="stylesheet" href="../assets/css/products.css">
     <link rel="stylesheet" href="../assets/css/navbar.css">
     <link rel="stylesheet" href="../assets/css/homepage.css">
-
+    
 </head>
 <body>
   <?php include '../includes/navbar.php'; ?>
 
 
     <div class="toolbar">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <button id="searchBtn">Search</button>
+        <button id="clearSearchBtn" style="display:none;">Clear</button>
+        <div id="suggestionsBox" class="suggestions-box"></div>
+    </div>
         <div class="dropdown" onmouseleave="hideMenu('catMenu')">
             <button class="drop-btn" onclick="toggleMenu('catMenu')">Categories ▾</button>
             <div class="menu" id="catMenu">
@@ -51,7 +57,11 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             </select>
         </div>
     </div>
-
+    <?php if (!empty($_GET['q'])): ?>
+      <div class="search-result-banner">
+          Showing results for "<strong><?= htmlspecialchars($_GET['q']) ?></strong>"
+      </div>
+  <?php endif; ?>
     <div class="container">
         <div class="grid" id="productsGrid"></div>
         <div class="pagination" id="pagination"></div>
@@ -69,14 +79,16 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <!-- Para ma-trigger yung condition sa header pre na log in modal  -->
     <?php include '../includes/login-modal.php';?>
     <div class="toast" id="toast"></div>
-
+    <script src="../assets/js/search-suggestions.js" defer></script>
     <script>
         let products = [];
-        // let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let filters = { category: 'all', price: 'all' };
         let sortMethod = 'default';
         let currentPage = 1;
         const pageSize = 12;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q') || '';
 
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
@@ -114,10 +126,22 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                         <div class="no-results">
                             <div class="no-results-icon">🔍</div>
                             <h3>No products found</h3>
-                            <p>Try adjusting your search or filters</p>
+                            ${searchQuery ? `<p>No matches for “${searchQuery}”</p>` : `<p>Try adjusting your filters</p>`}
                         </div>
                     `;
                     return;
+                }
+                document.getElementById('searchInput').addEventListener('keyup', (e) => {
+                  if (e.key === 'Enter') document.getElementById('searchBtn').click();
+                });
+
+                if (searchQuery) {
+                    const qLower = searchQuery.toLowerCase();
+                    filteredProducts = filteredProducts.filter(p =>
+                        p.title.toLowerCase().includes(qLower) ||
+                        p.description.toLowerCase().includes(qLower) ||
+                        p.category.toLowerCase().includes(qLower)
+                    );
                 }
 
                 const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
@@ -130,7 +154,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                         <div class="card" data-category="${product.category}" onmousemove="handleMouseMove(event, this)">
                             <div class="shine-overlay"></div>
                             <div class="image-container">
-                                <img src="${product.image}" alt="Product Image">
+                                <img loading="lazy" src="${product.image}" alt="${product.image}" onerror="this.src='../assets/images/default.png';">
                             </div>
                             <div class="card-content">
                                 <span class="category-badge">${product.category}</span>
@@ -168,7 +192,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 <div class="product-details">
                     <div class="product-header">
                         <div class="product-icon-large">
-                            <img src="${product.image}" alt="${product.title}">
+                            <img loading="lazy" src="${product.image}" alt="${product.image}" onerror="this.src='../assets/images/default.png';">
                         </div>
                         <div class="product-info">
                             <h3>${product.title}</h3>
@@ -247,6 +271,23 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 toast.classList.remove('show');
             }, 2000);
         }
+
+        if (searchQuery) {
+            document.getElementById('searchInput').value = searchQuery;
+            document.getElementById('clearSearchBtn').style.display = 'inline-block';
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                window.location.href = `products.php?q=${encodeURIComponent(query)}`;
+            }
+        });
+
+        document.getElementById('clearSearchBtn').addEventListener('click', () => {
+            window.location.href = 'products.php';
+        });
+
         console.log("addToCart function is loaded into memory");
 
         // c convert to ajax
@@ -346,44 +387,6 @@ function showCartPreview() {
         });
 }
 
-        // c convert to ajax
-        // function removeFromCart(product_id) {
-        //     const product = products.find(p => p.id === product_id);
-        //     cart = cart.filter(item => item.id !== product_id);
-        //     showToast(`${product.title} removed from cart`);
-        //     updateCart();
-        // }
-        // c convert to ajax
-        // function updateQuantity(product_id, delta) {
-        //     const item = cart.find(item => item.id === product_id);
-        //     if (item) {
-        //         item.quantity += delta;
-        //         if (item.quantity <= 0) {
-        //             removeFromCart(productId);
-        //         } else {
-        //             updateCart();
-        //         }
-        //     }
-        // }
-        // c convert to ajax
-        // function clearCart() {
-        //     if (cart.length === 0) return;
-        //
-        //     if (confirm('Are you sure you want to clear your cart?')) {
-        //         cart = [];
-        //         updateCart();
-        //         showToast('Cart cleared');
-        //     }
-        // }
-        // c convert to ajax
-        // function updateCart() {
-        //     const cartCount = document.getElementById('cartCount');
-        //     localStorage.setItem('cart', JSON.stringify(cart));
-        //
-        //     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        //     cartCount.textContent = totalItems;
-        // }
-
         document.getElementById('productModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeProductModal();
@@ -399,7 +402,9 @@ function showCartPreview() {
                 const catMap = { 'School Supplies': 'school-supplies', 'Office Supplies': 'office-supplies', 'Sanitary': 'sanitary' };
                 params.set('category', catMap[filters.category] || filters.category);
             }
-
+            if (searchQuery) {
+                    params.set('q', searchQuery);
+                }
             return fetch('../api/products.php?' + params.toString())
                 .then(r => r.json())
                 .then(data => {

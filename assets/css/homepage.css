@@ -941,6 +941,26 @@ nav .mobile-user-menu .dropdown.active {
         transform: translateY(-5px);
     }
 }
+  /* toas ni kilo man */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #10b981;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s;
+    z-index: 1001;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
 /* ========== MOBILE RESPONSIVE STYLES ========== */
 @media (max-width: 768px) {
     /* Alert positioning for mobile */
@@ -1323,6 +1343,11 @@ nav .mobile-user-menu .dropdown.active {
         width: 18px;
         margin-left: 10px;
     }
+    .toast {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+    }
 }
 
 /* Tablet/Medium Screen Adjustments */
@@ -1372,5 +1397,10 @@ nav .mobile-user-menu .dropdown.active {
 
     .contact-grid {
         gap: 30px;
+    }
+    .toast {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
     }
 }

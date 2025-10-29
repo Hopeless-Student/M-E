@@ -151,7 +151,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                   id: item.product_id,
                   title: item.product_name,
                   price: parseFloat(item.price),
-                  image: `../assets/images/products/${item.product_image || 'default.jpg'}`,
+                  image: `../assets/images/products/${item.product_image || 'default.png'}`,
                   category: item.category_name || 'Uncategorized',
                   unit: item.unit || 'piece'
               }));
@@ -277,7 +277,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                             </div>
                             <div class="shpcrt-item-info-wrapper">
                                 <div class="shpcrt-product-image">
-                                <img src="${product.image}" alt="${product.title}" onerror="this.src='../assets/images/products/default.jpg'">
+                                <img src="${product.image}" alt="${product.title}" onerror="this.src='../assets/images/products/default.png'">
                                 </div>
                                 <div class="shpcrt-product-info">
                                     <div class="shpcrt-product-name">${product.title} /per ${product.unit}</div>

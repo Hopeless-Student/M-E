@@ -72,72 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       searchInput.style.display = "none";
     }
   }
-
-
-  // Search suggestions
-  const products = [
-    "Scotch Tape Roll",
-    "Ballpen Black",
-    "Ballpen Blue",
-    "Bond Paper A4",
-    "Bond Paper Short",
-    "Stapler",
-    "Staple Wires",
-    "Notebook",
-    "Marker",
-    "Highlighter",
-    "Folder Manila",
-    "Correction Tape",
-  ];
-
-
-
-  if (searchInput && suggestionsBox) {
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase().trim();
-      suggestionsBox.innerHTML = "";
-
-      if (query.length === 0) {
-        suggestionsBox.style.display = "none";
-        return;
-      }
-
-      const filtered = products.filter((p) =>
-        p.toLowerCase().includes(query)
-      );
-
-      if (filtered.length === 0) {
-        const noResult = document.createElement("div");
-        noResult.textContent = "No results found";
-        suggestionsBox.appendChild(noResult);
-        suggestionsBox.style.display = "block";
-        return;
-      }
-
-      filtered.forEach((product) => {
-        const item = document.createElement("div");
-        item.className = "suggestion-item";
-        item.textContent = product;
-
-        item.addEventListener("click", () => {
-          searchInput.value = product;
-          suggestionsBox.style.display = "none";
-          alert("Searching for: " + product);
-        });
-
-        suggestionsBox.appendChild(item);
-      });
-
-      suggestionsBox.style.display = "block";
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".hero-search-bar")) {
-        suggestionsBox.style.display = "none";
-      }
-    });
-  }
-
+  initSearchSuggestions("#search-input", ".search-suggestions");
   // Hero CTA smooth scroll
   if (heroCTA) {
     heroCTA.addEventListener("click", (e) => {
@@ -419,3 +354,48 @@ allModals.forEach(modal => {
     footerCopy.innerHTML = `© Copyright ${new Date().getFullYear()} M&E Interior Supplies Trading, All rights reserved.`;
   }
 });
+
+// add to cart copy
+function addToCart(product_id, quantity = 1) {
+  const product = products.find(p => p.id === product_id);
+  //   console.log("addToCart triggered:", product_id);
+  // // intentionally break here for debug
+  // console.log("Sending request with:", product_id, quantity);
+  // // debugger;
+  fetch('../ajax/add-to-cart.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ product_id: product_id, quantity: 1 })
+  })
+  .then(res => res.json())
+  .then(data => {
+    // console.log("Response from server:", data);
+    if (data.success) {
+      showToast(`${product ? product.title : 'Item'} added to cart`);
+      fetchCart();
+    } else {
+      showToast(data.message || 'Failed to add to cart');
+    }
+  })
+  .catch(err => console.error(err));
+}
+
+// fetch cart copy
+function fetchCart() {
+  fetch('../ajax/fetch-cart.php')
+  .then(res => res.json())
+  .then(data => {
+    const cartCount = document.getElementById('cartCount');
+    cartCount.textContent = data.count || 0;
+  });
+}
+// show toast copy
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}

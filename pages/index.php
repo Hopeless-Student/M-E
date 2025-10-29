@@ -14,7 +14,9 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="M&E Interior Supplies Trading — your one-stop shop for office, school, and sanitary supplies with affordable prices and fast delivery.">
         <link href="../assets/css/homepage.css" rel="stylesheet"/>
         <link href="../assets/css/navbar.css" rel="stylesheet"/>
         <title>M&E: Interior Supplies Trading</title>
@@ -49,7 +51,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                         <input placeholder="Search products..." type="text" id="search-input"/>
                         <div class="search-suggestions"></div>
                     </div>
-                    <a href="#" class="hero-cta">Shop Now</a>
+                    <a href="products.php" class="hero-cta">Shop Now</a>
                 </div>
         </section>
 
@@ -71,30 +73,31 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               </div>
 
               <div class="product-grid">
-                  <?php foreach ($featured_products as $products): ?>
+                <?php if (count($featured_products) > 0): ?>
+                    <?php foreach ($featured_products as $products): ?>
                       <div class="product-card">
-                          <a class="card-link" href="#">
-                              <img alt="<?= htmlspecialchars($products['product_name']); ?>" src="../assets/images/products/<?= htmlspecialchars($products['product_image']) ?>"/>
+                        <a class="card-link" href="#">
+                          <img
+                            loading="lazy"
+                            alt="<?= htmlspecialchars($products['product_name']); ?>"
+                            src="../assets/images/products/<?= htmlspecialchars($products['product_image']); ?>"
+                            onerror="this.src='../assets/images/default.png';"
+                          />
 
-                              <div class="product-info">
-                                  <h3><?= htmlspecialchars($products['product_name']); ?></h3>
-                                  <p>PHP <?= number_format($products['price'], 2); ?></p>
-                              </div>
-                          </a>
+                          <div class="product-info">
+                            <h3><?= htmlspecialchars($products['product_name']); ?></h3>
+                            <p>PHP <?= number_format($products['price'], 2); ?></p>
+                          </div>
+                        </a>
 
-                          <!-- <div class="cart-btn">
-                              <a href="#">
-                                  <img alt="cart" src="../assets/svg/bag.svg"/>
-                              </a>
-                          </div> -->
-                          <form action="../auth/add_to_cart.php" method="post">
-                            <input type="hidden" name="product_id" value="<?= $products['product_id'] ?>">
-                            <button type="submit" class="cart-btn">
-                              <img alt="cart" src="../assets/svg/bag.svg"/>
-                            </button>
-                        </form>
+                        <button class="cart-btn" onclick="addToCart(<?= $products['product_id'] ?>)">
+                          <img alt="cart" src="../assets/svg/bag.svg"/>
+                        </button>
                       </div>
-                  <?php endforeach; ?>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <p class="no-products">No featured products available at the moment.</p>
+                <?php endif; ?>
               </div>
           </section>
 
@@ -107,7 +110,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
             <div class="categ-grid">
                 <div class="categ-card">
-                    <a href="#">
+                    <a href="products.php">
                         <img alt="School Supplies" src="../assets/images/school-supplies.png"/>
 
                         <div class="overlay">
@@ -117,7 +120,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 </div>
 
                 <div class="categ-card">
-                    <a href="#">
+                    <a href="products.php">
                         <img alt="Office Supplies" src="../assets/images/office-supplies.png"/>
 
                         <div class="overlay">
@@ -127,7 +130,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 </div>
 
                 <div class="categ-card">
-                    <a href="#">
+                    <a href="products.php">
                         <img alt="Sanitary Supplies" src="../assets/images/sanitary-supplies.png"/>
 
                         <div class="overlay">
@@ -262,12 +265,12 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 </div>
 
                 <div class="contact-card">
-                    <img alt="Email" src="../assets/svg/email.svg"/>
-
-                <div>
-                    <h3>Email:</h3>
-                    <p>elbarcoma@gmail.com</p>
-                </div>
+                  <img alt="Email" src="../assets/svg/email.svg"/>
+                  <div>
+                      <h3>Email:</h3>
+                      <p>elbarcoma@gmail.com</p>
+                  </div>
+              </div>
             </div>
         </section>
 
@@ -310,9 +313,15 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             </div>
         </section>
 
-
-
+        <div class="toast" id="toast"></div>
+        <script>
+          const products = <?= json_encode(array_map(fn($p)=>[
+            'id' => $p['product_id'],
+            'title' => $p['product_name']
+          ], $featured_products)) ?>;
+        </script>
         <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../assets/js/search-suggestions.js"></script>
         <script src="../assets/js/homepage.js"></script>
         <script src="../assets/js/navbar.js"></script>
         <?php include '../includes/footer.php';?>
