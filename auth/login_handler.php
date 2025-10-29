@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute(['login_id_username' => $login_id, 'login_id_email' => $login_id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // If not found in users table, check admin_user table
+
         if (!$user) {
             $sql = "SELECT admin_id as id, username, email, password_hash as password, 'admin' as user_type, role, is_active
                     FROM admin_user
