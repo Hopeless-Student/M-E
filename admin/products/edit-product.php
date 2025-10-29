@@ -345,7 +345,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label required" for="productCode">Product Code</label>
-                        <input type="text" class="form-input" id="productCode" name="product_code" placeholder="e.g BP-BLK01" required>
+                        <input type="text" class="form-input" id="productCode" name="product_code" placeholder="e.g BP-BLK01">
                     </div>
 
 
