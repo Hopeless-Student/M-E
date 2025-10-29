@@ -302,7 +302,7 @@
 
         <!-- Footer -->
         <div class="sidebar-footer">
-            <a href="<?php echo $base_path; ?>logout.php" class="logout-btn">Log out</a>
+            <a href="../auth/logout.php" class="logout-btn">Log out</a>
         </div>
     </aside>
 

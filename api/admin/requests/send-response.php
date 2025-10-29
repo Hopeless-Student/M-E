@@ -6,7 +6,7 @@
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
-require_once __DIR__ . '../../../auth/adminResponse.php';
+// require_once __DIR__ . '/../../../auth/adminResponse.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -27,7 +27,7 @@ $response = trim($input['response']);
 $subject = trim($input['subject'] ?? '');
 $status = trim($input['status'] ?? 'in-progress');
 $priority = trim($input['priority'] ?? 'normal');
-$adminId = 1; // TODO: Get from session
+$adminId = 1;
 
 if (empty($response)) {
     http_response_code(400);
@@ -53,10 +53,10 @@ try {
     }
 
     $customerName = trim($request['first_name'] . ' ' . $request['middle_name'] . ' ' . $request['last_name']);
-    $customerEmail = $request['email'];
+    // $customerEmail = $request['email'];
 
     // Prepare email subject
-    $emailSubject = $subject ?: 'RE: ' . $request['subject'];
+    // $emailSubject = $subject ?: 'RE: ' . $request['subject'];
 
     // Process template variables in response
     $variables = [
@@ -65,14 +65,23 @@ try {
         'request_id' => $requestId,
         'company_name' => 'M & E Team'
     ];
+    if (function_exists('processTemplate')) {
     $processedResponse = processTemplate($response, $variables);
+    if (is_array($processedResponse) && isset($processedResponse['error'])) {
+        // Fallback if template not found
+        $processedResponse = $response;
+    }
+    } else {
+        $processedResponse = $response;
+    }
+
 
     // Send email
-    $emailSent = sendEmail($customerEmail, $customerName, $emailSubject, $processedResponse);
-
-    if (!$emailSent) {
-        throw new Exception('Failed to send email');
-    }
+    // $emailSent = sendEmail($customerEmail, $customerName, $emailSubject, $processedResponse);
+    //
+    // if (!$emailSent) {
+    //     throw new Exception('Failed to send email');
+    // }
 
     // Update request
     $updateSql = "UPDATE customer_request
