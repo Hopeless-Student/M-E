@@ -100,7 +100,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         </section>
 
         <section class="contact-map">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3856.5030650599197!2d120.26674307473081!3d14.853122385663681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339671a5c5ff84f5%3A0xea44c7bbc0cbd32c!2sBanaba%20St.!5e0!3m2!1sen!2sph!4v1761070864356!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3856.5010984589194!2d120.2723978373993!3d14.85323255591572!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339671000668be23%3A0xaaca2feb1012df17!2sUpper%20Banaba%20St.%2C%20Barretto%2C%20Olongapo%20City!5e0!3m2!1sen!2sph!4v1761722139726!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </section>
 
         <section id="bulk-orders" class="contact-cta">
