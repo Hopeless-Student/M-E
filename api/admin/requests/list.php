@@ -38,8 +38,8 @@ if ($priority !== '') {
 $whereSql = count($where) ? ('WHERE ' . implode(' AND ', $where)) : '';
 
 // Count
-$countSql = "SELECT COUNT(*) FROM customer_request cr 
-             INNER JOIN users u ON u.user_id = cr.user_id 
+$countSql = "SELECT COUNT(*) FROM customer_request cr
+             INNER JOIN users u ON u.user_id = cr.user_id
              $whereSql";
 $stmt = $pdo->prepare($countSql);
 foreach ($params as $k => $v) { $stmt->bindValue($k, $v); }
@@ -47,8 +47,8 @@ $stmt->execute();
 $total = (int)$stmt->fetchColumn();
 
 // Data
-$sql = "SELECT cr.request_id, cr.user_id, cr.request_type, cr.subject, cr.message, 
-               cr.status, cr.priority, cr.admin_response, cr.responded_by, 
+$sql = "SELECT cr.request_id, cr.user_id, cr.request_type, cr.subject, cr.message,
+               cr.status, cr.priority, cr.admin_response, cr.responded_by,
                cr.created_at, cr.responded_at,
                u.first_name, u.middle_name, u.last_name, u.email, u.contact_number,
                au.first_name as admin_first_name, au.last_name as admin_last_name
@@ -89,7 +89,7 @@ $items = array_map(function ($r) {
     if ($r['admin_first_name'] && $r['admin_last_name']) {
         $adminName = trim($r['admin_first_name'] . ' ' . $r['admin_last_name']);
     }
-    
+
     return [
         'id' => (int)$r['request_id'],
         'userId' => (int)$r['user_id'],

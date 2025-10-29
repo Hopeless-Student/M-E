@@ -388,6 +388,11 @@
                             <label class="form-label required" for="productDescription">Description</label>
                             <textarea class="form-textarea" id="productDescription" name="description" required placeholder="Enter a detailed description of the product..."></textarea>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="productCode">Product Code</label>
+                            <input type="text" class="form-input" id="productCode" name="product_code" placeholder="e.g BP-BLK01" required>
+                        </div>
+
 
                         <div class="form-group full-width">
                             <label class="form-label" for="productImage">Product Image</label>

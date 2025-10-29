@@ -272,6 +272,12 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                   </div>
               </div>
             </div>
+            
+            <div class="contact-more">
+                <a href="contact.php">More about Contact Us
+                    <img alt="More" src="../assets/svg/right-arrow.svg"/>
+                </a>
+            </div>
         </section>
 
 

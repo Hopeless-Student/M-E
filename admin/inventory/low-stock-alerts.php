@@ -407,463 +407,385 @@
 </div>
 
 <script>
-    let currentLowStockAlertsPage = 1;
-    // Ensure window.lowStockData is defined before spreading
-    let filteredLowStockAlertsData = (typeof window.lowStockData !== 'undefined' && window.lowStockData.length > 0) ? [...window.lowStockData] : [];
-    let currentEditingLowStockItem = null; // For individual restock/adjust stock modals
+// Low Stock Alerts Modal Functions with API Integration
 
-    // lowStockItemsPerPage is now defined in index.php globally
+let currentLowStockAlertsPage = 1;
+let filteredLowStockAlertsData = [];
+let currentEditingLowStockItem = null;
 
-    function openLowStockAlertsModal() {
-        // Ensure data exists before filtering
-        if (typeof window.lowStockData === 'undefined' || window.lowStockData.length === 0) {
-            console.warn('Low stock data not loaded—using fallback empty data');
-            filteredLowStockAlertsData = [];
-        } else {
-            // Re-initialize filteredLowStockAlertsData from window.lowStockData
-            filteredLowStockAlertsData = [...window.lowStockData];
-            applyLowStockAlertsFilters(); // Initial population and filtering
-        }
-        openModal('lowStockAlertsModal');
+async function openLowStockAlertsModal() {
+try {
+    const response = await InventoryAPI.getLowStock({ pageSize: 100 });
+
+    if (response.success) {
+        window.lowStockData = response.items;
+        filteredLowStockAlertsData = response.items;
+
+        await applyLowStockAlertsFilters();
+        updateLowStockSummaryCards();
     }
+} catch (error) {
+    console.error('Error loading low stock data:', error);
+    showNotification('Error loading low stock alerts', 'error');
+}
 
-    function setupLowStockAlertsModalListeners() {
-        // Directly access elements by ID, as global variables might not be immediately assigned
-        document.getElementById('lowStockSearchInput').addEventListener('input', applyLowStockAlertsFilters);
-        document.getElementById('lowStockCategoryFilter').addEventListener('change', applyLowStockAlertsFilters);
-        document.getElementById('lowStockAlertLevelFilter').addEventListener('change', applyLowStockAlertsFilters);
+openModal('lowStockAlertsModal');
+}
 
-        // Minimum levels adjustment method change
-        document.getElementById('minimumLevelsBulkAdjustMethod').addEventListener('change', function() {
-            const method = this.value;
-            document.getElementById('minimumLevelsPercentageGroup').style.display = method === 'percentage' ? 'block' : 'none';
-            document.getElementById('minimumLevelsFixedGroup').style.display = method === 'fixed' ? 'block' : 'none';
-            document.getElementById('minimumLevelsIndividualAdjustSection').style.display = method === 'individual' ? 'block' : 'none';
+function setupLowStockAlertsModalListeners() {
+document.getElementById('lowStockSearchInput').addEventListener('input', applyLowStockAlertsFilters);
+document.getElementById('lowStockCategoryFilter').addEventListener('change', applyLowStockAlertsFilters);
+document.getElementById('lowStockAlertLevelFilter').addEventListener('change', applyLowStockAlertsFilters);
 
-            if (method === 'individual') {
-                populateMinimumLevelsList();
-            }
-        });
+// Bulk restock form
+document.getElementById('bulkRestockForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const priority = document.getElementById('bulkRestockRequestPriority').value;
+    const department = document.getElementById('bulkRestockDepartment').value;
+    const notes = document.getElementById('bulkRestockNotes').value;
 
-        document.getElementById('bulkRestockForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const priority = document.getElementById('bulkRestockRequestPriority').value;
-            const department = document.getElementById('bulkRestockDepartment').value;
-            const notes = document.getElementById('bulkRestockNotes').value;
+    const items = [];
+    document.querySelectorAll('#bulkRestockItemsList .low-stock-alerts-quantity-input').forEach(input => {
+        const quantity = parseInt(input.value);
+        if (quantity > 0) {
+            items.push({
+                id: input.dataset.itemId,
+                quantity: quantity
+            });
+        }
+    });
 
-            const items = [];
-            document.querySelectorAll('#bulkRestockItemsList .low-stock-alerts-quantity-input').forEach(input => {
-                const quantity = parseInt(input.value);
-                if (quantity > 0) {
-                    items.push({
-                        id: input.dataset.itemId,
-                        quantity: quantity
-                    });
-                }
+    showNotification(`Bulk restock request submitted!\n${items.length} items requested with ${priority} priority.`, 'success');
+    closeModal('bulkRestockModal');
+});
+
+// Individual restock form
+document.getElementById('individualRestockForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const quantity = document.getElementById('individualRestockQuantity').value;
+    const priority = document.getElementById('individualRestockPriority').value;
+
+    if (currentEditingLowStockItem) {
+        try {
+            const response = await InventoryAPI.adjustStock({
+                productId: currentEditingLowStockItem.id,
+                type: 'add',
+                quantity: parseInt(quantity),
+                reason: `Restock request - ${priority} priority`,
+                user: 'Admin'
             });
 
-            showNotification(`Bulk restock request submitted!\n${items.length} items requested with ${priority} priority.`, 'success');
-            closeModal('bulkRestockModal');
-        });
-
-        document.getElementById('individualRestockForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const quantity = document.getElementById('individualRestockQuantity').value;
-            const priority = document.getElementById('individualRestockPriority').value;
-            const reason = document.getElementById('individualRestockReason').value;
-
-            if (currentEditingLowStockItem) {
-                showNotification(`Restock request submitted for ${currentEditingLowStockItem.name}\nQuantity: ${quantity} units\nPriority: ${capitalizeFirst(priority)}`, 'success');
-            } else {
-                showNotification('Error: No item selected for restock.', 'error');
+            if (response.success) {
+                showNotification(`Restock completed for ${currentEditingLowStockItem.name}`, 'success');
+                closeModal('individualRestockModal');
+                await updateAllDataAndUI();
+                await openLowStockAlertsModal();
             }
-            closeModal('individualRestockModal');
-        });
+        } catch (error) {
+            console.error('Error restocking:', error);
+            showNotification('Error processing restock request', 'error');
+        }
+    }
+});
 
-        document.getElementById('lowStockAdjustStockModalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const type = document.getElementById('lowStockAdjustStockModalAdjustmentType').value;
-            const quantity = document.getElementById('lowStockAdjustStockModalQuantity').value;
-            const reason = document.getElementById('lowStockAdjustStockModalReason').value;
+// Adjust stock from low stock modal
+document.getElementById('lowStockAdjustStockModalForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const type = document.getElementById('lowStockAdjustStockModalAdjustmentType').value;
+    const quantity = document.getElementById('lowStockAdjustStockModalQuantity').value;
+    const reason = document.getElementById('lowStockAdjustStockModalReason').value;
+    const notes = document.getElementById('lowStockAdjustStockModalNotes').value;
 
-            if (!currentEditingLowStockItem) {
-                showNotification('Error: No product selected for adjustment.', 'error');
-                return;
-            }
-
-            // Find the corresponding item in inventoryData and update its stock
-            // Ensure inventoryData is available
-            if (typeof inventoryData === 'undefined') {
-                showNotification('Error: Inventory data not loaded.', 'error');
-                return;
-            }
-            const itemIndex = inventoryData.findIndex(item => item.id === currentEditingLowStockItem.id);
-            if (itemIndex !== -1) {
-                let newStock;
-                const currentStock = inventoryData[itemIndex].stock;
-                switch (type) {
-                    case 'add':
-                        newStock = currentStock + parseInt(quantity);
-                        break;
-                    case 'remove':
-                        newStock = Math.max(0, currentStock - parseInt(quantity));
-                        break;
-                    case 'set':
-                        newStock = parseInt(quantity);
-                        break;
-                    default:
-                        return;
-                }
-                inventoryData[itemIndex].stock = newStock;
-
-                // Add to stock movements history
-                // Ensure stockMovementsData is defined
-                if (typeof stockMovementsData !== 'undefined') {
-                    stockMovementsData.unshift({
-                        id: stockMovementsData.length + 1,
-                        productId: currentEditingLowStockItem.id,
-                        productName: currentEditingLowStockItem.name,
-                        productSKU: currentEditingLowStockItem.sku,
-                        type: type,
-                        quantity: parseInt(quantity),
-                        previousStock: currentStock,
-                        newStock: newStock,
-                        reason: reason,
-                        user: 'Admin',
-                        timestamp: new Date().toLocaleString([], {hour: '2-digit', minute:'2-digit', year: 'numeric', month: '2-digit', day: '2-digit'})
-                    });
-                }
-
-
-                showNotification(`Stock adjustment applied for ${currentEditingLowStockItem.name}\nType: ${capitalizeFirst(type)}\nQuantity: ${quantity}\nReason: ${reason}`, 'success');
-                closeModal('lowStockAdjustStockModal');
-                updateAllDataAndUI(); // Refresh all dashboard data and UI
-                applyLowStockAlertsFilters(); // Re-apply filters for alerts modal
-            } else {
-                showNotification('Error: Product not found for adjustment.', 'error');
-            }
-        });
-
-        document.getElementById('emailAlertsForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            let recipientCount = 0;
-            if (document.getElementById('emailAlertsManagersCheckbox').checked) recipientCount += 3;
-            if (document.getElementById('emailAlertsPurchasingCheckbox').checked) recipientCount += 2;
-            if (document.getElementById('emailAlertsInventoryCheckbox').checked) recipientCount += 4;
-
-            showNotification(`Email alerts sent successfully to ${recipientCount} recipients!`, 'success');
-            closeModal('emailAlertsModal');
-        });
+    if (!currentEditingLowStockItem) {
+        showNotification('Error: No product selected for adjustment.', 'error');
+        return;
     }
 
-    function applyLowStockAlertsFilters() {
-        // Fallback data if not loaded
-        const dataToFilter = (typeof window.lowStockData !== 'undefined' && window.lowStockData.length > 0) ? window.lowStockData : [];
-        const searchTerm = (document.getElementById('lowStockSearchInput')?.value || '').toLowerCase();
-        const selectedCategory = (document.getElementById('lowStockCategoryFilter')?.value || '');
-        const selectedLevel = (document.getElementById('lowStockAlertLevelFilter')?.value || '');
-        filteredLowStockAlertsData = dataToFilter.filter(item => {
-            const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm) ||
-                                (item.sku || '').toLowerCase().includes(searchTerm);
-            const matchesCategory = !selectedCategory || (item.category || '') === selectedCategory;
-            const matchesLevel = !selectedLevel || (item.alertLevel || '') === selectedLevel;
-            return matchesSearch && matchesCategory && matchesLevel;
+    try {
+        const response = await InventoryAPI.adjustStock({
+            productId: currentEditingLowStockItem.id,
+            type: type,
+            quantity: parseInt(quantity),
+            reason: `${reason} - ${notes}`,
+            user: 'Admin'
         });
-        currentLowStockAlertsPage = 1;
-        populateLowStockAlertsTable(filteredLowStockAlertsData);
+
+        if (response.success) {
+            showNotification(`Stock adjusted for ${currentEditingLowStockItem.name}`, 'success');
+            closeModal('lowStockAdjustStockModal');
+            await updateAllDataAndUI();
+            await openLowStockAlertsModal();
+        }
+    } catch (error) {
+        console.error('Error adjusting stock:', error);
+        showNotification('Error adjusting stock', 'error');
+    }
+});
+
+// Email alerts form
+document.getElementById('emailAlertsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let recipientCount = 0;
+    if (document.getElementById('emailAlertsManagersCheckbox').checked) recipientCount += 3;
+    if (document.getElementById('emailAlertsPurchasingCheckbox').checked) recipientCount += 2;
+    if (document.getElementById('emailAlertsInventoryCheckbox').checked) recipientCount += 4;
+
+    showNotification(`Email alerts sent successfully to ${recipientCount} recipients!`, 'success');
+    closeModal('emailAlertsModal');
+});
+}
+
+async function applyLowStockAlertsFilters() {
+const searchTerm = (document.getElementById('lowStockSearchInput')?.value || '').toLowerCase();
+const selectedCategory = (document.getElementById('lowStockCategoryFilter')?.value || '');
+const selectedLevel = (document.getElementById('lowStockAlertLevelFilter')?.value || '');
+
+try {
+    const params = {
+        page: currentLowStockAlertsPage,
+        pageSize: lowStockItemsPerPage,
+        q: searchTerm,
+        category: selectedCategory,
+        alertLevel: selectedLevel
+    };
+
+    const response = await InventoryAPI.getLowStock(params);
+
+    if (response.success) {
+        filteredLowStockAlertsData = response.items;
+        populateLowStockAlertsTable(response.items, response.total);
         updateLowStockSummaryCards();
         updateLowStockAlertsCount();
     }
+} catch (error) {
+    console.error('Error filtering low stock:', error);
+    filteredLowStockAlertsData = [];
+    populateLowStockAlertsTable([], 0);
+}
+}
 
-    function populateLowStockAlertsTable(data) {
-        const tbody = document.getElementById('lowStockAlertsTableBody');
-        if (!tbody) return; // Safety check
-        tbody.innerHTML = '';
-        // lowStockItemsPerPage is now a global variable from index.php
-        const startIndex = (currentLowStockAlertsPage - 1) * lowStockItemsPerPage;
-        const endIndex = startIndex + lowStockItemsPerPage;
-        const pageData = (data || []).slice(startIndex, endIndex); // Fallback empty
-        if (pageData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">No low stock items found matching your criteria.</td></tr>`;
-            updateLowStockAlertsPagination((data || []).length);
-            return;
-        }
+function populateLowStockAlertsTable(data, total) {
+const tbody = document.getElementById('lowStockAlertsTableBody');
+if (!tbody) return;
 
-        pageData.forEach(item => {
-            const row = tbody.insertRow();
-            const stockPercentage = (item.minStock > 0) ? (item.currentStock / item.minStock) * 100 : 0; // Avoid division by zero
+tbody.innerHTML = '';
 
-            row.innerHTML = `
-                <td>
-                    <div class="low-stock-alerts-product-cell">
-                        <div class="low-stock-alerts-product-icon">${item.icon}</div>
-                        <div class="low-stock-alerts-product-info">
-                            <h4>${item.name}</h4>
-                            <p>${item.sku}</p>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <span class="low-stock-alerts-alert-level ${item.alertLevel}">${capitalizeFirst(item.alertLevel)}</span>
-                </td>
-                <td>
-                    <div class="low-stock-alerts-stock-info">
-                        <div class="low-stock-alerts-current-stock">${item.currentStock}</div>
-                        <div class="low-stock-alerts-min-stock">Min: ${item.minStock}</div>
-                        <div class="low-stock-alerts-stock-progress">
-                            <div class="low-stock-alerts-stock-fill" style="width: ${Math.min(stockPercentage, 100)}%"></div>
-                        </div>
-                    </div>
-                </td>
-                <td>${stockPercentage.toFixed(0)}%</td>
-                <td>
-                    <div class="low-stock-alerts-days-supply ${item.daysSupply <= 3 ? 'critical' : item.daysSupply <= 7 ? 'warning' : ''}">
-                        ${item.daysSupply} days
-                    </div>
-                </td>
-                <td>${formatDate(item.lastRestock)}</td>
-                <td>
-                    <div class="low-stock-alerts-action-buttons-container">
-                        <button class="low-stock-alerts-btn-sm btn-primary" onclick="openIndividualRestockModal(${item.id})">Restock</button>
-                        <button class="low-stock-alerts-btn-sm btn-secondary" onclick="openLowStockAdjustStockModal(${item.id})">Adjust</button>
-                    </div>
-                </td>
-            `;
-        });
-        updateLowStockAlertsPagination(data.length);
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    }
+if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">No low stock items found matching your criteria.</td></tr>`;
+    updateLowStockAlertsPagination(0);
+    return;
+}
 
-    function updateLowStockSummaryCards() {
-        const critical = filteredLowStockAlertsData.filter(item => item.alertLevel === 'critical').length;
-        const warning = filteredLowStockAlertsData.filter(item => item.alertLevel === 'warning').length;
+data.forEach(item => {
+    const row = tbody.insertRow();
+    const stockPercentage = (item.minStock > 0) ? (item.currentStock / item.minStock) * 100 : 0;
 
-        document.getElementById('criticalAlertsCount').textContent = critical;
-        document.getElementById('warningAlertsCount').textContent = warning;
-        document.getElementById('totalAlertItemsCount').textContent = filteredLowStockAlertsData.length;
-    }
+    row.innerHTML = `
+        <td>
+            <div class="low-stock-alerts-product-cell">
+                <div class="low-stock-alerts-product-icon">
 
-    function updateLowStockAlertsCount() {
-        document.getElementById('lowStockAlertsCount').textContent = `${filteredLowStockAlertsData.length} items need attention`;
-    }
+                ${item.image
+                    ? `<img src="${item.image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">`
+                    : '📦'
+                }
 
-    function updateLowStockAlertsPagination(totalItems) {
-        const totalPages = Math.ceil(totalItems / lowStockItemsPerPage);
-        const startItem = totalItems === 0 ? 0 : (currentLowStockAlertsPage - 1) * lowStockItemsPerPage + 1;
-        const endItem = Math.min(currentLowStockAlertsPage * lowStockItemsPerPage, totalItems);
-
-        document.getElementById('lowStockStartItem').textContent = startItem;
-        document.getElementById('lowStockEndItem').textContent = endItem;
-        document.getElementById('lowStockTotalAlerts').textContent = totalItems;
-
-        const prevBtn = document.getElementById('lowStockPrevBtn');
-        const nextBtn = document.getElementById('lowStockNextBtn');
-        const pageNumbersContainer = document.getElementById('lowStockPageNumbers');
-
-        prevBtn.disabled = currentLowStockAlertsPage === 1;
-        nextBtn.disabled = currentLowStockAlertsPage === totalPages || totalPages === 0;
-
-        pageNumbersContainer.innerHTML = '';
-        for (let i = 1; i <= totalPages; i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = `low-stock-alerts-page-btn ${i === currentLowStockAlertsPage ? 'active' : ''}`;
-            pageBtn.textContent = i;
-            pageBtn.onclick = () => changeLowStockAlertsPage(i);
-            pageNumbersContainer.appendChild(pageBtn);
-        }
-    }
-
-    function changeLowStockAlertsPage(page) {
-        const totalPages = Math.ceil(filteredLowStockAlertsData.length / lowStockItemsPerPage);
-
-        if (page === 'prev' && currentLowStockAlertsPage > 1) {
-            currentLowStockAlertsPage--;
-        } else if (page === 'next' && currentLowStockAlertsPage < totalPages) {
-            currentLowStockAlertsPage++;
-        } else if (typeof page === 'number' && page >= 1 && page <= totalPages) {
-            currentLowStockAlertsPage = page;
-        }
-        populateLowStockAlertsTable(filteredLowStockAlertsData);
-    }
-
-    // Nested Modal Functions for Low Stock Alerts
-    function openBulkRestockModal() {
-        populateBulkRestockItemsList();
-        openModal('bulkRestockModal');
-    }
-
-    function populateBulkRestockItemsList() {
-        const itemsList = document.getElementById('bulkRestockItemsList');
-        itemsList.innerHTML = '';
-
-        filteredLowStockAlertsData.forEach(item => {
-            const recommendedQty = Math.max(item.minStock * 2 - item.currentStock, 0);
-            const itemEntry = document.createElement('div');
-            itemEntry.className = 'low-stock-alerts-item-entry';
-            itemEntry.innerHTML = `
-                <div class="low-stock-alerts-item-info">
-                    <div class="low-stock-alerts-item-name">${item.icon} ${item.name}</div>
-                    <div class="low-stock-alerts-item-details">Current: ${item.currentStock} | Min: ${item.minStock} | SKU: ${item.sku}</div>
                 </div>
-                <div>
-                    <input type="number" class="low-stock-alerts-quantity-input" value="${recommendedQty}" min="0"
-                           data-item-id="${item.id}" placeholder="Qty">
+                <div class="low-stock-alerts-product-info">
+                    <h4>${item.name}</h4>
+                    <p>${item.sku}</p>
                 </div>
-            `;
-            itemsList.appendChild(itemEntry);
-        });
-    }
-
-    function openIndividualRestockModal(itemId) {
-        // Ensure lowStockData is available
-        if (typeof lowStockData === 'undefined') {
-            showNotification('Error: Low stock data not loaded.', 'error');
-            return;
-        }
-        const item = lowStockData.find(i => i.id === itemId);
-        if (!item) {
-            showNotification('Error: Item not found in low stock alerts.', 'error');
-            return;
-        }
-        currentEditingLowStockItem = item;
-
-        document.getElementById('individualRestockProductName').textContent = item.name;
-        document.getElementById('individualRestockCurrentStock').textContent = item.currentStock;
-        document.getElementById('individualRestockMinStock').textContent = item.minStock;
-        document.getElementById('individualRestockRecommended').textContent = Math.max(item.minStock * 2 - item.currentStock, 0);
-        document.getElementById('individualRestockQuantity').value = Math.max(item.minStock * 2 - item.currentStock, 0);
-        document.getElementById('individualRestockPriority').value = item.alertLevel === 'critical' ? 'urgent' : 'high';
-
-        openModal('individualRestockModal');
-    }
-
-    function openLowStockAdjustStockModal(itemId) {
-        // Ensure lowStockData is available
-        if (typeof lowStockData === 'undefined') {
-            showNotification('Error: Low stock data not loaded.', 'error');
-            return;
-        }
-        const item = lowStockData.find(i => i.id === itemId);
-        if (!item) {
-            showNotification('Error: Item not found in low stock alerts.', 'error');
-            return;
-        }
-        currentEditingLowStockItem = item;
-
-        document.getElementById('lowStockAdjustStockModalProductName').textContent = item.name;
-        document.getElementById('lowStockAdjustStockModalCurrentStock').textContent = item.currentStock;
-        document.getElementById('lowStockAdjustStockModalQuantity').value = '';
-        document.getElementById('lowStockAdjustStockModalNotes').value = '';
-
-        openModal('lowStockAdjustStockModal');
-    }
-
-    function openMinimumLevelsModal() {
-        populateMinimumLevelsList();
-        openModal('minimumLevelsModal');
-    }
-
-    function populateMinimumLevelsList() {
-        const itemsList = document.getElementById('minimumLevelsList');
-        itemsList.innerHTML = '';
-
-        filteredLowStockAlertsData.forEach(item => {
-            const itemEntry = document.createElement('div');
-            itemEntry.className = 'low-stock-alerts-item-entry';
-            itemEntry.innerHTML = `
-                <div class="low-stock-alerts-item-info">
-                    <div class="low-stock-alerts-item-name">${item.icon} ${item.name}</div>
-                    <div class="low-stock-alerts-item-details">Current Min: ${item.minStock} | SKU: ${item.sku}</div>
+            </div>
+        </td>
+        <td>
+            <span class="low-stock-alerts-alert-level ${item.alertLevel}">${capitalizeFirst(item.alertLevel)}</span>
+        </td>
+        <td>
+            <div class="low-stock-alerts-stock-info">
+                <div class="low-stock-alerts-current-stock">${item.currentStock}</div>
+                <div class="low-stock-alerts-min-stock">Min: ${item.minStock}</div>
+                <div class="low-stock-alerts-stock-progress">
+                    <div class="low-stock-alerts-stock-fill" style="width: ${Math.min(stockPercentage, 100)}%"></div>
                 </div>
-                <div>
-                    <input type="number" class="low-stock-alerts-quantity-input" value="${item.minStock}" min="1"
-                           data-item-id="${item.id}" placeholder="New Min">
-                </div>
-            `;
-            itemsList.appendChild(itemEntry);
-        });
-    }
+            </div>
+        </td>
+        <td>${stockPercentage.toFixed(0)}%</td>
+        <td>
+            <div class="low-stock-alerts-days-supply ${item.daysSupply <= 3 ? 'critical' : item.daysSupply <= 7 ? 'warning' : ''}">
+                ${item.daysSupply} days
+            </div>
+        </td>
+        <td>${formatDate(item.lastRestock)}</td>
+        <td>
+            <div class="low-stock-alerts-action-buttons-container">
+                <button class="low-stock-alerts-btn-sm btn-primary" onclick="openIndividualRestockModal(${item.id})">Restock</button>
+                <button class="low-stock-alerts-btn-sm btn-secondary" onclick="openLowStockAdjustStockModal(${item.id})">Adjust</button>
+            </div>
+        </td>
+    `;
+});
 
-    function applyMinimumLevelChanges() {
-        const method = document.getElementById('minimumLevelsBulkAdjustMethod').value;
-        let changesApplied = 0;
+updateLowStockAlertsPagination(total);
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+}
 
-        // Ensure inventoryData is available
-        if (typeof inventoryData === 'undefined') {
-            showNotification('Error: Inventory data not loaded.', 'error');
-            return;
-        }
+function updateLowStockSummaryCards() {
+const critical = filteredLowStockAlertsData.filter(item => item.alertLevel === 'critical').length;
+const warning = filteredLowStockAlertsData.filter(item => item.alertLevel === 'warning').length;
 
-        if (method === 'percentage') {
-            const percentage = parseFloat(document.getElementById('minimumLevelsPercentageChange').value);
-            if (isNaN(percentage)) {
-                showNotification('Please enter a valid percentage', 'error');
-                return;
+document.getElementById('criticalAlertsCount').textContent = critical;
+document.getElementById('warningAlertsCount').textContent = warning;
+document.getElementById('totalAlertItemsCount').textContent = filteredLowStockAlertsData.length;
+}
+
+function updateLowStockAlertsCount() {
+document.getElementById('lowStockAlertsCount').textContent = `${filteredLowStockAlertsData.length} items need attention`;
+}
+
+function updateLowStockAlertsPagination(totalItems) {
+const totalPages = Math.ceil(totalItems / lowStockItemsPerPage);
+const startItem = totalItems === 0 ? 0 : (currentLowStockAlertsPage - 1) * lowStockItemsPerPage + 1;
+const endItem = Math.min(currentLowStockAlertsPage * lowStockItemsPerPage, totalItems);
+
+document.getElementById('lowStockStartItem').textContent = startItem;
+document.getElementById('lowStockEndItem').textContent = endItem;
+document.getElementById('lowStockTotalAlerts').textContent = totalItems;
+
+const prevBtn = document.getElementById('lowStockPrevBtn');
+const nextBtn = document.getElementById('lowStockNextBtn');
+const pageNumbersContainer = document.getElementById('lowStockPageNumbers');
+
+prevBtn.disabled = currentLowStockAlertsPage === 1;
+nextBtn.disabled = currentLowStockAlertsPage === totalPages || totalPages === 0;
+
+pageNumbersContainer.innerHTML = '';
+for (let i = 1; i <= totalPages; i++) {
+    const pageBtn = document.createElement('button');
+    pageBtn.className = `low-stock-alerts-page-btn ${i === currentLowStockAlertsPage ? 'active' : ''}`;
+    pageBtn.textContent = i;
+    pageBtn.onclick = () => changeLowStockAlertsPage(i);
+    pageNumbersContainer.appendChild(pageBtn);
+}
+}
+
+async function changeLowStockAlertsPage(page) {
+const totalPages = Math.ceil(filteredLowStockAlertsData.length / lowStockItemsPerPage);
+
+if (page === 'prev' && currentLowStockAlertsPage > 1) {
+    currentLowStockAlertsPage--;
+} else if (page === 'next' && currentLowStockAlertsPage < totalPages) {
+    currentLowStockAlertsPage++;
+} else if (typeof page === 'number' && page >= 1 && page <= totalPages) {
+    currentLowStockAlertsPage = page;
+}
+
+await applyLowStockAlertsFilters();
+}
+
+// Nested Modal Functions
+function openBulkRestockModal() {
+populateBulkRestockItemsList();
+openModal('bulkRestockModal');
+}
+
+function populateBulkRestockItemsList() {
+const itemsList = document.getElementById('bulkRestockItemsList');
+itemsList.innerHTML = '';
+
+filteredLowStockAlertsData.forEach(item => {
+    const recommendedQty = Math.max(item.minStock * 2 - item.currentStock, 0);
+    const itemEntry = document.createElement('div');
+    itemEntry.className = 'low-stock-alerts-item-entry';
+    itemEntry.innerHTML = `
+        <div class="low-stock-alerts-item-info">
+            <div class="low-stock-alerts-item-name">
+            ${item.image
+                ? `<img src="${item.image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">`
+                : '📦'
             }
-            filteredLowStockAlertsData.forEach(item => {
-                const inventoryItem = inventoryData.find(inv => inv.id === item.id);
-                if (inventoryItem) {
-                    inventoryItem.minStock = Math.round(inventoryItem.minStock * (1 + percentage / 100));
-                    changesApplied++;
-                }
-            });
-            showNotification(`Minimum levels adjusted by ${percentage}% for ${changesApplied} items`, 'success');
-        } else if (method === 'fixed') {
-            const fixedAmount = parseFloat(document.getElementById('minimumLevelsFixedChange').value);
-            if (isNaN(fixedAmount)) {
-                showNotification('Please enter a valid fixed amount', 'error');
-                return;
-            }
-            filteredLowStockAlertsData.forEach(item => {
-                const inventoryItem = inventoryData.find(inv => inv.id === item.id);
-                if (inventoryItem) {
-                    inventoryItem.minStock = Math.max(1, inventoryItem.minStock + fixedAmount);
-                    changesApplied++;
-                }
-            });
-            showNotification(`Minimum levels adjusted by ${fixedAmount} units for ${changesApplied} items`, 'success');
-        } else if (method === 'individual') {
-            const inputs = document.querySelectorAll('#minimumLevelsList .low-stock-alerts-quantity-input');
-            inputs.forEach(input => {
-                const itemId = parseInt(input.dataset.itemId);
-                const newMin = parseInt(input.value);
-                const inventoryItem = inventoryData.find(inv => inv.id === itemId);
-                if (inventoryItem && !isNaN(newMin) && newMin >= 1) {
-                    inventoryItem.minStock = newMin;
-                    changesApplied++;
-                }
-            });
-            showNotification(`Individual minimum levels updated for ${changesApplied} items`, 'success');
-        }
 
-        updateAllDataAndUI(); // Refresh all dashboard data and UI
-        applyLowStockAlertsFilters(); // Re-apply filters for alerts modal
-        closeModal('minimumLevelsModal');
+            </div>
+            <div class="low-stock-alerts-item-details">Current: ${item.currentStock} | Min: ${item.minStock} | SKU: ${item.sku}</div>
+        </div>
+        <div>
+            <input type="number" class="low-stock-alerts-quantity-input" value="${recommendedQty}" min="0"
+                   data-item-id="${item.id}" placeholder="Qty">
+        </div>
+    `;
+    itemsList.appendChild(itemEntry);
+});
+}
+
+function openIndividualRestockModal(itemId) {
+const item = lowStockData.find(i => i.id === itemId);
+if (!item) {
+    showNotification('Error: Item not found in low stock alerts.', 'error');
+    return;
+}
+currentEditingLowStockItem = item;
+
+document.getElementById('individualRestockProductName').textContent = item.name;
+document.getElementById('individualRestockCurrentStock').textContent = item.currentStock;
+document.getElementById('individualRestockMinStock').textContent = item.minStock;
+document.getElementById('individualRestockRecommended').textContent = Math.max(item.minStock * 2 - item.currentStock, 0);
+document.getElementById('individualRestockQuantity').value = Math.max(item.minStock * 2 - item.currentStock, 0);
+document.getElementById('individualRestockPriority').value = item.alertLevel === 'critical' ? 'urgent' : 'high';
+
+openModal('individualRestockModal');
+}
+
+function openLowStockAdjustStockModal(itemId) {
+const item = lowStockData.find(i => i.id === itemId);
+if (!item) {
+    showNotification('Error: Item not found in low stock alerts.', 'error');
+    return;
+}
+currentEditingLowStockItem = item;
+
+document.getElementById('lowStockAdjustStockModalProductName').textContent = item.name;
+document.getElementById('lowStockAdjustStockModalCurrentStock').textContent = item.currentStock;
+document.getElementById('lowStockAdjustStockModalQuantity').value = '';
+document.getElementById('lowStockAdjustStockModalNotes').value = '';
+
+openModal('lowStockAdjustStockModal');
+}
+
+function openMinimumLevelsModal() {
+openModal('minimumLevelsModal');
+}
+
+async function applyMinimumLevelChanges() {
+const method = document.getElementById('minimumLevelsBulkAdjustMethod').value;
+
+if (method === 'percentage' || method === 'fixed') {
+    const value = method === 'percentage'
+        ? parseFloat(document.getElementById('minimumLevelsPercentageChange').value)
+        : parseFloat(document.getElementById('minimumLevelsFixedChange').value);
+
+    if (isNaN(value)) {
+        showNotification('Please enter a valid value', 'error');
+        return;
     }
 
-    function openEmailAlertsModal() {
-        openModal('emailAlertsModal');
-    }
+    showNotification('Minimum level adjustment feature coming soon!', 'info');
+    closeModal('minimumLevelsModal');
+}
+}
 
-    function exportLowStockReport() {
-        let csvContent = "Product Name,SKU,Current Stock,Minimum Stock,Alert Level,Days Supply,Last Restock\n";
+function openEmailAlertsModal() {
+openModal('emailAlertsModal');
+}
 
-        filteredLowStockAlertsData.forEach(item => {
-            csvContent += `"${item.name}",${item.sku},${item.currentStock},${item.minStock},${item.alertLevel},${item.daysSupply},${item.lastRestock}\n`;
-        });
-
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.setAttribute('hidden', '');
-        a.setAttribute('href', url);
-        a.setAttribute('download', 'low_stock_report_' + new Date().toISOString().split('T')[0] + '.csv');
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        showNotification('Low stock report exported successfully!', 'success');
-    }
+async function exportLowStockReport() {
+try {
+    const url = InventoryAPI.getExportURL('low-stock', 'csv');
+    window.open(url, '_blank');
+    showNotification('Low stock report exported successfully!', 'success');
+} catch (error) {
+    console.error('Error exporting low stock report:', error);
+    showNotification('Error exporting report', 'error');
+}
+}
 </script>

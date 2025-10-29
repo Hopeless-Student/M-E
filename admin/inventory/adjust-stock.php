@@ -98,259 +98,154 @@
 </div>
 
 <script>
-    let currentAdjustStockProductId = null;
-    let adjustStockHistory = [
-        {
-            date: '2024-11-15 10:30 AM',
-            productName: 'Ballpoint Pens',
-            type: 'add',
-            quantity: 50,
-            previous: 100,
-            new: 150,
-            reason: 'New stock delivery',
-            user: 'Admin'
-        },
-        {
-            date: '2024-11-15 09:15 AM',
-            productName: 'Bond Paper',
-            type: 'remove',
-            quantity: 15,
-            previous: 100,
-            new: 85,
-            reason: 'Damaged items',
-            user: 'Admin'
-        },
-        {
-            date: '2024-11-14 02:45 PM',
-            productName: 'Staplers',
-            type: 'set',
-            quantity: 12,
-            previous: 8,
-            new: 12,
-            reason: 'Stock count correction',
-            user: 'Admin'
-        }
-    ];
+// Adjust Stock Modal Functions with API Integration
 
-    function openAdjustStockModalFromIndex(productId = null) {
-        currentAdjustStockProductId = productId;
-        populateAdjustStockProductSelect();
-        if (productId) {
-            document.getElementById('adjustStockProductSelect').value = productId;
-            document.getElementById('adjustStockProductSelect').dispatchEvent(new Event('change')); // Trigger change to update current stock
-        }
-        openModal('adjustStockModal');
+let currentAdjustStockProductId = null;
+
+function openAdjustStockModalFromIndex(productId = null) {
+currentAdjustStockProductId = productId;
+populateAdjustStockProductSelect();
+if (productId) {
+    document.getElementById('adjustStockProductSelect').value = productId;
+    document.getElementById('adjustStockProductSelect').dispatchEvent(new Event('change'));
+}
+openModal('adjustStockModal');
+}
+
+function populateAdjustStockProductSelect() {
+const select = document.getElementById('adjustStockProductSelect');
+select.innerHTML = '<option value="">Choose a product...</option>';
+
+if (typeof inventoryData !== 'undefined' && inventoryData.length > 0) {
+    inventoryData.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = `${item.name} (${item.description || item.sku})`;
+        option.dataset.stock = item.stock;
+        option.dataset.min = item.minStock;
+        select.appendChild(option);
+    });
+}
+}
+
+function setupAdjustStockModalListeners() {
+const productSelect = document.getElementById('adjustStockProductSelect');
+const currentStockElement = document.getElementById('adjustStockCurrentStock');
+const adjustmentType = document.getElementById('adjustStockAdjustmentType');
+const adjustmentQuantity = document.getElementById('adjustStockAdjustmentQuantity');
+const adjustmentPreview = document.getElementById('adjustStockAdjustmentPreview');
+const adjustStockForm = document.getElementById('adjustStockForm');
+
+productSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const stock = selectedOption.dataset.stock;
+
+    if (stock) {
+        currentStockElement.textContent = stock;
+        updateAdjustStockPreview();
+    } else {
+        currentStockElement.textContent = '-';
+        adjustmentPreview.style.display = 'none';
+    }
+});
+
+[adjustmentType, adjustmentQuantity].forEach(element => {
+    element.addEventListener('input', updateAdjustStockPreview);
+    element.addEventListener('change', updateAdjustStockPreview);
+});
+
+adjustStockForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const selectedOption = productSelect.options[productSelect.selectedIndex];
+    const productId = parseInt(selectedOption.value);
+    const type = adjustmentType.value;
+    const quantity = parseInt(adjustmentQuantity.value);
+    const reason = document.getElementById('adjustStockAdjustmentReason').value;
+
+    if (!productId || !type || !quantity || !reason) {
+        showNotification('Please fill in all required fields', 'error');
+        return;
     }
 
-    function populateAdjustStockProductSelect() {
-        const select = document.getElementById('adjustStockProductSelect');
-        select.innerHTML = '<option value="">Choose a product...</option>';
-        // Ensure inventoryData is available before using it
-        if (typeof inventoryData !== 'undefined' && inventoryData.length > 0) {
-            inventoryData.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.id;
-                option.textContent = `${item.name} (${item.description})`;
-                option.dataset.stock = item.stock;
-                option.dataset.min = item.minStock;
-                select.appendChild(option);
-            });
-        }
-    }
-
-    function setupAdjustStockModalListeners() {
-        const productSelect = document.getElementById('adjustStockProductSelect');
-        const currentStockElement = document.getElementById('adjustStockCurrentStock');
-        const adjustmentType = document.getElementById('adjustStockAdjustmentType');
-        const adjustmentQuantity = document.getElementById('adjustStockAdjustmentQuantity');
-        const adjustmentPreview = document.getElementById('adjustStockAdjustmentPreview');
-        const adjustStockForm = document.getElementById('adjustStockForm');
-
-        productSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const stock = selectedOption.dataset.stock;
-
-            if (stock) {
-                currentStockElement.textContent = stock;
-                updateAdjustStockPreview();
-            } else {
-                currentStockElement.textContent = '-';
-                adjustmentPreview.style.display = 'none';
-            }
-            populateAdjustStockHistory(); // Refresh history when product changes
+    try {
+        const response = await InventoryAPI.adjustStock({
+            productId,
+            type,
+            quantity,
+            reason,
+            user: 'Admin'
         });
 
-        [adjustmentType, adjustmentQuantity].forEach(element => {
-            element.addEventListener('input', updateAdjustStockPreview);
-            element.addEventListener('change', updateAdjustStockPreview);
-        });
+        if (response.success) {
+            showNotification('Stock adjustment applied successfully!', 'success');
 
-        adjustStockForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const selectedOption = productSelect.options[productSelect.selectedIndex];
-            const productId = parseInt(selectedOption.value);
-            const productName = selectedOption.text;
-            const type = adjustmentType.value;
-            const quantity = parseInt(adjustmentQuantity.value);
-            const reason = document.getElementById('adjustStockAdjustmentReason').value;
-            const currentStock = parseInt(selectedOption.dataset.stock);
-
-            // Update inventoryData
-            // Ensure inventoryData is available before using it
-            if (typeof inventoryData === 'undefined') {
-                showNotification('Error: Inventory data not loaded.', 'error');
-                return;
-            }
+            // Update local data
             const itemIndex = inventoryData.findIndex(item => item.id === productId);
             if (itemIndex !== -1) {
-                let newStock;
-                switch (type) {
-                    case 'add':
-                        newStock = currentStock + quantity;
-                        break;
-                    case 'remove':
-                        newStock = Math.max(0, currentStock - quantity);
-                        break;
-                    case 'set':
-                        newStock = quantity;
-                        break;
-                    default:
-                        return;
-                }
-                inventoryData[itemIndex].stock = newStock;
-                // Update the data-stock attribute for the selected option
-                selectedOption.dataset.stock = newStock;
-
-                // Add to recent adjustments table
-                addAdjustStockToAdjustmentsHistory({
-                    productId,
-                    productName,
-                    type,
-                    quantity,
-                    reason,
-                    currentStock: currentStock // Use the stock *before* adjustment for history
-                }, newStock);
-
-                showNotification('Stock adjustment applied successfully!', 'success');
-                updateAllDataAndUI(); // Refresh all dashboard data and UI
-                resetAdjustStockForm();
-            } else {
-                showNotification('Error: Product not found.', 'error');
-            }
-        });
-
-        populateAdjustStockHistory(); // Initial population
-    }
-
-    function updateAdjustStockPreview() {
-        const productSelect = document.getElementById('adjustStockProductSelect');
-        const selectedOption = productSelect.options[productSelect.selectedIndex];
-        const currentStock = parseInt(selectedOption.dataset.stock || 0);
-        const type = document.getElementById('adjustStockAdjustmentType').value;
-        const quantity = parseInt(document.getElementById('adjustStockAdjustmentQuantity').value || 0);
-
-        const adjustmentPreview = document.getElementById('adjustStockAdjustmentPreview');
-
-        if (!type || !quantity || !selectedOption.value) { // Also check if a product is selected
-            adjustmentPreview.style.display = 'none';
-            return;
-        }
-
-        let newStock;
-        let adjustmentText;
-
-        switch (type) {
-            case 'add':
-                newStock = currentStock + quantity;
-                adjustmentText = `+${quantity}`;
-                break;
-            case 'remove':
-                newStock = Math.max(0, currentStock - quantity);
-                adjustmentText = `-${quantity}`;
-                break;
-            case 'set':
-                newStock = quantity;
-                adjustmentText = `Set to ${quantity}`;
-                break;
-            default:
-                adjustmentPreview.style.display = 'none';
-                return;
-        }
-
-        document.getElementById('adjustStockPreviewCurrent').textContent = currentStock;
-        document.getElementById('adjustStockPreviewAdjustment').textContent = adjustmentText;
-        document.getElementById('adjustStockPreviewNew').textContent = newStock;
-
-        adjustmentPreview.style.display = 'block';
-    }
-
-    function resetAdjustStockForm() {
-        document.getElementById('adjustStockForm').reset();
-        document.getElementById('adjustStockCurrentStock').textContent = '-';
-        document.getElementById('adjustStockAdjustmentPreview').style.display = 'none';
-        currentAdjustStockProductId = null; // Clear selected product ID
-        populateAdjustStockProductSelect(); // Re-populate dropdown
-        populateAdjustStockHistory(); // Refresh history
-    }
-
-    function addAdjustStockToAdjustmentsHistory(data, newStockValue) {
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-        let quantityText;
-        switch (data.type) {
-            case 'add': quantityText = `+${data.quantity}`; break;
-            case 'remove': quantityText = `-${data.quantity}`; break;
-            case 'set': quantityText = `=${data.quantity}`; break;
-        }
-
-        adjustStockHistory.unshift({ // Add to the beginning of the array
-            date: formattedDate,
-            productName: data.productName,
-            type: data.type,
-            quantity: data.quantity,
-            previous: data.currentStock,
-            new: newStockValue,
-            reason: data.reason,
-            user: 'Admin'
-        });
-
-        populateAdjustStockHistory(); // Re-render history table
-    }
-
-    function populateAdjustStockHistory() {
-        const tbody = document.getElementById('adjustStockAdjustmentsHistory');
-        tbody.innerHTML = '';
-
-        const selectedProductId = document.getElementById('adjustStockProductSelect').value;
-        const filteredHistory = selectedProductId
-            ? adjustStockHistory.filter(entry => {
-                // Ensure inventoryData is available before using it
-                const product = typeof inventoryData !== 'undefined' ? inventoryData.find(item => item.id == selectedProductId) : null;
-                return product && entry.productName.includes(product.name);
-            })
-            : adjustStockHistory;
-
-        filteredHistory.slice(0, 10).forEach(entry => { // Show only recent 10
-            let typeSpan;
-            switch (entry.type) {
-                case 'add': typeSpan = '<span class="adjust-stock-adjustment-type add">Add</span>'; break;
-                case 'remove': typeSpan = '<span class="adjust-stock-adjustment-type remove">Remove</span>'; break;
-                case 'set': typeSpan = '<span class="adjust-stock-adjustment-type set">Set</span>'; break;
+                inventoryData[itemIndex].stock = response.data.newStock;
+                selectedOption.dataset.stock = response.data.newStock;
             }
 
-            const newRow = tbody.insertCell();
-            newRow.innerHTML = `
-                <td>${entry.date}</td>
-                <td>${entry.productName}</td>
-                <td>${typeSpan}</td>
-                <td>${entry.quantity}</td>
-                <td>${entry.previous}</td>
-                <td>${entry.new}</td>
-                <td>${entry.reason}</td>
-                <td>${entry.user}</td>
-            `;
-        });
+            await updateAllDataAndUI();
+            resetAdjustStockForm();
+        } else {
+            showNotification(response.message || 'Error adjusting stock', 'error');
+        }
+    } catch (error) {
+        console.error('Error adjusting stock:', error);
+        showNotification('Error adjusting stock', 'error');
     }
+});
+}
+
+function updateAdjustStockPreview() {
+const productSelect = document.getElementById('adjustStockProductSelect');
+const selectedOption = productSelect.options[productSelect.selectedIndex];
+const currentStock = parseInt(selectedOption.dataset.stock || 0);
+const type = document.getElementById('adjustStockAdjustmentType').value;
+const quantity = parseInt(document.getElementById('adjustStockAdjustmentQuantity').value || 0);
+
+const adjustmentPreview = document.getElementById('adjustStockAdjustmentPreview');
+
+if (!type || !quantity || !selectedOption.value) {
+    adjustmentPreview.style.display = 'none';
+    return;
+}
+
+let newStock;
+let adjustmentText;
+
+switch (type) {
+    case 'add':
+        newStock = currentStock + quantity;
+        adjustmentText = `+${quantity}`;
+        break;
+    case 'remove':
+        newStock = Math.max(0, currentStock - quantity);
+        adjustmentText = `-${quantity}`;
+        break;
+    case 'set':
+        newStock = quantity;
+        adjustmentText = `Set to ${quantity}`;
+        break;
+    default:
+        adjustmentPreview.style.display = 'none';
+        return;
+}
+
+document.getElementById('adjustStockPreviewCurrent').textContent = currentStock;
+document.getElementById('adjustStockPreviewAdjustment').textContent = adjustmentText;
+document.getElementById('adjustStockPreviewNew').textContent = newStock;
+
+adjustmentPreview.style.display = 'block';
+}
+
+function resetAdjustStockForm() {
+document.getElementById('adjustStockForm').reset();
+document.getElementById('adjustStockCurrentStock').textContent = '-';
+document.getElementById('adjustStockAdjustmentPreview').style.display = 'none';
+currentAdjustStockProductId = null;
+populateAdjustStockProductSelect();
+}
 </script>
