@@ -1,0 +1,90 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(40,167,69,0.12), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(40,167,69,0.08), transparent 50%),
+        repeating-linear-gradient(
+            45deg,
+            rgba(233,236,239,0.25),
+            rgba(233,236,239,0.25) 10px,
+            rgba(241,243,245,0.25) 10px,
+            rgba(241,243,245,0.25) 20px
+        ),
+        linear-gradient(135deg, #e0f7fa, #f1f3f5);
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+/* */
+.confirmation-card {
+    max-width: 700px;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.5s forwards;
+    position: relative;
+    z-index: 1;
+}
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+.icon-check {
+    font-size: 3rem;
+    color: #28a745;
+    margin-bottom: 15px;
+}
+h2 {
+    color: #28a745;
+    margin-bottom: 15px;
+    font-size: 1.9rem;
+}
+.table th, .table td {
+    vertical-align: middle;
+}
+.total {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 15px;
+    color: #28a745;
+}
+.payment-method {
+    font-style: italic;
+    color: #495057;
+}
+.estimated-delivery {
+    font-size: 0.95rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+.btn-home, .btn-shop {
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 1rem;
+}
+.progress {
+    height: 30px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+@media (max-width: 576px) {
+    .background-shapes {
+        background-size: 150% 150%;
+    }
+}
