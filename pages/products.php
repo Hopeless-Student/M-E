@@ -9,6 +9,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop - Catalog</title>
     <link rel="stylesheet" href="../assets/css/products.css">
+    <link rel="stylesheet" href="../assets/css/navbar.css">
     <link rel="stylesheet" href="../assets/css/homepage.css">
 
 </head>
@@ -66,73 +67,12 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         </div>
     </div>
     <!-- Para ma-trigger yung condition sa header pre na log in modal  -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeLoginModal">&times;</span>
-
-            <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
-
-            <h2>Login</h2>
-
-            <form id="loginForm" action="../auth/login_handler.php" method="post">
-                <input type="text" placeholder="Username or Email" name="login_id" id="username" required/>
-                <!-- <input type="password" placeholder="Password" id="loginpassword" name="password" required/> -->
-                <div class="password-wrapper" style="position: relative;">
-                  <input type="password" placeholder="Password" id="loginpassword" name="password"
-                         style="padding-right: 40px;" required />
-                  <img id="togglePassword" class="eye-icon" src="../assets/svg/eye.svg" alt="Toggle Password" />
-                </div>
-                                    <button type="submit">Log In</button>
-                <?php if (isset($_SESSION['loginFailed'])): ?>
-                  <p class="error-message" style="color:red; margin-top:10px; font-size:0.9rem; text-align:center"> <?php echo $_SESSION['loginFailed']; unset($_SESSION['loginFailed']);?> </p>
-                <?php endif; ?>
-                <p class="modal-switch-text">
-                    Don't have an account?
-                    <a href="#" id="openSignupModal">Create Your Account here</a>
-                </p>
-            </form>
-        </div>
-    </div>
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <span id="closeSignupModal" class="close-btn">&times;</span>
-
-            <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
-
-            <h2>Create Your Account</h2>
-
-            <form id="signupForm" action="../auth/register_process.php" method="post">
-                <input type="text" placeholder="First Name" id="firstName" name="firstName" required>
-
-                <input type="text" placeholder="Last Name" id="lastName" name="lastName" required>
-
-                <input type="email" placeholder="Email" id="email" name="email" required>
-
-                <input type="password" placeholder="Password" id="password" name="password" required>
-
-                <input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirm-password" required>
-
-                <div class="terms">
-                    <label class="terms-label">
-                        <input type="checkbox" id="termsCheckbox" required>
-                        <span>I confirm agree to our <a href="terms-of-service.php" target="_blank" id="openTermsModal">Terms and Conditions</a></span>
-                    </label>
-                </div>
-
-                <button type="submit" id="verifyEmailBtn" disabled>Verify Email</button>
-
-                <p class="modal-switch-text">
-                    Already have an account?
-                    <a href="#" id="signupToLoginLink">Log in here</a>
-                </p>
-            </form>
-        </div>
-    </div>
+    <?php include '../includes/login-modal.php';?>
     <div class="toast" id="toast"></div>
 
     <script>
         let products = [];
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        // let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let filters = { category: 'all', price: 'all' };
         let sortMethod = 'default';
         let currentPage = 1;
@@ -219,8 +159,10 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             }, 300);
         }
 
-        function viewProduct(productId) {
-            const product = products.find(p => p.id === productId);
+        console.log(products[0]);
+
+        function viewProduct(product_id) {
+            const product = products.find(p => p.id === product_id);
 
             const detailsHTML = `
                 <div class="product-details">
@@ -241,7 +183,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     </div>
 
                     <div class="product-actions">
-                        <button class="add-to-cart-btn" onclick="addToCart(${productId}); closeProductModal()">
+                        <button class="add-to-cart-btn" onclick="addToCart(${product.id}); closeProductModal()">
                             Add to Cart
                         </button>
                     </div>
@@ -305,58 +247,141 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 toast.classList.remove('show');
             }, 2000);
         }
+        console.log("addToCart function is loaded into memory");
 
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existingItem = cart.find(item => item.id === productId);
+        // c convert to ajax
+        function addToCart(product_id, quantity = 1) {
+          console.log("addToCart triggered:", product_id);
+        // intentionally break here for debug
+        console.log("Sending request with:", product_id, quantity);
+        // debugger;
+          fetch('../ajax/add-to-cart.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: new URLSearchParams({ product_id: product_id, quantity: 1 })
+          })
+          .then(res => res.json())
+          .then(data => {
+            console.log("Response from server:", data);
+              if (data.success) {
+                  showToast(data.message ||'Added to cart');
+                  fetchCart();
+              } else {
+                  showToast(data.message || 'Failed to add to cart');
+              }
+          })
+          .catch(err => console.error(err));
+      }
 
-            if (existingItem) {
-                existingItem.quantity++;
-                showToast(`${product.title} quantity increased`);
-            } else {
-                cart.push({ ...product, quantity: 1 });
-                showToast(`${product.title} added to cart`);
-            }
-
-            updateCart();
-        }
-
-        function removeFromCart(productId) {
-            const product = products.find(p => p.id === productId);
-            cart = cart.filter(item => item.id !== productId);
-            showToast(`${product.title} removed from cart`);
-            updateCart();
-        }
-
-        function updateQuantity(productId, delta) {
-            const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) {
-                    removeFromCart(productId);
-                } else {
-                    updateCart();
-                }
-            }
-        }
-
-        function clearCart() {
-            if (cart.length === 0) return;
-
-            if (confirm('Are you sure you want to clear your cart?')) {
-                cart = [];
-                updateCart();
-                showToast('Cart cleared');
-            }
-        }
-
-        function updateCart() {
+      // fetch ng cart counter
+      function fetchCart() {
+    fetch('../ajax/fetch-cart.php')
+        .then(res => res.json())
+        .then(data => {
             const cartCount = document.getElementById('cartCount');
-            localStorage.setItem('cart', JSON.stringify(cart));
+            cartCount.textContent = data.count || 0;
+        });
+}
+  // fetch ng removeFromCart
+    function removeFromCart(product_id) {
+        fetch('../ajax/remove-from-cart.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ product_id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Item removed');
+                fetchCart();
+            } else {
+                showToast(data.message || 'Failed to remove item');
+            }
+        })
+        .catch(err => console.error(err));
+    }
+      function updateQuantity(product_id, delta) {
+      fetch('../ajax/update-cart.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ product_id, delta })
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.success) {
+              fetchCart();
+          } else {
+              showToast(data.message || 'Update failed');
+          }
+      })
+      .catch(err => console.error(err));
+  }
 
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCount.textContent = totalItems;
-        }
+  function clearCart() {
+    if (!confirm('Clear all items from cart?')) return;
+    fetch('../ajax/clear-cart.php', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Cart cleared');
+                fetchCart();
+            } else {
+                showToast('Failed to clear cart');
+            }
+        });
+}
+function showCartPreview() {
+    fetch('../ajax/fetch-cart.php')
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById('cartPreviewList');
+            list.innerHTML = data.cart.map(item => `
+                <div class="cart-item">
+                    <img src="../${item.product_image}" width="40">
+                    <span>${item.product_name}</span>
+                    <span>x${item.quantity}</span>
+                </div>
+            `).join('');
+        });
+}
+
+        // c convert to ajax
+        // function removeFromCart(product_id) {
+        //     const product = products.find(p => p.id === product_id);
+        //     cart = cart.filter(item => item.id !== product_id);
+        //     showToast(`${product.title} removed from cart`);
+        //     updateCart();
+        // }
+        // c convert to ajax
+        // function updateQuantity(product_id, delta) {
+        //     const item = cart.find(item => item.id === product_id);
+        //     if (item) {
+        //         item.quantity += delta;
+        //         if (item.quantity <= 0) {
+        //             removeFromCart(productId);
+        //         } else {
+        //             updateCart();
+        //         }
+        //     }
+        // }
+        // c convert to ajax
+        // function clearCart() {
+        //     if (cart.length === 0) return;
+        //
+        //     if (confirm('Are you sure you want to clear your cart?')) {
+        //         cart = [];
+        //         updateCart();
+        //         showToast('Cart cleared');
+        //     }
+        // }
+        // c convert to ajax
+        // function updateCart() {
+        //     const cartCount = document.getElementById('cartCount');
+        //     localStorage.setItem('cart', JSON.stringify(cart));
+        //
+        //     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        //     cartCount.textContent = totalItems;
+        // }
 
         document.getElementById('productModal').addEventListener('click', function(e) {
             if (e.target === this) {
@@ -387,9 +412,10 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         }
 
         fetchProducts();
-        updateCart();
+        fetchCart();
     </script>
     <script src="../assets/js/homepage.js"></script>
+    <script src="../assets/js/navbar.js"></script>
     <?php include '../includes/footer.php'; ?>
 </body>
 </html>

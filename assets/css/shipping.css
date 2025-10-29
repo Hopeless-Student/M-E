@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.shipping-hero {
+    height: 400px;
+    background: linear-gradient(to top, #00236699, #4169e199), url('../images/shipping-hero-bg.jpg') no-repeat center center/cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.shipping-hero .shipping-hero-content {
+    color: #fff;
+    max-width: 900px;
+    padding: 0 24px;
+}
+
+.shipping-hero h1 {
+    font-size: 2.8rem;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.shipping-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.shipping-content {
+    background: #fff;
+    padding: 30px 28px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.shipping-content h2, .shipping-content h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #002366;
+}
+
+.shipping-content ul {
+    margin-left: 20px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+    .shipping-hero h1 {
+        font-size: 1.8rem;
+    }
+    .shipping-container {
+        margin: 30px 12px;
+    }
+}

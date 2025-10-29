@@ -16,6 +16,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
         <link href="../assets/css/homepage.css" rel="stylesheet"/>
+        <link href="../assets/css/navbar.css" rel="stylesheet"/>
         <title>M&E: Interior Supplies Trading</title>
     </head>
 
@@ -152,6 +153,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               <h2>Custom Request</h2>
               <p class="request-subtitle">Send us your inquiries, complaints, or custom orders</p>
 
+
               <form id="customRequestForm" action="../auth/custom_request.php" method="post">
                   <label for="requestType">Request Type <span style="color:red;">*</span></label>
                   <select id="requestType" name="request_type" required>
@@ -159,7 +161,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                       <option value="inquiry">Inquiry</option>
                       <option value="complaint">Complaint</option>
                       <option value="custom_order">Custom Order</option>
-                      <option value="others">Others</option>
+                      <option value="other">Others</option>
                   </select>
 
                   <label for="requestSubject">Subject <span style="color:red;">*</span></label>
@@ -227,7 +229,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <h2>About Us</h2>
                     <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
 
-                    <a class="about-btn" href="#">Read more About Us</a>
+                    <a class="about-btn" href="about.php">Read more About Us</a>
                 </div>
             </div>
         </section>
@@ -301,7 +303,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                 </div>
 
                 <div class="faqs-more">
-                    <a href="#">More about FAQs
+                    <a href="faq.php">More about FAQs
                         <img alt="More" src="../assets/svg/right-arrow.svg"/>
                     </a>
                 </div>
@@ -310,73 +312,10 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
 
 
-        <?php include '../includes/footer.php';?>
-
-        <div id="loginModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn" id="closeLoginModal">&times;</span>
-
-                <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
-
-                <h2>Login</h2>
-
-                <form id="loginForm" action="../auth/login_handler.php" method="post">
-                    <input type="text" placeholder="Username or Email" name="login_id" id="username" required/>
-                    <!-- <input type="password" placeholder="Password" id="loginpassword" name="password" required/> -->
-                    <div class="password-wrapper" style="position: relative;">
-                      <input type="password" placeholder="Password" id="loginpassword" name="password"
-                             style="padding-right: 40px;" required />
-                      <img id="togglePassword" class="eye-icon" src="../assets/svg/eye.svg" alt="Toggle Password" />
-                    </div>
-                                        <button type="submit">Log In</button>
-                    <?php if (isset($_SESSION['loginFailed'])): ?>
-                      <p class="error-message" style="color:red; margin-top:10px; font-size:0.9rem; text-align:center"> <?php echo $_SESSION['loginFailed']; unset($_SESSION['loginFailed']);?> </p>
-                    <?php endif; ?>
-                    <p class="modal-switch-text">
-                        Don't have an account?
-                        <a href="#" id="openSignupModal">Create Your Account here</a>
-                    </p>
-                </form>
-            </div>
-        </div>
-
-        <div id="signupModal" class="modal">
-            <div class="modal-content">
-                <span id="closeSignupModal" class="close-btn">&times;</span>
-
-                <img src="../assets/images/M&E_LOGO-semi-transparent.png" alt="M&E Logo">
-
-                <h2>Create Your Account</h2>
-
-                <form id="signupForm" action="../auth/register_process.php" method="post">
-                    <input type="text" placeholder="First Name" id="firstName" name="firstName" required>
-
-                    <input type="text" placeholder="Last Name" id="lastName" name="lastName" required>
-
-                    <input type="email" placeholder="Email" id="email" name="email" required>
-
-                    <input type="password" placeholder="Password" id="password" name="password" required>
-
-                    <input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirm-password" required>
-
-                    <div class="terms">
-                        <label class="terms-label">
-                            <input type="checkbox" id="termsCheckbox" required>
-                            <span>I confirm agree to our <a href="terms-of-service.php" target="_blank" id="openTermsModal">Terms and Conditions</a></span>
-                        </label>
-                    </div>
-
-                    <button type="submit" id="verifyEmailBtn" disabled>Verify Email</button>
-
-                    <p class="modal-switch-text">
-                        Already have an account?
-                        <a href="#" id="signupToLoginLink">Log in here</a>
-                    </p>
-                </form>
-            </div>
-        </div>
-
         <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
         <script src="../assets/js/homepage.js"></script>
+        <script src="../assets/js/navbar.js"></script>
+        <?php include '../includes/footer.php';?>
+        <?php include '../includes/login-modal.php';?>
     </body>
 </html>
