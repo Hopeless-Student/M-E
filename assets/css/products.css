@@ -364,15 +364,24 @@
         }
 
         .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
+            display: inline-flex; /* inline so it only takes up its content */
+            justify-content: center;
+            align-items: center;
+            width: 36px;
+            height: 36px;
+            font-size: 1.25rem;
+            border-radius: 50%;
+            background-color: #2563eb;
+            color: #ffffff;
             cursor: pointer;
-            color: #6b7280;
+            transition: background 0.2s, color 0.2s;
+            text-align: center;
+            border: none;
         }
-
         .close-btn:hover {
-            color: #111827;
+          background-color: #2980b9; /* Darker background on hover */
+          color: #ffffff; /* Ensure text remains white on hover */
+          border-color: #3498db;
         }
 
         .cart-item {
@@ -626,6 +635,67 @@
             flex: 1;
             padding: 0.875rem;
             font-size: 1rem;
+        }
+        .search-result-banner {
+          margin: 15px auto;
+          text-align: center;
+          font-size: 1.1rem;
+          color: #333;
+        }
+        .search-bar {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-right: auto;
+          flex: 1;
+          max-width: 600px;
+        }
+
+        .search-bar input {
+          padding: 6px 10px;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          outline: none;
+          flex: 1;
+        }
+
+        .search-bar button {
+          background-color: #007bff;
+          border: none;
+          color: white;
+          padding: 6px 10px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+
+        .search-bar button:hover {
+          background-color: #0056b3;
+        }
+        .suggestions-box {
+          position: absolute;
+          top: 100%;
+          background: #fff;
+          color: #333;
+          width: calc(100% - 80px);
+          max-height: 240px;
+          overflow-y: auto;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          display: none;
+          z-index: 999;
+        }
+
+        .suggestion-item {
+          padding: 8px 10px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+          background: #f0f0f0;
         }
 
         @media (max-width: 768px) {

@@ -28,7 +28,7 @@ try {
 
     // fetch ng item
     $stmtItems = $pdo->prepare("
-        SELECT oi.product_name, oi.product_price, oi.quantity, oi.subtotal, p.product_image
+        SELECT oi.product_name, oi.product_price, oi.quantity, oi.subtotal, p.product_image, p.unit, p.product_code
         FROM order_items oi
         JOIN products p ON oi.product_id = p.product_id
         WHERE oi.order_id = :order_id
@@ -94,6 +94,7 @@ try {
                 <th>Product</th>
                 <th class="text-center">Price</th>
                 <th class="text-center">Qty</th>
+                <th class="text-center">Unit</th>
                 <th class="text-end">Subtotal</th>
               </tr>
             </thead>
@@ -107,14 +108,15 @@ try {
                 ?>
                 <tr>
                   <td class="d-flex align-items-center">
-                    <img src="<?= $imagePath ?>" alt="product" class="me-3 rounded" style="width:50px; height:50px; object-fit:cover;">
+                    <img src="<?= $imagePath ?>" alt="<?= $imagePath ?>" class="me-3 rounded" style="width:50px; height:50px; object-fit:cover;">
                     <div>
                       <p class="fw-semibold mb-0"><?= htmlspecialchars($item['product_name']) ?></p>
-                      <small class="text-muted">Product Code: <?= strtoupper(substr(md5($item['product_name']), 0, 6)) ?></small>
+                      <small class="text-muted">Product Code: <?= htmlspecialchars($item['product_code']) ?></small>
                     </div>
                   </td>
                   <td class="text-center">₱<?= number_format($item['product_price'], 2) ?></td>
                   <td class="text-center"><?= $item['quantity'] ?></td>
+                  <td class="text-center"><?= $item['unit'] ?></td>
                   <td class="text-end fw-bold">₱<?= number_format($item['subtotal'], 2) ?></td>
                 </tr>
               <?php endforeach; ?>

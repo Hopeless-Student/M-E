@@ -14,7 +14,7 @@
             <a href="../pages/about.php">About Us</a>
 
             <!-- Mobile Cart Link -->
-            <a href="../shop/cart.php" class="mobile-only mobile-nav-cart">Cart</a>
+            <a href="../shop/cart.php" class="mobile-only mobile-nav-cart" data-logged-in="<?php echo isset($_SESSION['user_id']) ? '1' : '0'; ?>">Cart</a>
 
             <!-- Mobile User Menu (logged in) or Login Link (logged out) -->
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -45,7 +45,7 @@
                 </div>
             <?php else: ?>
                 <div class="cart">
-                    <a href="#" id="toggleLogin">
+                    <a href="../shop/cart.php" id="toggleLogin">
                         <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
                         <span id="cartCount" class="cart-count"></span>
                     </a>

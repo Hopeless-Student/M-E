@@ -12,9 +12,10 @@ try {
         $pdo = connect();
 
         $stmt = $pdo->prepare("
-            SELECT c.product_id, c.quantity, p.product_name, p.price, p.product_image
+            SELECT c.product_id, c.quantity, p.product_name, p.price, p.product_image, p.unit, p.category_id, cat.category_name
             FROM shopping_cart c
             JOIN products p ON p.product_id = c.product_id
+            LEFT JOIN categories cat ON cat.category_id = p.category_id
             WHERE c.user_id = ?
         ");
         $stmt->execute([$user_id]);
@@ -24,7 +25,12 @@ try {
     elseif (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
         $pdo = connect();
         foreach ($_SESSION['cart'] as $product_id => $data) {
-            $stmt = $pdo->prepare("SELECT product_id, product_name, price, product_image FROM products WHERE product_id = ?");
+          $stmt = $pdo->prepare("
+              SELECT p.product_id, p.product_name, p.price, p.product_image, p.unit, p.category_id, cat.category_name
+              FROM products p
+              LEFT JOIN categories cat ON cat.category_id = p.category_id
+              WHERE p.product_id = ?
+            ");
             $stmt->execute([$product_id]);
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -34,7 +40,9 @@ try {
                     'product_name' => $product['product_name'],
                     'price' => $product['price'],
                     'product_image' => $product['product_image'],
-                    'quantity' => $data['quantity']
+                    'quantity' => $data['quantity'],
+                    'unit' => $product['unit'] ?? 'piece',
+                    'category' => $product['category_name'] ?? 'Uncategorized'
                 ];
             }
         }

@@ -69,7 +69,8 @@ if (count($ids) > 0) {
 $stmt->execute();
 $total = (int)$stmt->fetchColumn();
 
-$sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.product_image, p.stock_quantity,
+$sql = "SELECT p.product_id, p.product_name, p.description, p.price,
+               p.product_image, p.stock_quantity, p.unit,
                c.category_name, c.category_slug
         FROM products p
         INNER JOIN categories c ON c.category_id = p.category_id
@@ -95,6 +96,7 @@ $items = array_map(function ($r) use ($baseImg) {
         'title' => $r['product_name'],
         'description' => $r['description'] ?? '',
         'price' => (float)$r['price'],
+        'unit' => $r['unit'] ?? 'piece',
         'category' => $r['category_name'],
         'category_slug' => $r['category_slug'],
         'image' => $img,
