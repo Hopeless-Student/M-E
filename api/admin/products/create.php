@@ -9,12 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $name = trim($_POST['product_name'] ?? '');
+$sku = trim($_POST['product_code']);
 $category = trim($_POST['category'] ?? '');
 $price = isset($_POST['price']) ? (float)$_POST['price'] : null;
 $stock = isset($_POST['stock']) ? (int)$_POST['stock'] : null;
 $description = trim($_POST['description'] ?? '');
 
-if ($name === '' || $category === '' || $price === null || $stock === null) {
+if ($name === '' || $category === '' || $price === null || $stock === null || $sku === '') {
     http_response_code(400);
     echo json_encode(['error' => 'Missing required fields']);
     exit;
@@ -78,13 +79,14 @@ if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPL
     }
 }
 
-$sql = "INSERT INTO products (category_id, product_name, description, price, stock_quantity, product_image, isActive, created_at)
-        VALUES (:cat, :name, :desc, :price, :stock, :img, 1, NOW())";
+$sql = "INSERT INTO products (category_id, product_name, description, product_code, price, stock_quantity, product_image, isActive, created_at)
+        VALUES (:cat, :name, :desc, :sku, :price, :stock, :img, 1, NOW())";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     ':cat' => $catId,
     ':name' => $name,
     ':desc' => $description,
+    ':sku' => $sku,
     ':price' => $price,
     ':stock' => $stock,
     ':img' => $imageFilename,
@@ -92,5 +94,3 @@ $stmt->execute([
 
 echo json_encode(['success' => true, 'id' => (int)$pdo->lastInsertId()]);
 ?>
-
-

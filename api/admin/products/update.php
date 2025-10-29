@@ -27,6 +27,7 @@ $fields = [];
 $params = [':id' => $id];
 
 if (isset($input['product_name'])) { $fields[] = 'product_name = :name'; $params[':name'] = trim($input['product_name']); }
+if (isset($input['product_code'])) { $fields[] = 'product_code = :sku'; $params[':sku'] = trim($input['product_code']); }
 if (isset($input['description'])) { $fields[] = 'description = :desc'; $params[':desc'] = trim($input['description']); }
 if (isset($input['price'])) { $fields[] = 'price = :price'; $params[':price'] = (float)$input['price']; }
 if (isset($input['stock'])) { $fields[] = 'stock_quantity = :stock'; $params[':stock'] = (int)$input['stock']; }
@@ -77,5 +78,3 @@ $stmt->execute($params);
 
 echo json_encode(['success' => true]);
 ?>
-
-
