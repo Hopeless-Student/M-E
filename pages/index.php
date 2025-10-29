@@ -263,11 +263,17 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                 <div class="contact-card">
                     <img alt="Email" src="../assets/svg/email.svg"/>
-
-                <div>
-                    <h3>Email:</h3>
-                    <p>elbarcoma@gmail.com</p>
+                    <div>
+                        <h3>Email:</h3>
+                        <p>elbarcoma@gmail.com</p>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="contact-more">
+                <a href="contact.php">More about Contact Us
+                    <img alt="More" src="../assets/svg/right-arrow.svg"/>
+                </a>
             </div>
         </section>
 
@@ -312,7 +318,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
 
 
-        <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
         <script src="../assets/js/homepage.js"></script>
         <script src="../assets/js/navbar.js"></script>
         <?php include '../includes/footer.php';?>
