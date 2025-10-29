@@ -209,17 +209,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Mobile login link inside hamburger
-  const mobileLoginLink = document.getElementById("mobileLoginLink");
-  if (mobileLoginLink) {
-    mobileLoginLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      signupModal.style.display = "none";
-      loginModal.style.display = "block";
-      nav.classList.remove("active");
-      hamburger.classList.remove("active");
-      hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
-    });
-  }
+  const nav = document.querySelector("header nav");
+const hamburger = document.querySelector(".hamburger");
+const hamburgerIcon = document.querySelector(".hamburger-icon");
+
+    const mobileLoginLink = document.getElementById("mobileLoginLink");
+    if (mobileLoginLink) {
+        mobileLoginLink.addEventListener("click", (event) => {
+            event.preventDefault();
+            signupModal.style.display = "none";
+            loginModal.style.display = "block";
+            nav.classList.remove("active");
+            hamburger.classList.remove("active");
+            hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
+        });
+    }
 
   const toggleLogin = document.getElementById("toggleLogin");
   if (toggleLogin) {
@@ -242,6 +246,22 @@ document.addEventListener("DOMContentLoaded", () => {
       dropdown.classList.toggle('active');
     });
   }
+  // Mobile cart link inside hamburger
+  const mobileCartLink = document.querySelector(".mobile-nav-cart");
+  if (mobileCartLink) {
+      const loggedIn = mobileCartLink.dataset.loggedIn === "1"; // true if user logged in
+      mobileCartLink.addEventListener("click", (event) => {
+          if (!loggedIn) { // if user is not logged in
+              event.preventDefault();
+              signupModal.style.display = "none";
+              loginModal.style.display = "block";
+              nav.classList.remove("active");
+              hamburger.classList.remove("active");
+              hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
+          }
+      });
+  }
+
 
   const floatingRequestBtn = document.getElementById("floatingRequestBtn");
 const customRequestModal = document.getElementById("customRequestModal");
@@ -321,32 +341,6 @@ allModals.forEach(modal => {
     observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
   }
 });
-
-  // Mobile cart link
-  const mobileCartLink = document.querySelector(".mobile-nav-cart");
-  if (mobileCartLink) {
-    mobileCartLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      alert("Cart clicked (mobile). You can connect this to a modal or cart page.");
-      nav.classList.remove("active");
-      hamburger.classList.remove("active");
-      hamburgerIcon.src = "../assets/svg/hamburger-menu.svg";
-    });
-  }
-
-  // Terms modal open/close
-  if (openTermsModal && termsModal) {
-    openTermsModal.addEventListener("click", (e) => {
-      e.preventDefault();
-      termsModal.style.display = "block";
-    });
-  }
-
-  if (closeTermsModal && termsModal) {
-    closeTermsModal.addEventListener("click", () => {
-      termsModal.style.display = "none";
-    });
-  }
 
   // Footer auto-year
   const footerCopy = document.querySelector(".footer-copy p");

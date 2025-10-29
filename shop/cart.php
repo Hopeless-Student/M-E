@@ -17,7 +17,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <?php include '../includes/navbar.php'; ?>
     <div class="shpcrt-wrapper">
         <!-- Header -->
-        <header class="shpcrt-main-header">
+        <div class="shpcrt-main-header">
             <div class="shpcrt-header-inner">
                 <div>
                     <h1><i data-lucide="shopping-cart" class="shpcrt-header-icon-main" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;"></i>Shopping Cart</h1>
@@ -43,7 +43,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     </a>
                 </div>
             </div>
-        </header>
+        </div>
 
         <!-- Main Cart Layout -->
         <div class="shpcrt-grid-layout">
@@ -127,6 +127,18 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
         </span>
         <span id="toastMessage"></span>
+    </div>
+
+    <div id="clearCartModal" class="shpcrt-modal">
+        <div class="shpcrt-modal-content">
+            <span class="shpcrt-modal-close" onclick="closeClearCartModal()">&times;</span>
+            <h3>Clear Cart</h3>
+            <p>Are you sure you want to remove all items from your cart?</p>
+            <div class="shpcrt-modal-actions">
+                <button class="shpcrt-btn-base shpcrt-btn-secondary-style" onclick="closeClearCartModal()">Cancel</button>
+                <button class="shpcrt-btn-base shpcrt-btn-primary-style shpcrt-btn-clear-confirm" onclick="confirmClearCart()">Yes, Clear</button>
+            </div>
+        </div>
     </div>
     <?php include '../includes/login-modal.php';?>
     <script>
@@ -342,25 +354,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             showToast('All items saved for later', 'warning');
         }
 
-        // async function updateQuantity(productId, delta) {
-        //   const item = cart.find(item => item.id === productId);
-        //   if (item) {
-        //     item.quantity += delta;
-        //     if (item.quantity <= 0) {
-        //       removeFromCart(productId);
-        //       return;
-        //     }
-        //
-        //     updateCart();
-        //
-        //     // Sync to backend
-        //     await fetch('../ajax/update-cart.php', {
-        //       method: 'POST',
-        //       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        //       body: new URLSearchParams({ product_id: productId, quantity: item.quantity })
-        //     });
-        //   }
-        // }
         function updateQuantity(product_id, delta) {
             const item = cart.find(i => i.id === product_id);
             if (!item) return;
@@ -384,7 +377,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             .then(data => {
               if (data.success) {
                   showToast('Quantity updated', 'success');
-                  updateCart(); // reflect change immediately, skip reload
+                  updateCart();
 
               } else {
                   showToast(data.message || 'Failed to update quantity', 'error');
@@ -428,40 +421,26 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
           .catch(err => console.error('Remove error:', err));
       }
 
-function clearCart() {
-    if (!confirm('Clear all items from cart?')) return;
-
-    fetch('../ajax/clear-cart.php', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Cart cleared');
-                loadCartFromDatabase();
-            } else {
-                showToast('Failed to clear cart');
-            }
-        })
-        .catch(err => console.error(err));
-}
-        // function removeFromCart(productId) {
-        //     const product = products.find(p => p.id === productId);
-        //         cart = cart.filter(item => item.id !== productId);
-        //         updateCart();
-        //         showToast(`${product ? product.title : 'Item'} removed from cart`, 'success');
-        // }
-
-
-
-        // function clearCart() {
-        //     if (cart.length === 0) return;
-        //
-        //     if (confirm('Are you sure you want to clear your entire cart? This cannot be undone.')) {
-        //         cart = [];
-        //         updateCart();
-        //         showToast('Cart cleared', 'success');
-        //     }
-        // }
-
+      function clearCart() {
+          document.getElementById('clearCartModal').style.display = 'flex';
+      }
+      function closeClearCartModal() {
+          document.getElementById('clearCartModal').style.display = 'none';
+      }
+      function confirmClearCart() {
+          fetch('../ajax/clear-cart.php', { method: 'POST' })
+              .then(res => res.json())
+              .then(data => {
+                  if (data.success) {
+                      showToast('Cart cleared', 'success');
+                      loadCartFromDatabase();
+                  } else {
+                      showToast('Failed to clear cart', 'error');
+                  }
+              })
+              .catch(err => console.error(err))
+              .finally(() => closeClearCartModal());
+      }
         function proceedToCheckout() {
             const selectedItems = cart.filter(item => item.selected);
 
@@ -496,7 +475,6 @@ function clearCart() {
 
     toastMessage.textContent = message;
 
-    // Replace icon wrapper contents entirely (so lucide can regenerate)
     toast.querySelector('.shpcrt-toast-icon-wrapper').innerHTML =
         `<i data-lucide="${icons[type] || icons.success}" style="width: 20px; height: 20px;"></i>`;
 
@@ -511,7 +489,6 @@ function clearCart() {
 }
 
 
-        // Initialize cart on page load
         document.addEventListener('DOMContentLoaded', function () {
             lucide.createIcons();
             loadCartFromDatabase();
@@ -519,9 +496,10 @@ function clearCart() {
 
 
     </script>
-    <script src="../assets/js/homepage.js">
 
-    </script>
+    <!-- <script src="../assets/js/cart.js"></script> -->
+    <script src="../assets/js/homepage.js"></script>
+    <script src="../assets/js/search-suggestions.js" defer></script>
             <script src="../assets/js/navbar.js"></script>
     <?php include '../includes/footer.php'; ?>
 </body>
