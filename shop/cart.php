@@ -441,25 +441,30 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
               .catch(err => console.error(err))
               .finally(() => closeClearCartModal());
       }
-        function proceedToCheckout() {
-            const selectedItems = cart.filter(item => item.selected);
+      // upate ko to
+      function proceedToCheckout() {
+          const selectedItems = cart.filter(item => item.selected);
 
-            if (selectedItems.length === 0) {
-                showToast('Please select at least one item to checkout', 'error');
-                return;
-            }
+          if (selectedItems.length === 0) {
+              showToast('Please select at least one item to checkout', 'error');
+              return;
+          }
 
-            const total = selectedItems.reduce((sum, item) => {
-                const product = products.find(p => p.id === item.id);
-                return sum + (product ? product.price * item.quantity : 0);
-            }, 0);
+          // Create a form and submit via POST
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = 'checkout.php';
 
-            showToast(`Processing ${selectedItems.length} item(s)... Total: $${total.toFixed(2)}`, 'success');
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'selectedItems';
+          input.value = JSON.stringify(selectedItems);
 
-            setTimeout(() => {
-                window.location.href = 'checkout.php';
-            }, 1500);
-        }
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+      }
+
 
         function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');

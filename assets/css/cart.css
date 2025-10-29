@@ -139,7 +139,8 @@ body {
 /* Main Layout Grid */
 .shpcrt-grid-layout {
   display: grid;
- grid-template-columns: 1fr 380px;
+  grid-template-columns: 1fr minmax(280px, 380px);
+   gap: 2rem;
 }
 
 /* Cart Items Section */
