@@ -37,8 +37,7 @@ const API = {
         console.error('API Error:', error);
         throw error;
     }
-}
-,
+},
 
     // ============ REQUESTS API ============
 
@@ -80,15 +79,9 @@ const API = {
     async sendResponse(requestId, response, subject = '', status = 'in-progress', priority = 'normal') {
         return await this.call(`${this.baseUrl}/send-response.php`, {
             method: 'POST',
-            body: JSON.stringify({ requestId, response, subject, status, priority })
+            body: JSON.stringify({ requestId, response, subject, status, priority})
         });
     },
-
-    // ============ ARCHIVE API ============
-
-    /**
-     * Archive a request
-     */
     async archiveRequest(requestId, reason, notes = '') {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',

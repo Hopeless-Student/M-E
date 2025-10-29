@@ -355,7 +355,8 @@ const appState = {
                 response,
                 subject,
                 status,
-                priority
+                priority,
+                currentMessage.template_id
             );
 
             if (result.success) {
@@ -394,6 +395,7 @@ const appState = {
                 'RE: ' + currentMessage.subject,
                 'in-progress',
                 'normal'
+
             );
 
             if (result.success) {
@@ -1008,7 +1010,8 @@ const appState = {
                 message,
                 subject,
                 'in-progress',
-                priority
+                priority,
+                currentMessage.template_id
             );
 
             if (result.success) {
