@@ -14,13 +14,14 @@ try {
     $pdo = connect();
 
     // check if merong ganito sa product
-    $check = $pdo->prepare("SELECT product_id FROM products WHERE product_id = ?");
+    $check = $pdo->prepare("SELECT product_id, unit FROM products WHERE product_id = ?");
     $check->execute([$product_id]);
-    if (!$check->fetch()) {
+    $product = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$product) {
         echo json_encode(['success' => false, 'message' => 'Invalid product']);
         exit;
     }
-
+    $unit = $product['unit'] ?? 'piece';
     // if logged store agad sa db
     if (isset($_SESSION['user_id'])) {
         $user_id = (int)$_SESSION['user_id'];
@@ -50,7 +51,8 @@ try {
         $_SESSION['cart'][$product_id]['quantity'] += $quantity;
     } else {
         $_SESSION['cart'][$product_id] = [
-            'quantity' => $quantity
+            'quantity' => $quantity,
+            'unit' => $unit
         ];
     }
 

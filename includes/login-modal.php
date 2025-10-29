@@ -22,7 +22,8 @@
   position: relative;
 }
 
-.close-btn {
+#loginModal .close-btn,
+#signupModal .close-btn {
   color: #4169E1;
   position: absolute;
   right: 15px;
@@ -33,7 +34,8 @@
   line-height: 1;
 }
 
-.close-btn:hover {
+#loginModal .close-btn:hover,
+#signupModal .close-btn:hover {
   color: #002366;
   transition: 400ms ease;
 }
@@ -66,7 +68,7 @@
   font-size: 16px;
 }
 
-.modal-content button {
+#loginModal .modal-content button {
   width: 100%;
   padding: 12px;
   background-color: #4169E1;
@@ -78,7 +80,18 @@
   cursor: pointer;
   transition: background-color 0.4s ease;
 }
-
+#signupModal .modal-content button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4169E1;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
 .modal-content button:hover {
     background-color: #002366;
 }
