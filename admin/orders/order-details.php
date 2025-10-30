@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">s
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -327,7 +327,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .action-btn {
+            .action-btn-s {
                 min-width: auto;
                 width: 100%;
             }
@@ -524,7 +524,7 @@
 
             <!-- Modal Footer -->
             <div class="modal-footer">
-                <button class="action-btn-s primary-s" id="updateModal"onclick="updateUpdateModal()">
+                <button class="action-btn-s primary-s" id="updateModalBtn">
                     <i data-lucide="check-circle"></i>
                     Update Status
                 </button>
@@ -532,12 +532,19 @@
                     <i data-lucide="printer"></i>
                     Print Invoice
                 </button>
-                <button class="action-btn-s danger-s" id="deleteModal2" onclick="openDeleteModal()">
+                <button class="action-btn-s danger-s" id="deleteModalBtn">
                     <i data-lucide="x-circle"></i>
                     Cancel Order
                 </button>
             </div>
         </div>
     </div>
+
+    <script>
+        function printInvoice() {
+            const orderId = document.getElementById('modalOrderId').textContent.replace('#ORD-', '');
+            window.open(`print-invoice.php?id=${orderId}`, '_blank');
+        }
+    </script>
 </body>
 </html>

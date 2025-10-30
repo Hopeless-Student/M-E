@@ -47,7 +47,7 @@
                     </div>
 
                     <!-- Right Column: Status Update Form -->
-                    <form id="updateStatusForm">
+                    <form id="updateStatusForm" onsubmit="return false;">
                         <div class="form-section">
                             <h3 class="section-title">
                                 <i data-lucide="settings"></i>
@@ -65,11 +65,11 @@
                                             </div>
                                         </label>
                                     </div>
-                                    <div class="status-option" data-status="processing">
-                                        <input type="radio" name="orderStatus" value="processing" id="statusProcessing">
-                                        <label for="statusProcessing">
+                                    <div class="status-option" data-status="confirmed">
+                                        <input type="radio" name="orderStatus" value="confirmed" id="statusconfirmed">
+                                        <label for="statusconfirmed">
                                             <div class="status-preview">
-                                                <span class="status processing">Processing</span>
+                                                <span class="status confirmed">Confirmed</span>
                                             </div>
                                         </label>
                                     </div>
@@ -99,7 +99,8 @@
 
                             <div class="form-group">
                                 <label for="updateEstimatedDelivery" class="form-label">Estimated Delivery Date</label>
-                                <input type="date" id="updateEstimatedDelivery" class="form-control">
+                                <input type="date" id="updateEstimatedDelivery" class="form-control" onchange="validateDeliveryDate(this)">
+                                <small id="deliveryDateError" style="color: #dc2626; display: none; margin-top: 0.25rem;">Delivery date cannot be in the past</small>
                             </div>
 
                             <div class="form-group">
@@ -140,7 +141,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    display: none; /* Change this from flex to none */
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
@@ -151,6 +152,7 @@
 .modal-overlay.active {
     display: flex;
 }
+
 .modal-container {
     background: white;
     border-radius: 16px;
@@ -213,7 +215,6 @@
     background: #f9fafb;
 }
 
-
 .section-title {
     margin: 0 0 1rem 0;
     font-size: 1.1rem;
@@ -267,7 +268,7 @@
     color: #92400e;
 }
 
-.status.processing {
+.status.confirmed {
     background-color: #dbeafe;
     color: #1e40af;
 }
@@ -281,6 +282,7 @@
     background-color: #d1fae5;
     color: #065f46;
 }
+
 .action-btn-s {
     display: flex;
     align-items: center;
@@ -316,7 +318,6 @@
     transform: translateY(-1px);
 }
 
-
 /* Update Status Modal Specific Styles */
 .update-status-modal {
     max-width: 700px;
@@ -329,7 +330,6 @@
     gap: 1rem;
 }
 
-/* Two Column Layout */
 .two-column-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -396,6 +396,10 @@
     box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
+.form-control.error {
+    border-color: #dc2626;
+}
+
 .status-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -419,7 +423,11 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.status-option.selected {
+.status-option input[type="radio"]:checked ~ label {
+    font-weight: 600;
+}
+
+.status-option:has(input[type="radio"]:checked) {
     border-color: #1e40af;
     background-color: #eff6ff;
     box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
@@ -433,6 +441,7 @@
 .status-option label {
     cursor: pointer;
     margin: 0;
+    flex: 1;
 }
 
 .status-preview {
@@ -452,26 +461,8 @@
 .checkbox-label input[type="checkbox"] {
     margin-right: 0.5rem;
     accent-color: #1e40af;
-}
-
-.alert-update {
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    display: none;
-    font-weight: 500;
-}
-
-.alert-update.success {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #34d399;
-}
-
-.alert-update.error {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #f87171;
+    width: 18px;
+    height: 18px;
 }
 
 /* Responsive Design for Update Modal */
@@ -505,7 +496,7 @@
         gap: 0.5rem;
     }
 
-    .modal-footer .action-btn {
+    .modal-footer .action-btn-s {
         width: 100%;
         justify-content: center;
     }
@@ -530,3 +521,33 @@
     }
 }
 </style>
+
+<script>
+function validateDeliveryDate(input) {
+    const selectedDate = new Date(input.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+
+    const errorMsg = document.getElementById('deliveryDateError');
+
+    if (selectedDate < today) {
+        input.classList.add('error');
+        errorMsg.style.display = 'block';
+        input.value = ''; // Clear the invalid date
+        return false;
+    } else {
+        input.classList.remove('error');
+        errorMsg.style.display = 'none';
+        return true;
+    }
+}
+
+// Set minimum date on modal open
+document.addEventListener('DOMContentLoaded', function() {
+    const deliveryInput = document.getElementById('updateEstimatedDelivery');
+    if (deliveryInput) {
+        const today = new Date().toISOString().split('T')[0];
+        deliveryInput.min = today;
+    }
+});
+</script>

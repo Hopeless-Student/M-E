@@ -15,34 +15,52 @@ $where = [];
 $params = [];
 
 if ($status !== '') {
-    $where[] = 'o.order_status = :status';
+    $where[] = 'LOWER(o.order_status) = LOWER(:status)';
     $params[':status'] = $status;
 }
+
 if ($paymentStatus !== '') {
-    // if column exists in db
+    // Check if column exists in db
     $stmt = $pdo->query("SHOW COLUMNS FROM orders LIKE 'payment_status'");
     if ($stmt && $stmt->fetch()) {
         $where[] = 'o.payment_status = :payment_status';
         $params[':payment_status'] = $paymentStatus;
     }
 }
+
 if ($userId > 0) {
     $where[] = 'o.user_id = :user_id';
     $params[':user_id'] = $userId;
 }
+
 if ($q !== '') {
-    $where[] = '(o.order_number LIKE :q OR o.delivery_address LIKE :q OR o.contact_number LIKE :q)';
+    // Enhanced search: order number, customer name, email, address, phone
+    $where[] = '(
+        o.order_number LIKE :q
+        OR o.delivery_address LIKE :q
+        OR o.contact_number LIKE :q
+        OR CONCAT(u.first_name, " ", u.last_name) LIKE :q
+        OR u.username LIKE :q
+        OR u.email LIKE :q
+    )';
     $params[':q'] = "%$q%";
 }
 
 $whereSql = count($where) ? ('WHERE ' . implode(' AND ', $where)) : '';
 
-$countSql = "SELECT COUNT(*) FROM orders o $whereSql";
+// Count total matching records
+$countSql = "SELECT COUNT(*)
+             FROM orders o
+             LEFT JOIN users u ON u.user_id = o.user_id
+             $whereSql";
 $stmt = $pdo->prepare($countSql);
-foreach ($params as $k => $v) { $stmt->bindValue($k, $v); }
+foreach ($params as $k => $v) {
+    $stmt->bindValue($k, $v);
+}
 $stmt->execute();
 $total = (int)$stmt->fetchColumn();
 
+// Fetch paginated results
 $sql = "SELECT
                o.order_id,
                o.user_id,
@@ -59,8 +77,14 @@ $sql = "SELECT
                o.confirmed_at,
                o.delivered_at,
                o.admin_notes,
+               u.email,
                -- customer full name (fallbacks: username/email if names missing)
-               COALESCE(CONCAT(u.first_name, ' ', u.last_name), u.username, u.email, '') AS customer_name,
+               COALESCE(
+                   NULLIF(CONCAT(TRIM(u.first_name), ' ', TRIM(u.last_name)), ' '),
+                   u.username,
+                   u.email,
+                   'Guest'
+               ) AS customer_name,
                -- item count (sum of quantities)
                (SELECT COALESCE(SUM(oi.quantity), 0)
                   FROM order_items oi
@@ -81,8 +105,11 @@ $sql = "SELECT
         $whereSql
         ORDER BY o.order_date DESC
         LIMIT :limit OFFSET :offset";
+
 $stmt = $pdo->prepare($sql);
-foreach ($params as $k => $v) { $stmt->bindValue($k, $v); }
+foreach ($params as $k => $v) {
+    $stmt->bindValue($k, $v);
+}
 $stmt->bindValue(':limit', $pageSize, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
