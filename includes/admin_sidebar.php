@@ -210,7 +210,7 @@
 
               // If we're in a subdirectory, we need to go back to admin root
               if ($current_dir !== 'admin') {
-                  $base_path = '/../';
+                  $base_path = '../';
               }
               ?>
                 <img src="<?php echo $base_path ?>../assets/images/logo/ME logo.png" alt="">
@@ -230,7 +230,7 @@
 
             // If we're in a subdirectory, we need to go back to admin root
             if ($current_dir !== 'admin') {
-                $base_path = '/../';
+                $base_path = '../';
             }
             ?>
 
