@@ -162,7 +162,7 @@
         }
 
         ::-webkit-scrollbar-track {
-          background: #0f172a; /* dark navy to blend with page background */
+          background: #0f172a;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -200,42 +200,47 @@
     <aside class="sidebar" id="sidebar" aria-hidden="true">
         <div class="sidebar-header">
             <div class="logo-container">
-              <?php
-              // Get the current page to set active state
-              $current_page = basename($_SERVER['REQUEST_URI']);
-              $current_dir = basename(dirname($_SERVER['REQUEST_URI']));
+                <?php
+                // Get the full request URI
+                $request_uri = $_SERVER['REQUEST_URI'];
 
-              // Define the base path - adjust this based on where your files are located
-              $base_path = '';
+                // Determine if we're in admin root or a subdirectory
+                // Check if URL contains /admin/ followed by another directory
+                $in_admin_subdir = preg_match('#/admin/[^/]+/#', $request_uri);
 
-              // If we're in a subdirectory, we need to go back to admin root
-              if ($current_dir !== 'admin') {
-                  $base_path = '../';
-              }
-              ?>
-                <img src="<?php echo $base_path; ?>../assets/images/logo/ME logo.png" alt="">
+                // Set base path accordingly
+                if ($in_admin_subdir) {
+                    $base_path = '../'; // Go up one level from admin subfolder to admin root
+                } else {
+                    $base_path = ''; // Already in admin root
+                }
+
+                // Logo path - always go to parent/assets from admin folder
+                $logo_path = ($in_admin_subdir ? '../../' : '../') . 'assets/images/logo/ME logo.png';
+                ?>
+                <img src="<?php echo $logo_path; ?>" alt="Logo">
             </div>
-
         </div>
 
         <!-- Navigation Links -->
         <nav class="sidebar-nav">
             <?php
-            // Get the current page to set active state
-            $current_page = basename($_SERVER['REQUEST_URI']);
-            $current_dir = basename(dirname($_SERVER['REQUEST_URI']));
+            // Get current page for active state
+            $current_page = basename($_SERVER['PHP_SELF']);
 
-            // Define the base path - adjust this based on where your files are located
-            $base_path = '';
+            // Extract the directory structure to determine which section we're in
+            $uri_parts = explode('/', trim($request_uri, '/'));
+            $current_section = '';
 
-            // If we're in a subdirectory, we need to go back to admin root
-            if ($current_dir !== 'admin') {
-                $base_path = '../';
+            // Find 'admin' in the path and get the next part if it exists
+            $admin_index = array_search('admin', $uri_parts);
+            if ($admin_index !== false && isset($uri_parts[$admin_index + 1])) {
+                $current_section = $uri_parts[$admin_index + 1];
             }
             ?>
 
             <a href="<?php echo $base_path; ?>index.php"
-               class="nav-item <?php echo ($current_page == 'index.php' && $current_dir == 'admin') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_page == 'index.php' && empty($current_section)) ? 'active' : ''; ?>"
                data-page="Dashboard">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
@@ -245,7 +250,7 @@
             </a>
 
             <a href="<?php echo $base_path; ?>orders/index.php"
-               class="nav-item <?php echo ($current_dir == 'orders') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_section == 'orders') ? 'active' : ''; ?>"
                data-page="Orders">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
@@ -254,7 +259,7 @@
             </a>
 
             <a href="<?php echo $base_path; ?>products/index.php"
-               class="nav-item <?php echo ($current_dir == 'products') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_section == 'products') ? 'active' : ''; ?>"
                data-page="Products">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M9 21V9l3-1.5M15 9v12l-3-1.5"></path>
@@ -263,7 +268,7 @@
             </a>
 
             <a href="<?php echo $base_path; ?>users/index.php"
-               class="nav-item <?php echo ($current_dir == 'users') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_section == 'users') ? 'active' : ''; ?>"
                data-page="Customer">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -272,7 +277,7 @@
             </a>
 
             <a href="<?php echo $base_path; ?>inventory/index.php"
-               class="nav-item <?php echo ($current_dir == 'inventory') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_section == 'inventory') ? 'active' : ''; ?>"
                data-page="Inventory">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
@@ -281,7 +286,7 @@
             </a>
 
             <a href="<?php echo $base_path; ?>requests/index.php"
-               class="nav-item <?php echo ($current_dir == 'requests') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_section == 'requests') ? 'active' : ''; ?>"
                data-page="Messages">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
@@ -290,7 +295,7 @@
             </a>
 
             <a href="<?php echo $base_path; ?>settings/index.php"
-               class="nav-item <?php echo ($current_dir == 'settings') ? 'active' : ''; ?>"
+               class="nav-item <?php echo ($current_section == 'settings') ? 'active' : ''; ?>"
                data-page="Settings">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -302,7 +307,11 @@
 
         <!-- Footer -->
         <div class="sidebar-footer">
-            <a href="../auth/logout.php" class="logout-btn">Log out</a>
+            <?php
+            // Logout path - go to parent folder's auth directory
+            $logout_path = ($in_admin_subdir ? '../../' : '../') . 'auth/logout.php';
+            ?>
+            <a href="<?php echo $logout_path; ?>" class="logout-btn">Log out</a>
         </div>
     </aside>
 
@@ -325,17 +334,15 @@
                 document.body.style.overflow = '';
             }
 
-            // Mobile toggle buttons (external buttons with data-sidebar-toggle="open")
+            // Mobile toggle buttons
             openBtns.forEach(btn => btn.addEventListener('click', openSidebar));
 
             // Close on overlay click
             overlay.addEventListener('click', closeSidebar);
 
-            // Navigation item clicks - removed preventDefault() to allow normal navigation
+            // Navigation item clicks
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
-                    // Don't prevent default - allow normal navigation
-
                     // Update active state
                     navItems.forEach(nav => nav.classList.remove('active'));
                     this.classList.add('active');
