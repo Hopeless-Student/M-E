@@ -213,7 +213,7 @@
                   $base_path = '../';
               }
               ?>
-                <img src="<?php echo $base_path ?>../assets/images/logo/ME logo.png" alt="">
+                <img src="<?php echo $base_path; ?>../assets/images/logo/ME logo.png" alt="">
             </div>
 
         </div>

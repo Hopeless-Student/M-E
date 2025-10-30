@@ -29,19 +29,18 @@
             min-height: 100vh;
         }
 
-
         /* Main Content */
         .main-content {
           flex: 1;
-          margin-left: 230px !important; /* Exact match to sidebar width */
+          margin-left: 230px !important;
           padding: 1.5rem;
           min-height: 100vh;
           transition: margin-left 0.3s ease;
-          width: calc(100vw - 230px); /* Changed from 100% to 100vw for absolute viewport width */
+          width: calc(100vw - 230px);
           max-width: calc(100vw - 230px);
           box-sizing: border-box;
-          position: relative; /* Ensure proper positioning */
-          overflow-x: hidden; /* Prevent horizontal scroll */
+          position: relative;
+          overflow-x: hidden;
         }
 
         .header {
@@ -61,7 +60,6 @@
             font-size: 1.75rem;
             font-weight: 600;
             color: #1e40af;
-
         }
 
         .breadcrumb {
@@ -103,7 +101,6 @@
             font-weight: 600;
             font-size: 1rem;
         }
-
 
         /* Form Styles */
         .form-container {
@@ -331,6 +328,9 @@
     </style>
 </head>
 <body>
+    <?php
+    // require_once __DIR__ . '/../../includes/auth.php'; // Uncomment to enable authentication
+    ?>
     <div class="dashboard">
         <!-- Sidebar -->
         <?php include '../../includes/admin_sidebar.php' ?>
@@ -361,7 +361,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label required" for="productName">Product Name</label>
-                            <input type="text" class="form-input" id="productName" name="product_name" required>
+                            <input type="text" class="form-input" id="productName" name="product_name" maxlength="255" required>
                         </div>
 
                         <div class="form-group">
@@ -384,15 +384,29 @@
                             <input type="number" class="form-input" id="productStock" name="stock" min="0" required>
                         </div>
 
-                        <div class="form-group full-width">
-                            <label class="form-label required" for="productDescription">Description</label>
-                            <textarea class="form-textarea" id="productDescription" name="description" required placeholder="Enter a detailed description of the product..."></textarea>
-                        </div>
                         <div class="form-group">
                             <label class="form-label required" for="productCode">Product Code</label>
-                            <input type="text" class="form-input" id="productCode" name="product_code" placeholder="e.g BP-BLK01" required>
+                            <input type="text" class="form-input" id="productCode" name="product_code" placeholder="e.g BP-BLK01" maxlength="100" required>
                         </div>
 
+                        <div class="form-group">
+                            <label class="form-label required" for="productUnit">Unit</label>
+                            <select class="form-select" id="productUnit" name="unit" required>
+                                <option value="">Select Unit</option>
+                                <option value="box">Box</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="reams">Reams</option>
+                                <option value="rolls">Rolls</option>
+                                <option value="gallon">Gallon</option>
+                                <option value="pack">Pack</option>
+                                <option value="pads">Pads</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label required" for="productDescription">Description</label>
+                            <textarea class="form-textarea" id="productDescription" name="description" maxlength="1000" required placeholder="Enter a detailed description of the product..."></textarea>
+                        </div>
 
                         <div class="form-group full-width">
                             <label class="form-label" for="productImage">Product Image</label>
@@ -400,7 +414,7 @@
                                 <input type="file" class="file-upload-input" id="productImage" name="product_image" accept="image/*">
                                 <div class="file-upload-content">
                                     <p class="file-upload-label">Click to upload or drag and drop</p>
-                                    <p class="file-upload-text">PNG, JPG, JPEG up to 5MB</p>
+                                    <p class="file-upload-text">PNG, JPG, JPEG, WebP up to 5MB</p>
                                 </div>
                             </div>
                             <img id="imagePreview" class="image-preview" style="display: none;">
@@ -424,17 +438,16 @@
 
     <script>
         lucide.createIcons();
+
         // File upload functionality
         const fileInput = document.getElementById('productImage');
         const fileUploadContainer = document.getElementById('fileUploadContainer');
         const imagePreview = document.getElementById('imagePreview');
 
-        // Handle file input change
         fileInput.addEventListener('change', function(e) {
             handleFileSelect(e.target.files[0]);
         });
 
-        // Handle drag and drop
         fileUploadContainer.addEventListener('dragover', function(e) {
             e.preventDefault();
             fileUploadContainer.classList.add('dragover');
@@ -457,6 +470,14 @@
 
         function handleFileSelect(file) {
             if (file && file.type.startsWith('image/')) {
+                // Check file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('Image too large. Maximum size is 5MB', 'error');
+                    fileInput.value = '';
+                    imagePreview.style.display = 'none';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imagePreview.src = e.target.result;
@@ -473,15 +494,29 @@
             const formData = new FormData(this);
 
             try {
-                const res = await fetch('../../api/admin/products/create.php', { method: 'POST', body: formData });
-                if (!res.ok) throw new Error('Failed to create');
+                const res = await fetch('../../api/admin/products/create.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
                 const data = await res.json();
-                if (!data.success) throw new Error('Create failed');
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to create product');
+                }
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Create failed');
+                }
+
                 showAlert('Product added successfully!', 'success');
-                setTimeout(() => { window.location.href = './index.php'; }, 1200);
+                setTimeout(() => {
+                    window.location.href = './index.php';
+                }, 1200);
+
             } catch (err) {
                 console.error(err);
-                showAlert('Failed to add product', 'error');
+                showAlert(err.message || 'Failed to add product', 'error');
             }
         });
 
