@@ -230,7 +230,8 @@
                     category: mapCategoryToKey(p.category),
                     price: Number(p.price || 0),
                     stock: Number(p.stock || 0),
-                    image: p.image || "../../assets/images/products/placeholder.png"
+                    image: p.image || "../../assets/images/products/placeholder.png",
+                    unit: p.unit
                 }));
                 filteredProducts = [...allProducts];
                 apiTotal = Number(data.total || 0);
@@ -324,7 +325,7 @@
                             <h3 class="product-title">${product.name}</h3>
                             <p class="product-description">${product.description}</p>
                             <div class="product-details">
-                                <span class="product-price">₱${product.price.toLocaleString()}</span>
+                                <span class="product-price">₱${product.price.toLocaleString()} / ${product.unit}</span>
                                 <span class="product-stock">Stock: ${product.stock}</span>
                             </div>
                             <div class="product-actions">
