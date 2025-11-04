@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".btn-login a"),
     document.getElementById("mobileLoginLink"),
     document.getElementById("toggleLogin"),
-    document.getElementById("mobileCartLink"),      // ⬅️ add if your mobile nav has cart link
-    document.querySelector(".mobile-cart-icon"),    // ⬅️ or class for mobile cart button
+    document.getElementById("mobileCartLink"),
+    document.querySelector(".mobile-cart-icon"),  
     document.getElementById("mobileCheckoutBtn")
   ];
 if (mobileCart && !isLoggedIn) loginTriggers.push(mobileCart);

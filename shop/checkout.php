@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../auth/mainpage-auth.php';
 
-if($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['selectedItems'])){
-    header("Location: cart.php");
+if($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['selectedItems']) || !isset($_SESSION['user_id'])){
+    header("Location: ../pages/index.php");
     exit;
 }
 
