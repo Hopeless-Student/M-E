@@ -33,8 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const firstNameInput = document.getElementById("firstName");
   const lastNameInput = document.getElementById("lastName");
   const signupEmailInput = document.getElementById("email");
-  const signupPasswordInput = document.getElementById("password");
-  const signupConfirmPasswordInput = document.getElementById("confirmPassword");
+
   const termsCheckbox = document.getElementById("termsCheckbox");
   const verifyEmailBtn = document.getElementById("verifyEmailBtn");
 
@@ -165,6 +164,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginError) {
     loginModal.style.display = "block";
   }
+  const signUpError = document.querySelector("#signupModal .error-message");
+  if (signUpError) {
+    signupModal.style.display = "block";
+  }
   const togglePassword = document.getElementById("togglePassword");
   const loginPassword = document.getElementById("loginpassword");
 
@@ -178,6 +181,35 @@ document.addEventListener("DOMContentLoaded", () => {
       : "../assets/svg/eye-slash.svg";
   });
 }
+const signupPasswordInput = document.getElementById("password");
+const signupConfirmPasswordInput = document.getElementById("confirmPassword");
+const toggleSignUpPassword = document.getElementById("toggleSignUpPassword");
+const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+
+function toggleBothPasswords() {
+  const isPassword = signupPasswordInput.type === "password";
+  const newType = isPassword ? "text" : "password";
+
+  signupPasswordInput.type = newType;
+  signupConfirmPasswordInput.type = newType;
+
+  // Update both icons
+  const newIcon = isPassword
+    ? "../assets/svg/eye.svg"
+    : "../assets/svg/eye-slash.svg";
+
+  if (toggleSignUpPassword) toggleSignUpPassword.src = newIcon;
+  if (toggleConfirmPassword) toggleConfirmPassword.src = newIcon;
+}
+
+if (toggleSignUpPassword) {
+  toggleSignUpPassword.addEventListener("click", toggleBothPasswords);
+}
+if (toggleConfirmPassword) {
+  toggleConfirmPassword.addEventListener("click", toggleBothPasswords);
+}
+
+
   if (termsCheckbox && verifyEmailBtn) {
     verifyEmailBtn.disabled = !termsCheckbox.checked;
     termsCheckbox.addEventListener("change", () => {

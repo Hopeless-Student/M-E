@@ -347,15 +347,43 @@ nav .mobile-user-menu {
         <h2>Create Your Account</h2>
 
         <form id="signupForm" action="../auth/register_process.php" method="post">
-            <input type="text" placeholder="First Name" id="firstName" name="firstName" required>
+            <input type="text" placeholder="First Name" id="firstName" name="firstName" required pattern="[A-Za-z]{2,30}">
 
-            <input type="text" placeholder="Last Name" id="lastName" name="lastName" required>
+            <input type="text" placeholder="Last Name" id="lastName" name="lastName" required pattern="[A-Za-z]{2,30}">
 
             <input type="email" placeholder="Email" id="email" name="email" required>
 
-            <input type="password" placeholder="Password" id="password" name="password" required>
+            <div class="password-wrapper" style="position: relative;">
+              <input type="password" placeholder="Password" id="password" name="password"
+                     required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                     style="padding-right: 40px;">
+              <img id="toggleSignUpPassword" class="eye-icon" src="../assets/svg/eye-slash.svg" alt="Toggle Password">
+            </div>
 
-            <input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirm-password" required>
+            <div class="password-wrapper" style="position: relative;">
+              <input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirm-password"
+                     required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                     style="padding-right: 40px;">
+              <img id="toggleConfirmPassword" class="eye-icon" src="../assets/svg/eye-slash.svg" alt="Toggle Password">
+            </div>
+
+            <?php if (isset($_SESSION['error'])): ?>
+              <p class="error-message" style="color:red; margin-top:10px; font-size:0.9rem; text-align:center">
+                <?php
+                  echo $_SESSION['error'];
+                  unset($_SESSION['error']);
+                ?>
+              </p>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['success'])): ?>
+              <p class="success-message" style="color:green; margin-top:10px; font-size:0.9rem; text-align:center">
+                <?php
+                  echo $_SESSION['success'];
+                  unset($_SESSION['success']);
+                ?>
+              </p>
+            <?php endif; ?>
 
             <div class="terms">
                 <label class="terms-label">
