@@ -49,29 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  // Mobile search toggle
-  if (searchBar && searchIcon && searchInput) {
-    searchIcon.addEventListener("click", (e) => {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        searchBar.classList.toggle("active");
-
-        if (searchBar.classList.contains("active")) {
-          searchInput.style.display = "block";
-          searchInput.focus();
-        } else {
-          searchInput.style.display = "none";
-          if (suggestionsBox) suggestionsBox.style.display = "none";
-        }
-      } else {
-        searchInput.focus();
-      }
-    });
-
-    if (window.innerWidth <= 768 && !searchBar.classList.contains("active")) {
-      searchInput.style.display = "none";
-    }
-  }
   initSearchSuggestions("#search-input", ".search-suggestions");
   // Hero CTA smooth scroll
   if (heroCTA) {
@@ -127,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const href = this.getAttribute("href");
       if (href && href.startsWith("#")) {
         e.preventDefault();
-        const target = document.querySelector("href");
+        const target = document.querySelector(href);
         if (target) target.scrollIntoView({ behavior: "smooth" });
       }
     });

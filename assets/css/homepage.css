@@ -1010,16 +1010,16 @@ nav .mobile-user-menu .dropdown.active {
 @media (max-width: 768px) {
     /* Alert positioning for mobile */
     .alert-message {
-        top: 90px;
+        top: 85px;
         min-width: 280px;
         max-width: 90%;
         padding: 14px 45px 14px 16px;
         font-size: 14px;
-        z-index: 998;
+        z-index: 9998;
     }
 
     header nav.active ~ .alert-message {
-        z-index: 998;
+        z-index: 9998;
     }
 
     .alert-message::after {
@@ -1106,7 +1106,8 @@ nav .mobile-user-menu .dropdown.active {
 
     .hero-search-bar input {
         font-size: 14px;
-    }
+        width: 100%;
+      }
 
     .hero .hero-content a {
         font-size: 18px;
@@ -1419,6 +1420,9 @@ nav .mobile-user-menu .dropdown.active {
         right: 1rem;
         bottom: 1rem;
     }
+}
+.hero-search-bar.active input {
+  display: block;
 }
 
 /* Tablet/Medium Screen Adjustments */
