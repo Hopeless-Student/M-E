@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="../assets/css/admin/products/toptag.css">
 </head>
 <body>
+    <?php
+    // require_once __DIR__ . '/../../includes/auth.php'; // Uncomment to enable authentication
+    ?>
     <div class="dashboard">
         <!-- Sidebar -->
         <?php include '../../includes/admin_sidebar.php'; ?>
@@ -32,18 +35,18 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Featured Products</div>
-                        <div class="stat-value">12</div>
-                        <div class="stat-change positive">↗ +3 from last week</div>
+                        <div class="stat-value" id="statFeaturedCount">0</div>
+                        <div class="stat-change positive">↗ Featured items</div>
                     </div>
                     <div class="stat-card gold">
                         <div class="stat-label">Featured Revenue</div>
-                        <div class="stat-value">₱285,400</div>
-                        <div class="stat-change positive">↗ +25% from last month</div>
+                        <div class="stat-value" id="statRevenue">₱0</div>
+                        <div class="stat-change positive">↗ Potential value</div>
                     </div>
                     <div class="stat-card silver">
-                        <div class="stat-label">Avg. Featured Sales</div>
-                        <div class="stat-value">156</div>
-                        <div class="stat-change positive">↗ +8% weekly</div>
+                        <div class="stat-label">Avg. Featured Stock</div>
+                        <div class="stat-value" id="statAvgStock">0</div>
+                        <div class="stat-change positive">↗ Units available</div>
                     </div>
                 </div>
 
@@ -55,10 +58,10 @@
                             <option value="all">All Categories</option>
                             <option value="office">Office Supplies</option>
                             <option value="school">School Supplies</option>
-                            <option value="hygiene">Hygiene Products</option>
+                            <option value="sanitary">Sanitary Supplies</option>
                         </select>
                         <select class="form-select" id="sortBy">
-                            <option value="sales">Sort by Sales</option>
+                            <option value="featured">Sort by Featured</option>
                             <option value="price">Sort by Price</option>
                             <option value="stock">Sort by Stock</option>
                             <option value="name">Sort by Name</option>
@@ -91,7 +94,7 @@
                             <th>Category</th>
                             <th>Price</th>
                             <th>Stock</th>
-                            <th>Sales</th>
+                            <th>Unit</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -114,12 +117,12 @@
                 <div class="form-grid">
                     <div class="form-column">
                         <div class="form-group">
-                            <label class="form-label">Minimum Sales Count</label>
-                            <input type="number" class="form-input" id="minSales" value="50" min="0">
+                            <label class="form-label">Minimum Stock Count</label>
+                            <input type="number" class="form-input" id="minStock" value="50" min="0">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Maximum Featured Products</label>
-                            <input type="number" class="form-input" id="maxFeatured" value="15" min="1" max="20">
+                            <input type="number" class="form-input" id="maxFeatured" value="15" min="1" max="50">
                         </div>
                     </div>
                     <div class="form-column">
@@ -129,7 +132,7 @@
                                 <option value="all">All Categories</option>
                                 <option value="office">Office Supplies First</option>
                                 <option value="school">School Supplies First</option>
-                                <option value="hygiene">Hygiene Products First</option>
+                                <option value="sanitary">Sanitary Supplies First</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -137,7 +140,7 @@
                             <select class="form-select" id="stockRequirement">
                                 <option value="any">Any Stock Level</option>
                                 <option value="in-stock">In Stock Only</option>
-                                <option value="high-stock">High Stock Only</option>
+                                <option value="high-stock">High Stock Only (50+)</option>
                             </select>
                         </div>
                     </div>
@@ -155,12 +158,10 @@
 
     <script>
         lucide.createIcons();
-        // Products data loaded from API
-        let products = [];
 
+        let products = [];
         let selectedProducts = new Set();
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             loadProducts();
             setupEventListeners();
@@ -168,26 +169,30 @@
 
         async function loadProducts() {
             try {
-                const res = await fetch(`../../api/admin/products/list.php?page=1&pageSize=1000&_=${Date.now()}`, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+                const res = await fetch(`../../api/admin/products/list.php?page=1&pageSize=1000&_=${Date.now()}`, {
+                    headers: { 'Accept': 'application/json' },
+                    cache: 'no-store'
+                });
                 if (!res.ok) throw new Error('Failed to load products');
                 const data = await res.json();
+
                 products = (data.items || []).map(p => ({
                     id: p.id,
                     name: p.name,
                     description: p.description || '',
-                    category: (p.category || '').toLowerCase().includes('office') ? 'office' : (p.category || '').toLowerCase().includes('school') ? 'school' : 'hygiene',
+                    category: (p.category || '').toLowerCase().includes('office') ? 'office' :
+                              (p.category || '').toLowerCase().includes('school') ? 'school' : 'sanitary',
+                    categoryLabel: p.categoryLabel || p.category || '',
                     price: Number(p.price || 0),
-                    originalPrice: null,
                     stock: Number(p.stock || 0),
-                    sales: 0,
-                    trend: 'up',
+                    unit: p.unit || 'pieces',
                     featured: !!p.featured,
                     image: p.image ? `<img src="${p.image}" alt="${p.name}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;" />` : '📦'
                 }));
-                // reset selection after reload
+
                 selectedProducts.clear();
-                renderProducts();
-                updateSelectionUI();
+                filterProducts();
+                updateStats();
             } catch (e) {
                 console.error(e);
                 showAlert('Failed to load products', 'error');
@@ -197,7 +202,7 @@
         function setupEventListeners() {
             document.getElementById('autoFeatureForm').addEventListener('submit', handleAutoFeature);
             document.getElementById('categoryFilter').addEventListener('change', filterProducts);
-            document.getElementById('sortBy').addEventListener('change', filterProducts); // Changed from sortProducts to filterProducts
+            document.getElementById('sortBy').addEventListener('change', filterProducts);
         }
 
         function renderProducts(filteredProducts = products) {
@@ -220,19 +225,16 @@
                                 <div class="product-image">${product.image}</div>
                                 <div class="product-details">
                                     <h4>${product.name}</h4>
-                                    <p>${product.description}</p>
+                                    <p>${product.description.substring(0, 50)}${product.description.length > 50 ? '...' : ''}</p>
                                 </div>
                             </div>
                         </td>
                         <td class="table-cell">
-                            <span class="category-badge ${categoryClass}">${getCategoryName(product.category)}</span>
+                            <span class="category-badge ${categoryClass}">${product.categoryLabel}</span>
                         </td>
                         <td class="table-cell">
                             <div class="price-info">
-                                <div class="current-price">₱${product.price}</div>
-                                ${product.originalPrice ?
-                                    `<div class="original-price">₱${product.originalPrice}</div>` : ''
-                                }
+                                <div class="current-price">₱${product.price.toFixed(2)}</div>
                             </div>
                         </td>
                         <td class="table-cell">
@@ -242,12 +244,7 @@
                             </div>
                         </td>
                         <td class="table-cell">
-                            <div class="sales-stats">
-                                <div class="sales-count">${product.sales}</div>
-                                <div class="sales-trend ${product.trend}">
-                                    ${product.trend === 'up' ? '↗ Trending' : '↘ Declining'}
-                                </div>
-                            </div>
+                            <span style="text-transform: capitalize;">${product.unit}</span>
                         </td>
                         <td class="table-cell">
                             ${product.featured ?
@@ -258,15 +255,8 @@
                     </tr>
                 `;
             }).join('');
-        }
 
-        function getCategoryName(category) {
-            const names = {
-                'office': 'Office Supplies',
-                'school': 'School Supplies',
-                'hygiene': 'Hygiene Products'
-            };
-            return names[category] || category;
+            lucide.createIcons();
         }
 
         function getStockStatus(stock) {
@@ -325,13 +315,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ids: Array.from(selectedProducts), featured: 1 })
                 });
-                if (!res.ok) throw new Error('Feature failed');
-                showAlert(`Successfully marked ${selectedProducts.size} products as featured!`, 'success');
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Feature failed');
+                showAlert(data.message || `Successfully marked ${selectedProducts.size} products as featured!`, 'success');
                 clearSelection();
                 await loadProducts();
             } catch (err) {
                 console.error(err);
-                showAlert('Failed to mark as featured', 'error');
+                showAlert(err.message || 'Failed to mark as featured', 'error');
             }
         }
 
@@ -343,13 +334,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ids: Array.from(selectedProducts), featured: 0 })
                 });
-                if (!res.ok) throw new Error('Unfeature failed');
-                showAlert(`Removed featured status from ${selectedProducts.size} products!`, 'success');
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Unfeature failed');
+                showAlert(data.message || `Removed featured status from ${selectedProducts.size} products!`, 'success');
                 clearSelection();
                 await loadProducts();
             } catch (err) {
                 console.error(err);
-                showAlert('Failed to remove featured', 'error');
+                showAlert(err.message || 'Failed to remove featured', 'error');
             }
         }
 
@@ -369,14 +361,13 @@
             const sortBy = document.getElementById('sortBy').value;
 
             let filteredProducts = products.filter(product => {
-                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
-                return matchesCategory;
+                return categoryFilter === 'all' || product.category === categoryFilter;
             });
 
             // Apply sorting
             switch (sortBy) {
-                case 'sales':
-                    filteredProducts.sort((a, b) => b.sales - a.sales);
+                case 'featured':
+                    filteredProducts.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
                     break;
                 case 'price':
                     filteredProducts.sort((a, b) => b.price - a.price);
@@ -392,10 +383,6 @@
             renderProducts(filteredProducts);
         }
 
-        function sortProducts() {
-            filterProducts();
-        }
-
         function openAutoMarkModal() {
             document.getElementById('autoFeatureModal').classList.add('show');
         }
@@ -404,20 +391,17 @@
             document.getElementById('autoFeatureModal').classList.remove('show');
         }
 
-        function handleAutoFeature(e) {
+        async function handleAutoFeature(e) {
             e.preventDefault();
 
-            const minSales = parseInt(document.getElementById('minSales').value);
+            const minStock = parseInt(document.getElementById('minStock').value);
             const maxFeatured = parseInt(document.getElementById('maxFeatured').value);
             const categoryPriority = document.getElementById('categoryPriority').value;
             const stockRequirement = document.getElementById('stockRequirement').value;
 
-            // Reset all featured status first
-            products.forEach(product => product.featured = false);
-
             // Filter products based on criteria
             let eligibleProducts = products.filter(product => {
-                const meetsSalesReq = product.sales >= minSales;
+                const meetsStockMin = product.stock >= minStock;
 
                 let meetsStockReq = true;
                 if (stockRequirement === 'in-stock') {
@@ -431,36 +415,58 @@
                     meetsCategoryReq = product.category === categoryPriority;
                 }
 
-                return meetsSalesReq && meetsStockReq && meetsCategoryReq;
+                return meetsStockMin && meetsStockReq && meetsCategoryReq;
             });
 
-            // Sort eligible products by sales (descending)
-            eligibleProducts.sort((a, b) => b.sales - a.sales);
+            // Sort by stock (descending)
+            eligibleProducts.sort((a, b) => b.stock - a.stock);
 
-            // Mark top products as featured (up to maxFeatured limit)
-            const toFeature = eligibleProducts.slice(0, maxFeatured);
-            toFeature.forEach(product => {
-                product.featured = true;
-            });
+            // Get top products
+            const toFeatureIds = eligibleProducts.slice(0, maxFeatured).map(p => p.id);
 
-            showAlert(`Auto-featured ${toFeature.length} products based on your criteria!`, 'success');
-            closeModal();
-            renderProducts();
-            updateStats();
+            if (toFeatureIds.length === 0) {
+                showAlert('No products match the criteria', 'error');
+                return;
+            }
+
+            try {
+                // First, unfeature all
+                const allIds = products.map(p => p.id);
+                await fetch('../../api/admin/products/feature.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: allIds, featured: 0 })
+                });
+
+                // Then feature selected ones
+                const res = await fetch('../../api/admin/products/feature.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: toFeatureIds, featured: 1 })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Auto feature failed');
+
+                showAlert(`Auto-featured ${toFeatureIds.length} products based on your criteria!`, 'success');
+                closeModal();
+                await loadProducts();
+            } catch (err) {
+                console.error(err);
+                showAlert(err.message || 'Failed to auto-feature products', 'error');
+            }
         }
 
         function updateStats() {
-            const featuredCount = products.filter(p => p.featured).length;
-            const featuredRevenue = products
-                .filter(p => p.featured)
-                .reduce((sum, p) => sum + (p.price * p.sales), 0);
-            const avgSales = featuredCount > 0 ?
-                Math.round(products.filter(p => p.featured).reduce((sum, p) => sum + p.sales, 0) / featuredCount) : 0;
+            const featuredProducts = products.filter(p => p.featured);
+            const featuredCount = featuredProducts.length;
+            const featuredRevenue = featuredProducts.reduce((sum, p) => sum + (p.price * p.stock), 0);
+            const avgStock = featuredCount > 0 ?
+                Math.round(featuredProducts.reduce((sum, p) => sum + p.stock, 0) / featuredCount) : 0;
 
-            // Update the stats in the UI
-            document.querySelector('.stat-card .stat-value').textContent = featuredCount;
-            document.querySelector('.stat-card.gold .stat-value').textContent = `₱${featuredRevenue.toLocaleString()}`;
-            document.querySelector('.stat-card.silver .stat-value').textContent = avgSales;
+            document.getElementById('statFeaturedCount').textContent = featuredCount;
+            document.getElementById('statRevenue').textContent = `₱${featuredRevenue.toLocaleString('en-PH', {minimumFractionDigits: 2})}`;
+            document.getElementById('statAvgStock').textContent = avgStock;
         }
 
         function showAlert(message, type) {

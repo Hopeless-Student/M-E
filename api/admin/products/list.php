@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
+// require_once __DIR__ . '/../../../includes/api_auth.php'; // Uncomment to enable authentication
 
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $pageSize = isset($_GET['pageSize']) ? min(100, max(1, (int)$_GET['pageSize'])) : 12;
@@ -15,7 +16,7 @@ $offset = ($page - 1) * $pageSize;
 $catMap = [
     'office' => ['office-supplies', 'Office Supplies'],
     'school' => ['school-supplies', 'School Supplies'],
-    'sanitary' => ['sanitary', 'Sanitary'],
+    'sanitary' => ['sanitary', 'Sanitary', 'Hygiene Products', 'Sanitary Supplies'],
 ];
 
 $where = ['p.isActive = 1'];
@@ -27,11 +28,16 @@ if ($q !== '') {
 }
 
 if ($category !== '') {
-    if (isset($catMap[strtolower($category)])) {
-        [$slug, $name] = $catMap[strtolower($category)];
-        $where[] = '(c.category_slug = :catSlug OR c.category_name = :catName)';
-        $params[':catSlug'] = $slug;
-        $params[':catName'] = $name;
+    $catLower = strtolower($category);
+    if (isset($catMap[$catLower])) {
+        $searches = $catMap[$catLower];
+        $orConditions = [];
+        foreach ($searches as $idx => $searchTerm) {
+            $paramKey = ":catSearch$idx";
+            $orConditions[] = "(c.category_slug = $paramKey OR c.category_name = $paramKey)";
+            $params[$paramKey] = $searchTerm;
+        }
+        $where[] = '(' . implode(' OR ', $orConditions) . ')';
     } else if (ctype_digit($category)) {
         $where[] = 'p.category_id = :catId';
         $params[':catId'] = (int)$category;
@@ -71,7 +77,7 @@ $total = (int)$stmt->fetchColumn();
 
 // Data
 $sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.product_image, p.stock_quantity,
-               p.is_featured,
+               p.is_featured, p.unit, p.product_code,
                c.category_name, c.category_slug
         FROM products p
         INNER JOIN categories c ON c.category_id = p.category_id
@@ -96,6 +102,8 @@ $items = array_map(function ($r) use ($baseImg) {
         'category' => $r['category_slug'] ?? $r['category_name'],
         'categoryLabel' => $r['category_name'] ?? $r['category_slug'],
         'stock' => (int)$r['stock_quantity'],
+        'unit' => $r['unit'] ?? 'pieces',
+        'productCode' => $r['product_code'] ?? '',
         'featured' => (int)($r['is_featured'] ?? 0) === 1,
         'image' => $img,
     ];
@@ -109,5 +117,3 @@ echo json_encode([
     'totalPages' => max(1, (int)ceil($total / $pageSize)),
 ]);
 ?>
-
-

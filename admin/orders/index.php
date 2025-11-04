@@ -38,10 +38,10 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-title">Processing</div>
+                        <div class="stat-title">confirmed</div>
                         <i data-lucide="circle-dot-dashed" class="stat-icon"></i>
                     </div>
-                    <div class="stat-value" id="totalProcessing">0</div>
+                    <div class="stat-value" id="totalconfirmed">0</div>
                     <div class="stat-change neutral">Orders in Process</div>
                 </div>
                 <div class="stat-card">
@@ -71,14 +71,14 @@
                     <select class="filter-select" id="statusFilter">
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
+                        <option value="confirmed">confirmed</option>
                         <option value="shipped">Shipped</option>
                         <option value="delivered">Delivered</option>
                     </select>
                     <select class="filter-select" id="categoryFilter">
                         <option value="">All Categories</option>
                         <option value="School Supplies">School Supplies</option>
-                        <option value="Sanitary Supplies">Sanitary Supplies</option>
+                        <option value="Sanitary">Sanitary Supplies</option>
                         <option value="Office Supplies">Office Supplies</option>
                     </select>
                 </div>
@@ -195,35 +195,28 @@
     lucide.createIcons();
 
     // Global variables for pagination and data
-
     let currentPage = 1;
     let totalPages = 1;
     let allOrders = [];
     let filteredOrders = [];
-    let apiTotal = 0; // total items from API for current server-side filters
+    let apiTotal = 0;
     const ordersPerPage = 8;
+    let searchTimeout = null;
 
     // Load orders data on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadOrdersData();
         updateStats();
-
-        // Add event listener to confirm delete button
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        if (confirmDeleteBtn) {
-            confirmDeleteBtn.onclick = confirmDelete;
-        }
     });
 
     function updateStats() {
-
         const pending = filteredOrders.filter(o => o.status === 'pending').length;
-        const processing = filteredOrders.filter(o => o.status === 'processing').length;
+        const confirmed = filteredOrders.filter(o => o.status === 'confirmed').length;
         const shipped = filteredOrders.filter(o => o.status === 'shipped').length;
         const delivered = filteredOrders.filter(o => o.status === 'delivered').length;
 
         document.getElementById('totalPending').textContent = pending;
-        document.getElementById('totalProcessing').textContent = processing;
+        document.getElementById('totalconfirmed').textContent = confirmed;
         document.getElementById('totalShipped').textContent = shipped;
         document.getElementById('totalDeliver').textContent = delivered;
     }
@@ -247,21 +240,19 @@
             if (!response.ok) throw new Error('Network response was not ok');
             const result = await response.json();
 
-            // Map API items to UI-friendly structure
             const items = Array.isArray(result.items) ? result.items : [];
             allOrders = items.map(o => ({
                 id: String(o.order_id),
                 customer: o.customer_name || '',
+                email: o.email || '',
                 category: o.category || '',
                 items: Number(o.item_count || 0),
                 amount: String((o.final_amount ?? o.total_amount ?? 0)),
                 date: o.order_date ? new Date(o.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
                 status: (o.order_status || '').toLowerCase(),
-                // Keep raw for detail modal
                 _raw: o
             }));
 
-            // Apply client-side category filter only
             filteredOrders = categoryFilter
                 ? allOrders.filter(o => (o.category || '').toLowerCase() === categoryFilter.toLowerCase())
                 : [...allOrders];
@@ -280,8 +271,6 @@
 
     function renderOrders() {
         const tbody = document.querySelector('.orders-table tbody');
-
-        // Since we're doing server-side pagination, just show all filtered orders (no slicing)
         const pageOrders = filteredOrders;
 
         if (pageOrders.length === 0) {
@@ -311,14 +300,9 @@
                             <i data-lucide="refresh-cw"></i>
                            </button>`
                     }
-                    ${order.status === 'delivered'
-                        ? `<button class="action-btn-icon danger" disabled style="opacity: 0.5; cursor: not-allowed;" title="Cannot delete delivered orders">
-                            <i data-lucide="trash-2"></i>
-                           </button>`
-                        : `<button class="action-btn-icon danger" onclick="openDeleteModal('${order.id}')" title="Delete Order">
-                            <i data-lucide="trash-2"></i>
-                           </button>`
-                    }
+                    <button class="action-btn-icon danger" onclick="openDeleteModal('${order.id}')" title="Delete Order">
+                        <i data-lucide="trash-2"></i>
+                    </button>
                     </div>
                 </td>
             </tr>
@@ -330,7 +314,6 @@
         const paginationInfo = document.querySelector('.pagination-info');
         const paginationControls = document.querySelector('.pagination-controls');
 
-        // Use API total for precise range text (status/search filters are server-side)
         if (apiTotal === 0) {
             paginationInfo.textContent = 'Showing 0-0 of 0 orders';
         } else {
@@ -339,7 +322,6 @@
             paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${apiTotal} orders`;
         }
 
-        // Generate page buttons
         let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
 
         for (let i = 1; i <= totalPages; i++) {
@@ -347,10 +329,8 @@
         }
 
         buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
-
         paginationControls.innerHTML = buttonsHTML;
 
-        // Add event listeners
         document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
         document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
 
@@ -366,13 +346,16 @@
     }
 
     function applyFilters() {
-        // Server-side filters for search and status; client-side for category
         currentPage = 1;
         loadOrdersData();
     }
 
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    // Search with debounce
+    document.getElementById('searchInput').addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(applyFilters, 500);
+    });
+
     document.getElementById('statusFilter').addEventListener('change', applyFilters);
     document.getElementById('categoryFilter').addEventListener('change', applyFilters);
 
@@ -391,33 +374,37 @@
         const order = data.order || {};
         const items = Array.isArray(data.items) ? data.items : [];
 
-        // Populate modal with order data
+        // Parse dates properly
+        const orderDate = order.order_date ? new Date(order.order_date) : new Date();
+        const confirmedDate = order.confirmed_at ? new Date(order.confirmed_at) : null;
+        const deliveredDate = order.delivered_at ? new Date(order.delivered_at) : null;
+
         populateModalData({
           id: String(order.order_id || orderId),
           customer: order.customer_name || '',
           category: order.category || '',
           items: items.length,
           amount: String(order.final_amount ?? order.total_amount ?? 0),
-          date: order.order_date ? new Date(order.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+          date: orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+          rawDate: orderDate, // Keep raw date for calculations
           status: (order.order_status || '').toLowerCase(),
           email: order.email || '',
           phone: order.contact_number || '',
           company: '',
           address: order.delivery_address || '',
-          trackingNumber: order.tracking_number || '',
           paymentMethod: order.payment_method || '',
           transactionId: order.transaction_id || '',
           notes: order.admin_notes || '',
+          confirmedAt: confirmedDate,
+          deliveredAt: deliveredDate,
           _items: items
         });
 
-        // Show only the order details modal
         document.getElementById('orderModal').classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        const updtbtn = document.getElementById("updateModal");
+        const updtbtn = document.getElementById("updateModalBtn");
         if(updtbtn){
-          // Disable update button if order is delivered
           if (order.order_status && order.order_status.toLowerCase() === 'delivered') {
             updtbtn.disabled = true;
             updtbtn.style.opacity = '0.5';
@@ -433,9 +420,9 @@
             updtbtn.onclick = () => openUpdateModal(String(order.order_id || orderId));
           }
         }
-        const dltbtn = document.getElementById("deleteModal2");
+
+        const dltbtn = document.getElementById("deleteModalBtn");
         if(dltbtn){
-          // Disable delete button if order is delivered
           if (order.order_status && order.order_status.toLowerCase() === 'delivered') {
             dltbtn.disabled = true;
             dltbtn.style.opacity = '0.5';
@@ -452,7 +439,6 @@
           }
         }
 
-        // Refresh Lucide icons for the modal
         setTimeout(() => {
           lucide.createIcons();
         }, 100);
@@ -466,7 +452,6 @@
     function openUpdateModal(orderId) {
       const order = allOrders.find(o => o.id === orderId) || filteredOrders.find(o => o.id === orderId) || { id: orderId };
 
-      // Check if order is delivered
       if (order.status === 'delivered') {
         showAlert('Cannot update status of delivered orders', 'warning');
         return;
@@ -475,17 +460,14 @@
       currentUpdateOrderId = orderId;
       populateUpdateData(order);
 
-      // Close the order details modal
       const orderModal = document.getElementById("orderModal");
       if (orderModal) orderModal.classList.remove("active");
 
-      // Open the update status modal
       const updateModal = document.getElementById("updateStatusModal");
       if (updateModal) updateModal.classList.add("active");
 
       document.body.style.overflow = "hidden";
 
-      // Refresh Lucide icons for the modal
       setTimeout(() => {
         lucide.createIcons();
       }, 100);
@@ -499,35 +481,42 @@
         return;
       }
 
+      const notes = document.getElementById('updateStatusNotes').value.trim();
+
       try {
-        const payload = { order_id: Number(currentUpdateOrderId), order_status: selected.value };
+        const payload = {
+          order_id: Number(currentUpdateOrderId),
+          order_status: selected.value,
+          admin_notes: notes || null
+        };
+
         const res = await fetch('../../api/orders/update-status.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify(payload)
         });
+
         if (!res.ok) throw new Error('Failed to update status');
 
-        // Update in-memory list
         const idx = allOrders.findIndex(o => o.id === String(currentUpdateOrderId));
         if (idx !== -1) allOrders[idx].status = selected.value;
+
         applyFilters();
         updateStats();
 
         showAlert('Order updated successfully!', 'success');
+
+        const modal = document.getElementById("updateStatusModal");
+        if (modal) modal.classList.remove("active");
+        document.body.style.overflow = '';
+
       } catch (e) {
         console.error(e);
         showAlert('Failed to update order status', 'error');
-      } finally {
-        const modal = document.getElementById("updateStatusModal");
-        if (modal) { modal.classList.remove("active"); }
-        document.body.style.overflow = '';
       }
     }
 
-
     function populateModalData(order) {
-        // Basic order information
         document.getElementById('modalOrderId').textContent = `#ORD-${order.id}`;
         document.getElementById('detailOrderId').textContent = `#ORD-${order.id}`;
         document.getElementById('detailCustomer').textContent = order.customer;
@@ -535,39 +524,32 @@
         document.getElementById('detailAmount').textContent = `₱${parseInt(order.amount).toLocaleString()}`;
         document.getElementById('detailDate').textContent = order.date;
 
-        // Status with proper class
         const statusElement = document.getElementById('detailStatus');
         statusElement.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
         statusElement.className = `status ${order.status}`;
 
-        // Customer information
         document.getElementById('customerName').textContent = order.customer;
         document.getElementById('customerEmail').textContent = order.email;
         document.getElementById('customerPhone').textContent = order.phone;
-        document.getElementById('customerCompany').textContent = order.company;
+        document.getElementById('customerCompany').textContent = order.company || 'N/A';
         document.getElementById('customerSince').textContent = 'January 2024';
 
-        // Delivery information
-        document.getElementById('deliveryAddress').innerHTML = order.address.replace(', ', '<br>');
+        document.getElementById('deliveryAddress').innerHTML = order.address.replace(/,\s*/g, '<br>');
         document.getElementById('deliveryMethod').textContent = 'Standard Delivery';
-        document.getElementById('expectedDelivery').textContent = getExpectedDeliveryDate(order.date, order.status);
-        document.getElementById('trackingNumber').textContent = order.trackingNumber;
 
-        // Payment information
+        // Use consistent expected delivery calculation
+        document.getElementById('expectedDelivery').textContent = getExpectedDeliveryDate(order.rawDate || order.date, order.status);
+        document.getElementById('trackingNumber').textContent = order.trackingNumber || 'N/A';
+
         document.getElementById('paymentMethod').textContent = order.paymentMethod;
         const paymentStatusElement = document.getElementById('paymentStatus');
         paymentStatusElement.textContent = 'Paid';
         paymentStatusElement.className = 'status delivered';
-        document.getElementById('transactionId').textContent = order.transactionId;
+        document.getElementById('transactionId').textContent = order.transactionId || 'N/A';
         document.getElementById('paymentDate').textContent = order.date;
 
-        // Order items (mock data)
         populateOrderItems(order);
-
-        // Order timeline
         populateOrderTimeline(order);
-
-        // Notes
         document.getElementById('orderNotes').value = order.notes;
     }
 
@@ -582,14 +564,45 @@
         statusElement.className = `status ${order.status}`;
 
         document.getElementById('updateOrderDate').textContent = order.date;
-        document.getElementById('updateTrackingNumber').textContent = order.trackingNumber;
 
+        // Set minimum date to today for estimated delivery
+        const today = new Date().toISOString().split('T')[0];
+        const deliveryInput = document.getElementById('updateEstimatedDelivery');
+        if (deliveryInput) {
+            deliveryInput.min = today;
+            deliveryInput.value = ''; // Clear previous value
+        }
 
+        // Clear tracking number
+        const trackingInput = document.getElementById('updateTrackingNumber');
+        if (trackingInput) {
+            trackingInput.value = '';
+        }
+
+        // Clear notes
+        const notesInput = document.getElementById('updateStatusNotes');
+        if (notesInput) {
+            notesInput.value = '';
+        }
+
+        // Pre-select current status
+        const statusRadio = document.querySelector(`input[name="orderStatus"][value="${order.status}"]`);
+        if (statusRadio) {
+            statusRadio.checked = true;
+        }
+
+        // Clear any validation errors
+        const errorMsg = document.getElementById('deliveryDateError');
+        if (errorMsg) {
+            errorMsg.style.display = 'none';
+        }
+        if (deliveryInput) {
+            deliveryInput.classList.remove('error');
+        }
     }
 
     function populateOrderItems(order) {
         const itemsContainer = document.getElementById('orderItems');
-
         const apiItems = Array.isArray(order._items) ? order._items : [];
 
         let itemsHTML = '';
@@ -624,16 +637,32 @@
 
     function populateOrderTimeline(order) {
         const timeline = document.getElementById('orderTimeline');
-        const statuses = ['Order Placed', 'Payment Confirmed', 'Processing Started', 'Shipped', 'Delivered'];
-        const currentStatusIndex = ['pending', 'processing', 'shipped', 'delivered'].indexOf(order.status);
+        const statusMap = {
+            'pending': 0,
+            'confirmed': 1,
+            'shipped': 2,
+            'delivered': 3
+        };
 
+        const timelineSteps = [
+            { label: 'Order Placed', status: 'pending', hours: 0 },
+            { label: 'Payment Confirmed', status: 'confirmed', hours: 2 },
+            { label: 'Processing Started', status: 'confirmed', hours: 6 },
+            { label: 'Shipped', status: 'shipped', hours: 24 },
+            { label: 'Delivered', status: 'delivered', hours: 72 }
+        ];
+
+        const currentStatusLevel = statusMap[order.status] || 0;
         let timelineHTML = '';
         const baseDate = new Date(order.date);
 
-        statuses.forEach((status, index) => {
-            if (index <= currentStatusIndex + 1) {
+        timelineSteps.forEach((step, index) => {
+            const stepStatusLevel = statusMap[step.status] || 0;
+
+            // Show step if it's at or before current status level
+            if (stepStatusLevel <= currentStatusLevel) {
                 const statusDate = new Date(baseDate);
-                statusDate.setHours(statusDate.getHours() + (index * 6));
+                statusDate.setHours(statusDate.getHours() + step.hours);
 
                 timelineHTML += `
                     <div class="timeline-item">
@@ -643,18 +672,37 @@
                             hour: '2-digit',
                             minute: '2-digit'
                         })}</span>
-                        <span class="timeline-status">${status}</span>
+                        <span class="timeline-status">${step.label}</span>
                     </div>
                 `;
             }
         });
 
-        timeline.innerHTML = timelineHTML;
+        timeline.innerHTML = timelineHTML || '<div class="timeline-item"><span class="timeline-status">No timeline available</span></div>';
     }
 
     function getExpectedDeliveryDate(orderDate, status) {
         const date = new Date(orderDate);
-        const daysToAdd = status === 'delivered' ? 0 : Math.floor(Math.random() * 5) + 1;
+
+        // Calculate days based on status
+        let daysToAdd;
+        switch(status.toLowerCase()) {
+            case 'pending':
+                daysToAdd = 7; // 7 days from order
+                break;
+            case 'confirmed':
+                daysToAdd = 5; // 5 days from order
+                break;
+            case 'shipped':
+                daysToAdd = 2; // 2 days from order
+                break;
+            case 'delivered':
+                daysToAdd = 0; // Already delivered
+                break;
+            default:
+                daysToAdd = 7;
+        }
+
         date.setDate(date.getDate() + daysToAdd);
 
         return date.toLocaleDateString('en-US', {
@@ -669,6 +717,7 @@
         document.getElementById('orderModal').classList.remove('active');
         document.body.style.overflow = 'auto';
     }
+
     function closeUpdateModal(event) {
         if (event && event.target !== event.currentTarget) return;
         document.getElementById('updateStatusModal').classList.remove('active');
@@ -680,13 +729,12 @@
     let deleteConfirmationStep = 1;
 
     function openDeleteModal(orderId) {
-        const order = allOrders.find(o => o.id === orderId);
+        const order = allOrders.find(o => o.id === orderId) || filteredOrders.find(o => o.id === orderId);
         if (!order) {
             showAlert('Order not found', 'error');
             return;
         }
 
-        // Check if order is delivered
         if (order.status === 'delivered') {
             showAlert('Cannot delete delivered orders', 'warning');
             return;
@@ -695,23 +743,23 @@
         orderToDelete = orderId;
         deleteConfirmationStep = 1;
 
-        // Reset modal state
         document.getElementById('deleteWarning').style.display = 'none';
         document.getElementById('firstDeleteBtn').style.display = 'inline-flex';
         document.getElementById('finalDeleteBtn').style.display = 'none';
         document.getElementById('deleteModalSubtitle').textContent = 'This action cannot be undone';
 
-        // Populate delete modal with order data
         document.getElementById('deleteOrderId').textContent = `#ORD-${order.id}`;
         document.getElementById('deleteCustomerName').textContent = order.customer;
         document.getElementById('deleteOrderAmount').textContent = `₱${parseInt(order.amount).toLocaleString()}`;
         document.getElementById('deleteOrderStatus').textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
 
-        // Show delete modal
+        // Close order modal if open
+        const orderModal = document.getElementById('orderModal');
+        if (orderModal) orderModal.classList.remove('active');
+
         document.getElementById('deleteModal').classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Refresh Lucide icons for the modal
         setTimeout(() => {
             lucide.createIcons();
         }, 100);
@@ -720,7 +768,6 @@
     function closeDeleteModal(event) {
         if (event && event.target !== event.currentTarget) return;
 
-        // Reset modal state
         document.getElementById('deleteWarning').style.display = 'none';
         document.getElementById('firstDeleteBtn').style.display = 'inline-flex';
         document.getElementById('finalDeleteBtn').style.display = 'none';
@@ -733,58 +780,59 @@
     }
 
     function showDeleteWarning() {
-        // Show warning and change to final confirmation step
         deleteConfirmationStep = 2;
         document.getElementById('deleteWarning').style.display = 'block';
         document.getElementById('firstDeleteBtn').style.display = 'none';
         document.getElementById('finalDeleteBtn').style.display = 'inline-flex';
         document.getElementById('deleteModalSubtitle').textContent = 'Are you absolutely sure?';
 
-        // Refresh Lucide icons
         setTimeout(() => {
             lucide.createIcons();
         }, 100);
     }
 
-    function confirmDelete() {
+    async function confirmDelete() {
         if (!orderToDelete || deleteConfirmationStep !== 2) return;
 
-        // Remove the order from the array
-        const index = allOrders.findIndex(o => o.id === orderToDelete);
-        if (index !== -1) {
-            allOrders.splice(index, 1);
+        try {
+            const response = await fetch(`../../api/orders/delete.php?id=${encodeURIComponent(orderToDelete)}`, {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (!response.ok) throw new Error('Failed to delete order');
+
+            const result = await response.json();
+            if (!result.success) throw new Error(result.error || 'Delete failed');
+
+            // Remove from local arrays
+            const index = allOrders.findIndex(o => o.id === orderToDelete);
+            if (index !== -1) {
+                allOrders.splice(index, 1);
+            }
+
+            applyFilters();
+            updateStats();
+
+            showAlert('Order deleted successfully!', 'success');
+            closeDeleteModal();
+
+        } catch (error) {
+            console.error('Delete error:', error);
+            showAlert('Failed to delete order: ' + error.message, 'error');
         }
-
-        // Update filtered orders and re-render
-        applyFilters();
-        updateStats();
-
-        // Show success message
-        showAlert('Order deleted successfully!', 'success');
-        const confirmBtn = document.getElementById('finalDeleteBtn');
-        if(confirmBtn){
-          const orderModal = document.getElementById('orderModal');
-          if(orderModal) orderModal.classList.remove('active');
-        }
-
-        // Close modal and reset
-        closeDeleteModal();
-
     }
 
     // Alert notification system
     function showAlert(message, type = 'info') {
-        // Remove any existing alerts
         const existingAlert = document.querySelector('.alert-notification');
         if (existingAlert) {
             existingAlert.remove();
         }
 
-        // Create alert element
         const alert = document.createElement('div');
         alert.className = `alert-notification alert-${type}`;
 
-        // Set icon based on type
         let icon = 'info';
         if (type === 'success') icon = 'check-circle';
         if (type === 'error') icon = 'alert-circle';
@@ -798,14 +846,10 @@
         `;
 
         document.body.appendChild(alert);
-
-        // Initialize Lucide icons for the alert
         lucide.createIcons();
 
-        // Trigger animation
         setTimeout(() => alert.classList.add('show'), 10);
 
-        // Auto remove after 3 seconds
         setTimeout(() => {
             alert.classList.remove('show');
             setTimeout(() => alert.remove(), 300);
