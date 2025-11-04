@@ -4,6 +4,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
 <html lang="en">
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">        
         <link href="../assets/css/about.css" rel="stylesheet"/>
         <link href="../assets/css/navbar.css" rel="stylesheet"/>
         <title>M&E: About Us</title>
@@ -129,7 +130,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
 
         <section class="testimonials">
             <h2>What Our Customers Say</h2>
-    
+
             <div class="feedback">
                 <p>"Fast delivery and reliable service. Highly recommend!"</p>
                 <span class="text-primary">- Maria, School Principal</span>
@@ -156,7 +157,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
         <section class="company-documents">
             <h2>Our Credentials</h2>
             <p>Authorized and Registered Business Entity</p>
-            
+
             <div class="documents-grid">
                 <div class="document-card">
                     <h3>Business Registration</h3>

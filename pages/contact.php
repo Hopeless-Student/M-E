@@ -7,6 +7,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 <html lang="en">
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
         <link rel="stylesheet" href="../assets/css/contact.css"/>
         <link rel="stylesheet" href="../assets/css/navbar.css"/>
         <title>M&E: Contact Us</title>

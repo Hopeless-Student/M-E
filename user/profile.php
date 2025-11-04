@@ -1,5 +1,4 @@
 <?php
-include('../includes/user-sidebar.php');
 require_once __DIR__ . '/../includes/database.php';
 $pdo = connect();
 $provinces = $pdo->query("SELECT province_id, province_name FROM provinces ORDER BY province_name")->fetchAll(PDO::FETCH_ASSOC);
@@ -10,11 +9,13 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
 <html lang="en" dir="ltr">
   <head>
     <meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0">
-    <title>Edit User Profile</title>
+    <title>User Profile</title>
+        <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
     <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/user-sidebar.css">
   </head>
   <body>
+    <?php  include('../includes/user-sidebar.php');?>
 
     <div class="main-content">
       <div class="card shadow-sm p-4 profile-card position-relative">

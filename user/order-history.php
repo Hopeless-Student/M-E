@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/database.php';
 include('../includes/user-sidebar.php');
-
 $user_id = $_SESSION['user_id'];
 $status = isset($_GET['status']) ? trim($_GET['status']) : 'All';
 
