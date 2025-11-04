@@ -23,7 +23,7 @@ $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id IN ($placeholders
 $stmt->execute($productIds);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Merge quantity info
+// megre quantiyt info
 $cartItems = [];
 $categoryIds = [];
 foreach($products as $prod){
