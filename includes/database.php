@@ -1,9 +1,9 @@
 <?php
   function connect(){
-    $db_server = "localhost";
+    $db_server = "auth-db2046.hstgr.io";
     $db_name = "m_e";
-    $db_user = "root";
-    $db_pass = "";
+    $db_user = "m_e_system";
+    $db_pass = "2@ElJX1+Pti$";
     date_default_timezone_set('Asia/Manila');
       try {
         $dsn = "mysql:host=$db_server;dbname=$db_name;charset=utf8mb4";

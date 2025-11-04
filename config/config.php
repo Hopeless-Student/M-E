@@ -1,10 +1,10 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$password = '';
+$host = 'auth-db2046.hstgr.io';
+$user = 'm_e_system';
+$password = '2@ElJX1+Pti$';
 $dbname = 'm_e';
 $charset = 'utf8mb4';
-
+date_default_timezone_set('Asia/Manila');
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
 
 try {

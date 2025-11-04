@@ -33,7 +33,7 @@ $dotenv->load();
         $verifylink = $_ENV['APP_URL'] . "/auth/verify.php?email=$email&token=$token";
         $mail->Body = "
       <div style='font-family:Arial, sans-serif; padding:20px; max-width:500px;margin:auto;border:1px solid #eee;padding:30px;border-radius:10px;background:#f9f9f9;'>
-        <h2 style='color:#6C63FF;'>🚀 Welcome to MasterMind 😛!</h2>
+        <h2 style='color:#6C63FF;'> Welcome to M&E: Interior Supplies Trading!</h2>
         <p>You're almost there! Click the button below to verify your email:</p>
         <a href='$verifylink' style='
           display:inline-block;
