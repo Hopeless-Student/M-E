@@ -60,9 +60,9 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
                <br>
             <input type="file" name="profile_pic" id="profilePicInput" accept="image/*" style="display: none;">
 
-            <button type="button" class="btn btn-outline-primary" id="uploadBtn">Upload New Photo</button>
+            <button type="button" class="btn btn-outline-primary mb-2" id="uploadBtn">Upload New Photo</button>
             <button type="button" class="btn btn-primary px-4" id="edit">Edit</button>
-            <button type="button" class="btn btn-primary px-4" id="cancel">Cancel</button>
+            <button type="button" class="btn btn-primary px-4 mb-2" id="cancel">Cancel</button>
           </div>
           <!-- First Name -->
           <div class="col-md-4">
@@ -133,7 +133,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           </div>
 
           <!-- Province -->
-          <div class="col-4">
+          <div class="col-md-4">
             <label for="inputProvince" class="form-label">Province</label>
             <select class="form-select" id="inputProvince" name="province" required>
               <option value="">Select Province</option>

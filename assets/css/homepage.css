@@ -1,6 +1,5 @@
 html, body {
     width: 100%;
-    overflow-x: hidden;
   }
 
 * {
@@ -11,6 +10,7 @@ html, body {
 
 body {
     background-color: #FFFFFF;
+    overflow-x: hidden;
 }
 
 /* Floating Request Button */
@@ -87,7 +87,35 @@ body {
     border-color: #002366;
     box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
 }
-
+#submitRequestBtn{
+  width: 100%;
+  padding: 12px;
+  background-color: #4169E1;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
+#closeRequestModal{
+  color: #4169E1;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+#closeRequestModal:hover{
+  color: #002366;
+  transition: 400ms ease;
+}
+#submitRequestBtn:hover{
+  background-color: #002366;
+}
 .request-modal-content textarea {
     resize: vertical;
     min-height: 120px;
