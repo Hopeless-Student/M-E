@@ -114,6 +114,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
         <?php include '../includes/footer.php'; ?>
         <?php include '../includes/login-modal.php'; ?>
         <script src="../assets/js/navbar.js"></script>
+        <script src="../assets/js/login-modal.js"></script>
         <script src="../assets/js/contact.js"></script>
         <script src="../assets/js/homepage.js"></script>
     </body>

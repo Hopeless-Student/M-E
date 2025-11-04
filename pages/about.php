@@ -4,7 +4,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
 <html lang="en">
     <head>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport"/>
-      <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">        
+      <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
         <link href="../assets/css/about.css" rel="stylesheet"/>
         <link href="../assets/css/navbar.css" rel="stylesheet"/>
         <title>M&E: About Us</title>
@@ -210,7 +210,8 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
             </div>
         </section>
         <?php include '../includes/footer.php'; ?>
-        <?php include '../includes/login-modal.php'; ?>
+        <?php include ('../includes/login-modal.php'); ?>
         <script src="../assets/js/navbar.js"></script>
+        <script src="../assets/js/login-modal.js"></script>
     </body>
 </html>
