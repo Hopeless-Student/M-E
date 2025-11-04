@@ -45,7 +45,7 @@
                 </div>
             <?php else: ?>
                 <div class="cart">
-                    <a href="../shop/cart.php" id="toggleLogin">
+                    <a href="#" id="toggleLogin">
                         <img alt="cart" class="cart-img" src="../assets/svg/bag.svg"/>
                         <span id="cartCount" class="cart-count"></span>
                     </a>

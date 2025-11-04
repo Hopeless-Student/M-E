@@ -2,14 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginModal = document.getElementById("loginModal");
   const signupModal = document.getElementById("signupModal");
 
-
+  const mobileCart = document.querySelector(".mobile-nav-cart");
+  const isLoggedIn = mobileCart?.dataset.loggedIn === "1";
   const loginTriggers = [
     document.getElementById("openLoginModal"),
     document.querySelector(".btn-login a"),
     document.getElementById("mobileLoginLink"),
-    document.getElementById("toggleLogin")
+    document.getElementById("toggleLogin"),
+    document.getElementById("mobileCartLink"),      // ⬅️ add if your mobile nav has cart link
+    document.querySelector(".mobile-cart-icon"),    // ⬅️ or class for mobile cart button
+    document.getElementById("mobileCheckoutBtn")
   ];
-
+if (mobileCart && !isLoggedIn) loginTriggers.push(mobileCart);
   loginTriggers.forEach(trigger => {
     if (trigger) {
       trigger.addEventListener("click", (e) => {
