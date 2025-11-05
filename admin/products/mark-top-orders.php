@@ -12,6 +12,11 @@
     // require_once __DIR__ . '/../../includes/auth.php'; // Uncomment to enable authentication
     ?>
     <div class="dashboard">
+
+      <button class="mobile-menu-btn" data-sidebar-toggle="open">
+          <i data-lucide="menu"></i>
+      </button>
+
         <!-- Sidebar -->
         <?php include '../../includes/admin_sidebar.php'; ?>
 
@@ -486,6 +491,74 @@
                 e.target.classList.remove('show');
             }
         });
+        (function() {
+    const sidebar = document.querySelector('.sidebar');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+
+    if (!sidebar || !mobileMenuBtn) return;
+
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    function toggleSidebar() {
+        const isActive = sidebar.classList.contains('active');
+
+        if (isActive) {
+            sidebar.classList.remove('active');
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            if (typeof lucide !== 'undefined') {
+                mobileMenuBtn.innerHTML = '<i data-lucide="menu"></i>';
+                lucide.createIcons();
+            }
+        } else {
+            sidebar.classList.add('active');
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            if (typeof lucide !== 'undefined') {
+                mobileMenuBtn.innerHTML = '<i data-lucide="x"></i>';
+                lucide.createIcons();
+            }
+        }
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+
+    sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 1024 && sidebar.classList.contains('active')) {
+            toggleSidebar();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+            toggleSidebar();
+        }
+    });
+})();
     </script>
 </body>
 </html>
