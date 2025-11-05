@@ -11,6 +11,9 @@
   <div class="dashboard">
 
       <?php include '../../includes/admin_sidebar.php' ?>
+      <button class="mobile-menu-btn" data-sidebar-toggle="open">
+          <i data-lucide="menu"></i>
+      </button>
 
         <!-- Main Content -->
         <main class="main-content">

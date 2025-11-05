@@ -835,7 +835,7 @@
                 <button type="button" class="customer-edit-btn customer-edit-btn-danger" onclick="showCustomerEditSubModal('deleteModal')">
                     <i data-lucide="trash-2"></i> Delete Customer
                 </button>
-                <button type="submit" form="editCustomerForm" class="customer-edit-btn customer-edit-btn-primary">
+                <button type="submit" form="editCustomerForm" class="customer-edit-btn customer-edit-btn-primary" onclick="showCustomerEditSubModal('updateModal')">
                     <i data-lucide="save"></i> Save Changes
                 </button>
             </div>
@@ -1006,7 +1006,7 @@
                 <button class="customer-edit-btn customer-edit-btn-secondary" onclick="closeCustomerEditSubModal('deleteModal')">
                     <i data-lucide="x"></i> Cancel
                 </button>
-                <button type="submit" form="deleteForm" class="customer-edit-btn customer-edit-btn-danger">
+                <button type="submit" name="delete_confirm" form="deleteForm" class="customer-edit-btn customer-edit-btn-danger" onclick="closeCustomerEditSubModal('deleteModal')">
                     <i data-lucide="trash-2"></i> Delete Customer
                 </button>
             </div>
