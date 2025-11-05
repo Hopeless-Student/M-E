@@ -42,7 +42,7 @@
                     <h4>New Order</h4>
                     <p>Create manual order</p>
                 </a>
-                <a href="./products/index.php" class="action-card">
+                <a href="./products/add-product.php" class="action-card">
                     <div class="action-icon">
                         <i data-lucide="package-plus"></i>
                     </div>
