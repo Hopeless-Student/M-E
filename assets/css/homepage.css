@@ -1,6 +1,5 @@
 html, body {
     width: 100%;
-    overflow-x: hidden;
   }
 
 * {
@@ -11,6 +10,7 @@ html, body {
 
 body {
     background-color: #FFFFFF;
+    overflow-x: hidden;
 }
 
 /* Floating Request Button */
@@ -87,7 +87,35 @@ body {
     border-color: #002366;
     box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
 }
-
+#submitRequestBtn{
+  width: 100%;
+  padding: 12px;
+  background-color: #4169E1;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.4s ease;
+}
+#closeRequestModal{
+  color: #4169E1;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+#closeRequestModal:hover{
+  color: #002366;
+  transition: 400ms ease;
+}
+#submitRequestBtn:hover{
+  background-color: #002366;
+}
 .request-modal-content textarea {
     resize: vertical;
     min-height: 120px;
@@ -1010,16 +1038,16 @@ nav .mobile-user-menu .dropdown.active {
 @media (max-width: 768px) {
     /* Alert positioning for mobile */
     .alert-message {
-        top: 90px;
+        top: 85px;
         min-width: 280px;
         max-width: 90%;
         padding: 14px 45px 14px 16px;
         font-size: 14px;
-        z-index: 998;
+        z-index: 9998;
     }
 
     header nav.active ~ .alert-message {
-        z-index: 998;
+        z-index: 9998;
     }
 
     .alert-message::after {
@@ -1106,7 +1134,8 @@ nav .mobile-user-menu .dropdown.active {
 
     .hero-search-bar input {
         font-size: 14px;
-    }
+        width: 100%;
+      }
 
     .hero .hero-content a {
         font-size: 18px;
@@ -1419,6 +1448,9 @@ nav .mobile-user-menu .dropdown.active {
         right: 1rem;
         bottom: 1rem;
     }
+}
+.hero-search-bar.active input {
+  display: block;
 }
 
 /* Tablet/Medium Screen Adjustments */

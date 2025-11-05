@@ -17,6 +17,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="description" content="M&E Interior Supplies Trading — your one-stop shop for office, school, and sanitary supplies with affordable prices and fast delivery.">
+      <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
         <link href="../assets/css/homepage.css" rel="stylesheet"/>
         <link href="../assets/css/navbar.css" rel="stylesheet"/>
         <title>M&E: Interior Supplies Trading</title>
@@ -272,7 +273,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                   </div>
               </div>
             </div>
-            
+
             <div class="contact-more">
                 <a href="contact.php">More about Contact Us
                     <img alt="More" src="../assets/svg/right-arrow.svg"/>
@@ -327,7 +328,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
           ], $featured_products)) ?>;
         </script>
         <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-        <script src="../assets/js/search-suggestions.js"></script>
+        <script src="../assets/js/search-suggestions.js" defer></script>
         <script src="../assets/js/homepage.js"></script>
         <script src="../assets/js/navbar.js"></script>
         <?php include '../includes/footer.php';?>

@@ -1,3 +1,4 @@
+    <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
   <?php require_once __DIR__ .'/../auth/auth.php';
   $profileImage = !empty($user['profile_image'])
       ? "../assets/profile-pics/" . htmlspecialchars($user['profile_image'])

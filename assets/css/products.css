@@ -363,7 +363,7 @@
             font-weight: bold;
         }
 
-        .close-btn {
+        .close-btn-pr {
             display: inline-flex; /* inline so it only takes up its content */
             justify-content: center;
             align-items: center;
@@ -378,7 +378,7 @@
             text-align: center;
             border: none;
         }
-        .close-btn:hover {
+        .close-btn-pr:hover {
           background-color: #2980b9; /* Darker background on hover */
           color: #ffffff; /* Ensure text remains white on hover */
           border-color: #3498db;

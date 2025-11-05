@@ -1,5 +1,4 @@
 <?php
-include('../includes/user-sidebar.php');
 require_once __DIR__ . '/../includes/database.php';
 $pdo = connect();
 $provinces = $pdo->query("SELECT province_id, province_name FROM provinces ORDER BY province_name")->fetchAll(PDO::FETCH_ASSOC);
@@ -10,11 +9,13 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
 <html lang="en" dir="ltr">
   <head>
     <meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0">
-    <title>Edit User Profile</title>
+    <title>User Profile</title>
+        <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
     <link href="../bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/user-sidebar.css">
   </head>
   <body>
+    <?php  include('../includes/user-sidebar.php');?>
 
     <div class="main-content">
       <div class="card shadow-sm p-4 profile-card position-relative">
@@ -59,9 +60,9 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
                <br>
             <input type="file" name="profile_pic" id="profilePicInput" accept="image/*" style="display: none;">
 
-            <button type="button" class="btn btn-outline-primary" id="uploadBtn">Upload New Photo</button>
+            <button type="button" class="btn btn-outline-primary mb-2" id="uploadBtn">Upload New Photo</button>
             <button type="button" class="btn btn-primary px-4" id="edit">Edit</button>
-            <button type="button" class="btn btn-primary px-4" id="cancel">Cancel</button>
+            <button type="button" class="btn btn-primary px-4 mb-2" id="cancel">Cancel</button>
           </div>
           <!-- First Name -->
           <div class="col-md-4">
@@ -132,7 +133,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           </div>
 
           <!-- Province -->
-          <div class="col-4">
+          <div class="col-md-4">
             <label for="inputProvince" class="form-label">Province</label>
             <select class="form-select" id="inputProvince" name="province" required>
               <option value="">Select Province</option>

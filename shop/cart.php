@@ -7,6 +7,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">    
     <title>Shopping Cart - Your Items</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="../assets/css/homepage.css">

@@ -21,7 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION["email"] = $email;
 
     if ($password !== $confirmPassword) {
-      die("Passwords do not match!");
+      $_SESSION['error'] = "Password do not match!";
+      header("Location: ../pages/index.php");
+      exit;
     }
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -51,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
           $_SESSION['error'] = "Email is already pending verification. Please check your inbox or register again after 2 minutes.";
         }
-        header("Location: ../register.php");
+        header("Location: ../pages/index.php");
         exit;
       }
 
@@ -73,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       } else {
         $pdo->prepare("DELETE FROM users WHERE email = :email")->execute([":email" => $email]);
         $_SESSION['error'] = "Failed to send verification email. Please try again.";
-        header("Location: ../register.php");
+        header("Location: ../pages/index.php");
         exit;
       }
 
@@ -82,12 +84,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   } else {
     $_SESSION['error'] = "Invalid input data!";
-    header("Location: ../register.php");
+    header("Location: ../pages/index.php");
     exit;
   }
 } else {
   $_SESSION['error'] = "Invalid request method!";
-  header("Location: ../register.php");
+  header("Location: ../pages/index.php");
   exit;
 }
 ?>

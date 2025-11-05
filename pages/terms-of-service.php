@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Terms and Conditions</title>
     <link rel="stylesheet" href="../assets/css/terms-and-condition.css">
+          <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
   </head>
   <body>
 
