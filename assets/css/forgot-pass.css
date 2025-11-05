@@ -1,0 +1,163 @@
+body {
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background-color: #f1f3f5;
+}
+
+.forgot-container {
+  display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.form-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #ffffff 60%, #e3f2fd);
+  position: relative;
+  overflow: hidden;
+  animation: fadeSlideIn 1s ease;
+}
+
+.form-section::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(25, 118, 210, 0.5);
+  border-radius: 50%;
+  top: -50px;
+  left: -50px;
+}
+.form-section::after {
+  content: '';
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: rgba(13, 71, 161, 0.5);
+  border-radius: 50%;
+  bottom: -80px;
+  right: -80px;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  animation: fadeUp 1s 0.4s forwards ease-out;
+}
+
+.form-box img {
+  display: block;
+  width: 50%;
+  margin: 0 auto 20px;
+}
+
+.icon-circle {
+  width: 70px;
+  height: 70px;
+  background: rgba(13, 71, 161, 0.4);
+  color: #0d47a1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1rem;
+}
+
+h4 {
+  color: #0d47a1;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+p.text-muted {
+  color: #6c757d !important;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background-color: #0d47a1;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1565c0;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #1976d2;
+}
+
+.text-muted a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.text-muted a:hover {
+  text-decoration: underline;
+}
+
+.image-section {
+  flex: 1;
+  background:
+    linear-gradient(rgba(13, 71, 161, 0.4), rgba(25, 118, 210, 0.4)),
+    url('../images/forgot-pass.jpg') no-repeat center center / cover;
+  position: relative;
+  animation: fadeInRight 1.2s ease;
+}
+
+.image-section::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(13, 71, 161, 0.25);
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 992px) {
+  .forgot-container {
+    flex-direction: column;
+  }
+  .image-section {
+    order: -1;
+    height: 250px;
+  }
+  .form-section {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-box img {
+    width: 60%;
+  }
+}

@@ -309,6 +309,22 @@ nav .mobile-user-menu {
     font-size: 15px;
   }
 }
+.forgot-pass{
+  color: #4169e1;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin-top: 15px;
+  padding: 0px;
+  font-size: 14px;
+  text-align: center;
+}
+.forgot-pass a{
+  color: #4169e1;
+  text-decoration: none;
+}
+.forgot-pass a:hover{
+  text-decoration: underline;
+}
 </style>
 <div id="loginModal" class="modal">
     <div class="modal-content">
@@ -327,6 +343,9 @@ nav .mobile-user-menu {
               <img id="togglePassword" class="eye-icon" src="../assets/svg/eye-slash.svg" alt="Toggle Password" />
             </div>
                                 <button type="submit">Log In</button>
+            <div class="forgot-pass">
+              <a href="../forgot-password.php" target="_blank">Forgot password?</a>
+            </div>
             <?php if (isset($_SESSION['loginFailed'])): ?>
               <p class="error-message" style="color:red; margin-top:10px; font-size:0.9rem; text-align:center"> <?php echo $_SESSION['loginFailed']; unset($_SESSION['loginFailed']);?> </p>
             <?php endif; ?>

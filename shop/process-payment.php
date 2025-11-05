@@ -13,33 +13,28 @@ $pdo = connect();
 $user_id = $user['user_id'];
 $payment_method = $_POST['payment_method'];
 $special_instructions = $_POST['instructions'] ?? '';
-$final_amount = $_POST['final_amount'];
-
-
-// Decode the selected items from checkout.php
+$final_amount = (float) $_POST['final_amount'];
 $selectedItems = json_decode($_POST['selectedItems'], true);
+
 if(empty($selectedItems)){
-    echo "No items selected for checkout.";
-    exit;
+    die("No items selected for checkout.");
 }
 
-$orderNumber = 'ORD-' . date("ymd"). '-' . substr(uniqid(), -3);
+$orderNumber = 'ORD-' . date("ymd") . '-' . substr(uniqid(), -3);
 
 try {
     $pdo->beginTransaction();
 
-    // insert sa orde
-    $insertOrderSQL = "INSERT INTO orders(
+    $stmt = $pdo->prepare("INSERT INTO orders(
         user_id, order_number, total_amount, shipping_fee, final_amount,
         payment_method, order_status, delivery_address, contact_number,
         special_instructions, confirmed_at, admin_notes
-    ) VALUES(
+    ) VALUES (
         :user_id, :order_number, :total_amount, :shipping_fee, :final_amount,
         :payment_method, :order_status, :delivery_address, :contact_number,
         :special_instructions, :confirmed_at, :admin_notes
-    )";
+    )");
 
-    $stmt = $pdo->prepare($insertOrderSQL);
     $stmt->execute([
         ':user_id' => $user_id,
         ':order_number' => $orderNumber,
@@ -57,10 +52,10 @@ try {
 
     $orderId = $pdo->lastInsertId();
 
-    // Insert order items na selected items only
-    $insertItemSQL = "INSERT INTO order_items(order_id, product_id, product_name, product_price, quantity, subtotal)
-                      VALUES (:order_id, :product_id, :product_name, :product_price, :quantity, :subtotal)";
-    $itemStmt = $pdo->prepare($insertItemSQL);
+    $itemStmt = $pdo->prepare("INSERT INTO order_items(order_id, product_id, product_name, product_price, quantity, subtotal)
+                               VALUES (:order_id, :product_id, :product_name, :product_price, :quantity, :subtotal)");
+    $stockStmt = $pdo->prepare("UPDATE products SET stock_quantity = stock_quantity - ?
+                                WHERE product_id = ? AND stock_quantity >= ?");
 
     foreach($selectedItems as $item){
         $itemStmt->execute([
@@ -71,36 +66,38 @@ try {
             ':quantity' => $item['quantity'],
             ':subtotal' => $item['price'] * $item['quantity']
         ]);
+
+        $stockStmt->execute([$item['quantity'], $item['product_id'], $item['quantity']]);
+        if($stockStmt->rowCount() === 0){
+            throw new Exception("Not enough stock for product ID {$item['product_id']}");
+        }
     }
+
     $calculatedTotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $selectedItems)) + 75;
     if(abs($calculatedTotal - $final_amount) > 0.01){
         throw new Exception("Final amount mismatch.");
     }
-    // Payment
+
     switch($payment_method){
         case 'GCash':
         case 'Card':
-            $link = createPaymentLink($final_amount, "Order ID: $orderId", "Checkout for Order ID: $orderId", $orderId, $orderNumber);
+            $successUrl = $_ENV['APP_URL'] . "/pages/thank-you.php?order_id=$orderId";
+            $link = createPaymentLink($final_amount, "Order #$orderNumber", "Checkout for Order #$orderNumber", $orderId, $orderNumber, $successUrl);
+
             if(!empty($link['data']['attributes']['checkout_url'])){
-                $checkoutUrl = $link['data']['attributes']['checkout_url'];
                 $pdo->commit();
-                header("Location: $checkoutUrl");
+                header("Location: " . $link['data']['attributes']['checkout_url']);
                 exit;
-            } else {
-                throw new Exception("Failed to create payment link: " . print_r($link, true));
             }
-            break;
+            throw new Exception("Failed to create payment link.");
 
         case 'COD':
-              $codToken = bin2hex(random_bytes(16));
-              $pdo->prepare("UPDATE orders SET cod_token=? WHERE order_id=?")
-              ->execute([$codToken, $orderId]);
+            $codToken = bin2hex(random_bytes(16));
+            $pdo->prepare("UPDATE orders SET cod_token=? WHERE order_id=?")->execute([$codToken, $orderId]);
 
-            // Remove only mga selected items sa cart
-            $placeholders = implode(',', array_fill(0, count($selectedItems), '?'));
             $ids = array_column($selectedItems, 'product_id');
-            $clearCartSQL = "DELETE FROM shopping_cart WHERE user_id = ? AND product_id IN ($placeholders)";
-            $stmt = $pdo->prepare($clearCartSQL);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $stmt = $pdo->prepare("DELETE FROM shopping_cart WHERE user_id=? AND product_id IN ($placeholders)");
             $stmt->execute(array_merge([$user_id], $ids));
 
             $pdo->commit();
@@ -108,10 +105,10 @@ try {
             exit;
 
         default:
-            throw new Exception("Invalid payment method selected.");
+            throw new Exception("Invalid payment method.");
     }
 
-} catch (Exception $e){
+} catch(Exception $e){
     $pdo->rollBack();
-    echo "Checkout failed: " . $e->getMessage();
+    die("Checkout failed: " . $e->getMessage());
 }
