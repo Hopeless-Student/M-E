@@ -38,16 +38,17 @@ $dotenv->load();
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
   '>
-    <!-- Header -->
-    <div style='
-      background: linear-gradient(90deg, #4169E1, #5A7CFA);
-      color: white;
-      padding: 25px 30px;
-      text-align: center;
-    '>
-      <h2 style='margin: 0; font-size: 24px; font-weight: 600;'>📨 New Quick Message</h2>
-      <p style='margin: 8px 0 0; font-size: 14px; opacity: 0.9;'>M&E Interior Supplies Trading</p>
-    </div>
+  <table style='width:100%; background:#0d47a1; color:#ffffff; padding:20px;'>
+      <tr>
+          <td style='width:60px; vertical-align:middle;'>
+              <img src='https://m-e.bscs3b.com/assets/images/M&E_LOGO_transparent.png' alt='M&E Logo' style='height:50px;'>
+          </td>
+          <td style='vertical-align:middle; text-align:left; padding-left:10px;'>
+              <h1 style='margin:0; font-size:20px;'>M&E Interior Supplies</h1>
+              <p style='margin:5px 0 0; font-size:14px;'>New Quick Message</p>
+          </td>
+      </tr>
+  </table>
 
     <div style='padding: 30px; color: #111827;'>
       <p style='font-size: 16px; margin-bottom: 15px;'>
