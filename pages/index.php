@@ -38,6 +38,11 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             </div>
             <?php unset($_SESSION['request_error']); ?>
         <?php endif; ?>
+        <?php if(isset($_SESSION['success'])): ?>
+          <div class="success alert-message">
+              <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+          </div>
+        <?php endif; ?>
 
 
         <section class="hero">

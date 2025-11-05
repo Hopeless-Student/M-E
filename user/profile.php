@@ -159,7 +159,7 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
             </select>
           </div>
           <!-- Address -->
-          <div class="col-4">
+          <div class="col-md-4">
             <label for="inputAddress" class="form-label">Address</label>
             <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly required>
           </div>
