@@ -9,9 +9,9 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
     <title>Shop - Catalog</title>
-    <link rel="stylesheet" href="../assets/css/products.css">
     <link rel="stylesheet" href="../assets/css/navbar.css">
     <link rel="stylesheet" href="../assets/css/homepage.css">
+    <link rel="stylesheet" href="../assets/css/products.css">
 
 </head>
 <body>
@@ -20,11 +20,15 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
     <div class="toolbar">
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search products..." />
-        <button id="searchBtn">Search</button>
-        <button id="clearSearchBtn" style="display:none;">Clear</button>
+        <div class="search-input-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+        </div>
+        <div class="search-btn-group">
+          <button id="searchBtn">Search</button>
+          <button id="clearSearchBtn" style="display:none;">Clear</button>
+        </div>
         <div id="suggestionsBox" class="suggestions-box"></div>
-    </div>
+      </div>
         <div class="dropdown" onmouseleave="hideMenu('catMenu')">
             <button class="drop-btn" onclick="toggleMenu('catMenu')">Categories ▾</button>
             <div class="menu" id="catMenu">
