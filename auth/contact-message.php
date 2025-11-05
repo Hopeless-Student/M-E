@@ -40,7 +40,7 @@ require_once __DIR__ .'/sendUsMessage.php';
 
         if($emailSent){
           $_SESSION['request_success'] = "Your request has been submitted successfully! We'll get back to you soon.";
-          
+
         } else {
           $_SESSION['request_error'] = "Your request has been saved, but we couldn't send a confirmation email. Please check back in your account requests.";
 
@@ -54,5 +54,6 @@ require_once __DIR__ .'/sendUsMessage.php';
       exit;
 
   }
-
+  header("Location: ../pages/index.php");
+  exit;
  ?>

@@ -63,5 +63,6 @@ require_once __DIR__ .'/sendRequestEmail.php';
       exit;
 
   }
-
+  header('Location: ../pages/index.php');
+  exit;
  ?>

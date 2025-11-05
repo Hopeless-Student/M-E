@@ -25,76 +25,54 @@ $dotenv->load();
         $mail->isHTML(true);
 
         $mail->Body = "
-  <div style='
-    font-family: \"Segoe UI\", Tahoma, sans-serif;
-    background: #f3f4f6;
-    padding: 30px;
-  '>
-    <div style='
-      max-width: 600px;
-      margin: auto;
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      overflow: hidden;
-    '>
-      <div style='
-        background: linear-gradient(90deg, #4169E1, #6C8BFF);
-        color: white;
-        padding: 20px 25px;
-        text-align: center;
-      '>
-        <h2 style='margin: 0; font-size: 22px;'>📩 New Customer Request</h2>
-        <p style='margin: 5px 0 0; font-size: 14px;'>M&E Interior Supplies Trading</p>
-      </div>
+<div style='font-family:Segoe UI, sans-serif; background:#f4f6f8; padding:40px;'>
+   <div style='max-width:600px; margin:auto; background:#ffffff; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); overflow:hidden;'>
 
-      <div style='padding: 25px; color: #111827;'>
-        <p style='font-size: 16px;'>
-          You’ve received a new <strong style='color:#4169E1;'>{$request_type}</strong> from:
-        </p>
+       <table style='width:100%; background:#0d47a1; color:#ffffff; padding:20px;'>
+           <tr>
+               <td style='width:60px; vertical-align:middle;'>
+                   <img src='https://m-e.bscs3b.com/assets/images/M&E_LOGO-semi-transparent.png' alt='M&E Logo' style='height:50px;'>
+               </td>
+               <td style='vertical-align:middle; text-align:left; padding-left:10px;'>
+                   <h1 style='margin:0; font-size:20px;'>M&E Interior Supplies</h1>
+                   <p style='margin:5px 0 0; font-size:14px;'>New {$request_type} Received</p>
+               </td>
+           </tr>
+       </table>
 
-        <div style='
-          background: #f9fafb;
-          padding: 15px 20px;
-          border-radius: 8px;
-          margin-bottom: 20px;
-          border-left: 4px solid #4169E1;
-        '>
-          <p style='margin: 0; font-size: 15px;'>
-            <strong>Name:</strong> {$fname} {$lname}<br>
-            <strong>Email:</strong> {$email}
-          </p>
-        </div>
 
-        <p style='font-size: 15px;'><strong>Subject:</strong> " . htmlspecialchars($subject) . "</p>
-        <p style='font-size: 15px; margin-bottom: 10px;'><strong>Message:</strong></p>
-        <div style='
-          background: #f9fafb;
-          padding: 15px;
-          border-radius: 8px;
-          border: 1px solid #e5e7eb;
-          font-size: 14px;
-          line-height: 1.6;
-          white-space: pre-line;
-        '>" . nl2br(htmlspecialchars($message)) . "</div>
+       <div style='padding:30px; color:#111827;'>
+           <p style='font-size:16px;'>
+               You’ve received a new <strong style='color:#0d47a1;'>{$request_type}</strong> from:
+           </p>
 
-        <p style='font-size: 13px; color: #6b7280; margin-top: 25px; text-align:center;'>
-          This message was sent automatically from your M&E customer portal.
-        </p>
-      </div>
+           <div style='background:#f9fafb; padding:15px 20px; border-radius:8px; margin-bottom:20px; border-left:4px solid #0d47a1;'>
+               <p style='margin:0; font-size:15px;'>
+                   <strong>Name:</strong> {$fname} {$lname}<br>
+                   <strong>Email:</strong> {$email}
+               </p>
+           </div>
 
-      <div style='
-        background: #f3f4f6;
-        padding: 15px;
-        text-align: center;
-        font-size: 12px;
-        color: #6b7280;
-      '>
-        &copy; " . date('Y') . " M&E Interior Supplies Trading. All rights reserved.
-      </div>
-    </div>
-  </div>";
+           <p style='font-size:15px;'><strong>Subject:</strong> " . htmlspecialchars($subject) . "</p>
 
+           <p style='font-size:15px; margin-bottom:10px;'><strong>Message:</strong></p>
+           <div style='background:#f9fafb; padding:15px; border-radius:8px; border:1px solid #e5e7eb; font-size:14px; line-height:1.6; white-space:pre-line;'>
+               " . nl2br(htmlspecialchars($message)) . "
+           </div>
+
+           <p style='font-size:13px; color:#6b7280; margin-top:25px; text-align:center;'>
+               This message was sent automatically from your M&E customer portal.
+           </p>
+       </div>
+
+       <!-- Footer -->
+       <div style='background:#f1f3f5; padding:15px; text-align:center; font-size:12px; color:#6b7280;'>
+           &copy; " . date('Y') . " M&E Interior Supplies Trading. All rights reserved.
+       </div>
+
+   </div>
+</div>
+";
         $mail->AltBody = "New custom request from {$fname} {$lname} ({$email}): {$message}";
         if(!$mail->send()){
           error_log("Mailer Error: " . $mail->ErrorInfo);

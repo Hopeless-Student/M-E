@@ -42,7 +42,7 @@ require_once __DIR__ .'/../includes/database.php';
   }
    else {
     echo "No verification parameters provided!";
-    header("Location: ../register.php");
+    header("Location: ../pages/index.php");
     exit;
   }
  ?>

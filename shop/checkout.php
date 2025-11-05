@@ -6,6 +6,36 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['selectedItems']) || !
     header("Location: ../pages/index.php");
     exit;
 }
+$pdo = connect();
+$userId = $_SESSION['user_id'];
+
+$stmt = $pdo->prepare("
+    SELECT
+        u.first_name,
+        u.last_name,
+        u.address,
+        p.province_name,
+        c.city_name,
+        b.barangay_name
+    FROM users u
+    LEFT JOIN provinces p ON u.province_id = p.province_id
+    LEFT JOIN cities c ON u.city_id = c.city_id
+    LEFT JOIN barangays b ON u.barangay_id = b.barangay_id
+    WHERE u.user_id = ?
+");
+$stmt->execute([$userId]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    header("Location: ../pages/index.php"); 
+    exit;
+}
+
+if (empty($user['province_name']) || empty($user['city_name']) || empty($user['barangay_name'])) {
+    $_SESSION['checkout_error'] = "Please complete your address details (Province, City, and Barangay) in your profile before checking out.";
+    header("Location: ../user/profile.php");
+    exit;
+}
 
 $selectedItems = json_decode($_POST['selectedItems'], true);
 
@@ -213,8 +243,13 @@ img.product-thumb { width:50px; height:50px; object-fit:cover; border-radius:5px
                     </div>
 
                     <div class="form-section">
-                        <label class="form-label">Address</label>
-                        <input type="text" class="form-control-plaintext fw-bold" value="<?= htmlspecialchars($user['address']) ?>" readonly>
+                        <label class="form-label">Delivery Address</label>
+                        <div class="form-control-plaintext fw-bold">
+                          <?= htmlspecialchars($user['province_name']) ?>
+                          <?= htmlspecialchars($user['city_name']) ?>,
+                          <?= htmlspecialchars($user['barangay_name']) ?>,<br>
+                          <?= htmlspecialchars($user['address']) ?>
+                      </div>
                     </div>
 
                     <div class="form-section">

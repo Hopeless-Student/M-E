@@ -3,6 +3,7 @@ require __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ .'/../includes/database.php';
 require_once __DIR__ .'/../auth/auth.php';
 require_once __DIR__ .'/paymongo.php';
+require_once __DIR__ .'/../auth/sendOrderEmail.php';
 
 if($_SERVER['REQUEST_METHOD'] !== 'POST'){
     header("Location: checkout.php");
@@ -85,6 +86,15 @@ try {
             $link = createPaymentLink($final_amount, "Order #$orderNumber", "Checkout for Order #$orderNumber", $orderId, $orderNumber, $successUrl);
 
             if(!empty($link['data']['attributes']['checkout_url'])){
+
+              sendOrderEmail(
+                $user['email'],
+                $user['first_name'],
+                $user['last_name'],
+                $orderNumber,
+                $final_amount,
+                $payment_method
+            );
                 $pdo->commit();
                 header("Location: " . $link['data']['attributes']['checkout_url']);
                 exit;
@@ -101,6 +111,14 @@ try {
             $stmt->execute(array_merge([$user_id], $ids));
 
             $pdo->commit();
+            sendOrderEmail(
+                $user['email'],
+                $user['first_name'],
+                $user['last_name'],
+                $orderNumber,
+                $final_amount,
+                $payment_method
+            );
             header("Location: cod.php?order_id=$orderId&token=$codToken");
             exit;
 
