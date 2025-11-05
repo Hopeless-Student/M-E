@@ -855,6 +855,7 @@
             setTimeout(() => alert.remove(), 300);
         }, 3000);
     }
+    
 
     // Close modal with Escape key
     document.addEventListener('keydown', function(event) {
