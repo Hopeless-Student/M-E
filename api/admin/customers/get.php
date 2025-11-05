@@ -1,21 +1,6 @@
 <?php
-/**
- * Get Single Customer API - FIXED VERSION
- * Changed is_active to isActive
- * Added authentication
- * Added admin settings retrieval
- * Fixed SQL injection risks
- */
- ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
-// require_once __DIR__ . '/../auth_check.php';
-//
-// // Authenticate admin
-// $admin = requireAdminAuth();
 
 // Get and validate user ID
 $userId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -114,14 +99,6 @@ try {
                u.updated_at as activity_date
         FROM users u
         WHERE u.user_id = :userId AND u.updated_at != u.created_at
-
-        UNION ALL
-
-        SELECT 'request_submitted' as activity_type,
-               CONCAT('Submitted ', cr.request_type, ' request') as description,
-               cr.created_at as activity_date
-        FROM customer_request cr
-        WHERE cr.user_id = :userId
 
         ORDER BY activity_date DESC
         LIMIT 10";
@@ -279,14 +256,12 @@ try {
 
     echo json_encode($response);
 
-  } catch (PDOException $e) {
-      http_response_code(500);
-      echo json_encode([
-          'error' => 'Database error',
-          'message' => 'Failed to fetch customer details',
-          'details' => $e->getMessage(),  // ADD THIS LINE
-          'trace' => $e->getTraceAsString()  // ADD THIS LINE (optional)
-      ]);
-      error_log("Customer get error: " . $e->getMessage());
-  }
-?>
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Database error',
+        'message' => 'Failed to fetch customer details',
+        'details' => $e->getMessage()
+    ]);
+    error_log("Customer get error: " . $e->getMessage());
+}

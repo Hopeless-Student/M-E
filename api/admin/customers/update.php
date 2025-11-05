@@ -1,12 +1,6 @@
 <?php
-
-
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
-// require_once __DIR__ . '/../auth_check.php';
-//
-// // Authenticate admin
-// $admin = requireAdminAuth();
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -199,9 +193,43 @@ try {
             $adminUpdateFields[] = 'updated_at = NOW()';
             $adminUpdateSql = "UPDATE customer_admin_settings SET " . implode(', ', $adminUpdateFields) . " WHERE user_id = :userId";
         } else {
-            // Insert new settings
-            $columns = array_keys($adminParams);
-            $placeholders = array_map(function($col) { return ":$col"; }, $columns);
+            // Insert new settings - need to add default values
+            $defaultFields = [
+                'customer_type' => 'regular',
+                'credit_limit' => 0,
+                'discount_rate' => 0,
+                'payment_terms' => 'immediate',
+                'sales_rep_id' => null,
+                'allow_bulk_orders' => 1,
+                'allow_credit_purchases' => 0,
+                'require_order_approval' => 0,
+                'block_new_orders' => 0,
+                'receive_marketing_emails' => 1,
+                'access_wholesale_prices' => 0,
+                'outstanding_balance' => 0,
+                'available_credit' => 0,
+                'admin_notes' => ''
+            ];
+
+            // Merge defaults with provided values
+            foreach ($defaultFields as $field => $default) {
+                if (!isset($adminParams[":$field"]) && !in_array("$field = :$field", $adminUpdateFields)) {
+                    $adminUpdateFields[] = "$field = :$field";
+                    $adminParams[":$field"] = $default;
+                }
+            }
+
+            $columns = [];
+            $placeholders = [];
+            foreach ($adminUpdateFields as $field) {
+                $parts = explode(' = ', $field);
+                $columns[] = $parts[0];
+                $placeholders[] = $parts[1];
+            }
+
+            $columns[] = 'user_id';
+            $placeholders[] = ':userId';
+
             $adminUpdateSql = "INSERT INTO customer_admin_settings (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
         }
 
@@ -210,19 +238,6 @@ try {
             $adminUpdateStmt->bindValue($key, $value);
         }
         $adminUpdateStmt->execute();
-    }
-
-    // Log activity if there were changes
-    if (!empty($changes)) {
-        logAdminActivity(
-            $pdo,
-            $userId,
-            $admin['admin_id'],
-            'customer_updated',
-            'Admin updated customer settings',
-            $changes,
-            null
-        );
     }
 
     // Commit transaction
@@ -280,22 +295,22 @@ try {
             'updatedAt' => $user['updated_at'],
             'isActive' => (int)$user['isActive'] === 1,
             'adminSettings' => [
-                'customerType' => $user['customer_type'],
-                'creditLimit' => (float)$user['credit_limit'],
-                'discountRate' => (float)$user['discount_rate'],
-                'paymentTerms' => $user['payment_terms'],
+                'customerType' => $user['customer_type'] ?? 'regular',
+                'creditLimit' => (float)($user['credit_limit'] ?? 0),
+                'discountRate' => (float)($user['discount_rate'] ?? 0),
+                'paymentTerms' => $user['payment_terms'] ?? 'immediate',
                 'salesRepId' => $user['sales_rep_id'],
                 'permissions' => [
-                    'allowBulkOrders' => (bool)$user['allow_bulk_orders'],
-                    'allowCreditPurchases' => (bool)$user['allow_credit_purchases'],
-                    'requireOrderApproval' => (bool)$user['require_order_approval'],
-                    'blockNewOrders' => (bool)$user['block_new_orders'],
-                    'receiveMarketingEmails' => (bool)$user['receive_marketing_emails'],
-                    'accessWholesalePrices' => (bool)$user['access_wholesale_prices']
+                    'allowBulkOrders' => (bool)($user['allow_bulk_orders'] ?? 1),
+                    'allowCreditPurchases' => (bool)($user['allow_credit_purchases'] ?? 0),
+                    'requireOrderApproval' => (bool)($user['require_order_approval'] ?? 0),
+                    'blockNewOrders' => (bool)($user['block_new_orders'] ?? 0),
+                    'receiveMarketingEmails' => (bool)($user['receive_marketing_emails'] ?? 1),
+                    'accessWholesalePrices' => (bool)($user['access_wholesale_prices'] ?? 0)
                 ],
-                'outstandingBalance' => (float)$user['outstanding_balance'],
-                'availableCredit' => (float)$user['available_credit'],
-                'adminNotes' => $user['admin_notes']
+                'outstandingBalance' => (float)($user['outstanding_balance'] ?? 0),
+                'availableCredit' => (float)($user['available_credit'] ?? 0),
+                'adminNotes' => $user['admin_notes'] ?? ''
             ]
         ]
     ];
@@ -311,7 +326,8 @@ try {
     http_response_code(500);
     echo json_encode([
         'error' => 'Database error',
-        'message' => 'Failed to update customer'
+        'message' => 'Failed to update customer',
+        'details' => $e->getMessage()
     ]);
     error_log("Customer update error: " . $e->getMessage());
 } catch (Exception $e) {
@@ -323,8 +339,8 @@ try {
     http_response_code(500);
     echo json_encode([
         'error' => 'Server error',
-        'message' => 'An unexpected error occurred'
+        'message' => 'An unexpected error occurred',
+        'details' => $e->getMessage()
     ]);
     error_log("Customer update error: " . $e->getMessage());
 }
-?>

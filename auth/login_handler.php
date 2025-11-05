@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION["admin_role"] = $user["role"];
 
                     // Redirect to admin dashboard
-                    header("Location: ../admin/dashboard.php");
+                    header("Location: ../admin/index.php");
                     exit;
                 } else {
                     $_SESSION["user_id"] = $user["id"];

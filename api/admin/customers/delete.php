@@ -1,11 +1,6 @@
 <?php
-
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
-// require_once __DIR__ . '/../auth_check.php';
-//
-// // Authenticate admin
-// $admin = requireAdminAuth();
 
 // Only accept DELETE or POST requests
 if (!in_array($_SERVER['REQUEST_METHOD'], ['DELETE', 'POST'])) {
@@ -24,24 +19,23 @@ if (!$input) {
 }
 
 // Validate input
-$validation = validateInput($input, [
-    'userId' => ['required' => true, 'type' => 'int', 'min' => 1],
-    'reason' => ['required' => true, 'type' => 'string', 'maxLength' => 500, 'enum' => [
-        'customer_request', 'duplicate_account', 'fraudulent', 'inactive', 'gdpr'
-    ]],
-    'confirmation' => ['required' => true, 'type' => 'string']
-]);
+$userId = isset($input['userId']) ? (int)$input['userId'] : 0;
+$reason = isset($input['reason']) ? trim($input['reason']) : '';
+$confirmation = isset($input['confirmation']) ? trim($input['confirmation']) : '';
 
-if (!$validation['valid']) {
+// Validation
+if ($userId <= 0) {
     http_response_code(400);
-    echo json_encode(['error' => 'Validation failed', 'details' => $validation['errors']]);
+    echo json_encode(['error' => 'Invalid user ID']);
     exit;
 }
 
-$data = $validation['data'];
-$userId = $data['userId'];
-$reason = $data['reason'];
-$confirmation = $data['confirmation'];
+$allowedReasons = ['customer_request', 'duplicate_account', 'fraudulent', 'inactive', 'gdpr'];
+if (!in_array($reason, $allowedReasons)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid reason', 'allowedReasons' => $allowedReasons]);
+    exit;
+}
 
 // Check confirmation
 if ($confirmation !== 'DELETE') {
@@ -83,22 +77,23 @@ try {
     $softDeleteStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
     $softDeleteStmt->execute();
 
-    // Log deletion reason
-    $logSql = "INSERT INTO customer_requests (user_id, request_type, message, status, created_at)
-               VALUES (:userId, 'account_deletion', :reason, 'completed', NOW())";
-    $logStmt = $pdo->prepare($logSql);
-    $logStmt->execute([':userId' => $userId, ':reason' => $reason]);
+    // Check if customer_requests table exists, if not, skip logging
+    try {
+        $tableCheckSql = "SHOW TABLES LIKE 'customer_requests'";
+        $tableCheckStmt = $pdo->query($tableCheckSql);
+        $tableExists = $tableCheckStmt->rowCount() > 0;
 
-    // Log admin activity
-    logAdminActivity(
-        $pdo,
-        $userId,
-        $admin['admin_id'],
-        'customer_deleted',
-        "Customer account deactivated. Reason: $reason",
-        ['isActive' => 1],
-        ['isActive' => 0]
-    );
+        if ($tableExists) {
+            // Log deletion reason
+            $logSql = "INSERT INTO customer_requests (user_id, request_type, message, status, created_at)
+                       VALUES (:userId, 'account_deletion', :reason, 'completed', NOW())";
+            $logStmt = $pdo->prepare($logSql);
+            $logStmt->execute([':userId' => $userId, ':reason' => $reason]);
+        }
+    } catch (PDOException $e) {
+        // Table doesn't exist, continue without logging
+        error_log("customer_requests table not found, skipping deletion log: " . $e->getMessage());
+    }
 
     // Commit transaction
     $pdo->commit();
@@ -132,7 +127,8 @@ try {
     http_response_code(500);
     echo json_encode([
         'error' => 'Database error',
-        'message' => 'Failed to delete customer'
+        'message' => 'Failed to delete customer',
+        'details' => $e->getMessage()
     ]);
     error_log("Customer delete error: " . $e->getMessage());
 } catch (Exception $e) {
@@ -144,8 +140,8 @@ try {
     http_response_code(500);
     echo json_encode([
         'error' => 'Server error',
-        'message' => 'An unexpected error occurred'
+        'message' => 'An unexpected error occurred',
+        'details' => $e->getMessage()
     ]);
     error_log("Customer delete error: " . $e->getMessage());
 }
-?>
