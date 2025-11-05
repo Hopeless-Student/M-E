@@ -34,6 +34,22 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <?php endif; ?>
+    <?php if (isset($_SESSION['checkout_error'])): ?>
+      <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning text-dark">
+              <h5 class="modal-title fw-bold">⚠️ Notice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <?= htmlspecialchars($_SESSION['checkout_error']); ?>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php unset($_SESSION['checkout_error']); endif; ?>
+
 
     <?php if (!empty($_SESSION['error'])): ?>
       <div class="alert alert-danger alert-dismissible fade show mx-auto text-center"
@@ -96,7 +112,8 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
           <!-- DOB -->
           <div class="col-md-4">
             <label for="dob" class="form-label">Date of Birth</label>
-            <input type="date" id="dob" name="dob" class="form-control" value="<?php echo htmlspecialchars($user['date_of_birth']); ?>" required readonly>
+            <input type="date" id="dob" name="dob" class="form-control" value="<?php echo htmlspecialchars($user['date_of_birth']); ?>" max="<?= date('Y-m-d') ?>"
+ required readonly>
           </div>
           <!-- Contact no -->
           <div class="col-md-4">
@@ -201,6 +218,13 @@ $barangays = $pdo->query("SELECT barangay_id, barangay_name, city_id FROM barang
             userCity: <?= (int)$user['city_id'] ?>,
             userBarangay: <?= (int)$user['barangay_id'] ?>
           };
+          document.addEventListener("DOMContentLoaded", function(){
+              const modalEl = document.getElementById('alertModal');
+              if (modalEl) {
+                  const modal = new bootstrap.Modal(modalEl);
+                  modal.show();
+              }
+          });
           </script>
     <script src="../assets/js/profile.js"></script>
     <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>

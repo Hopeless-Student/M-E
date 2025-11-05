@@ -31,6 +31,11 @@
             header("Location: ../user/profile.php");
             exit;
         }
+          if ($d > new DateTime()) {
+            $_SESSION['error'] = "Date of Birth cannot be in the future.";
+            header("Location: ../user/profile.php");
+            exit;
+        }
     }
     $contact_no = trim($_POST['contact-no']);
     if (preg_match('/^(?:\+63|0)\d{10}$/', $contact_no)) {
@@ -109,6 +114,12 @@
                  $uploadDir = __DIR__ . '/../assets/profile-pics/';
                  $uploadFile = $uploadDir . $newName;
 
+
+                 if (!empty($user['profile_image']) && file_exists($uploadDir . $user['profile_image'])) {
+                      unlink($uploadDir . $user['profile_image']);
+                  }
+                  var_dump($uploadDir . $user['profile_image']);
+                  var_dump(file_exists($uploadDir . $user['profile_image']));
                  if(move_uploaded_file($fileTmp, $uploadFile)){
                    $sql .= ", profile_image=:profile_image";
                    $updateFields['profile_image'] = $newName;
@@ -134,6 +145,7 @@
     }
 
   } else {
-    header("Location: ../test.php");
+    // header("Location: ../test.php");
+    // exit;
   }
  ?>

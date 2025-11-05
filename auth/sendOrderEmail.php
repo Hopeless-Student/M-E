@@ -35,7 +35,7 @@ function sendOrderEmail($email, $fname, $lname, $orderNumber, $final_amount, $pa
         <table style='width:100%; background:#0d47a1; color:#ffffff; padding:20px;'>
             <tr>
                 <td style='width:60px; vertical-align:middle;'>
-                    <img src='https://m-e.bscs3b.com/assets/images/M&E_LOGO_transparent.png' alt='M&E Logo' style='height:50px;'>
+                    <img src='https://m-e.bscs3b.com/assets/images/M&E_LOGO-semi-transparent.png' alt='M&E Logo' style='height:50px;'>
                 </td>
                 <td style='vertical-align:middle; text-align:left; padding-left:10px;'>
                     <h1 style='margin:0; font-size:20px;'>M&E Interior Supplies</h1>

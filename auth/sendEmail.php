@@ -37,7 +37,7 @@ $dotenv->load();
 
         <!-- Header -->
         <div style='background:#0d47a1; color:#fff; padding:20px; text-align:center; display:flex; align-items:center; justify-content:center;'>
-            <img src='https://m-e.bscs3b.com/assets/images/M&E_LOGO_transparent.png' alt='M&E Logo' style='height:40px; margin-right:10px;'>
+            <img src='https://m-e.bscs3b.com/assets/images/M&E_LOGO-semi-transparent.png' alt='M&E Logo' style='height:40px; margin-right:10px;'>
             <div>
                 <h1 style='margin:0; font-size:22px;'>M&E Interior Supplies</h1>
                 <p style='margin:5px 0 0; font-size:14px;'>Verify Your Email</p>
