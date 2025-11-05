@@ -3,7 +3,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-function createPaymentLink($amount, $description, $remarks, $orderId = null, $orderNumber = null) {
+function createPaymentLink($amount, $description, $remarks, $orderId = null, $orderNumber = null, $redirectUrl = null) {
   $secretKey = $_ENV['PAYMONGO_SECRET_KEY'];
 
   $data = [
@@ -26,6 +26,13 @@ function createPaymentLink($amount, $description, $remarks, $orderId = null, $or
         "order_number" => $orderNumber
     ];
 }
+if ($redirectUrl) {
+  $data['data']['attributes']['redirect'] = [
+      'success' => $redirectUrl,
+      'failed' => $_ENV['APP_URL'] . "/pages/checkout.php"
+  ];
+}
+
 
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, "https://api.paymongo.com/v1/links");
