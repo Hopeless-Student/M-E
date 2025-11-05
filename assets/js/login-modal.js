@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("mobileLoginLink"),
     document.getElementById("toggleLogin"),
     document.getElementById("mobileCartLink"),
-    document.querySelector(".mobile-cart-icon"),  
+    document.querySelector(".mobile-cart-icon"),
     document.getElementById("mobileCheckoutBtn")
   ];
 if (mobileCart && !isLoggedIn) loginTriggers.push(mobileCart);
@@ -63,8 +63,10 @@ if (mobileCart && !isLoggedIn) loginTriggers.push(mobileCart);
   });
 
   // password toggle
+function initLoginToggle() {
   const togglePassword = document.getElementById("togglePassword");
   const loginPassword = document.getElementById("loginpassword");
+
   if (togglePassword && loginPassword) {
     togglePassword.addEventListener("click", () => {
       const isPassword = loginPassword.type === "password";
@@ -74,6 +76,37 @@ if (mobileCart && !isLoggedIn) loginTriggers.push(mobileCart);
         : "../assets/svg/eye-slash.svg";
     });
   }
+}
+
+function initSignupToggle() {
+  const signupPasswordInput = document.getElementById("password");
+  const signupConfirmPasswordInput = document.getElementById("confirmPassword");
+  const toggleSignUpPassword = document.getElementById("toggleSignUpPassword");
+  const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+
+  if (!signupPasswordInput || !signupConfirmPasswordInput) return;
+
+  function toggleBothPasswords() {
+    const isPassword = signupPasswordInput.type === "password";
+    const newType = isPassword ? "text" : "password";
+    signupPasswordInput.type = newType;
+    signupConfirmPasswordInput.type = newType;
+
+    const newIcon = isPassword
+      ? "../assets/svg/eye.svg"
+      : "../assets/svg/eye-slash.svg";
+
+    if (toggleSignUpPassword) toggleSignUpPassword.src = newIcon;
+    if (toggleConfirmPassword) toggleConfirmPassword.src = newIcon;
+  }
+
+  if (toggleSignUpPassword) toggleSignUpPassword.addEventListener("click", toggleBothPasswords);
+  if (toggleConfirmPassword) toggleConfirmPassword.addEventListener("click", toggleBothPasswords);
+}
+
+initLoginToggle();
+initSignupToggle();
+
 
   const termsCheckbox = document.getElementById("termsCheckbox");
   const verifyEmailBtn = document.getElementById("verifyEmailBtn");
