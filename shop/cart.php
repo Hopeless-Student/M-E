@@ -72,7 +72,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <div class="shpcrt-summary-details">
                         <div class="shpcrt-summary-line">
                             <span class="shpcrt-summary-key">Subtotal</span>
-                            <span class="shpcrt-summary-val" id="subtotalPrice">$0.00</span>
+                            <span class="shpcrt-summary-val" id="subtotalPrice">₱0.00</span>
                         </div>
                         <div class="shpcrt-summary-line">
                             <span class="shpcrt-summary-key">Items in Cart</span>
@@ -88,7 +88,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                     <div class="shpcrt-summary-line shpcrt-total-line">
                         <span class="shpcrt-total-text">Total</span>
-                        <span class="shpcrt-total-amount" id="totalPrice">$0.00</span>
+                        <span class="shpcrt-total-amount" id="totalPrice">₱0.00</span>
                     </div>
 
                     <div class="shpcrt-action-buttons">
@@ -174,8 +174,8 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                   selected: true
               }));
 
-              updateCart(); // render cart UI
-              updateCartCount(data.count); // update navbar count
+              updateCart();
+              updateCartCount(data.count);
           })
           .catch(err => console.error('Fetch cart failed:', err));
   }
@@ -188,7 +188,6 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             }).filter(Boolean);
             localStorage.setItem('cart', JSON.stringify(merged));
 
-            // Update navbar cart count if present
             const cartCount = document.getElementById('cartCount');
             if (cartCount) {
                 const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
@@ -230,8 +229,8 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             totalItemsCount.textContent = totalItems;
             selectedItemsCount.textContent = selectedCount;
             savedItemsCount.textContent = excludedCount;
-            subtotalPrice.textContent = `$${subtotal.toFixed(2)}`;
-            totalPrice.textContent = `$${checkoutTotal.toFixed(2)}`;
+            subtotalPrice.textContent = `₱${subtotal.toFixed(2)}`;
+            totalPrice.textContent = `₱${checkoutTotal.toFixed(2)}`;
             summaryTotalItems.textContent = totalItems;
             summarySelectedItems.textContent = selectedCount;
 
@@ -295,8 +294,8 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                                     <div class="shpcrt-product-name">${product.title} /per ${product.unit}</div>
                                     <div class="shpcrt-product-category">${product.category}</div>
                                     <div class="shpcrt-product-price">
-                                        $${product.price.toFixed(2)}
-                                        <div class="shpcrt-price-subtotal">Subtotal: $${itemSubtotal.toFixed(2)}</div>
+                                        ₱${product.price.toFixed(2)}
+                                        <div class="shpcrt-price-subtotal">Subtotal: ₱${itemSubtotal.toFixed(2)}</div>
                                     </div>
                                 </div>
                             </div>

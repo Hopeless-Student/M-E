@@ -11,7 +11,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
     <link rel="stylesheet" href="../assets/css/products.css">
     <link rel="stylesheet" href="../assets/css/navbar.css">
     <link rel="stylesheet" href="../assets/css/homepage.css">
-    
+
 </head>
 <body>
   <?php include '../includes/navbar.php'; ?>
@@ -40,10 +40,10 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
             <div class="menu" id="priceMenu">
                 <ul>
                     <li onclick="setFilter('price','all')">All</li>
-                    <li onclick="setFilter('price','0-5')">$0 - $5</li>
-                    <li onclick="setFilter('price','5-10')">$5 - $10</li>
-                    <li onclick="setFilter('price','10-20')">$10 - $20</li>
-                    <li onclick="setFilter('price','20-999')">$20+</li>
+                    <li onclick="setFilter('price','0-5')">₱0 - ₱5</li>
+                    <li onclick="setFilter('price','5-10')">₱5 - ₱10</li>
+                    <li onclick="setFilter('price','10-20')">₱10 - ₱20</li>
+                    <li onclick="setFilter('price','20-999')">₱20+</li>
                 </ul>
             </div>
         </div>
@@ -162,7 +162,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                                 <p class="card-description">${product.description}</p>
                                 <div class="card-footer">
                                     <div class="price-row">
-                                        <span class="price">$${product.price} / ${product.unit}</span>
+                                        <span class="price">₱${product.price} / ${product.unit}</span>
                                     </div>
                                     <div class="card-actions">
                                         <button class="view-more-btn" onclick="viewProduct(${product.id})">View More</button>
