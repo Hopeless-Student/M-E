@@ -5,333 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - M & E Dashboard</title>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-        }
-
-        img{
-            width: 250px;
-            height: 250px;
-        }
-
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Main Content */
-        .main-content {
-          flex: 1;
-          margin-left: 230px !important;
-          padding: 1.5rem;
-          min-height: 100vh;
-          transition: margin-left 0.3s ease;
-          width: calc(100vw - 230px);
-          max-width: calc(100vw - 230px);
-          box-sizing: border-box;
-          position: relative;
-          overflow-x: hidden;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            background: none;
-            padding: 1.25rem 0rem;
-            border-radius: 12px;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header h2 {
-            padding-left: 0.3rem;
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            color: #64748b;
-        }
-
-        .breadcrumb a {
-            color: #1e40af;
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            padding-right: 0.3rem;
-            gap: 0.75rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #475569;
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        /* Form Styles */
-        .form-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            max-width: 800px;
-        }
-
-        .form-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .form-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e40af;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-subtitle {
-            color: #64748b;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #374151;
-        }
-
-        .form-label.required::after {
-            content: ' *';
-            color: #dc2626;
-        }
-
-        .form-input, .form-textarea, .form-select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            outline: none;
-            border-color: #1e40af;
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .file-upload-container {
-            position: relative;
-            border: 2px dashed #d1d5db;
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            transition: border-color 0.2s ease;
-            background: #f9fafb;
-        }
-
-        .file-upload-container:hover {
-            border-color: #1e40af;
-            background: #eff6ff;
-        }
-
-        .file-upload-container.dragover {
-            border-color: #1e40af;
-            background: #eff6ff;
-        }
-
-        .file-upload-input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-upload-label {
-            cursor: pointer;
-            color: #1e40af;
-            font-weight: 500;
-        }
-
-        .file-upload-text {
-            color: #64748b;
-            margin-top: 0.5rem;
-        }
-
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            margin-top: 1rem;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: #1e40af;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #1e3a8a;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background-color: #64748b;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #475569;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: #1e40af;
-            border: 1px solid #1e40af;
-        }
-
-        .btn-outline:hover {
-            background-color: #1e40af;
-            color: white;
-        }
-
-        /* Alert */
-        .alert {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            z-index: 1100;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-
-        .alert.show {
-            transform: translateX(0);
-        }
-
-        .alert.success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .alert.error {
-            background-color: #fee2e2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/admin/products/add.css">
 </head>
 <body>
     <?php
     // require_once __DIR__ . '/../../includes/auth.php'; // Uncomment to enable authentication
     ?>
     <div class="dashboard">
+      <button class="mobile-menu-btn" data-sidebar-toggle="open">
+          <i data-lucide="menu"></i>
+      </button>
+
         <!-- Sidebar -->
         <?php include '../../includes/admin_sidebar.php' ?>
 
@@ -530,6 +214,74 @@
                 alert.classList.remove('show');
             }, 3000);
         }
+        (function() {
+    const sidebar = document.querySelector('.sidebar');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+
+    if (!sidebar || !mobileMenuBtn) return;
+
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    function toggleSidebar() {
+        const isActive = sidebar.classList.contains('active');
+
+        if (isActive) {
+            sidebar.classList.remove('active');
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            if (typeof lucide !== 'undefined') {
+                mobileMenuBtn.innerHTML = '<i data-lucide="menu"></i>';
+                lucide.createIcons();
+            }
+        } else {
+            sidebar.classList.add('active');
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            if (typeof lucide !== 'undefined') {
+                mobileMenuBtn.innerHTML = '<i data-lucide="x"></i>';
+                lucide.createIcons();
+            }
+        }
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+
+    sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 1024 && sidebar.classList.contains('active')) {
+            toggleSidebar();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+            toggleSidebar();
+        }
+    });
+})();
     </script>
 </body>
 </html>

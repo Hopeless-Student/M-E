@@ -282,24 +282,133 @@
             border: 1px solid #fecaca;
         }
 
-        @media (max-width: 640px) {
-            .modal {
-                width: 95%;
-                margin: 1rem;
-            }
+        /* ============================================
+     MOBILE RESPONSIVE - EDIT-PRODUCT.PHP
+     Add this to the <style> section in edit-product.php
+     ============================================ */
 
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+  /* Tablet & Mobile (1024px and below) */
+  @media (max-width: 1024px) {
+      .modal {
+          width: 90%;
+          max-height: 85vh;
+      }
 
-            .image-section {
-                grid-template-columns: 1fr;
-            }
+      .form-row {
+          grid-template-columns: 1fr;
+      }
 
-            .modal-footer {
-                flex-direction: column;
-            }
-        }
+      .image-section {
+          grid-template-columns: 1fr;
+      }
+
+      .current-image,
+      .image-preview {
+          width: 120px;
+          height: 120px;
+      }
+  }
+
+  /* Mobile (768px and below) */
+  @media (max-width: 768px) {
+      .modal {
+          width: 95%;
+      }
+
+      .modal-header {
+          padding: 1rem 1.25rem;
+      }
+
+      .modal-title {
+          font-size: 1.1rem;
+      }
+
+      .modal-body {
+          padding: 1.25rem;
+      }
+
+      .form-label {
+          font-size: 0.85rem;
+      }
+
+      .form-input,
+      .form-textarea,
+      .form-select {
+          font-size: 0.875rem;
+          min-height: 44px;
+      }
+
+      .current-image,
+      .image-preview {
+          width: 100px;
+          height: 100px;
+      }
+
+      .modal-footer {
+          flex-wrap: wrap;
+      }
+
+      .btn {
+          flex: 1;
+          min-width: calc(50% - 0.5rem);
+          font-size: 0.85rem;
+          min-height: 44px;
+      }
+
+      .delete-modal {
+          width: 95%;
+      }
+  }
+
+  /* Small Mobile (640px and below) */
+  @media (max-width: 640px) {
+      .modal {
+          width: 100%;
+          height: 100%;
+          max-height: 100vh;
+          border-radius: 0;
+      }
+
+      .modal-header {
+          padding: 0.875rem 1rem;
+      }
+
+      .modal-title {
+          font-size: 1rem;
+      }
+
+      .modal-body {
+          padding: 1rem;
+          max-height: calc(100vh - 140px);
+          overflow-y: auto;
+      }
+
+      .form-input,
+      .form-textarea,
+      .form-select {
+          font-size: 0.8rem;
+      }
+
+      .current-image,
+      .image-preview {
+          width: 90px;
+          height: 90px;
+      }
+
+      .modal-footer {
+          flex-direction: column;
+          padding: 0.75rem 1rem;
+      }
+
+      .btn {
+          width: 100%;
+          min-width: auto;
+      }
+
+      .delete-modal {
+          width: calc(100% - 2rem);
+      }
+  }
     </style>
 </head>
 <body>

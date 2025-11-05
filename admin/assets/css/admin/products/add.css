@@ -1,0 +1,418 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8fafc;
+        color: #334155;
+        line-height: 1.6;
+    }
+
+    img{
+        width: 250px;
+        height: 250px;
+    }
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        display: none;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1001;
+        background: #1e40af;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .mobile-menu-btn i {
+        width: 20px;
+        height: 20px;
+    }
+    .dashboard {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 230px !important;
+      padding: 1.5rem;
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+      width: calc(100vw - 230px);
+      max-width: calc(100vw - 230px);
+      box-sizing: border-box;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        background: none;
+        padding: 1.25rem 0rem;
+        border-radius: 12px;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .header h2 {
+        padding-left: 0.3rem;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #1e40af;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        color: #64748b;
+    }
+
+    .breadcrumb a {
+        color: #1e40af;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        padding-right: 0.3rem;
+        gap: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #475569;
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Form Styles */
+    .form-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        max-width: 800px;
+    }
+
+    .form-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e40af;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+        color: #64748b;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-label.required::after {
+        content: ' *';
+        color: #dc2626;
+    }
+
+    .form-input, .form-textarea, .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .file-upload-container {
+        position: relative;
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        transition: border-color 0.2s ease;
+        background: #f9fafb;
+    }
+
+    .file-upload-container:hover {
+        border-color: #1e40af;
+        background: #eff6ff;
+    }
+
+    .file-upload-container.dragover {
+        border-color: #1e40af;
+        background: #eff6ff;
+    }
+
+    .file-upload-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-upload-label {
+        cursor: pointer;
+        color: #1e40af;
+        font-weight: 500;
+    }
+
+    .file-upload-text {
+        color: #64748b;
+        margin-top: 0.5rem;
+    }
+
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        margin-top: 1rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background-color: #1e40af;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #1e3a8a;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background-color: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #475569;
+    }
+
+    .btn-outline {
+        background-color: transparent;
+        color: #1e40af;
+        border: 1px solid #1e40af;
+    }
+
+    .btn-outline:hover {
+        background-color: #1e40af;
+        color: white;
+    }
+
+    /* Alert */
+    .alert {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        z-index: 1100;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+    }
+
+    .alert.show {
+        transform: translateX(0);
+    }
+
+    .alert.success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .alert.error {
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    /* ============================================
+     MOBILE RESPONSIVE - ADD.CSS
+     Add this at the end of add.css file
+     ============================================ */
+
+  /* Tablet & Mobile (1024px and below) */
+  @media (max-width: 1024px) {
+      /* Sidebar becomes overlay */
+      .sidebar {
+          position: fixed;
+          left: -100%;
+          width: 280px;
+          height: 100vh;
+          z-index: 1000;
+          transition: left 0.3s ease;
+      }
+
+      .sidebar.active {
+          left: 0;
+      }
+
+      /* Main content full width */
+      .main-content {
+          margin-left: 0 !important;
+          width: 100vw !important;
+          max-width: 100vw !important;
+          padding: 5rem 1rem 1rem;
+      }
+
+      /* Mobile menu button */
+      .mobile-menu-btn {
+          display: flex !important;
+      }
+
+      /* Form grid single column */
+      .form-grid {
+          grid-template-columns: 1fr;
+      }
+
+      /* Form actions stack */
+      .form-actions {
+          flex-direction: column;
+      }
+
+      .form-actions .btn {
+          width: 100%;
+      }
+  }
+
+  /* Mobile (768px and below) */
+  @media (max-width: 768px) {
+      .main-content {
+          padding: 4.5rem 0.75rem 1rem;
+      }
+
+      .header {
+          flex-direction: column;
+          text-align: center;
+      }
+
+      .form-container {
+          padding: 1.25rem;
+      }
+
+      .form-label {
+          font-size: 0.875rem;
+      }
+
+      .form-input,
+      .form-textarea,
+      .form-select {
+          font-size: 0.875rem;
+          min-height: 44px;
+      }
+
+      .btn {
+          font-size: 0.875rem;
+          min-height: 44px;
+      }
+  }
+
+  /* Small Mobile (640px and below) */
+  @media (max-width: 640px) {
+      .main-content {
+          padding: 4rem 0.5rem 0.75rem;
+      }
+
+      .header h2 {
+          font-size: 1.25rem;
+      }
+
+      .form-container {
+          padding: 1rem;
+      }
+
+      .form-input,
+      .form-textarea,
+      .form-select {
+          font-size: 0.8rem;
+      }
+  }
+</style>
