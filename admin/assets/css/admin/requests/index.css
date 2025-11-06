@@ -639,13 +639,19 @@
             flex-direction: column;
         }
 
+        .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
         .sidebar {
             width: 100%;
         }
+        
         .mobile-menu-btn {
             display: block;
         }
-
 
         .messages-layout {
             grid-template-columns: 1fr;
