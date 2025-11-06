@@ -277,6 +277,15 @@ const appState = {
                 <form class="reply-form" onsubmit="appState.sendReply(event)">
                     <textarea class="reply-textarea" placeholder="Type your reply here..." required></textarea>
                     <div class="reply-actions">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-right: auto;">
+                            <label for="replyStatus" style="font-size: 0.9rem; font-weight: 500; color: #374151;">Status:</label>
+                            <select id="replyStatus" name="status" class="status-select" style="padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9rem; background: white; cursor: pointer;">
+                                <option value="pending">Pending</option>
+                                <option value="in-progress" selected>In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
                         <button type="button" class="action-btn secondary" onclick="appState.openTemplatesModalForReply()">
                             <i data-lucide="file-text" width="16" height="16"></i>
                             Use Template
@@ -378,6 +387,8 @@ const appState = {
         event.preventDefault();
 
         const replyText = document.querySelector('.reply-textarea').value;
+        const statusSelect = document.getElementById('replyStatus');
+        const selectedStatus = statusSelect ? statusSelect.value : 'in-progress';
         const currentMessage = this.messages.find(m => m.id === this.currentMessageId);
 
         if (!replyText.trim() || !currentMessage) {
@@ -392,9 +403,8 @@ const appState = {
                 this.currentMessageId,
                 replyText,
                 'RE: ' + currentMessage.subject,
-                'in-progress',
+                selectedStatus,
                 'normal'
-
             );
 
             if (result.success) {
@@ -1055,13 +1065,38 @@ const appState = {
         try {
             this.showLoading();
 
-            const response = await fetch(`view-request.php?id=${messageId}&archived=${isArchived}`);
+            const response = await fetch(`view-request.php`);
             const html = await response.text();
 
-            document.getElementById('viewDetailsModalContent').innerHTML = html;
+            const modalContent = document.getElementById('viewDetailsModalContent');
+            modalContent.innerHTML = html;
+            
+            // Extract and execute scripts manually (innerHTML doesn't execute scripts)
+            const scripts = modalContent.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+            
             document.getElementById('viewDetailsModal').classList.add('active');
 
             lucide.createIcons();
+            
+            // Call the function directly after scripts are loaded
+            setTimeout(() => {
+                if (typeof window.loadMessageDetailsIntoModal === 'function') {
+                    console.log('Calling loadMessageDetailsIntoModal with ID:', messageId);
+                    window.loadMessageDetailsIntoModal(messageId, isArchived);
+                } else {
+                    console.error('loadMessageDetailsIntoModal function not found');
+                }
+            }, 100);
+            
             this.initViewDetailsModalListeners();
         } catch (error) {
             console.error('Failed to load view details modal:', error);

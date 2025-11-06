@@ -4,8 +4,16 @@
  * Returns all templates with optional filtering
  */
 
+session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../../config/config.php';
+
+// Check admin authentication
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
 
 try {
     $category = trim($_GET['category'] ?? '');

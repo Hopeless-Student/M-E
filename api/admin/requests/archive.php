@@ -4,8 +4,16 @@
  * Handles archive, restore, delete operations
  */
 
+session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
+
+// Check admin authentication
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -22,7 +30,7 @@ if (!$input || !isset($input['action'])) {
 }
 
 $action = $input['action'];
-$adminId = 1; // TODO: Get from session
+$adminId = (int)$_SESSION['admin_id'];
 
 try {
     switch ($action) {

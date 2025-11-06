@@ -1,9 +1,8 @@
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -459,6 +458,28 @@
         display: flex;
         gap: 1rem;
         justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .status-select {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .status-select:hover {
+        border-color: #9ca3af;
+    }
+
+    .status-select:focus {
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
     }
 
     .action-btn {
@@ -1604,4 +1625,3 @@
             grid-template-columns: 1fr 1fr;
         }
     }
-</style>
