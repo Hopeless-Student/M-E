@@ -442,6 +442,15 @@ body {
         background: linear-gradient(135deg, #b91c1c, #991b1b);
         box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
     }
+
+    .action-btn-icon.orders {
+        background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    }
+
+    .action-btn-icon.orders:hover {
+        background: linear-gradient(135deg, #6d28d9, #5b21b6);
+        box-shadow: 0 4px 8px rgba(124, 58, 237, 0.3);
+    }
     @media (max-width: 640px) {
         .main-content {
             padding: 0.75rem;

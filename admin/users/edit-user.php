@@ -971,18 +971,47 @@
         </div>
     </div>
 
+    <!-- Update Confirmation Sub-Modal -->
+    <div id="updateModal" class="customer-edit-sub-modal">
+        <div class="customer-edit-sub-modal-content">
+            <div class="customer-edit-sub-modal-header">
+                <h4><i data-lucide="save"></i>Confirm Changes</h4>
+                <button class="customer-edit-close-btn" onclick="closeCustomerEditSubModal('updateModal')">&times;</button>
+            </div>
+            <div class="customer-edit-sub-modal-body">
+                <div class="customer-edit-notice-box">
+                    <p>
+                        <i data-lucide="info"></i>
+                        Are you sure you want to save these changes to the customer profile?
+                    </p>
+                </div>
+                <p style="color: #64748b; font-size: 0.9rem; margin-top: 1rem;">
+                    This will update the customer's permissions, settings, and admin notes.
+                </p>
+            </div>
+            <div class="customer-edit-sub-modal-footer">
+                <button class="customer-edit-btn customer-edit-btn-secondary" onclick="closeCustomerEditSubModal('updateModal')">
+                    <i data-lucide="x"></i> Cancel
+                </button>
+                <button class="customer-edit-btn customer-edit-btn-primary confirm-update-btn">
+                    <i data-lucide="check"></i> Confirm & Save
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Delete Confirmation Sub-Modal -->
     <div id="deleteModal" class="customer-edit-sub-modal">
         <div class="customer-edit-sub-modal-content">
             <div class="customer-edit-sub-modal-header">
                 <h4 style="color: #dc2626;"><i data-lucide="trash-2"></i>Delete Customer</h4>
-                <button class="customer-edit-close-btn" onclick="closeCustomerEditSubModal('deleteModal')">&times;</button>
+                <button class="customer-edit-close-btn">&times;</button>
             </div>
             <div class="customer-edit-sub-modal-body">
                 <div class="customer-edit-danger-box">
                     <p>
                         <i data-lucide="alert-triangle"></i>
-                        <strong>Danger Zone:</strong> This action cannot be undone. All customer data will be permanently deleted.
+                        <strong>Danger Zone:</strong> This action cannot be undone. The customer will be deactivated.
                     </p>
                 </div>
                 <form id="deleteForm">
@@ -994,6 +1023,7 @@
                             <option value="duplicate_account">Duplicate Account</option>
                             <option value="fraudulent">Fraudulent Account</option>
                             <option value="inactive">Long-term Inactive</option>
+                            <option value="gdpr">GDPR Compliance</option>
                         </select>
                     </div>
                     <div class="customer-edit-form-group">
@@ -1003,10 +1033,10 @@
                 </form>
             </div>
             <div class="customer-edit-sub-modal-footer">
-                <button class="customer-edit-btn customer-edit-btn-secondary" onclick="closeCustomerEditSubModal('deleteModal')">
+                <button class="customer-edit-btn customer-edit-btn-secondary">
                     <i data-lucide="x"></i> Cancel
                 </button>
-                <button type="submit" name="delete_confirm" form="deleteForm" class="customer-edit-btn customer-edit-btn-danger" onclick="closeCustomerEditSubModal('deleteModal')">
+                <button type="submit" name="delete_confirm" form="deleteForm" class="customer-edit-btn customer-edit-btn-danger">
                     <i data-lucide="trash-2"></i> Delete Customer
                 </button>
             </div>

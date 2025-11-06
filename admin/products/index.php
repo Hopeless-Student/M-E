@@ -98,13 +98,12 @@
             <!-- Pagination -->
             <div class="pagination" id="paginationContainer">
                 <div class="pagination-info" id="paginationInfo">
-                    Showing 1-6 of 12 products
+                    Showing <span id="startItem">1</span>-<span id="endItem">6</span> of <span id="totalItems">12</span> products
                 </div>
                 <div class="pagination-controls" id="paginationControls">
-                    <button class="page-btn">Previous</button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">Next</button>
+                    <button class="page-btn" id="prevBtn">← Previous</button>
+                    <span id="pageNumbers"></span>
+                    <button class="page-btn" id="nextBtn">Next →</button>
                 </div>
             </div>
 
@@ -347,33 +346,50 @@
         }
 
         function renderPagination() {
-            const paginationInfo = document.getElementById('paginationInfo');
-            const paginationControls = document.getElementById('paginationControls');
+            const startItemSpan = document.getElementById('startItem');
+            const endItemSpan = document.getElementById('endItem');
+            const totalItemsSpan = document.getElementById('totalItems');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageNumbers = document.getElementById('pageNumbers');
 
+            // Update pagination info
             if (apiTotal === 0) {
-                paginationInfo.textContent = 'Showing 0-0 of 0 products';
+                startItemSpan.textContent = '0';
+                endItemSpan.textContent = '0';
+                totalItemsSpan.textContent = '0';
             } else {
                 const startItem = ((currentPage - 1) * productsPerPage) + 1;
                 const endItem = Math.min(currentPage * productsPerPage, apiTotal);
-                paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${apiTotal} products`;
+                startItemSpan.textContent = startItem;
+                endItemSpan.textContent = endItem;
+                totalItemsSpan.textContent = apiTotal;
             }
 
-            let buttonsHTML = '<button class="page-btn" id="prevBtn">Previous</button>';
+            // Disable/enable prev/next buttons
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
 
-            for (let i = 1; i <= totalPages; i++) {
-                buttonsHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            // Generate page number buttons (max 5 visible)
+            let pageNumbersHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            // Adjust startPage if we're near the end
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
             }
 
-            buttonsHTML += '<button class="page-btn" id="nextBtn">Next</button>';
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbersHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
 
-            paginationControls.innerHTML = buttonsHTML;
+            pageNumbers.innerHTML = pageNumbersHTML;
 
-            document.getElementById('prevBtn').onclick = () => goToPage(currentPage - 1);
-            document.getElementById('nextBtn').onclick = () => goToPage(currentPage + 1);
-
-            document.querySelectorAll('[data-page]').forEach(btn => {
-                btn.onclick = () => goToPage(parseInt(btn.dataset.page));
-            });
+            // Setup prev/next button handlers
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            nextBtn.onclick = () => goToPage(currentPage + 1);
         }
 
         function goToPage(page) {

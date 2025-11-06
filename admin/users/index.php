@@ -174,6 +174,7 @@
     <?php include './edit-user.php';
           include './user-details.php';
           include './user-orders.php';
+          include '../orders/order-details.php';
           ?>
           <script>
           // ==========================
@@ -304,9 +305,7 @@
               }
           }
 
-          // ==========================
-          // LOADING CUSTOMERS & RENDERING (unchanged, compacted)
-          // ==========================
+          
           async function loadCustomersData() {
               const tbody = document.querySelector('.customers-table tbody');
               const loadingOverlay = showLoading(tbody.closest('.table-container'));
@@ -392,8 +391,8 @@
                                   <button class="action-btn-icon orders" onclick="openCustomerOrdersModal(${customer.id})" title="Orders">
                                       <i data-lucide="package"></i>
                                   </button>
-                                  <button class="action-btn-icon secondary" onclick="openCustomerEditModal(${customer.id})" title="Edit">
-                                      <i data-lucide="user-pen"></i>
+                                  <button class="action-btn-icon danger" onclick="openDeleteModal(${customer.id}, '${customer.name.replace(/'/g, "\\'")}', event)" title="Delete">
+                                      <i data-lucide="trash-2"></i>
                                   </button>
                               </div>
                           </td>
@@ -446,9 +445,6 @@
               loadCustomersData();
           }
 
-          // ==========================
-          // CUSTOMER DETAILS & ORDERS (kept from your code with small guards)
-          // ==========================
           async function openCustomerDetailsModal(customerId) {
               const modal = document.getElementById('customerDetailsModal');
               if (!modal) return;
@@ -461,20 +457,6 @@
                   const customer = await apiRequest(`../../api/admin/customers/get.php?id=${customerId}`);
                   if (customer) {
                       populateCustomerDetailsModal(customer);
-                      const viewOrdersBtn = modal.querySelector('#viewOrders');
-                      if (viewOrdersBtn) {
-                          viewOrdersBtn.onclick = () => {
-                              closeCustomerDetailsModal();
-                              openCustomerOrdersModal(customerId);
-                          };
-                      }
-                      const editUserBtn = modal.querySelector('#editUser');
-                      if (editUserBtn) {
-                          editUserBtn.onclick = () => {
-                              closeCustomerDetailsModal();
-                              openCustomerEditModal(customerId);
-                          };
-                      }
                   }
               } catch (error) {
                   console.error('Customer details error:', error);
@@ -507,7 +489,7 @@
               if (stats[0]) stats[0].textContent = customer.statistics?.totalOrders ?? 0;
               if (stats[1]) stats[1].textContent = `₱${(customer.statistics?.totalSpent ?? 0).toLocaleString()}`;
               if (stats[2]) stats[2].textContent = `₱${Math.round(customer.statistics?.averageOrder ?? 0).toLocaleString()}`;
-              
+
               if (stats[3]) {
                   const days = customer.statistics?.daysSinceLastOrder;
                   stats[3].textContent = days !== null && days !== undefined ? `${days} day${days !== 1 ? 's' : ''}` : 'Never';
@@ -525,16 +507,39 @@
           }
 
           // Orders modal kept, with guards
-          async function openCustomerOrdersModal(customerId) {
+          let currentOrdersCustomerId = null;
+          let currentOrdersPage = 1;
+          
+          async function openCustomerOrdersModal(customerId, page = 1) {
               const modal = document.getElementById('customerOrdersModal');
               if (!modal) return;
+              
+              currentOrdersCustomerId = customerId;
+              currentOrdersPage = page;
+              
               modal.classList.add('show');
               document.body.style.overflow = 'hidden';
               const modalBody = modal.querySelector('.customer-orders-modal-body');
               const loadingOverlay = showLoading(modalBody);
 
               try {
-                  const data = await apiRequest(`../../api/admin/customers/orders.php?id=${customerId}`);
+                  // Get filter values
+                  const statusFilter = document.getElementById('customerOrdersStatusFilter')?.value || '';
+                  const startDate = document.getElementById('customerOrdersStartDate')?.value || '';
+                  const endDate = document.getElementById('customerOrdersEndDate')?.value || '';
+                  
+                  // Build query parameters
+                  const params = new URLSearchParams({
+                      id: customerId,
+                      page: page,
+                      pageSize: 10
+                  });
+                  
+                  if (statusFilter) params.set('status', statusFilter);
+                  if (startDate) params.set('startDate', startDate);
+                  if (endDate) params.set('endDate', endDate);
+                  
+                  const data = await apiRequest(`../../api/admin/customers/orders.php?${params.toString()}`);
                   populateCustomerOrdersModal(data);
 
                   const viewProfileBtn = modal.querySelector('#viewProfile');
@@ -551,6 +556,12 @@
                           openCustomerEditModal(customerId);
                       };
                   }
+                  
+                  // Setup filter event listeners
+                  setupOrdersFilterListeners();
+                  
+                  // Setup pagination
+                  setupOrdersPagination(data.pagination);
 
                   // attach "view" handlers inside table (deferred to ensure DOM in)
                   setTimeout(() => {
@@ -568,14 +579,131 @@
                   lucide.createIcons();
               }
           }
+          
+          function setupOrdersFilterListeners() {
+              const statusFilter = document.getElementById('customerOrdersStatusFilter');
+              const startDate = document.getElementById('customerOrdersStartDate');
+              const endDate = document.getElementById('customerOrdersEndDate');
+              
+              if (statusFilter) {
+                  statusFilter.onchange = () => {
+                      if (currentOrdersCustomerId) {
+                          openCustomerOrdersModal(currentOrdersCustomerId, 1);
+                      }
+                  };
+              }
+              
+              if (startDate) {
+                  startDate.onchange = () => {
+                      if (currentOrdersCustomerId) {
+                          openCustomerOrdersModal(currentOrdersCustomerId, 1);
+                      }
+                  };
+              }
+              
+              if (endDate) {
+                  endDate.onchange = () => {
+                      if (currentOrdersCustomerId) {
+                          openCustomerOrdersModal(currentOrdersCustomerId, 1);
+                      }
+                  };
+              }
+          }
+          
+          function setupOrdersPagination(pagination) {
+              if (!pagination) return;
+              
+              const modal = document.getElementById('customerOrdersModal');
+              if (!modal) return;
+              
+              const paginationControls = modal.querySelector('.customer-orders-pagination-controls');
+              if (!paginationControls) return;
+              
+              let buttonsHTML = '<button class="customer-orders-page-btn" id="ordersPrevBtn">Previous</button>';
+              
+              for (let i = 1; i <= pagination.totalPages; i++) {
+                  if (pagination.totalPages <= 7 || i === 1 || i === pagination.totalPages || 
+                      (i >= pagination.page - 1 && i <= pagination.page + 1)) {
+                      buttonsHTML += `<button class="customer-orders-page-btn ${i === pagination.page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                  } else if (i === pagination.page - 2 || i === pagination.page + 2) {
+                      buttonsHTML += '<span style="padding: 0 0.5rem;">...</span>';
+                  }
+              }
+              
+              buttonsHTML += '<button class="customer-orders-page-btn" id="ordersNextBtn">Next</button>';
+              paginationControls.innerHTML = buttonsHTML;
+              
+              // Attach pagination handlers
+              const prevBtn = document.getElementById('ordersPrevBtn');
+              const nextBtn = document.getElementById('ordersNextBtn');
+              
+              if (prevBtn) {
+                  prevBtn.onclick = () => {
+                      if (pagination.page > 1 && currentOrdersCustomerId) {
+                          openCustomerOrdersModal(currentOrdersCustomerId, pagination.page - 1);
+                      }
+                  };
+              }
+              
+              if (nextBtn) {
+                  nextBtn.onclick = () => {
+                      if (pagination.page < pagination.totalPages && currentOrdersCustomerId) {
+                          openCustomerOrdersModal(currentOrdersCustomerId, pagination.page + 1);
+                      }
+                  };
+              }
+              
+              // Page number buttons
+              paginationControls.querySelectorAll('[data-page]').forEach(btn => {
+                  btn.onclick = () => {
+                      const page = parseInt(btn.getAttribute('data-page'));
+                      if (currentOrdersCustomerId) {
+                          openCustomerOrdersModal(currentOrdersCustomerId, page);
+                      }
+                  };
+              });
+          }
+          
+          function exportOrders() {
+              if (!currentOrdersCustomerId) {
+                  showToast('No customer selected', 'error');
+                  return;
+              }
+              
+              const statusFilter = document.getElementById('customerOrdersStatusFilter')?.value || '';
+              const startDate = document.getElementById('customerOrdersStartDate')?.value || '';
+              const endDate = document.getElementById('customerOrdersEndDate')?.value || '';
+              
+              const params = new URLSearchParams({
+                  id: currentOrdersCustomerId,
+                  export: 'csv'
+              });
+              
+              if (statusFilter) params.set('status', statusFilter);
+              if (startDate) params.set('startDate', startDate);
+              if (endDate) params.set('endDate', endDate);
+              
+              // Open export URL in new window
+              window.open(`../../api/admin/customers/orders.php?${params.toString()}`, '_blank');
+              showToast('Export started...', 'success');
+          }
 
           function handleOrderViewClick(e) {
               e.preventDefault();
               const btn = e.currentTarget;
               const orderRow = btn.closest('tr');
               const orderIdLink = orderRow && orderRow.querySelector('.customer-orders-order-id');
-              const orderId = orderIdLink ? orderIdLink.textContent.replace('#', '') : 'unknown';
-              showToast(`View order #${orderId} functionality - to be implemented`, 'info');
+              const orderNumber = orderIdLink ? orderIdLink.textContent.replace('#', '') : null;
+              
+              if (orderNumber) {
+                  // Find the order ID from the order number
+                  const orderData = btn.getAttribute('data-order-id');
+                  if (orderData) {
+                      openOrderDetailsModal(orderData);
+                  } else {
+                      showToast('Order ID not found', 'error');
+                  }
+              }
           }
 
           function populateCustomerOrdersModal(data) {
@@ -593,6 +721,23 @@
               const titleP = modal.querySelector('.customer-orders-modal-title p');
               if (titleP) titleP.textContent = `Customer ID: #CUS-${String(customer.id || 0).padStart(3, '0')} • Member since ${customer.memberSince || 'N/A'}`;
 
+              // Update order summary statistics
+              const stats = data.statistics || {};
+              const summaryValues = modal.querySelectorAll('.customer-orders-summary-value');
+              const summaryLabels = modal.querySelectorAll('.customer-orders-summary-label');
+              
+              if (summaryValues[0]) summaryValues[0].textContent = stats.completed?.count || 0;
+              if (summaryLabels[0]) summaryLabels[0].textContent = `Completed (₱${(stats.completed?.amount || 0).toLocaleString()})`;
+              
+              if (summaryValues[1]) summaryValues[1].textContent = stats.pending?.count || 0;
+              if (summaryLabels[1]) summaryLabels[1].textContent = `Pending (₱${(stats.pending?.amount || 0).toLocaleString()})`;
+              
+              if (summaryValues[2]) summaryValues[2].textContent = stats.processing?.count || 0;
+              if (summaryLabels[2]) summaryLabels[2].textContent = `Processing (₱${(stats.processing?.amount || 0).toLocaleString()})`;
+              
+              if (summaryValues[3]) summaryValues[3].textContent = stats.cancelled?.count || 0;
+              if (summaryLabels[3]) summaryLabels[3].textContent = `Cancelled (₱${(stats.cancelled?.amount || 0).toLocaleString()})`;
+
               const ordersTableBody = modal.querySelector('.customer-orders-orders-table tbody');
               if (ordersTableBody) {
                   if (data.orders && data.orders.length) {
@@ -609,9 +754,16 @@
                               <td><span class="customer-orders-order-total">₱${order.finalAmount.toLocaleString()}</span></td>
                               <td>${order.paymentMethod || 'N/A'}</td>
                               <td><span class="customer-orders-order-status ${order.orderStatus.toLowerCase()}">${order.orderStatus}</span></td>
-                              <td><a href="#" class="customer-orders-action-btn">View</a></td>
+                              <td>
+                                  <button class="customer-orders-action-btn" onclick="openCustomerOrderDetailsModal(${order.orderId})">
+                                      View
+                                  </button>
+                              </td>
                           </tr>
                       `).join('');
+                      
+                      // Re-render lucide icons
+                      setTimeout(() => lucide.createIcons(), 100);
                   } else {
                       ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 1rem;">No orders found</td></tr>';
                   }
@@ -630,6 +782,230 @@
               const modal = document.getElementById('customerOrdersModal');
               if (modal && (event === undefined || event.target === modal || event.target.closest('.customer-orders-close-btn'))) {
                   modal.classList.remove('show');
+                  document.body.style.overflow = 'auto';
+              }
+          }
+
+          // ==========================
+          // ORDER DETAILS MODAL (from customer orders)
+          // ==========================
+          async function openCustomerOrderDetailsModal(orderId) {
+              try {
+                  console.log('Opening order details for order ID:', orderId);
+                  const response = await fetch(`../../api/orders/show.php?id=${encodeURIComponent(orderId)}`, {
+                      headers: { 'Accept': 'application/json' }
+                  });
+                  
+                  if (!response.ok) throw new Error('Failed to load order');
+                  const data = await response.json();
+                  console.log('Order data received:', data);
+
+                  const order = data.order || {};
+                  const items = Array.isArray(data.items) ? data.items : [];
+                  console.log('Parsed order:', order);
+                  console.log('Parsed items:', items);
+
+                  // Parse dates properly
+                  const orderDate = order.order_date ? new Date(order.order_date) : new Date();
+                  const confirmedDate = order.confirmed_at ? new Date(order.confirmed_at) : null;
+                  const deliveredDate = order.delivered_at ? new Date(order.delivered_at) : null;
+
+                  populateOrderDetailsModalData({
+                      id: String(order.order_id || orderId),
+                      customer: order.customer_name || '',
+                      category: order.category || '',
+                      items: items.length,
+                      amount: String(order.final_amount ?? order.total_amount ?? 0),
+                      date: orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+                      rawDate: orderDate,
+                      status: (order.order_status || '').toLowerCase(),
+                      email: order.email || '',
+                      phone: order.contact_number || '',
+                      company: '',
+                      address: order.delivery_address || '',
+                      paymentMethod: order.payment_method || '',
+                      transactionId: order.transaction_id || '',
+                      notes: order.admin_notes || '',
+                      confirmedAt: confirmedDate,
+                      deliveredAt: deliveredDate,
+                      _items: items
+                  });
+
+                  document.getElementById('orderModal').classList.add('active');
+                  document.body.style.overflow = 'hidden';
+
+                  // Hide update and delete buttons for customer view
+                  const updateBtn = document.getElementById("updateModalBtn");
+                  if (updateBtn) updateBtn.style.display = 'none';
+                  
+                  const deleteBtn = document.getElementById("deleteModalBtn");
+                  if (deleteBtn) deleteBtn.style.display = 'none';
+
+                  setTimeout(() => {
+                      lucide.createIcons();
+                  }, 100);
+              } catch (e) {
+                  console.error(e);
+                  showToast('Failed to load order details', 'error');
+              }
+          }
+
+          function populateOrderDetailsModalData(order) {
+              try {
+                  const modalOrderId = document.getElementById('modalOrderId');
+                  const detailOrderId = document.getElementById('detailOrderId');
+                  const detailCustomer = document.getElementById('detailCustomer');
+                  const detailCategory = document.getElementById('detailCategory');
+                  const detailAmount = document.getElementById('detailAmount');
+                  const detailDate = document.getElementById('detailDate');
+                  const detailStatus = document.getElementById('detailStatus');
+                  
+                  if (modalOrderId) modalOrderId.textContent = `#ORD-${order.id}`;
+                  if (detailOrderId) detailOrderId.textContent = `#ORD-${order.id}`;
+                  if (detailCustomer) detailCustomer.textContent = order.customer;
+                  if (detailCategory) detailCategory.textContent = order.category;
+                  if (detailAmount) detailAmount.textContent = `₱${parseInt(order.amount).toLocaleString()}`;
+                  if (detailDate) detailDate.textContent = order.date;
+
+                  if (detailStatus) {
+                      detailStatus.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+                      detailStatus.className = `status ${order.status}`;
+                  }
+
+                  const customerName = document.getElementById('customerName');
+                  const customerEmail = document.getElementById('customerEmail');
+                  const customerPhone = document.getElementById('customerPhone');
+                  const customerCompany = document.getElementById('customerCompany');
+                  const customerSince = document.getElementById('customerSince');
+                  
+                  if (customerName) customerName.textContent = order.customer;
+                  if (customerEmail) customerEmail.textContent = order.email;
+                  if (customerPhone) customerPhone.textContent = order.phone;
+                  if (customerCompany) customerCompany.textContent = order.company || 'N/A';
+                  if (customerSince) customerSince.textContent = 'January 2024';
+
+                  const deliveryAddress = document.getElementById('deliveryAddress');
+                  const deliveryMethod = document.getElementById('deliveryMethod');
+                  const expectedDelivery = document.getElementById('expectedDelivery');
+                  const trackingNumber = document.getElementById('trackingNumber');
+                  
+                  if (deliveryAddress) deliveryAddress.innerHTML = order.address.replace(/,\s*/g, '<br>');
+                  if (deliveryMethod) deliveryMethod.textContent = 'Standard Delivery';
+                  if (expectedDelivery) expectedDelivery.textContent = getExpectedDeliveryDate(order.rawDate || order.date, order.status);
+                  if (trackingNumber) trackingNumber.textContent = order.trackingNumber || 'N/A';
+
+                  const paymentMethod = document.getElementById('paymentMethod');
+                  const paymentStatus = document.getElementById('paymentStatus');
+                  const transactionId = document.getElementById('transactionId');
+                  const paymentDate = document.getElementById('paymentDate');
+                  
+                  if (paymentMethod) paymentMethod.textContent = order.paymentMethod;
+                  if (paymentStatus) {
+                      paymentStatus.textContent = 'Paid';
+                      paymentStatus.className = 'status delivered';
+                  }
+                  if (transactionId) transactionId.textContent = order.transactionId || 'N/A';
+                  if (paymentDate) paymentDate.textContent = order.date;
+
+                  populateOrderDetailsItems(order);
+                  populateOrderDetailsTimeline(order);
+                  
+                  const orderNotes = document.getElementById('orderNotes');
+                  if (orderNotes) orderNotes.value = order.notes;
+              } catch (error) {
+                  console.error('Error populating order details:', error);
+                  showToast('Error displaying order details', 'error');
+              }
+          }
+
+          function populateOrderDetailsItems(order) {
+              const itemsContainer = document.getElementById('orderItems');
+              const apiItems = Array.isArray(order._items) ? order._items : [];
+
+              let itemsHTML = '';
+              let total = 0;
+
+              apiItems.forEach(item => {
+                  const name = item.product_name || `#${item.product_id}`;
+                  const quantity = Number(item.quantity || 0);
+                  const price = Number(item.product_price || 0);
+                  const subtotal = Number(item.subtotal != null ? item.subtotal : (quantity * price));
+                  total += subtotal;
+
+                  itemsHTML += `
+                      <tr>
+                          <td>${name}</td>
+                          <td>${quantity}</td>
+                          <td>₱${price.toLocaleString()}</td>
+                          <td>₱${subtotal.toLocaleString()}</td>
+                      </tr>
+                  `;
+              });
+
+              itemsHTML += `
+                  <tr style="border-top: 2px solid #1e40af;">
+                      <td colspan="3" style="text-align: right; font-weight: 600;">Total:</td>
+                      <td style="font-weight: 700; color: #1e40af; font-size: 1.1rem;">₱${total.toLocaleString()}</td>
+                  </tr>
+              `;
+
+              itemsContainer.innerHTML = itemsHTML;
+          }
+
+          function populateOrderDetailsTimeline(order) {
+              const timeline = document.getElementById('orderTimeline');
+              const statusMap = {
+                  'pending': 0,
+                  'confirmed': 1,
+                  'shipped': 2,
+                  'delivered': 3
+              };
+
+              const timelineSteps = [
+                  { label: 'Order Placed', status: 'pending', hours: 0 },
+                  { label: 'Payment Confirmed', status: 'confirmed', hours: 2 },
+                  { label: 'Processing Started', status: 'confirmed', hours: 6 },
+                  { label: 'Shipped', status: 'shipped', hours: 24 },
+                  { label: 'Delivered', status: 'delivered', hours: 72 }
+              ];
+
+              const currentStatusLevel = statusMap[order.status] || 0;
+              let timelineHTML = '';
+              const baseDate = new Date(order.date);
+
+              timelineSteps.forEach((step, index) => {
+                  const stepStatusLevel = statusMap[step.status] || 0;
+
+                  if (stepStatusLevel <= currentStatusLevel) {
+                      const statusDate = new Date(baseDate);
+                      statusDate.setHours(statusDate.getHours() + step.hours);
+
+                      timelineHTML += `
+                          <div class="timeline-item">
+                              <div class="timeline-marker completed"></div>
+                              <div class="timeline-content">
+                                  <div class="timeline-title">${step.label}</div>
+                                  <div class="timeline-time">${statusDate.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>
+                              </div>
+                          </div>
+                      `;
+                  }
+              });
+
+              timeline.innerHTML = timelineHTML;
+          }
+
+          function getExpectedDeliveryDate(orderDate, status) {
+              const date = new Date(orderDate);
+              const deliveryDays = status === 'delivered' ? 0 : status === 'shipped' ? 2 : 3;
+              date.setDate(date.getDate() + deliveryDays);
+              return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          }
+
+          function closeOrderModal() {
+              const modal = document.getElementById('orderModal');
+              if (modal) {
+                  modal.classList.remove('active');
                   document.body.style.overflow = 'auto';
               }
           }
@@ -711,7 +1087,9 @@
                   }
 
                   // Setup delete flow wiring: ensure delete form submit handled
-                  const deleteForm = modal.querySelector('#deleteForm');
+                  const deleteModal = document.getElementById('deleteModal');
+                  const deleteForm = deleteModal ? deleteModal.querySelector('#deleteForm') : null;
+                  
                   if (deleteForm) {
                       // ensure the confirmation input has a name to avoid "name=''" validation issues
                       const deleteInput = deleteForm.querySelector('input[type="text"][placeholder*="DELETE"]');
@@ -724,16 +1102,24 @@
                           performCustomerDelete(customerId);
                       };
 
-                      // ensure the footer confirm button will trigger our JS (make it type=button)
-                      const deleteConfirmBtn = modal.querySelector('#deleteModal button[type="submit"][form="deleteForm"], #deleteModal .customer-edit-btn-danger');
+                      // Find the delete button in the deleteModal footer
+                      const deleteConfirmBtn = deleteModal.querySelector('.customer-edit-sub-modal-footer .customer-edit-btn-danger');
                       if (deleteConfirmBtn) {
-                          try { deleteConfirmBtn.type = 'button'; } catch (err) {}
-                          deleteConfirmBtn.removeAttribute && deleteConfirmBtn.removeAttribute('onclick');
-                          deleteConfirmBtn.onclick = (e) => {
+                          // Remove any existing onclick handlers
+                          deleteConfirmBtn.onclick = null;
+                          deleteConfirmBtn.removeAttribute('onclick');
+                          
+                          // Add new click handler
+                          deleteConfirmBtn.addEventListener('click', (e) => {
                               e.preventDefault();
-                              // submit the deleteForm programmatically (will call our deleteForm.onsubmit handler)
-                              deleteForm.requestSubmit ? deleteForm.requestSubmit() : deleteForm.dispatchEvent(new Event('submit', { cancelable: true }));
-                          };
+                              e.stopPropagation();
+                              // Trigger form submission which will call performCustomerDelete
+                              if (deleteForm.requestSubmit) {
+                                  deleteForm.requestSubmit();
+                              } else {
+                                  deleteForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                              }
+                          });
                       }
                   }
 
@@ -844,12 +1230,26 @@
                   });
 
                   const adminNotes = form.querySelector('textarea[name="admin_notes"]')?.value || '';
+                  
+                  // Collect all form fields for admin settings
+                  const customerType = form.querySelector('select[name="customer_type"]')?.value;
+                  const creditLimit = form.querySelector('input[name="credit_limit"]')?.value;
+                  const discountRate = form.querySelector('input[name="discount_rate"]')?.value;
+                  const paymentTerms = form.querySelector('select[name="payment_terms"]')?.value;
+                  const salesRep = form.querySelector('select[name="sales_rep"]')?.value;
 
                   const body = {
-                      userId: Number((modal.querySelector('#customerEditID')?.textContent || '').replace(/\D/g, '')) || customerId,
+                      userId: customerId,
                       adminNotes,
-                      permissions
+                      ...permissions
                   };
+                  
+                  // Add optional fields if they exist
+                  if (customerType) body.customerType = customerType;
+                  if (creditLimit) body.creditLimit = parseFloat(creditLimit);
+                  if (discountRate) body.discountRate = parseFloat(discountRate);
+                  if (paymentTerms) body.paymentTerms = paymentTerms;
+                  if (salesRep) body.salesRepId = salesRep ? parseInt(salesRep) : null;
 
                   const res = await apiRequest('../../api/admin/customers/update.php', {
                       method: 'POST',
@@ -876,11 +1276,155 @@
               }
           }
 
-          async function performCustomerDelete(customerId) {
-              const modal = document.getElementById('customerEditModal');
-              if (!modal) return;
+          // Open delete modal from table
+          let currentDeleteCustomerId = null;
+          
+          function openDeleteModal(customerId, customerName, event) {
+              if (event) {
+                  event.stopPropagation();
+              }
+              
+              currentDeleteCustomerId = customerId;
+              
+              const deleteModal = document.getElementById('deleteModal');
+              if (!deleteModal) {
+                  showToast('Delete modal not found', 'error');
+                  return;
+              }
+              
+              // Update modal title with customer name
+              const modalHeader = deleteModal.querySelector('.customer-edit-sub-modal-header h4');
+              if (modalHeader) {
+                  modalHeader.innerHTML = `<i data-lucide="trash-2"></i>Delete Customer: ${customerName}`;
+              }
+              
+              // Clear form
+              const deleteForm = deleteModal.querySelector('#deleteForm');
+              if (deleteForm) {
+                  deleteForm.reset();
+              }
+              
+              // Show modal
+              deleteModal.classList.add('show');
+              document.body.style.overflow = 'hidden';
+              
+              // Setup form submission
+              setupDeleteFormHandler(customerId);
+              
+              // Re-render icons
+              setTimeout(() => lucide.createIcons(), 100);
+          }
+          
+          function setupDeleteFormHandler(customerId) {
+              const deleteModal = document.getElementById('deleteModal');
+              const deleteForm = deleteModal ? deleteModal.querySelector('#deleteForm') : null;
+              
+              if (deleteForm) {
+                  // Remove old handler
+                  deleteForm.onsubmit = null;
+                  
+                  // Add new handler
+                  deleteForm.onsubmit = (e) => {
+                      e.preventDefault();
+                      performStandaloneDelete(customerId);
+                  };
+                  
+                  // Setup delete button
+                  const deleteBtn = deleteModal.querySelector('.customer-edit-sub-modal-footer .customer-edit-btn-danger');
+                  if (deleteBtn) {
+                      deleteBtn.onclick = (e) => {
+                          e.preventDefault();
+                          if (deleteForm.requestSubmit) {
+                              deleteForm.requestSubmit();
+                          } else {
+                              deleteForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                          }
+                      };
+                  }
+              }
+          }
+          
+          async function performStandaloneDelete(customerId) {
+              const deleteModal = document.getElementById('deleteModal');
+              if (!deleteModal) return;
+              
+              const deleteForm = deleteModal.querySelector('#deleteForm');
+              if (!deleteForm) return;
+              
+              // Get reason and confirmation
+              const reasonSelect = deleteForm.querySelector('select');
+              const confirmationInput = deleteForm.querySelector('input[type="text"]');
+              
+              const reason = reasonSelect?.value || '';
+              const confirmation = confirmationInput?.value?.trim() || '';
+              
+              // Validate reason
+              if (!reason) {
+                  showToast('Please select a reason for deletion', 'error');
+                  return;
+              }
+              
+              // Validate confirmation
+              if (confirmation.toUpperCase() !== 'DELETE') {
+                  showToast('Please type DELETE to confirm', 'error');
+                  return;
+              }
+              
+              const overlay = showLoading(deleteModal.querySelector('.customer-edit-sub-modal-body'));
+              
+              try {
+                  const result = await apiRequest('../../api/admin/customers/delete.php', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                          userId: customerId,
+                          reason,
+                          confirmation
+                      })
+                  });
+                  
+                  showToast('Customer deleted successfully!', 'success');
+                  
+                  // Close modal
+                  closeDeleteModal();
+                  
+                  // Reload table
+                  loadCustomersData();
+                  return result;
+              } catch (error) {
+                  console.error('Delete error:', error);
+                  showToast('Error deleting customer: ' + (error.message || 'Unknown'), 'error');
+                  throw error;
+              } finally {
+                  hideLoading(overlay);
+              }
+          }
+          
+          function closeDeleteModal() {
+              const deleteModal = document.getElementById('deleteModal');
+              if (deleteModal) {
+                  deleteModal.classList.remove('show');
+                  document.body.style.overflow = 'auto';
+                  
+                  // Reset form
+                  const deleteForm = deleteModal.querySelector('#deleteForm');
+                  if (deleteForm) {
+                      deleteForm.reset();
+                  }
+                  
+                  currentDeleteCustomerId = null;
+              }
+          }
 
-              const deleteForm = modal.querySelector('#deleteForm');
+          async function performCustomerDelete(customerId) {
+              console.log('performCustomerDelete called with ID:', customerId);
+              
+              const deleteModal = document.getElementById('deleteModal');
+              if (!deleteModal) {
+                  showToast('Delete modal not found', 'error');
+                  return;
+              }
+
+              const deleteForm = deleteModal.querySelector('#deleteForm');
               if (!deleteForm) {
                   showToast('Delete form not found', 'error');
                   return;
@@ -888,20 +1432,29 @@
 
               // get reason and confirmation input
               const reasonSelect = deleteForm.querySelector('select');
-              const confirmationInput = deleteForm.querySelector('input[type="text"][name="delete_confirm"], input[type="text"][placeholder*="DELETE"]');
+              const confirmationInput = deleteForm.querySelector('input[type="text"]');
 
               const reason = reasonSelect?.value || '';
               const confirmation = confirmationInput?.value?.trim() || '';
+              
+              console.log('Delete reason:', reason);
+              console.log('Delete confirmation:', confirmation);
 
+              // Validate reason
+              if (!reason) {
+                  showToast('Please select a reason for deletion', 'error');
+                  return;
+              }
+
+              // Validate confirmation
               if (confirmation.toUpperCase() !== 'DELETE') {
                   showToast('Please type DELETE to confirm', 'error');
                   return;
               }
 
-              const overlay = showLoading(deleteForm);
+              const overlay = showLoading(deleteModal.querySelector('.customer-edit-sub-modal-body'));
 
               try {
-
                   const result = await apiRequest('../../api/admin/customers/delete.php', {
                       method: 'POST',
                       body: JSON.stringify({
@@ -968,6 +1521,118 @@
               }
           }
 
+          // ==========================
+          // ORDER DETAILS MODAL INTEGRATION
+          // ==========================
+          async function openOrderDetailsModal(orderId) {
+              try {
+                  // Load order details modal HTML if not already loaded
+                  const container = document.getElementById('orderDetailsModalContainer');
+                  if (!container.hasChildNodes()) {
+                      const response = await fetch('../orders/order-details.php');
+                      const html = await response.text();
+                      container.innerHTML = html;
+                      lucide.createIcons();
+                  }
+
+                  // Fetch order data
+                  const orderData = await apiRequest(`../../api/orders/index.php?id=${orderId}`);
+                  
+                  if (!orderData) {
+                      showToast('Order not found', 'error');
+                      return;
+                  }
+
+                  // Populate the modal with order data
+                  populateOrderDetailsModal(orderData);
+                  
+                  // Show the modal
+                  const modal = document.getElementById('orderModal');
+                  if (modal) {
+                      modal.style.display = 'flex';
+                      document.body.style.overflow = 'hidden';
+                  }
+              } catch (error) {
+                  console.error('Error loading order details:', error);
+                  showToast('Error loading order details: ' + error.message, 'error');
+              }
+          }
+
+          function populateOrderDetailsModal(order) {
+              // Set order ID
+              const modalOrderId = document.getElementById('modalOrderId');
+              const detailOrderId = document.getElementById('detailOrderId');
+              if (modalOrderId) modalOrderId.textContent = `#${order.order_number || order.order_id}`;
+              if (detailOrderId) detailOrderId.textContent = `#${order.order_number || order.order_id}`;
+
+              // Set customer info
+              const detailCustomer = document.getElementById('detailCustomer');
+              const customerName = document.getElementById('customerName');
+              const customerEmail = document.getElementById('customerEmail');
+              const customerPhone = document.getElementById('customerPhone');
+              
+              if (detailCustomer) detailCustomer.textContent = order.customer_name || 'N/A';
+              if (customerName) customerName.textContent = order.customer_name || 'N/A';
+              if (customerEmail) customerEmail.textContent = order.customer_email || 'N/A';
+              if (customerPhone) customerPhone.textContent = order.customer_phone || 'N/A';
+
+              // Set order details
+              const detailAmount = document.getElementById('detailAmount');
+              const detailDate = document.getElementById('detailDate');
+              const detailStatus = document.getElementById('detailStatus');
+              
+              if (detailAmount) detailAmount.textContent = `₱${parseFloat(order.final_amount || 0).toLocaleString()}`;
+              if (detailDate) detailDate.textContent = new Date(order.order_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+              if (detailStatus) {
+                  detailStatus.textContent = (order.order_status || '').toUpperCase();
+                  detailStatus.className = 'status';
+                  // Add status-specific styling
+                  const statusColors = {
+                      'completed': { bg: '#dcfce7', color: '#166534' },
+                      'pending': { bg: '#fef3c7', color: '#92400e' },
+                      'processing': { bg: '#dbeafe', color: '#1d4ed8' },
+                      'cancelled': { bg: '#fee2e2', color: '#dc2626' }
+                  };
+                  const colors = statusColors[order.order_status?.toLowerCase()] || { bg: '#f3f4f6', color: '#374151' };
+                  detailStatus.style.background = colors.bg;
+                  detailStatus.style.color = colors.color;
+              }
+
+              // Set delivery info
+              const deliveryAddress = document.getElementById('deliveryAddress');
+              const deliveryMethod = document.getElementById('deliveryMethod');
+              const paymentMethod = document.getElementById('paymentMethod');
+              
+              if (deliveryAddress) deliveryAddress.textContent = order.delivery_address || 'N/A';
+              if (deliveryMethod) deliveryMethod.textContent = order.delivery_method || 'Standard Delivery';
+              if (paymentMethod) paymentMethod.textContent = order.payment_method || 'N/A';
+
+              // Set order items
+              const orderItems = document.getElementById('orderItems');
+              if (orderItems && order.items && order.items.length > 0) {
+                  orderItems.innerHTML = order.items.map(item => `
+                      <tr>
+                          <td>${item.product_name || 'Unknown Product'}</td>
+                          <td>${item.quantity || 0}</td>
+                          <td>₱${parseFloat(item.unit_price || 0).toLocaleString()}</td>
+                          <td>₱${parseFloat(item.subtotal || 0).toLocaleString()}</td>
+                      </tr>
+                  `).join('');
+              }
+
+              // Set notes
+              const orderNotes = document.getElementById('orderNotes');
+              if (orderNotes) orderNotes.value = order.notes || 'No notes available.';
+          }
+
+          function closeModal(event) {
+              const modal = document.getElementById('orderModal');
+              if (modal && (!event || event.target === modal || event.target.closest('.close-btn'))) {
+                  modal.style.display = 'none';
+                  document.body.style.overflow = 'auto';
+              }
+          }
+
           document.addEventListener('DOMContentLoaded', () => {
               loadCustomersData();
               lucide.createIcons();
@@ -980,7 +1645,7 @@
               // modal click-outside setups (in case not already present)
               const modalsToWire = [
                   'addCustomerModal','customerDetailsModal','customerOrdersModal','customerEditModal',
-                  'emailModal','reportModal','passwordModal','deleteModal'
+                  'emailModal','reportModal','passwordModal','deleteModal','updateModal'
               ];
               modalsToWire.forEach(modalId => {
                   const m = document.getElementById(modalId);
@@ -990,11 +1655,24 @@
                               if (modalId === 'customerEditModal') closeCustomerEditModal(e);
                               else if (modalId === 'customerDetailsModal') closeCustomerDetailsModal(e);
                               else if (modalId === 'customerOrdersModal') closeCustomerOrdersModal(e);
+                              else if (modalId === 'deleteModal') closeDeleteModal();
                               else closeCustomerEditSubModal(modalId);
                           }
                       });
                   }
               });
+              
+              // Setup close button for delete modal
+              const deleteModalCloseBtn = document.querySelector('#deleteModal .customer-edit-close-btn');
+              if (deleteModalCloseBtn) {
+                  deleteModalCloseBtn.onclick = closeDeleteModal;
+              }
+              
+              // Setup cancel button for delete modal
+              const deleteModalCancelBtn = document.querySelector('#deleteModal .customer-edit-btn-secondary');
+              if (deleteModalCancelBtn) {
+                  deleteModalCancelBtn.onclick = closeDeleteModal;
+              }
           });
           </script>
 
