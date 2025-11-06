@@ -40,7 +40,7 @@
 
             <!-- Quick Actions -->
             <div class="quick-actions">
-                <a href="./orders/index.php" class="action-card">
+                <a href="./orders/create.php" class="action-card">
                     <div class="action-icon">
                         <i data-lucide="plus"></i>
                     </div>

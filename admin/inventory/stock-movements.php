@@ -136,6 +136,16 @@ let currentStockMovementPage = 1;
 const stockMovementsPerPage = 10;
 let filteredStockMovementsData = [];
 
+function normalizeImagePath(path) {
+  if (!path) return '';
+  // Absolute URLs or already absolute-from-root
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) return path;
+  // If API already returns a '../' prefixed relative path, keep as-is
+  if (path.startsWith('../')) return path;
+  // From /admin/inventory/* to project root path for plain relative paths
+  return `../../${path.replace(/^\.\/?/, '')}`;
+}
+
 async function openStockMovementsModal() {
 populateMovementProductFilter();
 await applyStockMovementFilters();
@@ -210,6 +220,9 @@ data.forEach(movement => {
     const row = tbody.insertRow();
     const product = inventoryData.find(item => item.id === movement.productId);
     const icon = product ? (product.icon || '📦') : '📦';
+    const imgSrc = movement.productImage
+        ? normalizeImagePath(movement.productImage)
+        : (product && product.image ? normalizeImagePath(product.image) : '');
 
     let typeClass = '';
     let quantityClass = '';
@@ -237,7 +250,11 @@ data.forEach(movement => {
         <td>${movement.id}</td>
         <td>
             <div class="stock-movements-movement-cell">
-                <div class="stock-movements-movement-icon ${typeClass}">${icon}</div>
+                <div class="stock-movements-movement-icon ${typeClass}">
+                  ${imgSrc
+                    ? `<img src="${imgSrc}" alt="${movement.productName}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'; this.closest('.stock-movements-movement-icon').textContent='📦';">`
+                    : `${icon}`}
+                </div>
                 <div class="stock-movements-movement-details">
                     <h4>${movement.productName}</h4>
                     <p>${movement.productSKU}</p>
@@ -319,7 +336,18 @@ const movement = filteredStockMovementsData.find(m => m.id === movementId);
 
 if (movement) {
     const detailsContent = document.getElementById('movementDetailsContent');
+    const product = inventoryData.find(item => item.id === movement.productId);
+    const imgSrc = movement.productImage
+        ? normalizeImagePath(movement.productImage)
+        : (product && product.image ? normalizeImagePath(product.image) : '');
     detailsContent.innerHTML = `
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+            ${imgSrc ? `<img src="${imgSrc}" alt="${movement.productName}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" onerror="this.style.display='none';">` : ''}
+            <div>
+                <div style="font-weight:600;color:#1e293b;">${movement.productName}</div>
+                <div style="color:#64748b;">${movement.productSKU}</div>
+            </div>
+        </div>
         <div class="product-details-grid">
             <div class="product-details-card">
                 <div class="product-details-label">Movement ID</div>

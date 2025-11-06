@@ -256,6 +256,9 @@ const appState = {
                     <button class="icon-btn" onclick="appState.openResponseModal()" title="Quick Response">
                         <i data-lucide="reply" width="16" height="16"></i>
                     </button>
+                    <button class="icon-btn" onclick="appState.createOrderForCustomer('${this.escapeHtml(request.customerEmail)}')" title="Create Order">
+                        <i data-lucide="shopping-cart" width="16" height="16"></i>
+                    </button>
                     <button class="icon-btn" onclick="appState.openSingleArchiveModal(${request.id})" title="Archive">
                         <i data-lucide="archive" width="16" height="16"></i>
                     </button>
@@ -1267,6 +1270,13 @@ const appState = {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    },
+
+    // ============ ORDER CREATION ============
+
+    createOrderForCustomer(customerEmail) {
+        // Redirect to create order page with customer email as query parameter
+        window.location.href = `../orders/create.php?customer=${encodeURIComponent(customerEmail)}`;
     }
 };
 
