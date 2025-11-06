@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - M & E Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="../assets/css/admin/settings/index.css">
 </head>
@@ -23,8 +24,8 @@
             <div class="header">
                 <h2>Settings</h2>
                 <div class="user-info">
-                    <span>Admin Panel</span>
-                    <div class="avatar">A</div>
+                    <span><?= htmlspecialchars($_SESSION['admin_username'] ?? 'Admin') ?></span>
+                    <div class="avatar"><?= htmlspecialchars(strtoupper(substr($_SESSION['admin_username'] ?? 'A', 0, 1))) ?></div>
                 </div>
             </div>
 
@@ -51,28 +52,28 @@
 
                         <div class="form-group">
                             <label class="form-label">Business Name</label>
-                            <input type="text" class="form-input" value="M & E Interior Supplies Trading">
+                            <input type="text" class="form-input" value="">
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">Contact Email</label>
-                                <input type="email" class="form-input" value="info@me-supplies.com">
+                                <input type="email" class="form-input" value="">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Contact Phone</label>
-                                <input type="tel" class="form-input" value="+63 47 222 3456">
+                                <input type="tel" class="form-input" value="">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Business Address</label>
-                            <textarea class="form-textarea">123 Rizal Avenue, Olongapo City, Zambales, Philippines</textarea>
+                            <textarea class="form-textarea"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Business Description</label>
-                            <textarea class="form-textarea">Your trusted supplier for office, school, and sanitary supplies in Olongapo City. We provide quality products with fast and reliable delivery service.</textarea>
+                            <textarea class="form-textarea"></textarea>
                         </div>
 
                         <button class="save-btn">Save Changes</button>
@@ -88,17 +89,17 @@
 
                             <div class="form-group">
                                 <label class="form-label">Primary Delivery Area</label>
-                                <input type="text" class="form-input" value="Olongapo City, Zambales">
+                                <input type="text" class="form-input" value="">
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label">Standard Delivery Fee</label>
-                                    <input type="number" class="form-input" value="70">
+                                    <input type="number" class="form-input" value="">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Extended Area Fee</label>
-                                    <input type="number" class="form-input" value="100">
+                                    <input type="number" class="form-input" value="">
                                 </div>
                             </div>
                         </div>
@@ -110,17 +111,17 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label">Processing Time (hours)</label>
-                                    <input type="number" class="form-input" value="24">
+                                    <input type="number" class="form-input" value="">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Delivery Time (hours)</label>
-                                    <input type="number" class="form-input" value="48">
+                                    <input type="number" class="form-input" value="">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="autoConfirm" checked>
+                                    <input type="checkbox" id="autoConfirm">
                                     <label for="autoConfirm">Auto-confirm orders upon receipt</label>
                                 </div>
                             </div>
@@ -139,21 +140,21 @@
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="newOrder" checked>
+                                    <input type="checkbox" id="newOrder">
                                     <label for="newOrder">New orders received</label>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="lowStock" checked>
+                                    <input type="checkbox" id="lowStock">
                                     <label for="lowStock">Low stock alerts</label>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="newMessage" checked>
+                                    <input type="checkbox" id="newMessage">
                                     <label for="newMessage">New customer messages</label>
                                 </div>
                             </div>
@@ -172,7 +173,7 @@
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="dailyReports" checked>
+                                    <input type="checkbox" id="dailyReports">
                                     <label for="dailyReports">Daily sales reports</label>
                                 </div>
                             </div>
@@ -226,7 +227,7 @@
                                 <label class="form-label">Session Timeout (minutes)</label>
                                 <select class="form-select">
                                     <option value="30">30 minutes</option>
-                                    <option value="60" selected>1 hour</option>
+                                    <option value="60">1 hour</option>
                                     <option value="120">2 hours</option>
                                     <option value="240">4 hours</option>
                                 </select>
@@ -246,14 +247,14 @@
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="dataEncryption" checked disabled>
+                                    <input type="checkbox" id="dataEncryption" disabled>
                                     <label for="dataEncryption">Encrypt sensitive customer data</label>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="activityLog" checked>
+                                    <input type="checkbox" id="activityLog">
                                     <label for="activityLog">Log admin activities</label>
                                 </div>
                             </div>
@@ -273,7 +274,7 @@
                             <div class="form-group">
                                 <label class="form-label">Automatic Backup Frequency</label>
                                 <select class="form-select">
-                                    <option value="daily" selected>Daily</option>
+                                    <option value="daily">Daily</option>
                                     <option value="weekly">Weekly</option>
                                     <option value="monthly">Monthly</option>
                                 </select>
@@ -281,7 +282,7 @@
 
                             <div class="form-group">
                                 <label class="form-label">Last Backup</label>
-                                <input type="text" class="form-input" value="August 20, 2025 - 12:00 AM" readonly>
+                                <input type="text" class="form-input" value="" readonly>
                             </div>
 
                             <button class="save-btn">Create Backup Now</button>
