@@ -563,14 +563,6 @@
                   // Setup pagination
                   setupOrdersPagination(data.pagination);
 
-                  // attach "view" handlers inside table (deferred to ensure DOM in)
-                  setTimeout(() => {
-                      modal.querySelectorAll('.customer-orders-action-btn').forEach(btn => {
-                          btn.removeEventListener('click', handleOrderViewClick);
-                          btn.addEventListener('click', handleOrderViewClick);
-                      });
-                  }, 50);
-
               } catch (error) {
                   showToast('Error loading orders: ' + error.message, 'error');
                   closeCustomerOrdersModal();
@@ -688,24 +680,6 @@
               showToast('Export started...', 'success');
           }
 
-          function handleOrderViewClick(e) {
-              e.preventDefault();
-              const btn = e.currentTarget;
-              const orderRow = btn.closest('tr');
-              const orderIdLink = orderRow && orderRow.querySelector('.customer-orders-order-id');
-              const orderNumber = orderIdLink ? orderIdLink.textContent.replace('#', '') : null;
-              
-              if (orderNumber) {
-                  // Find the order ID from the order number
-                  const orderData = btn.getAttribute('data-order-id');
-                  if (orderData) {
-                      openOrderDetailsModal(orderData);
-                  } else {
-                      showToast('Order ID not found', 'error');
-                  }
-              }
-          }
-
           function populateCustomerOrdersModal(data) {
               const modal = document.getElementById('customerOrdersModal');
               if (!modal) return;
@@ -755,7 +729,7 @@
                               <td>${order.paymentMethod || 'N/A'}</td>
                               <td><span class="customer-orders-order-status ${order.orderStatus.toLowerCase()}">${order.orderStatus}</span></td>
                               <td>
-                                  <button class="customer-orders-action-btn" onclick="openCustomerOrderDetailsModal(${order.orderId})">
+                                  <button class="customer-orders-action-btn" onclick="openCustomerOrderDetailsModal('${order.orderId}')">
                                       View
                                   </button>
                               </td>
@@ -1546,10 +1520,10 @@
                   // Populate the modal with order data
                   populateOrderDetailsModal(orderData);
                   
-                  // Show the modal
+                  // Show the modal using classList.add('active')
                   const modal = document.getElementById('orderModal');
                   if (modal) {
-                      modal.style.display = 'flex';
+                      modal.classList.add('active');
                       document.body.style.overflow = 'hidden';
                   }
               } catch (error) {
@@ -1628,7 +1602,7 @@
           function closeModal(event) {
               const modal = document.getElementById('orderModal');
               if (modal && (!event || event.target === modal || event.target.closest('.close-btn'))) {
-                  modal.style.display = 'none';
+                  modal.classList.remove('active');
                   document.body.style.overflow = 'auto';
               }
           }
