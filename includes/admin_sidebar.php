@@ -310,48 +310,55 @@
 
     <script>
         (function () {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const openBtns = document.querySelectorAll('[data-sidebar-toggle="open"]');
-            const navItems = document.querySelectorAll('.nav-item');
+            function initSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                const openBtns = document.querySelectorAll('[data-sidebar-toggle="open"]');
+                const navItems = document.querySelectorAll('.nav-item');
 
-            function openSidebar() {
-                overlay.classList.add('active');
-                sidebar.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
+                function openSidebar() {
+                    overlay.classList.add('active');
+                    sidebar.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                }
 
-            function closeSidebar() {
-                overlay.classList.remove('active');
-                sidebar.classList.remove('open');
-                document.body.style.overflow = '';
-            }
+                function closeSidebar() {
+                    overlay.classList.remove('active');
+                    sidebar.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
 
-            // Mobile toggle buttons
-            openBtns.forEach(btn => btn.addEventListener('click', openSidebar));
+                // Toggle behavior: repeated clicks open/close
+                openBtns.forEach(btn => btn.addEventListener('click', function() {
+                    if (sidebar.classList.contains('open')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
+                }));
+                overlay.addEventListener('click', closeSidebar);
 
-            // Close on overlay click
-            overlay.addEventListener('click', closeSidebar);
+                navItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        if (window.innerWidth < 1024) {
+                            closeSidebar();
+                        }
+                    });
+                });
 
-            // Navigation item clicks
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    // Update active state
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // Close mobile sidebar after navigation
-                    if (window.innerWidth < 1024) {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
                         closeSidebar();
                     }
                 });
-            });
+            }
 
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeSidebar();
-                }
-            });
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initSidebar);
+            } else {
+                initSidebar();
+            }
         })();
     </script>

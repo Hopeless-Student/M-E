@@ -2,6 +2,14 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
 
+// Require admin session
+session_start();
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
+
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -10,11 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // Database configuration
-    $dbHost = DB_HOST;
-    $dbName = DB_NAME;
-    $dbUser = DB_USER;
-    $dbPass = DB_PASS;
+    // Database configuration (from config.php)
+    // Variables defined in config.php: $host, $dbname, $user, $password
+    $dbHost = $host;
+    $dbName = $dbname;
+    $dbUser = $user;
+    $dbPass = $password;
     
     // Create backup directory if it doesn't exist
     $backupDir = __DIR__ . '/../../../database/backups';
@@ -53,13 +62,25 @@ try {
             ':size' => $fileSize
         ]);
         
+        // Update last_backup_date setting so UI can show latest backup time
+        $humanDate = date('F j, Y - g:i A');
+        $checkStmt = $pdo->prepare("SELECT setting_id FROM system_settings WHERE setting_category = 'backup' AND setting_key = 'last_backup_date'");
+        $checkStmt->execute();
+        if ($checkStmt->fetch()) {
+            $updStmt = $pdo->prepare("UPDATE system_settings SET setting_value = :val, setting_type = 'string', updated_at = NOW() WHERE setting_category = 'backup' AND setting_key = 'last_backup_date'");
+            $updStmt->execute([':val' => $humanDate]);
+        } else {
+            $insStmt = $pdo->prepare("INSERT INTO system_settings (setting_category, setting_key, setting_value, setting_type, created_at, updated_at) VALUES ('backup', 'last_backup_date', :val, 'string', NOW(), NOW())");
+            $insStmt->execute([':val' => $humanDate]);
+        }
+
         echo json_encode([
             'success' => true,
             'message' => 'Database backup created successfully',
             'backup' => [
                 'filename' => basename($backupFile),
                 'size' => $fileSizeFormatted,
-                'date' => date('F j, Y - g:i A'),
+                'date' => $humanDate,
                 'path' => $backupFile
             ]
         ]);

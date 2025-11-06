@@ -2,6 +2,14 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
 
+// Require admin session
+session_start();
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
+
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

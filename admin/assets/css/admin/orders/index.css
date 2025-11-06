@@ -82,6 +82,13 @@ body {
   margin-bottom: 2rem;
 }
 
+/* Ensure single-row (4 columns) layout on desktop */
+@media (min-width: 769px) {
+  .quick-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
 .stat-card {
   background: #e4e8ea;
   padding: 2rem;
@@ -649,9 +656,9 @@ body {
 }
 
 /* ============================================
-   TABLET RESPONSIVE (1024px and below)
+   TABLET RESPONSIVE (~900px and below)
    ============================================ */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
     .main-content {
         margin-left: 0;
         width: 100vw;
@@ -664,7 +671,8 @@ body {
     }
 
     .quick-stats {
-        grid-template-columns: repeat(2, 1fr);
+        /* Keep 4 columns at <=900; 2 columns will apply at <=768 from mobile rules below */
+        grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
     }
 
@@ -722,7 +730,6 @@ body {
       margin-bottom: 1.25rem;
       gap: 0.75rem;
   }
-    }
 
     .header h2 {
         font-size: 1.5rem;

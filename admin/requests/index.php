@@ -6,7 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages - M & E Dashboard</title>
+    <title>Customer Requests - M & E Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="../assets/images/M&E_LOGO-semi-transparent.ico">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="../assets/css/admin/requests/index.css">
     <style>
@@ -294,8 +295,8 @@
                         Archive
                     </button>
                     <div class="user-info">
-                        <span>Admin Panel</span>
-                        <div class="avatar">A</div>
+                        <span><?= htmlspecialchars($_SESSION['admin_username'] ?? 'Admin') ?></span>
+                        <div class="avatar"><?= htmlspecialchars(strtoupper(substr($_SESSION['admin_username'] ?? 'A', 0, 1))) ?></div>
                     </div>
                 </div>
             </div>
