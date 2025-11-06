@@ -87,7 +87,7 @@
                         <option value="Zambales">Zambales</option>
                     </select>
                 </div>
-                <button class="add-customer-btn" onclick="showAddCustomerModal()">+ Add Customer</button>
+                <!-- <button class="add-customer-btn" onclick="showAddCustomerModal()">+ Add Customer</button> -->
             </div>
 
             <!-- Customers Table -->
