@@ -52,7 +52,7 @@ $total = (int)$stmt->fetchColumn();
 // Get movements
 $sql = "SELECT sm.movement_id, sm.product_id, sm.movement_type, sm.quantity,
                sm.previous_stock, sm.new_stock, sm.reason, sm.user_name, sm.created_at,
-               p.product_name, p.product_code
+               p.product_name, p.product_code, p.product_image
         FROM stock_movements sm
         INNER JOIN products p ON p.product_id = sm.product_id
         $whereSql
@@ -67,6 +67,8 @@ $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $movements = array_map(function ($r) {
+    // Use relative path consistent with other inventory endpoints (consumed from /admin/inventory/*)
+    $img = !empty($r['product_image']) ? ('../../assets/images/products/' . $r['product_image']) : null;
     return [
         'id' => (int)$r['movement_id'],
         'productId' => (int)$r['product_id'],
@@ -78,7 +80,8 @@ $movements = array_map(function ($r) {
         'newStock' => (int)$r['new_stock'],
         'reason' => $r['reason'],
         'user' => $r['user_name'],
-        'timestamp' => date('m/d/Y h:i A', strtotime($r['created_at']))
+        'timestamp' => date('m/d/Y h:i A', strtotime($r['created_at'])),
+        'productImage' => $img,
     ];
 }, $rows);
 
