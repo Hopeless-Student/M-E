@@ -48,7 +48,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                         <div>
                             <h4>Address</h4>
-                            <p>Purok 4 Banaba St Bo. Barretto, Olongapo City</p>
+                            <p>Upper Banaba St. Brgy. Barretto<br/>Olongapo City, Zambales 2200</p>
                         </div>
                     </div>
 
@@ -57,7 +57,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                         <div>
                             <h4>Phone</h4>
-                            <p>+63 916 635 1911</p>
+                            <p>+63 916 635 1911<br>+63 917 155 7523</p>
                         </div>
                     </div>
 

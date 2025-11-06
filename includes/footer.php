@@ -2,7 +2,7 @@
 footer {
     background-color: #002366;
     color: #fff;
-    padding: 60px 100px 30px 100px;
+    padding: 60px 100px 30px;
     font-family: 'Inter', sans-serif;
 }
 
@@ -188,13 +188,44 @@ footer {
     .footer-column ul li a {
         font-size: 14px;
     }
+    .footer-socials {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .footer-socials h4 {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    .footer-socials p {
+        color: #A6BAFF;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    .footer-socials .fb-btn {
+        gap: 10px;
+        padding: 7px 15px;
+    }
+    .footer-socials .fb-btn:hover {
+        text-decoration: underline;
+    }
+    .footer-socials .fb-btn img {
+        height: 30px;
+        width: 30px;
+    }
+    .footer-socials .fb-btn span {
+        font-size: 12px;
+    }
     .footer-copy p {
         margin-top: 60px;
+        font-size: 10px;
     }
 }
 
 @media (max-width: 480px) {
-    
+    .footer-logo {
+        height: 80px;
+    }
     .footer-brand {
         min-width: auto;
         width: 100%;
@@ -213,8 +244,50 @@ footer {
         text-align: center;
         margin: 0;
     }
-    .footer-logo {
-        height: 80px;
+    .footer-links {
+        gap: 30px;
+    }
+    .footer-column h4 {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    .footer-column ul li a {
+        font-weight: normal;
+        font-size: 12px;
+        color: #A6BAFF;
+        text-decoration: none;
+    }
+    .footer-socials {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .footer-socials h4 {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    .footer-socials p {
+        color: #A6BAFF;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    .footer-socials .fb-btn {
+        gap: 10px;
+        padding: 7px 15px;
+    }
+    .footer-socials .fb-btn:hover {
+        text-decoration: underline;
+    }
+    .footer-socials .fb-btn img {
+        height: 30px;
+        width: 30px;
+    }
+    .footer-socials .fb-btn span {
+        font-size: 12px;
+    }
+    .footer-copy p {
+        margin-top: 60px;
+        font-size: 10px;
     }
 }
 </style>

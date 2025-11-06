@@ -16,12 +16,16 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
         <section class="about-hero">
             <div class="about-hero-content">
                 <h1>About Us</h1>
-                <p class="lead">M&E Trading is your trusted e-commerce platform for quality office, school, and sanitary supplies—delivered fast, priced right, and always reliable.</p>
+                <p class="lead">
+                    M&E Trading is one of the most trusted trading company in Olongapo City supplying
+                    different kinds of office supplies from paper, tapes, binder, pens, and many more.
+                    We commit to provide high quality products for our valuable customer.
+                </p>
             </div>
         </section>
 
-
-
+        
+        
         <section class="our-journey">
             <div class="journey-content">
                 <h2>Our Journey</h2>
@@ -34,36 +38,37 @@ require_once __DIR__ . '/../auth/mainpage-auth.php'; ?>
                     they must stop the online business.
                 </p>
 
-                <ul class="timeline">
-                    <li>
-                        <span class="timeline-year">2023</span>
-                        <p>Mr. Coma returned to his hometown Olongapo City Zambales for good.
-                            Settling down with His wife and son, having work from home job under US account/night shift/weekend shift.
-                            During weekdays he has nothing to do with his time while his wife work in Subic bay Freeport Zone.
-                            This set up makes him think again about building new business.
-                        </p>
-                    </li>
-                    <li>
-                        <span class="timeline-year">2024</span>
-                        <p>Since his previous business fail due to manpower & production – he tries trading business.
-                            Trading is buying and selling different commodities, but he focusses on selling office supplies.
-                            Their target market is the offices and companies inside Subic Bay Freeport Zone.
-                            He also sells supplies to the different retail shops in Olongapo. In trading industry,
-                            having a good relationship with your suppliers and customers is necessary.
-                            This helps your business a good network.
-                        </p>
-                    </li>
-                </ul>
-
-                <p>
-                    Now, Mr. Coma is no longer connected to His corporate job – instead he focus on building and expanding his business.
-                    Truly that business is a trial and error process, just learn how to risk.
-                </p>
             </div>
+            
+            <div class="journey-image" style="background-image:url('../assets/images/mockup-image.png');"></div>   
 
-            <div class="journey-image" style="background-image:url('../assets/images/mockup-image.png');"></div>
+            <ul class="timeline">
+                <li>
+                    <span class="timeline-year">2023</span>
+                    <p>Mr. Coma returned to his hometown Olongapo City Zambales for good.
+                        Settling down with His wife and son, having work from home job under US account/night shift/weekend shift.
+                        During weekdays he has nothing to do with his time while his wife work in Subic bay Freeport Zone.
+                        This set up makes him think again about building new business.
+                    </p>
+                </li>
+                <li>
+                    <span class="timeline-year">2024</span>
+                    <p>Since his previous business fail due to manpower & production – he tries trading business.
+                        Trading is buying and selling different commodities, but he focusses on selling office supplies.
+                        Their target market is the offices and companies inside Subic Bay Freeport Zone.
+                        He also sells supplies to the different retail shops in Olongapo. In trading industry,
+                        having a good relationship with your suppliers and customers is necessary.
+                        This helps your business a good network.
+                    </p>
+                </li>
+            </ul>
+
+            <p class="journey-conclusion">
+                Now, Mr. Coma is no longer connected to His corporate job – instead he focus on building and expanding his business.
+                Truly that business is a trial and error process, just learn how to risk.
+            </p>
         </section>
-
+        
 
 
         <section class="mission-values">
