@@ -236,8 +236,11 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                 <div class="about-us-text">
                     <h2>About Us</h2>
-                    <p>We supply quality school, office, and sanitary essentials to local customers. Our focus is reliable service and value - perfect for students, teachers, and offices.</p>
-
+                    <p>
+                        M&E Trading is one of the most trusted trading company in Olongapo City supplying
+                        different kinds of office supplies from paper, tapes, binder, pens, and many more.
+                        We commit to provide high quality products for our valuable customer.
+                    </p>
                     <a class="about-btn" href="about.php">Read more About Us</a>
                 </div>
             </div>
@@ -256,8 +259,8 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
                     <img alt="Store Address" src="../assets/svg/location.svg"/>
 
                     <div>
-                        <h3>Store Address:</h3>
-                        <p>Purok 4 Banaba St Bo.<br/>Barretto Olongapo City</p>
+                        <h3>Office Address:</h3>
+                        <p>Upper Banaba St. Brgy<br/>Barretto Olongapo City,<br>Zambales 2200</p>
                     </div>
                 </div>
 
@@ -266,7 +269,7 @@ require_once __DIR__ . '/../auth/mainpage-auth.php';
 
                     <div>
                         <h3>Contact No.:</h3>
-                        <p>+63 916 635 1911</p>
+                        <p>+63 916 635 1911<br>+63 917 155 7523</p>
                     </div>
                 </div>
 
