@@ -456,13 +456,14 @@
     <script>
       lucide.createIcons();
         function downloadPDF() {
-
-            document.querySelector('.print-controls').style.display = 'none';
-
-
-            alert('PDF download functionality would be implemented here with a library like html2pdf.js');
-
-            document.querySelector('.print-controls').style.display = 'block';
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+            
+            if (orderId) {
+                window.location.href = `../../api/admin/orders/generate-invoice-pdf.php?id=${orderId}`;
+            } else {
+                alert('Order ID not found');
+            }
         }
 
 

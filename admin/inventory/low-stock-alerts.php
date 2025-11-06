@@ -780,9 +780,18 @@ openModal('emailAlertsModal');
 
 async function exportLowStockReport() {
 try {
-    const url = InventoryAPI.getExportURL('low-stock', 'csv');
-    window.open(url, '_blank');
-    showNotification('Low stock report exported successfully!', 'success');
+    // Show options for CSV or PDF
+    const choice = confirm('Click OK for PDF Report or Cancel for CSV Export');
+    if (choice) {
+        // Generate PDF
+        showNotification('Generating PDF report...', 'info');
+        window.open('../../api/admin/inventory/generate-lowstock-pdf.php', '_blank');
+    } else {
+        // Export CSV
+        const url = InventoryAPI.getExportURL('low-stock', 'csv');
+        window.open(url, '_blank');
+        showNotification('Low stock report exported successfully!', 'success');
+    }
 } catch (error) {
     console.error('Error exporting low stock report:', error);
     showNotification('Error exporting report', 'error');
