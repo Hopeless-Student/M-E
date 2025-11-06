@@ -39,8 +39,9 @@ function initSearchSuggestions(inputSelector, suggestionsSelector) {
                         });
                         suggestionsBox.appendChild(div);
                     });
-
                     suggestionsBox.style.display = "flex";
+                    suggestionsBox.style.flexDirection = "column"; // force row layout
+
                 })
                 .catch(err => {
                     console.error('Search suggestions error:', err);
