@@ -168,8 +168,8 @@
                 <div class="form-group">
                     <label class="form-label">Action</label>
                     <select class="form-select" id="bulkAction" required>
-                        <option value="increase">Increase by Percentage</option>
-                        <option value="decrease">Decrease by Percentage</option>
+                        <option value="increase">Increase by Quantity</option>
+                        <option value="decrease">Decrease by Quantity</option>
                         <option value="setMin">Set Minimum Stock</option>
                     </select>
                 </div>
