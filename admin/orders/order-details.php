@@ -14,12 +14,16 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             padding: 1rem;
             backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
         }
 
         .modal-container {

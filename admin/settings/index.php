@@ -1,3 +1,6 @@
+<?php
+ require_once __DIR__ . '/../../auth/admin_auth.php';
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +14,9 @@
   <div class="dashboard">
 
       <?php include '../../includes/admin_sidebar.php' ?>
+      <button class="mobile-menu-btn" data-sidebar-toggle="open">
+          <i data-lucide="menu"></i>
+      </button>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -310,14 +316,155 @@
 
     <script>
         lucide.createIcons();
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Loading overlay
+        function showLoading(element) {
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.innerHTML = '<div class="spinner"></div>';
+            overlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 100;
+            `;
+            element.style.position = 'relative';
+            element.appendChild(overlay);
+            return overlay;
+        }
+
+        function hideLoading(overlay) {
+            if (overlay && overlay.parentNode) overlay.remove();
+        }
+
+        // API request helper
+        async function apiRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || data.error || 'Request failed');
+                }
+
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // Load settings on page load
+        async function loadSettings() {
+            try {
+                const data = await apiRequest('../../api/admin/settings/get.php?type=all');
+                if (data.success && data.settings) {
+                    populateSettings(data.settings);
+                }
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+                showToast('Failed to load settings', 'error');
+            }
+        }
+
+        // Populate form fields with settings
+        function populateSettings(settings) {
+            // Business settings
+            if (settings.business) {
+                document.querySelector('#business input[type="text"]').value = settings.business.business_name?.value || '';
+                document.querySelector('#business input[type="email"]').value = settings.business.contact_email?.value || '';
+                document.querySelector('#business input[type="tel"]').value = settings.business.contact_phone?.value || '';
+                const addressTextarea = document.querySelector('#business textarea');
+                if (addressTextarea) addressTextarea.value = settings.business.business_address?.value || '';
+                const descTextarea = document.querySelectorAll('#business textarea')[1];
+                if (descTextarea) descTextarea.value = settings.business.business_description?.value || '';
+            }
+
+            // Shipping settings
+            if (settings.shipping) {
+                const shippingInputs = document.querySelectorAll('#shipping input');
+                if (shippingInputs[0]) shippingInputs[0].value = settings.shipping.primary_delivery_area?.value || '';
+                if (shippingInputs[1]) shippingInputs[1].value = settings.shipping.standard_delivery_fee?.value || '';
+                if (shippingInputs[2]) shippingInputs[2].value = settings.shipping.extended_area_fee?.value || '';
+                if (shippingInputs[3]) shippingInputs[3].value = settings.shipping.processing_time_hours?.value || '';
+                if (shippingInputs[4]) shippingInputs[4].value = settings.shipping.delivery_time_hours?.value || '';
+                
+                const autoConfirm = document.getElementById('autoConfirm');
+                if (autoConfirm) autoConfirm.checked = settings.shipping.auto_confirm_orders?.value === '1';
+            }
+
+            // Notification settings
+            if (settings.notifications) {
+                document.getElementById('newOrder').checked = settings.notifications.email_new_orders?.value === '1';
+                document.getElementById('lowStock').checked = settings.notifications.email_low_stock?.value === '1';
+                document.getElementById('newMessage').checked = settings.notifications.email_new_messages?.value === '1';
+                document.getElementById('orderUpdates').checked = settings.notifications.system_order_updates?.value === '1';
+                document.getElementById('dailyReports').checked = settings.notifications.system_daily_reports?.value === '1';
+            }
+
+            // Security settings
+            if (settings.security) {
+                const sessionSelect = document.querySelector('#security select');
+                if (sessionSelect) sessionSelect.value = settings.security.session_timeout_minutes?.value || '60';
+                document.getElementById('rememberLogin').checked = settings.security.allow_remember_me?.value === '1';
+                document.getElementById('activityLog').checked = settings.security.log_admin_activities?.value === '1';
+            }
+
+            // Backup settings
+            if (settings.backup) {
+                const backupSelect = document.querySelector('#backup select');
+                if (backupSelect) backupSelect.value = settings.backup.auto_backup_frequency?.value || 'daily';
+                const lastBackup = document.querySelector('#backup input[readonly]');
+                if (lastBackup && settings.backup.last_backup_date?.value) {
+                    lastBackup.value = settings.backup.last_backup_date.value;
+                }
+            }
+        }
+
         // Settings navigation
         document.querySelectorAll('.settings-nav-item').forEach(item => {
             item.addEventListener('click', function() {
-                // Update active nav item
                 document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
                 this.classList.add('active');
 
-                // Show corresponding section
                 const sectionId = this.dataset.section;
                 document.querySelectorAll('.settings-section').forEach(section => {
                     section.classList.remove('active');
@@ -326,28 +473,125 @@
             });
         });
 
+        // Save settings
+        async function saveSettings(category, button) {
+            const section = document.getElementById(category);
+            const overlay = showLoading(section);
+
+            try {
+                const settings = {};
+
+                if (category === 'business') {
+                    const inputs = section.querySelectorAll('input, textarea');
+                    settings.business_name = inputs[0].value;
+                    settings.contact_email = inputs[1].value;
+                    settings.contact_phone = inputs[2].value;
+                    settings.business_address = inputs[3].value;
+                    settings.business_description = inputs[4].value;
+                } else if (category === 'shipping') {
+                    const inputs = section.querySelectorAll('input');
+                    settings.primary_delivery_area = inputs[0].value;
+                    settings.standard_delivery_fee = inputs[1].value;
+                    settings.extended_area_fee = inputs[2].value;
+                    settings.processing_time_hours = inputs[3].value;
+                    settings.delivery_time_hours = inputs[4].value;
+                    settings.auto_confirm_orders = document.getElementById('autoConfirm').checked;
+                } else if (category === 'notifications') {
+                    settings.email_new_orders = document.getElementById('newOrder').checked;
+                    settings.email_low_stock = document.getElementById('lowStock').checked;
+                    settings.email_new_messages = document.getElementById('newMessage').checked;
+                    settings.system_order_updates = document.getElementById('orderUpdates').checked;
+                    settings.system_daily_reports = document.getElementById('dailyReports').checked;
+                } else if (category === 'security') {
+                    const sessionSelect = section.querySelector('select');
+                    settings.session_timeout_minutes = sessionSelect.value;
+                    settings.allow_remember_me = document.getElementById('rememberLogin').checked;
+                    settings.log_admin_activities = document.getElementById('activityLog').checked;
+                } else if (category === 'backup') {
+                    const backupSelect = section.querySelector('select');
+                    settings.auto_backup_frequency = backupSelect.value;
+                }
+
+                const result = await apiRequest('../../api/admin/settings/update.php', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        category: category,
+                        settings: settings
+                    })
+                });
+
+                if (result.success) {
+                    showToast(result.message, 'success');
+                }
+            } catch (error) {
+                showToast('Failed to save settings: ' + error.message, 'error');
+            } finally {
+                hideLoading(overlay);
+            }
+        }
+
         // Form submissions
         document.querySelectorAll('.save-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                const section = this.closest('.settings-section').id;
-                alert(`${section.charAt(0).toUpperCase() + section.slice(1)} settings saved successfully!`);
+                const section = this.closest('.settings-section');
+                const category = section.id;
+                
+                // Handle special cases
+                if (this.textContent.includes('Create Backup')) {
+                    createBackup();
+                } else if (this.textContent.includes('Export')) {
+                    const type = this.textContent.toLowerCase().includes('orders') ? 'orders' :
+                                this.textContent.toLowerCase().includes('customer') ? 'customers' :
+                                this.textContent.toLowerCase().includes('product') ? 'products' : 'inventory';
+                    exportData(type);
+                } else {
+                    saveSettings(category, this);
+                }
             });
         });
+
+        // Create backup
+        async function createBackup() {
+            const section = document.getElementById('backup');
+            const overlay = showLoading(section);
+
+            try {
+                const result = await apiRequest('../../api/admin/settings/backup.php', {
+                    method: 'POST'
+                });
+
+                if (result.success) {
+                    showToast('Backup created successfully!', 'success');
+                    // Update last backup date
+                    const lastBackupInput = section.querySelector('input[readonly]');
+                    if (lastBackupInput && result.backup) {
+                        lastBackupInput.value = result.backup.date;
+                    }
+                }
+            } catch (error) {
+                showToast('Failed to create backup: ' + error.message, 'error');
+            } finally {
+                hideLoading(overlay);
+            }
+        }
+
+        // Export data
+        function exportData(type) {
+            window.open(`../../api/admin/settings/export.php?type=${type}`, '_blank');
+            showToast(`Exporting ${type} data...`, 'success');
+        }
 
         // Danger button
         document.querySelector('.danger-btn').addEventListener('click', function() {
             if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
-                alert('Data reset functionality would be implemented here with proper safeguards.');
+                showToast('Data reset functionality requires additional confirmation', 'error');
             }
         });
 
-        // Toggle switches
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const label = this.nextElementSibling.textContent;
-                console.log(`${label}: ${this.checked ? 'Enabled' : 'Disabled'}`);
-            });
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
         });
     </script>
 </body>

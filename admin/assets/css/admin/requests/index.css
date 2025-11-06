@@ -147,6 +147,22 @@
         color: white;
         font-weight: 600;
     }
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        display: none;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1001;
+        background: #1e40af;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
 
     /* Message Stats */
     .stats-grid {
@@ -605,6 +621,10 @@
         .sidebar {
             width: 100%;
         }
+        .mobile-menu-btn {
+            display: block;
+        }
+
 
         .messages-layout {
             grid-template-columns: 1fr;
@@ -1120,6 +1140,10 @@
         .template-layout {
             grid-template-columns: 1fr;
         }
+        .mobile-menu-btn {
+            display: block;
+        }
+
 
         .template-categories {
             max-height: 300px;
@@ -1153,6 +1177,10 @@
         .sidebar {
             width: 100%;
         }
+        .mobile-menu-btn {
+            display: block;
+        }
+
 
         .main-content {
             padding: 1rem;
@@ -1528,6 +1556,10 @@
         .stat-value {
             font-size: 1.3rem;
         }
+        .mobile-menu-btn {
+            display: block;
+        }
+
 
         .message-item {
             padding: 0.5rem 0.75rem;
@@ -1563,6 +1595,10 @@
             max-height: 95vh !important;
             overflow-y: auto;
         }
+        .mobile-menu-btn {
+            display: block;
+        }
+
 
         .messages-layout {
             grid-template-columns: 1fr 1fr;

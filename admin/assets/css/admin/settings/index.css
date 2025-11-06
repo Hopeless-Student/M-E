@@ -296,6 +296,78 @@
         transform: translateX(26px);
     }
 
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        display: flex;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1001;
+        background: #1e40af;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Hide on desktop */
+    @media (min-width: 1024px) {
+        .mobile-menu-btn {
+            display: none;
+        }
+    }
+
+    .mobile-menu-btn:hover {
+        background: #1e3a8a;
+        transform: scale(1.05);
+    }
+
+    .mobile-menu-btn svg,
+    .mobile-menu-btn i {
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+
+    /* Tablet & Mobile (1024px and below) */
+    @media (max-width: 1024px) {
+        .main-content {
+            margin-left: 0 !important;
+            width: 100vw !important;
+            max-width: 100vw !important;
+            padding: 1rem;
+            padding-top: 4rem;
+        }
+
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+        }
+
+        .settings-layout {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .settings-nav {
+            order: 2;
+        }
+
+        .settings-content {
+            order: 1;
+        }
+    }
+
     @media (max-width: 768px) {
         .dashboard {
             flex-direction: column;
@@ -304,13 +376,151 @@
         .sidebar {
             width: 100%;
         }
+        .mobile-menu-btn {
+            display: block;
+        }
+
+
+        .main-content {
+            padding: 0.75rem;
+            padding-top: 3.5rem;
+        }
+
+        .header {
+            padding: 0.75rem 0;
+        }
+
+        .header h2 {
+            font-size: 1.25rem;
+            padding-left: 0;
+        }
+
+        .user-info {
+            width: 100%;
+            justify-content: space-between;
+            padding-right: 0;
+        }
 
         .settings-layout {
             grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .settings-nav {
+            padding: 1rem 0;
+        }
+
+        .settings-nav-title {
+            padding: 0 1rem 0.75rem;
+            font-size: 1rem;
+        }
+
+        .settings-nav-item {
+            padding: 0.625rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .settings-content {
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
         }
 
         .form-row {
             grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: 0.625rem;
+            font-size: 0.85rem;
+        }
+
+        .save-btn,
+        .danger-btn {
+            width: 100%;
+            padding: 0.625rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .settings-card {
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+        }
+
+        .card-description {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .main-content {
+            padding: 0.5rem;
+            padding-top: 3.25rem;
+        }
+
+        .header h2 {
+            font-size: 1.125rem;
+        }
+        .mobile-menu-btn {
+            display: block;
+        }
+
+
+        .settings-content {
+            padding: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+        }
+
+        .settings-card {
+            padding: 1rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            font-size: 16px; /* Prevent zoom on iOS */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .main-content {
+            padding: 0.5rem;
+            padding-top: 3rem;
+        }
+        .mobile-menu-btn {
+            display: block;
+        }
+
+
+        .settings-nav-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .settings-content {
+            padding: 0.875rem;
+        }
+
+        .save-btn,
+        .danger-btn {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.85rem;
         }
     }
 </style>

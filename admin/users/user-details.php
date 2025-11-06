@@ -452,6 +452,7 @@
     <div id="customerDetailsModal" class="customer-details-modal-base" onclick="closeCustomerDetailsModal(event)">
         <div class="customer-details-modal-content" onclick="event.stopPropagation()">
             <div class="customer-details-modal-header">
+              <button class="customer-details-close-btn" onclick="closeCustomerDetailsModal()">&times;</button>
                 <div class="customer-details-modal-title">
                     <div class="customer-details-avatar-large">JD</div>
                     <div>
@@ -459,7 +460,7 @@
                         <p>Customer ID: #CUS-001</p>
                     </div>
                 </div>
-                <button class="customer-details-close-btn" onclick="closeCustomerDetailsModal()">&times;</button>
+
             </div>
 
             <div class="customer-details-modal-body">
@@ -652,12 +653,6 @@
             <div class="customer-details-modal-footer">
                 <button class="customer-details-btn customer-details-btn-secondary" onclick="closeCustomerDetailsModal()">
                     <i data-lucide="x"></i> Close
-                </button>
-                <button class="customer-details-btn customer-details-btn-secondary" id="viewOrders"onclick="openCustomerOrdersModal()">
-                    <i data-lucide="package"></i> View All Orders
-                </button>
-                <button class="customer-details-btn customer-details-btn-primary" id="editUser" onclick="openCustomerEditModal()">
-                    <i data-lucide="edit"></i> Edit Customer
                 </button>
             </div>
         </div>

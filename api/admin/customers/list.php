@@ -51,9 +51,11 @@ try {
 
     // Status filter - note: we determine status in application logic
     // For database filtering, we can only filter by isActive
+    // By default, exclude inactive users (isActive = 0) unless specifically filtering for them
     if ($status === 'inactive') {
         $where[] = 'u.isActive = 0';
-    } else if ($status === 'active' || $status === 'new') {
+    } else {
+        // For all other cases (active, new, or no filter), only show active users
         $where[] = 'u.isActive = 1';
     }
 

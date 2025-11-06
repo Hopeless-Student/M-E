@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Sidebar</title>
-    <style>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -191,8 +185,7 @@
             }
         }
     </style>
-</head>
-<body>
+
     <!-- Overlay (mobile) -->
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
@@ -362,5 +355,3 @@
             });
         })();
     </script>
-</body>
-</html>

@@ -8,7 +8,7 @@
 <body>
   <h2>Create Admin User</h2>
 
-  <form action="/test.php" method="POST">
+  <form action="../auth/create_admin.php" method="POST">
     <label for="username">Username:</label><br>
     <input type="text" name="username" id="username" required><br><br>
 

@@ -1,3 +1,6 @@
+<?php
+ require_once __DIR__ . '/../../auth/admin_auth.php';
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -855,6 +858,7 @@
             setTimeout(() => alert.remove(), 300);
         }, 3000);
     }
+
 
     // Close modal with Escape key
     document.addEventListener('keydown', function(event) {

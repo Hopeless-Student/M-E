@@ -1,3 +1,7 @@
+
+<?php
+ require_once __DIR__ . '/../../auth/admin_auth.php';
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +15,9 @@
 <body>
     <div class="dashboard">
         <?php include '../../includes/admin_sidebar.php' ?>
+        <button class="mobile-menu-btn" data-sidebar-toggle="open">
+            <i data-lucide="menu"></i>
+        </button>
 
         <main class="main-content">
             <div class="header">
