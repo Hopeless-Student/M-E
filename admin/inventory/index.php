@@ -579,8 +579,17 @@
     }
 
     function generateReport() {
-        showNotification('Generating comprehensive inventory report...', 'info');
-        exportInventoryReport();
+        // Show options for CSV or PDF
+        const choice = confirm('Click OK for PDF Report or Cancel for CSV Export');
+        if (choice) {
+            // Generate PDF
+            showNotification('Generating PDF report...', 'info');
+            window.open('../../api/admin/inventory/generate-pdf-report.php', '_blank');
+        } else {
+            // Export CSV
+            showNotification('Generating CSV report...', 'info');
+            exportInventoryReport();
+        }
     }
 
     // --- BULK UPDATE MODAL FUNCTIONS ---
