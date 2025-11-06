@@ -4,11 +4,13 @@ $pdo = connect();
 
 // Read the raw POST body
 $payload = file_get_contents('php://input');
+file_put_contents(__DIR__ . '/../logs/paymongo.log', date('Y-m-d H:i:s') . ' ' . $payload . PHP_EOL, FILE_APPEND);
 $data = json_decode($payload, true);
 
-$orderId = $data['data']['attributes']['metadata']['order_id'] ?? null;
-$status = $data['data']['attributes']['status'] ?? null;
-
+$status = $data['data']['attributes']['status']
+    ?? $data['data']['attributes']['payment_intent']['attributes']['status']
+    ?? null;
+    $orderId = $data['data']['attributes']['metadata']['order_id'] ?? null;
 if ($orderId && $status === 'paid') {
     $stmt = $pdo->prepare("UPDATE orders
                            SET payment_status = 'Paid', order_status = 'Confirmed'

@@ -22,8 +22,8 @@ if (!$order) {
     exit;
 }
 
-$stmt = $pdo->prepare("DELETE FROM shopping_cart WHERE user_id=?");
-$stmt->execute([$user['user_id']]);
+// $stmt = $pdo->prepare("DELETE FROM shopping_cart WHERE user_id=?");
+// $stmt->execute([$user['user_id']]);
 
 ?>
 <!DOCTYPE html>

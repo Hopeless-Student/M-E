@@ -95,6 +95,10 @@ try {
                 $final_amount,
                 $payment_method
             );
+            $ids = array_column($selectedItems, 'product_id');
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $stmt = $pdo->prepare("DELETE FROM shopping_cart WHERE user_id=? AND product_id IN ($placeholders)");
+            $stmt->execute(array_merge([$user_id], $ids));
                 $pdo->commit();
                 header("Location: " . $link['data']['attributes']['checkout_url']);
                 exit;
