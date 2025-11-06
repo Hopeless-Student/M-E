@@ -557,7 +557,7 @@
     }
 </style>
 
-<div class="view-details-container">
+<div class="view-details-container" data-message-id="" data-is-archived="false">
     <!-- Header -->
     <div class="header">
         <div class="header-left">
@@ -587,21 +587,21 @@
             <!-- Message Header -->
             <div class="message-header">
                 <div class="customer-info">
-                    <div class="customer-avatar" id="customerAvatar">JD</div>
+                    <div class="customer-avatar" id="customerAvatar">...</div>
                     <div class="customer-details">
-                        <h2 id="customerName">Juan Dela Cruz</h2>
+                        <h2 id="customerName">Loading...</h2>
                         <div class="customer-contact">
                             <div class="contact-item">
                                 <i data-lucide="mail" width="16" height="16"></i>
-                                <span id="customerEmail">juan.delacruz@email.com</span>
+                                <span id="customerEmail">Loading...</span>
                             </div>
                             <div class="contact-item">
                                 <i data-lucide="phone" width="16" height="16"></i>
-                                <span id="customerPhone">+63 917 123 4567</span>
+                                <span id="customerPhone">Loading...</span>
                             </div>
                             <div class="contact-item">
                                 <i data-lucide="map-pin" width="16" height="16"></i>
-                                <span id="customerLocation">Olongapo City, Philippines</span>
+                                <span id="customerLocation">Loading...</span>
                             </div>
                         </div>
                     </div>
@@ -611,22 +611,22 @@
                     <div class="meta-item">
                         <div class="meta-label">Message Type</div>
                         <div class="meta-value">
-                            <div class="message-type-badge inquiry" id="messageTypeBadge">Product Inquiry</div>
+                            <div class="message-type-badge inquiry" id="messageTypeBadge">Loading...</div>
                         </div>
                     </div>
                     <div class="meta-item">
                         <div class="meta-label">Priority</div>
                         <div class="meta-value">
-                            <div class="priority-badge normal" id="messagePriority">Normal</div>
+                            <div class="priority-badge normal" id="messagePriority">Loading...</div>
                         </div>
                     </div>
                     <div class="meta-item">
                         <div class="meta-label">Received</div>
-                        <div class="meta-value" id="messageReceivedTime">August 20, 2025 - 2:15 PM</div>
+                        <div class="meta-value" id="messageReceivedTime">Loading...</div>
                     </div>
                     <div class="meta-item">
                         <div class="meta-label">Status</div>
-                        <div class="meta-value" id="messageStatus">Active</div>
+                        <div class="meta-value" id="messageStatus">Loading...</div>
                     </div>
                 </div>
             </div>
@@ -636,44 +636,18 @@
                 <div class="content-section">
                     <div class="section-title">
                         <i data-lucide="message-square" width="20" height="20"></i>
-                        Subject: <span id="messageSubject">Product Availability Inquiry</span>
+                        Subject: <span id="messageSubject">Loading...</span>
                     </div>
-                    <div class="message-text" id="messageBody">Hi M & E Team,
-
-I'm looking for bulk ballpoint pens for our office. We need at least 200 pieces (around 16-17 packs of 12). Do you have this quantity available? Also, would there be any discount for bulk orders?
-
-We're located in Olongapo City, so delivery should be within your service area. Please let me know the availability and total cost including delivery.
-
-Thank you!
-Juan Dela Cruz</div>
+                    <div class="message-text" id="messageBody"><p>Loading message content...</p></div>
                 </div>
 
                 <div class="content-section">
                     <div class="section-title">
                         <i data-lucide="paperclip" width="20" height="20"></i>
-                        Attachments (<span id="attachmentCount">2</span>)
+                        Attachments (<span id="attachmentCount">0</span>)
                     </div>
                     <div class="attachments" id="attachmentsContainer">
-                        <div class="attachment-item" onclick="appState.downloadAttachment('company-logo.png')">
-                            <div class="attachment-icon">
-                                <i data-lucide="image" width="20" height="20"></i>
-                            </div>
-                            <div class="attachment-info">
-                                <div class="attachment-name">company-logo.png</div>
-                                <div class="attachment-size">245 KB</div>
-                            </div>
-                            <i data-lucide="download" width="16" height="16" style="color: #64748b;"></i>
-                        </div>
-                        <div class="attachment-item" onclick="appState.downloadAttachment('office-layout.pdf')">
-                            <div class="attachment-icon">
-                                <i data-lucide="file-text" width="20" height="20"></i>
-                            </div>
-                            <div class="attachment-info">
-                                <div class="attachment-name">office-layout.pdf</div>
-                                <div class="attachment-size">1.2 MB</div>
-                            </div>
-                            <i data-lucide="download" width="16" height="16" style="color: #64748b;"></i>
-                        </div>
+                        <p style="color: #64748b;">Loading attachments...</p>
                     </div>
                 </div>
             </div>
@@ -684,54 +658,7 @@ Juan Dela Cruz</div>
                     <i data-lucide="clock" width="20" height="20"></i>
                     Response History
                 </div>
-
-                <div class="response-item">
-                    <div class="response-header">
-                        <div class="response-author">
-                            <div class="author-avatar">AD</div>
-                            <div class="author-info">
-                                <div class="author-name">Admin (M & E Team)</div>
-                                <div class="response-time">August 20, 2025 - 4:30 PM</div>
-                            </div>
-                        </div>
-                        <div class="priority-badge normal">Response Sent</div>
-                    </div>
-                    <div class="response-text">Dear Juan,
-
-Thank you for your inquiry about our ballpoint pens. Yes, we have the quantity you need available in stock. For bulk orders of 200+ pieces, we offer a 15% discount.
-
-Here are the details:
-- Regular price: ₱25 per pack (12 pieces)
-- Bulk price: ₱21.25 per pack
-- Total for 17 packs: ₱361.25
-- Delivery to Olongapo City: ₱150
-
-Would you like to proceed with this order?
-
-Best regards,
-M & E Team</div>
-                </div>
-
-                <div class="response-item">
-                    <div class="response-header">
-                        <div class="response-author">
-                            <div class="author-avatar" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">JD</div>
-                            <div class="author-info">
-                                <div class="author-name">Juan Dela Cruz</div>
-                                <div class="response-time">August 20, 2025 - 6:15 PM</div>
-                            </div>
-                        </div>
-                        <div class="priority-badge normal">Customer Reply</div>
-                    </div>
-                    <div class="response-text">Hi M & E Team,
-
-Perfect! The pricing looks good. I'd like to proceed with the order of 17 packs of ballpoint pens.
-
-Can you arrange delivery for this Friday? Also, do you accept bank transfer for payment?
-
-Thanks!
-Juan</div>
-                </div>
+                <p style="color: #64748b; padding: 1rem;">Loading response history...</p>
             </div>
         </div>
 
@@ -746,23 +673,23 @@ Juan</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <span class="info-label">Message ID</span>
-                            <span class="info-value" id="infoMessageId">#MSG-001</span>
+                            <span class="info-value" id="infoMessageId">Loading...</span>
                         </li>
                         <li class="info-item">
                             <span class="info-label">Category</span>
-                            <span class="info-value" id="infoCategory">Product Inquiry</span>
+                            <span class="info-value" id="infoCategory">Loading...</span>
                         </li>
                         <li class="info-item">
                             <span class="info-label">Source</span>
-                            <span class="info-value" id="infoSource">Contact Form</span>
+                            <span class="info-value" id="infoSource">Loading...</span>
                         </li>
                         <li class="info-item">
                             <span class="info-label">Assigned To</span>
-                            <span class="info-value" id="infoAssignedTo">Admin Team</span>
+                            <span class="info-value" id="infoAssignedTo">Loading...</span>
                         </li>
                         <li class="info-item">
                             <span class="info-label">Tags</span>
-                            <span class="info-value" id="infoTags">Bulk Order, Pens</span>
+                            <span class="info-value" id="infoTags">Loading...</span>
                         </li>
                     </ul>
                 </div>
@@ -810,30 +737,7 @@ Juan</div>
                 </div>
                 <div class="card-content">
                     <div class="timeline" id="activityTimeline">
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Customer Replied</div>
-                                <div class="timeline-desc">Juan confirmed order details</div>
-                                <div class="timeline-time">August 20, 2025 - 6:15 PM</div>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Response Sent</div>
-                                <div class="timeline-desc">Pricing and availability provided</div>
-                                <div class="timeline-time">August 20, 2025 - 4:30 PM</div>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Message Received</div>
-                                <div class="timeline-desc">Initial inquiry about ballpoint pens</div>
-                                <div class="timeline-time">August 20, 2025 - 2:15 PM</div>
-                            </div>
-                        </div>
+                        <p style="color: #64748b; padding: 1rem;">Loading activity...</p>
                     </div>
                 </div>
             </div>
@@ -844,20 +748,7 @@ Juan</div>
                     <div class="card-title">Related Messages</div>
                 </div>
                 <div class="card-content" id="relatedMessagesContainer">
-                    <div class="related-message" onclick="appState.viewRelatedMessage(2)">
-                        <div class="related-subject">Previous Order - Notebooks</div>
-                        <div class="related-meta">
-                            <span>Juan Dela Cruz</span>
-                            <span>Aug 10, 2025</span>
-                        </div>
-                    </div>
-                    <div class="related-message" onclick="appState.viewRelatedMessage(3)">
-                        <div class="related-subject">Delivery Inquiry</div>
-                        <div class="related-meta">
-                            <span>Juan Dela Cruz</span>
-                            <span>Jul 25, 2025</span>
-                        </div>
-                    </div>
+                    <p style="color: #64748b; padding: 1rem;">Loading related messages...</p>
                 </div>
             </div>
         </div>
@@ -873,244 +764,220 @@ Juan</div>
     // Initialize Lucide icons
     lucide.createIcons();
 
-    // Function to load message details into this modal
-    function loadMessageDetailsIntoModal(id, isArchived = false) {
-        // Access parent's appState.messageData safely
-        const message = parent.appState.messageData[id];
-        if (!message) {
-            document.querySelector('.view-details-container').innerHTML = '<p style="text-align: center; padding: 50px;">Message not found.</p>';
-            return;
-        }
+    // Function to load message details from API
+    async function loadMessageDetailsIntoModal(id, isArchived = false) {
+        try {
+            // Fetch data from API
+            console.log('Fetching message details for ID:', id, 'Archived:', isArchived);
+            const apiUrl = `../../api/admin/requests/get-single.php?id=${id}&archived=${isArchived}`;
+            console.log('API URL:', apiUrl);
+            
+            const response = await fetch(apiUrl);
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers.get('content-type'));
+            
+            const responseText = await response.text();
+            console.log('Response text (first 200 chars):', responseText.substring(0, 200));
+            
+            const data = JSON.parse(responseText);
+            
+            if (!data.success || !data.request) {
+                document.querySelector('.view-details-container').innerHTML = '<p style="text-align: center; padding: 50px;">Message not found.</p>';
+                return;
+            }
 
-        // Update Customer Info
-        document.getElementById('customerAvatar').textContent = message.avatar;
-        document.getElementById('customerName').textContent = message.customer;
-        document.getElementById('customerEmail').textContent = message.email || 'N/A';
-        document.getElementById('customerPhone').textContent = message.phone || 'N/A';
-        document.getElementById('customerLocation').textContent = message.location || 'N/A';
+            const message = data.request;
+            const attachments = data.attachments || [];
+            const history = data.history || [];
 
-        // Update Message Meta
-        const messageTypeBadge = document.getElementById('messageTypeBadge');
-        messageTypeBadge.textContent = (message.type || 'N/A').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-        messageTypeBadge.className = `message-type-badge ${message.type || 'default'}`;
-        const messagePriorityElement = document.getElementById('messagePriority');
-        messagePriorityElement.textContent = (message.priority || 'normal').replace(/\b\w/g, l => l.toUpperCase());
-        messagePriorityElement.className = `priority-badge ${message.priority || 'normal'}`;
-        document.getElementById('messageReceivedTime').textContent = message.time || 'N/A';
-        document.getElementById('messageStatus').textContent = message.status || 'N/A';
+            // Update Customer Info
+            document.getElementById('customerAvatar').textContent = message.avatar || 'NA';
+            document.getElementById('customerName').textContent = message.customerName || 'N/A';
+            document.getElementById('customerEmail').textContent = message.customerEmail || 'N/A';
+            document.getElementById('customerPhone').textContent = message.customerContact || 'N/A';
+            document.getElementById('customerLocation').textContent = 'N/A'; // Not in API response
 
-        // Update Message Content
-        document.getElementById('messageSubject').textContent = message.subject || 'No Subject';
-        document.getElementById('messageBody').innerHTML = (message.content || 'No content available.').split('\n').map(line => line.trim() ? `<p>${line}</p>` : '<br>').join('');
+            // Update Message Meta
+            const messageTypeBadge = document.getElementById('messageTypeBadge');
+            messageTypeBadge.textContent = (message.type || 'N/A').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            messageTypeBadge.className = `message-type-badge ${message.type || 'inquiry'}`;
+            
+            const messagePriorityElement = document.getElementById('messagePriority');
+            messagePriorityElement.textContent = (message.priority || 'normal').replace(/\b\w/g, l => l.toUpperCase());
+            messagePriorityElement.className = `priority-badge ${message.priority || 'normal'}`;
+            
+            document.getElementById('messageReceivedTime').textContent = formatDateTime(message.createdAt) || 'N/A';
+            document.getElementById('messageStatus').textContent = (message.status || 'N/A').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-        // Update Attachments
-        const attachmentsContainer = document.getElementById('attachmentsContainer');
-        attachmentsContainer.innerHTML = '';
-        if (message.attachments && message.attachments.length > 0) {
-            document.getElementById('attachmentCount').textContent = message.attachments.length;
-            message.attachments.forEach(attachment => {
-                const attachmentItem = document.createElement('div');
-                attachmentItem.className = 'attachment-item';
-                // Ensure parent.appState.downloadAttachment is called
-                attachmentItem.onclick = () => parent.appState.downloadAttachment(attachment.name);
-                attachmentItem.innerHTML = `
-                    <div class="attachment-icon">
-                        <i data-lucide="${attachment.icon || 'file'}" width="20" height="20"></i>
-                    </div>
-                    <div class="attachment-info">
-                        <div class="attachment-name">${attachment.name}</div>
-                        <div class="attachment-size">${attachment.size}</div>
-                    </div>
-                    <i data-lucide="download" width="16" height="16" style="color: #64748b;"></i>
-                `;
-                attachmentsContainer.appendChild(attachmentItem);
-            });
-        } else {
-            document.getElementById('attachmentCount').textContent = '0';
-            attachmentsContainer.innerHTML = '<p style="color: #64748b;">No attachments.</p>';
-        }
-        lucide.createIcons(); // Re-initialize icons
+            // Update Message Content
+            document.getElementById('messageSubject').textContent = message.subject || 'No Subject';
+            document.getElementById('messageBody').innerHTML = (message.message || 'No content available.').split('\n').map(line => line.trim() ? `<p>${escapeHtml(line)}</p>` : '<br>').join('');
 
-        // Update Response History
-        const responseHistoryContainer = document.getElementById('responseHistory');
-        responseHistoryContainer.innerHTML = `
-            <div class="section-title">
-                <i data-lucide="clock" width="20" height="20"></i>
-                Response History
-            </div>
-        `;
-        if (message.history && message.history.length > 0) {
-            message.history.forEach(item => {
-                const responseItem = document.createElement('div');
-                responseItem.className = 'response-item';
-                responseItem.innerHTML = `
-                    <div class="response-header">
-                        <div class="response-author">
-                            <div class="author-avatar" style="${item.avatarBg || ''}">${item.avatar}</div>
-                            <div class="author-info">
-                                <div class="author-name">${item.author}</div>
-                                <div class="response-time">${item.time}</div>
-                            </div>
+            // Update Attachments
+            const attachmentsContainer = document.getElementById('attachmentsContainer');
+            attachmentsContainer.innerHTML = '';
+            if (attachments && attachments.length > 0) {
+                document.getElementById('attachmentCount').textContent = attachments.length;
+                attachments.forEach(attachment => {
+                    const attachmentItem = document.createElement('div');
+                    attachmentItem.className = 'attachment-item';
+                    attachmentItem.onclick = () => parent.appState.downloadAttachment(attachment.filename);
+                    attachmentItem.innerHTML = `
+                        <div class="attachment-icon">
+                            <i data-lucide="${attachment.icon || 'file'}" width="20" height="20"></i>
                         </div>
-                        <div class="priority-badge normal">${item.type}</div>
-                    </div>
-                    <div class="response-text">${item.text}</div>
-                `;
-                responseHistoryContainer.appendChild(responseItem);
-            });
-        } else {
-            responseHistoryContainer.innerHTML += '<p style="color: #64748b; padding: 1rem;">No response history.</p>';
-        }
-        lucide.createIcons(); // Re-initialize icons
+                        <div class="attachment-info">
+                            <div class="attachment-name">${escapeHtml(attachment.filename)}</div>
+                            <div class="attachment-size">${attachment.size}</div>
+                        </div>
+                        <i data-lucide="download" width="16" height="16" style="color: #64748b;"></i>
+                    `;
+                    attachmentsContainer.appendChild(attachmentItem);
+                });
+            } else {
+                document.getElementById('attachmentCount').textContent = '0';
+                attachmentsContainer.innerHTML = '<p style="color: #64748b;">No attachments.</p>';
+            }
+            lucide.createIcons(); // Re-initialize icons
 
-        // Update Message Information (Sidebar)
-        document.getElementById('infoMessageId').textContent = `#MSG-${String(id).padStart(3, '0')}`;
-        document.getElementById('infoCategory').textContent = message.category || 'N/A';
-        document.getElementById('infoSource').textContent = message.source || 'N/A';
-        document.getElementById('infoAssignedTo').textContent = message.assignedTo || 'N/A';
-        document.getElementById('infoTags').textContent = message.tags || 'N/A';
+            // Update Response History
+            const responseHistoryContainer = document.getElementById('responseHistory');
+            responseHistoryContainer.innerHTML = `
+                <div class="section-title">
+                    <i data-lucide="clock" width="20" height="20"></i>
+                    Response History
+                </div>
+            `;
+            if (history && history.length > 0) {
+                history.forEach(item => {
+                    const responseItem = document.createElement('div');
+                    responseItem.className = 'response-item';
+                    const avatarBg = item.actorType === 'customer' ? 'background: linear-gradient(135deg, #1e40af, #3b82f6);' : '';
+                    responseItem.innerHTML = `
+                        <div class="response-header">
+                            <div class="response-author">
+                                <div class="author-avatar" style="${avatarBg}">${escapeHtml(item.avatar)}</div>
+                                <div class="author-info">
+                                    <div class="author-name">${escapeHtml(item.actorName)}</div>
+                                    <div class="response-time">${formatDateTime(item.createdAt)}</div>
+                                </div>
+                            </div>
+                            <div class="priority-badge normal">${escapeHtml(item.actionType.replace(/_/g, ' '))}</div>
+                        </div>
+                        <div class="response-text">${escapeHtml(item.notes || 'No details')}</div>
+                    `;
+                    responseHistoryContainer.appendChild(responseItem);
+                });
+            } else {
+                responseHistoryContainer.innerHTML += '<p style="color: #64748b; padding: 1rem;">No response history.</p>';
+            }
+            lucide.createIcons(); // Re-initialize icons
 
-        // Update Activity Timeline
-        const activityTimelineContainer = document.getElementById('activityTimeline');
-        activityTimelineContainer.innerHTML = '';
-        if (message.history && message.history.length > 0) {
-            // Reverse history to show newest first in timeline
-            const reversedHistory = [...message.history].reverse();
-            reversedHistory.forEach(item => {
-                const timelineItem = document.createElement('div');
-                timelineItem.className = 'timeline-item';
-                timelineItem.innerHTML = `
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-title">${item.type}</div>
-                        <div class="timeline-desc">${item.text.split('\n')[0]}</div> <!-- Use first line as description -->
-                        <div class="timeline-time">${item.time}</div>
-                    </div>
-                `;
-                activityTimelineContainer.appendChild(timelineItem);
-            });
-        } else {
-            activityTimelineContainer.innerHTML = '<p style="color: #64748b; padding: 1rem;">No activity yet.</p>';
-        }
-        lucide.createIcons(); // Re-initialize icons
+            // Update Message Information (Sidebar)
+            document.getElementById('infoMessageId').textContent = `#${message.id}`;
+            document.getElementById('infoCategory').textContent = (message.type || 'N/A').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            document.getElementById('infoSource').textContent = 'Contact Form';
+            document.getElementById('infoAssignedTo').textContent = message.respondedByName || 'Unassigned';
+            document.getElementById('infoTags').textContent = message.type || 'N/A';
 
-        // Update Related Messages
-        const relatedMessagesContainer = document.getElementById('relatedMessagesContainer');
-        relatedMessagesContainer.innerHTML = '';
-        if (message.related && message.related.length > 0) {
-            message.related.forEach(relatedMsg => {
-                const relatedItem = document.createElement('div');
-                relatedItem.className = 'related-message';
-                // Ensure parent.appState.viewRelatedMessage is called
-                relatedItem.onclick = () => parent.appState.viewRelatedMessage(relatedMsg.id);
-                relatedItem.innerHTML = `
-                    <div class="related-subject">${relatedMsg.subject}</div>
-                    <div class="related-meta">
-                        <span>${relatedMsg.customer}</span>
-                        <span>${relatedMsg.date}</span>
-                    </div>
-                `;
-                relatedMessagesContainer.appendChild(relatedItem);
-            });
-        } else {
+            // Update Activity Timeline
+            const activityTimelineContainer = document.getElementById('activityTimeline');
+            activityTimelineContainer.innerHTML = '';
+            if (history && history.length > 0) {
+                // Show newest first in timeline
+                history.forEach(item => {
+                    const timelineItem = document.createElement('div');
+                    timelineItem.className = 'timeline-item';
+                    timelineItem.innerHTML = `
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">${escapeHtml(item.actionType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))}</div>
+                            <div class="timeline-desc">${escapeHtml(item.actorName)}</div>
+                            <div class="timeline-time">${formatDateTime(item.createdAt)}</div>
+                        </div>
+                    `;
+                    activityTimelineContainer.appendChild(timelineItem);
+                });
+            } else {
+                activityTimelineContainer.innerHTML = '<p style="color: #64748b; padding: 1rem;">No activity yet.</p>';
+            }
+            lucide.createIcons(); // Re-initialize icons
+
+            // Update Related Messages (not available from API, show placeholder)
+            const relatedMessagesContainer = document.getElementById('relatedMessagesContainer');
             relatedMessagesContainer.innerHTML = '<p style="color: #64748b; padding: 1rem;">No related messages.</p>';
-        }
 
-        // Handle archived status
-        const headerLeft = document.querySelector('.header-left');
-        let archivedBadge = headerLeft.querySelector('.archived-badge');
+            // Handle archived status
+            const headerLeft = document.querySelector('.header-left');
+            let archivedBadge = headerLeft.querySelector('.archived-badge');
 
-        if (isArchived) {
-            document.querySelector('.header h1').textContent = 'Archived Message Details';
+            if (isArchived || message.archived) {
+                document.querySelector('.header h1').textContent = 'Archived Message Details';
 
-            if (!archivedBadge) {
-                archivedBadge = document.createElement('div');
-                archivedBadge.className = 'archived-badge';
-                headerLeft.appendChild(archivedBadge);
+                if (!archivedBadge) {
+                    archivedBadge = document.createElement('div');
+                    archivedBadge.className = 'archived-badge';
+                    headerLeft.appendChild(archivedBadge);
+                }
+                archivedBadge.textContent = 'Archived Message';
+
+                // Disable reply/archive buttons for archived messages
+                const replyBtn = document.querySelector('.header-actions .action-button.primary');
+                const archiveBtn = document.querySelector('.header-actions .action-button.danger');
+
+                if (replyBtn) {
+                    replyBtn.disabled = true;
+                    replyBtn.innerHTML = '<i data-lucide="reply" width="16" height="16"></i> Cannot Reply';
+                }
+                if (archiveBtn) {
+                    archiveBtn.disabled = true;
+                    archiveBtn.innerHTML = '<i data-lucide="archive" width="16" height="16"></i> Already Archived';
+                }
+            } else {
+                document.querySelector('.header h1').textContent = 'Message Details';
+                const replyBtn = document.querySelector('.header-actions .action-button.primary');
+                const archiveBtn = document.querySelector('.header-actions .action-button.danger');
+                
+                if (replyBtn) {
+                    replyBtn.disabled = false;
+                    replyBtn.innerHTML = '<i data-lucide="reply" width="16" height="16"></i> Reply';
+                }
+                if (archiveBtn) {
+                    archiveBtn.disabled = false;
+                    archiveBtn.innerHTML = '<i data-lucide="archive" width="16" height="16"></i> Archive';
+                }
+                if (archivedBadge) {
+                    archivedBadge.remove();
+                }
             }
-            archivedBadge.textContent = 'Archived Message';
 
-            // Disable reply/archive buttons for archived messages
-            const replyBtn = document.querySelector('.header-actions .action-button.primary');
-            const archiveBtn = document.querySelector('.header-actions .action-button.danger');
-
-
-        if (replyBtn) {
-            replyBtn.disabled = true;
-            // Clear existing content and set text, then re-add icon
-            replyBtn.innerHTML = ''; // Clear existing icon
-            const iconReply = document.createElement('i');
-            iconReply.setAttribute('data-lucide', 'reply');
-            iconReply.setAttribute('width', '16');
-            iconReply.setAttribute('height', '16');
-            replyBtn.appendChild(iconReply);
-            replyBtn.appendChild(document.createTextNode(' Cannot Reply'));
+            lucide.createIcons(); // Ensure icons are created after content load
+        } catch (error) {
+            console.error('Error loading message details:', error);
+            document.querySelector('.view-details-container').innerHTML = '<p style="text-align: center; padding: 50px; color: #dc2626;">Error loading message details: ' + error.message + '</p>';
         }
-        if (archiveBtn) {
-            archiveBtn.disabled = true;
-            // Clear existing content and set text, then re-add icon
-            archiveBtn.innerHTML = ''; // Clear existing icon
-            const iconArchive = document.createElement('i');
-            iconArchive.setAttribute('data-lucide', 'archive');
-            iconArchive.setAttribute('width', '16');
-            iconArchive.setAttribute('height', '16');
-            archiveBtn.appendChild(iconArchive);
-            archiveBtn.appendChild(document.createTextNode(' Already Archived'));
-        }
-
-        lucide.createIcons(); // Re-initialize icons after changing innerHTML
-
-        } else {
-            document.querySelector('.header h1').textContent = 'Message Details';
-            // Ensure buttons are enabled and badge is removed if not archived
-            const replyBtn = document.querySelector('.header-actions .action-button.primary');
-            const archiveBtn = document.querySelector('.header-actions .action-button.danger');
-            if (replyBtn) {
-              replyBtn.disabled = false;
-              replyBtn.innerHTML = ''; // Clear existing icon
-              const iconReply = document.createElement('i');
-              iconReply.setAttribute('data-lucide', 'reply');
-              iconReply.setAttribute('width', '16');
-              iconReply.setAttribute('height', '16');
-              replyBtn.appendChild(iconReply);
-              replyBtn.appendChild(document.createTextNode(' Reply'));
-          }
-          if (archiveBtn) {
-              archiveBtn.disabled = false;
-              archiveBtn.innerHTML = ''; // Clear existing icon
-              const iconArchive = document.createElement('i');
-              iconArchive.setAttribute('data-lucide', 'archive');
-              iconArchive.setAttribute('width', '16');
-              iconArchive.setAttribute('height', '16');
-              archiveBtn.appendChild(iconArchive);
-              archiveBtn.appendChild(document.createTextNode(' Archive'));
-          }
-          // Add this line after the above changes:
-          lucide.createIcons(); // Re-initialize icons after changing innerHTML
-            if (archivedBadge) {
-                archivedBadge.remove();
-            }
-        }
-
-        lucide.createIcons(); // Ensure icons are created after content load
     }
 
-    // Initialize page when loaded into the modal
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const messageId = urlParams.get('id');
-        const isArchived = urlParams.get('archived') === 'true';
+    // Helper functions
+    function formatDateTime(dateString) {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
 
-        if (messageId) {
-            // Call the local function to populate the modal content
-            // Access parent.appState to get messageData
-            if (parent.appState && parent.appState.messageData) {
-                loadMessageDetailsIntoModal(messageId, isArchived);
-            } else {
-                document.querySelector('.view-details-container').innerHTML = '<p style="text-align: center; padding: 50px;">Application state not available. Cannot load message details.</p>';
-            }
-        } else {
-            document.querySelector('.view-details-container').innerHTML = '<p style="text-align: center; padding: 50px;">No message ID provided.</p>';
-        }
-    });
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Make function globally accessible so app.js can call it
+    window.loadMessageDetailsIntoModal = loadMessageDetailsIntoModal;
 </script>

@@ -452,15 +452,16 @@
     <div id="customerDetailsModal" class="customer-details-modal-base" onclick="closeCustomerDetailsModal(event)">
         <div class="customer-details-modal-content" onclick="event.stopPropagation()">
             <div class="customer-details-modal-header">
-              <button class="customer-details-close-btn" onclick="closeCustomerDetailsModal()">&times;</button>
+
                 <div class="customer-details-modal-title">
                     <div class="customer-details-avatar-large">JD</div>
                     <div>
                         <h3>Juan Dela Cruz</h3>
                         <p>Customer ID: #CUS-001</p>
                     </div>
-                </div>
 
+                </div>
+  <button class="customer-details-close-btn" onclick="closeCustomerDetailsModal()">&times;</button>
             </div>
 
             <div class="customer-details-modal-body">

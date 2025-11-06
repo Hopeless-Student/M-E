@@ -4,9 +4,16 @@
  * Sends email to customer and updates request status
  */
 
+session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
-// require_once __DIR__ . '/../../../auth/adminResponse.php';
+
+// Check admin authentication
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -27,7 +34,7 @@ $response = trim($input['response']);
 $subject = trim($input['subject'] ?? '');
 $status = trim($input['status'] ?? 'in-progress');
 $priority = trim($input['priority'] ?? 'normal');
-$adminId = 1;
+$adminId = (int)$_SESSION['admin_id'];
 
 if (empty($response)) {
     http_response_code(400);

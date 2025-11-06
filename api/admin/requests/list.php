@@ -1,6 +1,14 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
+
+// Check admin authentication
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
 
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $pageSize = isset($_GET['pageSize']) ? min(100, max(1, (int)$_GET['pageSize'])) : 12;

@@ -619,9 +619,9 @@
                 <button class="customer-orders-btn customer-orders-btn-secondary" id="viewProfile" onclick="openCustomerOrdersModal()">
                     <i data-lucide="user"></i> View Profile
                 </button>
-                <button class="customer-orders-btn customer-orders-btn-primary" id="editCustomer" onclick="openCustomerEditModal()">
+                <!-- <button class="customer-orders-btn customer-orders-btn-primary" id="editCustomer" onclick="openCustomerEditModal()">
                     <i data-lucide="edit"></i> Edit Customer
-                </button>
+                </button> -->
             </div>
         </div>
     </div>

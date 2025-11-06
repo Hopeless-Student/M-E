@@ -1,8 +1,5 @@
 <?php
-// This file is now designed to be loaded dynamically into a modal.
-// It should not have full HTML structure (<html>, <head>, <body>)
-// as it will be inserted into an existing document.
-// Only the content relevant to the modal body should be here.
+
 ?>
 <div class="app-modal-header">
     <h3 class="app-modal-title">Archived Messages</h3>

@@ -3,9 +3,16 @@
  * Use Template - Increment usage count and return processed template
  */
 
+session_start();
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../../config/config.php';
-require_once __DIR__ . '/../../../../auth/adminResponse.php';
+
+// Check admin authentication
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -37,8 +44,14 @@ try {
     }
 
     // Process template variables
-    $processedSubject = processTemplate($template['subject'], $variables);
-    $processedContent = processTemplate($template['content'], $variables);
+    $processedSubject = $template['subject'];
+    $processedContent = $template['content'];
+    
+    // Replace variables in template
+    foreach ($variables as $key => $value) {
+        $processedSubject = str_replace('{{' . $key . '}}', $value, $processedSubject);
+        $processedContent = str_replace('{{' . $key . '}}', $value, $processedContent);
+    }
 
     // Increment usage count
     $updateSql = "UPDATE response_templates SET usage_count = usage_count + 1 WHERE template_id = :id";
