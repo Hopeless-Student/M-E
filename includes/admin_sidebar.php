@@ -209,7 +209,7 @@
                 }
 
                 // Logo path - always go to parent/assets from admin folder
-                $logo_path = ($in_admin_subdir ? '../../' : '../') . 'assets/images/logo/ME logo.png';
+                $logo_path = ($in_admin_subdir ? '../../' : '../') . 'assets/images/logo/ME%20Logo.png';
                 ?>
                 <img src="<?php echo $logo_path; ?>" alt="Logo">
             </div>
