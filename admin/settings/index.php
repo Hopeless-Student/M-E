@@ -37,10 +37,7 @@
                     <ul class="settings-nav-list">
                         <li class="settings-nav-item active" data-section="business">Business Info</li>
                         <li class="settings-nav-item" data-section="shipping">Shipping & Delivery</li>
-                        <li class="settings-nav-item" data-section="notifications">Notifications</li>
                         <li class="settings-nav-item" data-section="users">User Management</li>
-                        <li class="settings-nav-item" data-section="security">Security</li>
-                        <li class="settings-nav-item" data-section="backup">Backup & Data</li>
                     </ul>
                 </div>
 
@@ -130,58 +127,6 @@
                         <button class="save-btn">Save Shipping Settings</button>
                     </div>
 
-                    <!-- Notifications Section -->
-                    <div class="settings-section" id="notifications">
-                        <h3 class="section-title">Notification Settings</h3>
-
-                        <div class="settings-card">
-                            <h4 class="card-title">Email Notifications</h4>
-                            <p class="card-description">Configure when to receive email alerts</p>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="newOrder">
-                                    <label for="newOrder">New orders received</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="lowStock">
-                                    <label for="lowStock">Low stock alerts</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="newMessage">
-                                    <label for="newMessage">New customer messages</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-card">
-                            <h4 class="card-title">System Notifications</h4>
-                            <p class="card-description">Configure dashboard and system alerts</p>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="orderUpdates">
-                                    <label for="orderUpdates">Order status updates</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="dailyReports">
-                                    <label for="dailyReports">Daily sales reports</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="save-btn">Save Notification Settings</button>
-                    </div>
-
                     <!-- User Management Section -->
                     <div class="settings-section" id="users">
                         <h3 class="section-title">User Management</h3>
@@ -215,101 +160,6 @@
                         <button class="save-btn">Update Account</button>
                     </div>
 
-                    <!-- Security Section -->
-                    <div class="settings-section" id="security">
-                        <h3 class="section-title">Security Settings</h3>
-
-                        <div class="settings-card">
-                            <h4 class="card-title">Session Management</h4>
-                            <p class="card-description">Configure login and session security</p>
-
-                            <div class="form-group">
-                                <label class="form-label">Session Timeout (minutes)</label>
-                                <select class="form-select">
-                                    <option value="30">30 minutes</option>
-                                    <option value="60">1 hour</option>
-                                    <option value="120">2 hours</option>
-                                    <option value="240">4 hours</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="rememberLogin">
-                                    <label for="rememberLogin">Allow "Remember Me" option</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-card">
-                            <h4 class="card-title">Data Protection</h4>
-                            <p class="card-description">Manage data security and privacy settings</p>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="dataEncryption" disabled>
-                                    <label for="dataEncryption">Encrypt sensitive customer data</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="activityLog">
-                                    <label for="activityLog">Log admin activities</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="save-btn">Save Security Settings</button>
-                    </div>
-
-                    <!-- Backup & Data Section -->
-                    <div class="settings-section" id="backup">
-                        <h3 class="section-title">Backup & Data Management</h3>
-
-                        <div class="settings-card">
-                            <h4 class="card-title">Database Backup</h4>
-                            <p class="card-description">Manage system backups and data export</p>
-
-                            <div class="form-group">
-                                <label class="form-label">Automatic Backup Frequency</label>
-                                <select class="form-select">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Last Backup</label>
-                                <input type="text" class="form-input" value="" readonly>
-                            </div>
-
-                            <button class="save-btn">Create Backup Now</button>
-                        </div>
-
-                        <div class="settings-card">
-                            <h4 class="card-title">Data Export</h4>
-                            <p class="card-description">Export business data for reporting or migration</p>
-
-                            <div class="form-group">
-                                <button class="save-btn">Export Orders Data</button>
-                                <button class="save-btn" style="margin-left: 1rem;">Export Customer Data</button>
-                            </div>
-
-                            <div class="form-group">
-                                <button class="save-btn">Export Product Data</button>
-                                <button class="save-btn" style="margin-left: 1rem;">Export Inventory Report</button>
-                            </div>
-                        </div>
-
-                        <div class="settings-card" style="border-left-color: #dc2626;">
-                            <h4 class="card-title" style="color: #dc2626;">Danger Zone</h4>
-                            <p class="card-description">Irreversible actions that affect your entire system</p>
-
-                            <button class="danger-btn">Reset All Data</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </main>
@@ -450,32 +300,6 @@
                 if (autoConfirm) autoConfirm.checked = settings.shipping.auto_confirm_orders?.value === '1';
             }
 
-            // Notification settings
-            if (settings.notifications) {
-                document.getElementById('newOrder').checked = settings.notifications.email_new_orders?.value === '1';
-                document.getElementById('lowStock').checked = settings.notifications.email_low_stock?.value === '1';
-                document.getElementById('newMessage').checked = settings.notifications.email_new_messages?.value === '1';
-                document.getElementById('orderUpdates').checked = settings.notifications.system_order_updates?.value === '1';
-                document.getElementById('dailyReports').checked = settings.notifications.system_daily_reports?.value === '1';
-            }
-
-            // Security settings
-            if (settings.security) {
-                const sessionSelect = document.querySelector('#security select');
-                if (sessionSelect) sessionSelect.value = settings.security.session_timeout_minutes?.value || '60';
-                document.getElementById('rememberLogin').checked = settings.security.allow_remember_me?.value === '1';
-                document.getElementById('activityLog').checked = settings.security.log_admin_activities?.value === '1';
-            }
-
-            // Backup settings
-            if (settings.backup) {
-                const backupSelect = document.querySelector('#backup select');
-                if (backupSelect) backupSelect.value = settings.backup.auto_backup_frequency?.value || 'daily';
-                const lastBackup = document.querySelector('#backup input[readonly]');
-                if (lastBackup && settings.backup.last_backup_date?.value) {
-                    lastBackup.value = settings.backup.last_backup_date.value;
-                }
-            }
         }
 
         // Settings navigation
@@ -515,20 +339,6 @@
                     settings.processing_time_hours = inputs[3].value;
                     settings.delivery_time_hours = inputs[4].value;
                     settings.auto_confirm_orders = document.getElementById('autoConfirm').checked;
-                } else if (category === 'notifications') {
-                    settings.email_new_orders = document.getElementById('newOrder').checked;
-                    settings.email_low_stock = document.getElementById('lowStock').checked;
-                    settings.email_new_messages = document.getElementById('newMessage').checked;
-                    settings.system_order_updates = document.getElementById('orderUpdates').checked;
-                    settings.system_daily_reports = document.getElementById('dailyReports').checked;
-                } else if (category === 'security') {
-                    const sessionSelect = section.querySelector('select');
-                    settings.session_timeout_minutes = sessionSelect.value;
-                    settings.allow_remember_me = document.getElementById('rememberLogin').checked;
-                    settings.log_admin_activities = document.getElementById('activityLog').checked;
-                } else if (category === 'backup') {
-                    const backupSelect = section.querySelector('select');
-                    settings.auto_backup_frequency = backupSelect.value;
                 }
 
                 const result = await apiRequest('../../api/admin/settings/update.php', {
@@ -557,51 +367,13 @@
                 const category = section.id;
                 
                 // Handle special cases
-                if (this.textContent.includes('Create Backup')) {
-                    createBackup();
-                } else if (this.textContent.includes('Export')) {
-                    const type = this.textContent.toLowerCase().includes('orders') ? 'orders' :
-                                this.textContent.toLowerCase().includes('customer') ? 'customers' :
-                                this.textContent.toLowerCase().includes('product') ? 'products' : 'inventory';
-                    exportData(type);
-                } else if (this.textContent.includes('Update Account')) {
+                if (this.textContent.includes('Update Account')) {
                     updateAdminAccount();
                 } else {
                     saveSettings(category, this);
                 }
             });
         });
-
-        // Create backup
-        async function createBackup() {
-            const section = document.getElementById('backup');
-            const overlay = showLoading(section);
-
-            try {
-                const result = await apiRequest('../../api/admin/settings/backup.php', {
-                    method: 'POST'
-                });
-
-                if (result.success) {
-                    showToast('Backup created successfully!', 'success');
-                    // Update last backup date
-                    const lastBackupInput = section.querySelector('input[readonly]');
-                    if (lastBackupInput && result.backup) {
-                        lastBackupInput.value = result.backup.date;
-                    }
-                }
-            } catch (error) {
-                showToast('Failed to create backup: ' + error.message, 'error');
-            } finally {
-                hideLoading(overlay);
-            }
-        }
-
-        // Export data
-        function exportData(type) {
-            window.open(`../../api/admin/settings/export.php?type=${type}`, '_blank');
-            showToast(`Exporting ${type} data...`, 'success');
-        }
 
         // Update admin account
         async function updateAdminAccount() {
@@ -686,13 +458,6 @@
                 hideLoading(overlay);
             }
         }
-
-        // Danger button
-        document.querySelector('.danger-btn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
-                showToast('Data reset functionality requires additional confirmation', 'error');
-            }
-        });
 
         // Load settings on page load
         document.addEventListener('DOMContentLoaded', () => {
