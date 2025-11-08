@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customers - M & E Dashboard</title>
     <link rel="icon" type="image/x-icon" href="../../assets/images/M&E_LOGO-semi-transparent.ico">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <link rel="stylesheet" href="../assets/css/admin/users/index.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js?v=<?php echo time(); ?>"></script>
+    <link rel="stylesheet" href="../assets/css/admin/users/index.css?v=<?php echo time(); ?>">
 </head>
 <body>
     <div class="dashboard">

@@ -53,25 +53,35 @@ try {
         $fileSize = filesize($backupFile);
         $fileSizeFormatted = number_format($fileSize / 1024 / 1024, 2) . ' MB';
         
-        // Log backup in database
-        $logSql = "INSERT INTO backup_logs (backup_file, backup_size, backup_date, status)
-                   VALUES (:file, :size, NOW(), 'success')";
-        $logStmt = $pdo->prepare($logSql);
-        $logStmt->execute([
-            ':file' => basename($backupFile),
-            ':size' => $fileSize
-        ]);
+        // Log backup in database (optional - table may not exist)
+        try {
+            $logSql = "INSERT INTO backup_logs (backup_file, backup_size, backup_date, status)
+                       VALUES (:file, :size, NOW(), 'success')";
+            $logStmt = $pdo->prepare($logSql);
+            $logStmt->execute([
+                ':file' => basename($backupFile),
+                ':size' => $fileSize
+            ]);
+        } catch (PDOException $e) {
+            // Table doesn't exist, continue anyway
+            error_log("Backup log table doesn't exist: " . $e->getMessage());
+        }
         
         // Update last_backup_date setting so UI can show latest backup time
         $humanDate = date('F j, Y - g:i A');
-        $checkStmt = $pdo->prepare("SELECT setting_id FROM system_settings WHERE setting_category = 'backup' AND setting_key = 'last_backup_date'");
-        $checkStmt->execute();
-        if ($checkStmt->fetch()) {
-            $updStmt = $pdo->prepare("UPDATE system_settings SET setting_value = :val, setting_type = 'string', updated_at = NOW() WHERE setting_category = 'backup' AND setting_key = 'last_backup_date'");
-            $updStmt->execute([':val' => $humanDate]);
-        } else {
-            $insStmt = $pdo->prepare("INSERT INTO system_settings (setting_category, setting_key, setting_value, setting_type, created_at, updated_at) VALUES ('backup', 'last_backup_date', :val, 'string', NOW(), NOW())");
-            $insStmt->execute([':val' => $humanDate]);
+        try {
+            $checkStmt = $pdo->prepare("SELECT setting_id FROM system_settings WHERE setting_category = 'backup' AND setting_key = 'last_backup_date'");
+            $checkStmt->execute();
+            if ($checkStmt->fetch()) {
+                $updStmt = $pdo->prepare("UPDATE system_settings SET setting_value = :val, setting_type = 'string', updated_at = NOW() WHERE setting_category = 'backup' AND setting_key = 'last_backup_date'");
+                $updStmt->execute([':val' => $humanDate]);
+            } else {
+                $insStmt = $pdo->prepare("INSERT INTO system_settings (setting_category, setting_key, setting_value, setting_type, created_at, updated_at) VALUES ('backup', 'last_backup_date', :val, 'string', NOW(), NOW())");
+                $insStmt->execute([':val' => $humanDate]);
+            }
+        } catch (PDOException $e) {
+            // Settings table doesn't exist, continue anyway
+            error_log("System settings table doesn't exist: " . $e->getMessage());
         }
 
         echo json_encode([

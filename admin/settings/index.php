@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - M & E Dashboard</title>
     <link rel="icon" type="image/x-icon" href="../../assets/images/M&E_LOGO-semi-transparent.ico">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <link rel="stylesheet" href="../assets/css/admin/settings/index.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js?v=<?php echo time(); ?>"></script>
+    <link rel="stylesheet" href="../assets/css/admin/settings/index.css?v=<?php echo time(); ?>">
 </head>
 <body>
   <div class="dashboard">
@@ -400,9 +400,27 @@
                 if (data.success && data.settings) {
                     populateSettings(data.settings);
                 }
+                
+                // Load admin account info
+                await loadAdminAccount();
             } catch (error) {
                 console.error('Failed to load settings:', error);
                 showToast('Failed to load settings', 'error');
+            }
+        }
+
+        // Load admin account information
+        async function loadAdminAccount() {
+            try {
+                const data = await apiRequest('../../api/admin/settings/get-account.php');
+                if (data.success && data.admin) {
+                    const section = document.getElementById('users');
+                    const inputs = section.querySelectorAll('input');
+                    if (inputs[0]) inputs[0].value = data.admin.username || '';
+                    if (inputs[1]) inputs[1].value = data.admin.email || '';
+                }
+            } catch (error) {
+                console.error('Failed to load admin account:', error);
             }
         }
 
@@ -546,6 +564,8 @@
                                 this.textContent.toLowerCase().includes('customer') ? 'customers' :
                                 this.textContent.toLowerCase().includes('product') ? 'products' : 'inventory';
                     exportData(type);
+                } else if (this.textContent.includes('Update Account')) {
+                    updateAdminAccount();
                 } else {
                     saveSettings(category, this);
                 }
@@ -581,6 +601,90 @@
         function exportData(type) {
             window.open(`../../api/admin/settings/export.php?type=${type}`, '_blank');
             showToast(`Exporting ${type} data...`, 'success');
+        }
+
+        // Update admin account
+        async function updateAdminAccount() {
+            const section = document.getElementById('users');
+            const overlay = showLoading(section);
+
+            try {
+                const inputs = section.querySelectorAll('input');
+                const username = inputs[0].value.trim();
+                const email = inputs[1].value.trim();
+                const password = inputs[2].value.trim();
+                const confirmPassword = inputs[3].value.trim();
+
+                // Validate inputs
+                if (!username) {
+                    showToast('Username is required', 'error');
+                    hideLoading(overlay);
+                    return;
+                }
+
+                if (!email) {
+                    showToast('Email is required', 'error');
+                    hideLoading(overlay);
+                    return;
+                }
+
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showToast('Invalid email format', 'error');
+                    hideLoading(overlay);
+                    return;
+                }
+
+                // If password is provided, validate it
+                if (password) {
+                    if (password.length < 6) {
+                        showToast('Password must be at least 6 characters long', 'error');
+                        hideLoading(overlay);
+                        return;
+                    }
+
+                    if (password !== confirmPassword) {
+                        showToast('Passwords do not match', 'error');
+                        hideLoading(overlay);
+                        return;
+                    }
+                }
+
+                const data = {
+                    username: username,
+                    email: email
+                };
+
+                if (password) {
+                    data.password = password;
+                    data.confirm_password = confirmPassword;
+                }
+
+                const result = await apiRequest('../../api/admin/settings/update-account.php', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    // Clear password fields
+                    inputs[2].value = '';
+                    inputs[3].value = '';
+                    
+                    // Update header username if changed
+                    if (username !== inputs[0].defaultValue) {
+                        const headerUsername = document.querySelector('.user-info span');
+                        const headerAvatar = document.querySelector('.user-info .avatar');
+                        if (headerUsername) headerUsername.textContent = username;
+                        if (headerAvatar) headerAvatar.textContent = username.charAt(0).toUpperCase();
+                    }
+                }
+            } catch (error) {
+                showToast('Failed to update account: ' + error.message, 'error');
+            } finally {
+                hideLoading(overlay);
+            }
         }
 
         // Danger button
