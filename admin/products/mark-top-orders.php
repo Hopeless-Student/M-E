@@ -7,8 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mark Top Products - M & E Dashboard</title>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <link rel="stylesheet" href="../assets/css/admin/products/toptag.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js?v=<?php echo time(); ?>"></script>
+    <link rel="stylesheet" href="../assets/css/admin/products/toptag.css?v=<?php echo time(); ?>">
 </head>
 <body>
     <?php
