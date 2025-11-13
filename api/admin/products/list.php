@@ -1,14 +1,14 @@
 <?php
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../../config/config.php';
-// require_once __DIR__ . '/../../../includes/api_auth.php'; // Uncomment to enable authentication
+
 
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $pageSize = isset($_GET['pageSize']) ? min(100, max(1, (int)$_GET['pageSize'])) : 12;
 $q = trim($_GET['q'] ?? '');
 $featured = isset($_GET['featured']) ? trim($_GET['featured']) : '';
-$category = trim($_GET['category'] ?? ''); // can be slug or simple key like office/school/sanitary
-$stock = trim($_GET['stock'] ?? ''); // in-stock|low-stock|out-of-stock
+$category = trim($_GET['category'] ?? ''); 
+$stock = trim($_GET['stock'] ?? ''); 
 
 $offset = ($page - 1) * $pageSize;
 

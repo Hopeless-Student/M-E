@@ -313,6 +313,16 @@
         `).join('');
         lucide.createIcons();
     }
+    function downloadPDF() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('id');
+
+        if (orderId) {
+            window.location.href = `../../api/admin/orders/generate-invoice-pdf.php?id=${orderId}`;
+        } else {
+            alert('Order ID not found');
+        }
+    }
 
     function renderPagination() {
         const paginationInfo = document.querySelector('.pagination-info');
@@ -442,6 +452,13 @@
             dltbtn.onclick = () => openDeleteModal(String(order.order_id || orderId));
           }
         }
+        const donwloadBtn = document.getElementById("downloadReceipt");
+        if(donwloadBtn){
+          donwloadBtn.disabled = false;
+          donwloadBtn.style.opacity = '1';
+          donwloadBtn.style.cursor = 'pointer';
+          donwloadBtn.onclick = () => downloadInvoice(String(order.order_id || orderId));
+        }
 
         setTimeout(() => {
           lucide.createIcons();
@@ -450,7 +467,18 @@
         console.error(e);
         showError('Failed to load order details.');
       }
+
+      
     }
+    
+    function downloadInvoice(orderId) {
+      if (orderId) {
+                window.location.href = `../../api/admin/orders/generate-invoice-pdf.php?id=${orderId}`;
+            } else {
+                alert('Order ID not found');
+            }
+    }
+    
 
     let currentUpdateOrderId = null;
     function openUpdateModal(orderId) {

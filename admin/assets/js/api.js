@@ -1,7 +1,3 @@
-/**
- * API Helper Functions for Customer Request Management
- * All API calls centralized here for easy maintenance
- */
 
 const API = {
     baseUrl: '../../api/admin/requests',
@@ -39,33 +35,23 @@ const API = {
     }
 },
 
-    // ============ REQUESTS API ============
-
-    /**
-     * Get list of requests with filters
-     */
+    
     async getRequests(params = {}) {
         const queryString = new URLSearchParams(params).toString();
         return await this.call(`${this.baseUrl}/list.php?${queryString}`);
     },
 
-    /**
-     * Get single request details
-     */
+    
     async getRequest(id, archived = false) {
         return await this.call(`${this.baseUrl}/get-single.php?id=${id}&archived=${archived}`);
     },
 
-    /**
-     * Get dashboard statistics
-     */
+   
     async getStats() {
         return await this.call(`${this.baseUrl}/get-stats.php`);
     },
 
-    /**
-     * Update request status
-     */
+    
     async updateRequest(id, status, adminResponse = '') {
         return await this.call(`${this.baseUrl}/update.php`, {
             method: 'POST',
@@ -73,9 +59,7 @@ const API = {
         });
     },
 
-    /**
-     * Send response to customer
-     */
+    
     async sendResponse(requestId, response, subject = '', status = 'in-progress', priority = 'normal') {
         return await this.call(`${this.baseUrl}/send-response.php`, {
             method: 'POST',
@@ -89,9 +73,6 @@ const API = {
         });
     },
 
-    /**
-     * Bulk archive requests
-     */
     async bulkArchiveRequests(requestIds, reason, notes = '') {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',
@@ -99,9 +80,7 @@ const API = {
         });
     },
 
-    /**
-     * Restore archived request
-     */
+   
     async restoreRequest(archiveId) {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',
@@ -109,9 +88,7 @@ const API = {
         });
     },
 
-    /**
-     * Bulk restore archived requests
-     */
+    
     async bulkRestoreRequests(archiveIds) {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',
@@ -119,9 +96,7 @@ const API = {
         });
     },
 
-    /**
-     * Delete archived request permanently
-     */
+   
     async deleteArchived(archiveId) {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',
@@ -129,9 +104,7 @@ const API = {
         });
     },
 
-    /**
-     * Bulk delete archived requests
-     */
+   
     async bulkDeleteArchived(archiveIds) {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',
@@ -139,9 +112,7 @@ const API = {
         });
     },
 
-    /**
-     * List archived requests
-     */
+    
     async listArchived(params = {}) {
         return await this.call(`${this.baseUrl}/archive.php`, {
             method: 'POST',
@@ -149,11 +120,7 @@ const API = {
         });
     },
 
-    // ============ TEMPLATES API ============
-
-    /**
-     * Get list of templates
-     */
+   
     async getTemplates(category = '', q = '') {
         const params = new URLSearchParams();
         if (category) params.append('category', category);
@@ -161,9 +128,7 @@ const API = {
         return await this.call(`${this.templatesUrl}/list.php?${params.toString()}`);
     },
 
-    /**
-     * Create new template
-     */
+   
     async createTemplate(name, category, subject, content, notes = '') {
         return await this.call(`${this.templatesUrl}/create.php`, {
             method: 'POST',
@@ -171,9 +136,7 @@ const API = {
         });
     },
 
-    /**
-     * Update template
-     */
+    
     async updateTemplate(templateId, name, category, subject, content, notes = '') {
         return await this.call(`${this.templatesUrl}/update.php`, {
             method: 'POST',
@@ -181,9 +144,7 @@ const API = {
         });
     },
 
-    /**
-     * Delete template
-     */
+    
     async deleteTemplate(templateId) {
         return await this.call(`${this.templatesUrl}/delete.php`, {
             method: 'POST',
@@ -191,9 +152,7 @@ const API = {
         });
     },
 
-    /**
-     * Use template (increments usage count)
-     */
+    
     async useTemplate(templateId, variables = {}) {
         return await this.call(`${this.templatesUrl}/use.php`, {
             method: 'POST',

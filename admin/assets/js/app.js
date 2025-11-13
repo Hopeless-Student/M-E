@@ -1,9 +1,4 @@
-/**
- * Customer Request Management System - Main Application Logic
- * This file contains all the frontend logic for the request management system
- */
 
-// Global application state
 const appState = {
     // Data storage
     currentMessageId: null,
@@ -18,7 +13,7 @@ const appState = {
     templates: [],
     debounceTimer: null,
 
-    // ============ INITIALIZATION ============
+  
 
     async init() {
         await this.loadStats();
@@ -29,7 +24,7 @@ const appState = {
     },
 
     setupEventListeners() {
-        // Search with debounce
+       
         const searchInput = document.getElementById('mainSearchInput');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -40,7 +35,7 @@ const appState = {
             });
         }
 
-        // Filter tabs
+        
         document.querySelectorAll('.filter-tabs .tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const filter = btn.dataset.filter;
@@ -48,7 +43,7 @@ const appState = {
             });
         });
 
-        // Close modals on outside click
+       
         document.querySelectorAll('.app-modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => {
                 if (e.target === overlay) {
@@ -59,7 +54,7 @@ const appState = {
     },
 
     startAutoRefresh() {
-        // Refresh stats and message list every 30 seconds
+        
         setInterval(async () => {
             await this.loadStats();
             if (!document.querySelector('.app-modal-overlay.active')) {
@@ -68,7 +63,7 @@ const appState = {
         }, 30000);
     },
 
-    // ============ DATA LOADING ============
+    
 
     async loadStats() {
         try {
@@ -156,7 +151,7 @@ const appState = {
         }
     },
 
-    // ============ RENDERING ============
+    
 
     renderMessages() {
         const container = document.getElementById('messagesContainer');
@@ -203,7 +198,7 @@ const appState = {
     },
 
     async selectMessage(id) {
-        // Update UI
+        
         document.querySelectorAll('.message-item').forEach(i => i.classList.remove('active'));
         const selectedEl = document.querySelector(`.message-item[data-id="${id}"]`);
         if (selectedEl) {
@@ -305,7 +300,7 @@ const appState = {
         lucide.createIcons();
     },
 
-    // ============ SEARCH & FILTER ============
+    
 
     async searchMessages(query) {
         await this.loadMessages({ q: query });
@@ -314,7 +309,7 @@ const appState = {
     async filterMessages(filter) {
         this.currentFilter = filter;
 
-        // Update UI
+        
         document.querySelectorAll('.filter-tabs .tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelector(`.filter-tabs .tab-btn[data-filter="${filter}"]`).classList.add('active');
 
@@ -329,7 +324,7 @@ const appState = {
         await this.loadMessages(params);
     },
 
-    // ============ RESPONSE HANDLING ============
+    
 
     openResponseModal() {
         if (!this.currentMessageId) {
@@ -426,7 +421,7 @@ const appState = {
         }
     },
 
-    // ============ ARCHIVE HANDLING ============
+    
 
     openSingleArchiveModal(messageId) {
         this.currentMessageIdToArchive = messageId || this.currentMessageId;
@@ -724,7 +719,7 @@ const appState = {
         }
     },
 
-    // ============ TEMPLATES ============
+    
 
     async openTemplatesModal() {
         this.targetReplyTextarea = null;
@@ -1057,8 +1052,7 @@ const appState = {
         }
     },
 
-    // ============ VIEW DETAILS ============
-
+   
     async viewRequest(messageId = this.currentMessageId, isArchived = false) {
         if (!messageId) {
             this.showNotification('No message selected', 'error');
@@ -1110,7 +1104,7 @@ const appState = {
     },
 
     initViewDetailsModalListeners() {
-        // Event listeners are bound inline in view-request.php
+        
     },
 
     openResponseModalFromViewDetails() {
@@ -1178,7 +1172,7 @@ const appState = {
         await this.viewRequest(id, false);
     },
 
-    // ============ UTILITY FUNCTIONS ============
+    
 
     showNotification(message, type = 'success') {
         const notification = document.getElementById('appNotification');
@@ -1272,15 +1266,14 @@ const appState = {
         return div.innerHTML;
     },
 
-    // ============ ORDER CREATION ============
 
     createOrderForCustomer(customerEmail) {
-        // Redirect to create order page with customer email as query parameter
+        //kuha custom email from request page
         window.location.href = `../orders/create.php?customer=${encodeURIComponent(customerEmail)}`;
     }
 };
 
-// Initialize application when DOM is ready
+
 document.addEventListener('DOMContentLoaded', async function() {
     lucide.createIcons();
     await appState.init();

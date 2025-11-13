@@ -33,7 +33,7 @@ if ($status !== '' && !in_array($status, $allowedStatuses)) {
 $offset = ($page - 1) * $pageSize;
 
 try {
-    // Build WHERE clause
+    
     $where = ['1=1']; // Always true to simplify AND logic
     $params = [];
 
@@ -49,13 +49,11 @@ try {
         $params[':location'] = "%$location%";
     }
 
-    // Status filter - note: we determine status in application logic
-    // For database filtering, we can only filter by isActive
-    // By default, exclude inactive users (isActive = 0) unless specifically filtering for them
+    
     if ($status === 'inactive') {
         $where[] = 'u.isActive = 0';
     } else {
-        // For all other cases (active, new, or no filter), only show active users
+        
         $where[] = 'u.isActive = 1';
     }
 
