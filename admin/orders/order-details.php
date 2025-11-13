@@ -375,7 +375,7 @@
                                 </div>
                                 <div class="info-item">
                                     <span class="info-label">Category</span>
-                                    <span class="category-badge" id="detailCategory">Electronics</span>
+                                    <span class="category-badge" id="detailCategory"></span>
                                 </div>
                                 <div class="info-item">
                                     <span class="info-label">Total Amount</span>
@@ -532,9 +532,9 @@
                     <i data-lucide="check-circle"></i>
                     Update Status
                 </button>
-                <button class="action-btn-s secondary-s" onclick="printInvoice()">
+                <button class="action-btn-s secondary-s" id="downloadReceipt">
                     <i data-lucide="printer"></i>
-                    Print Invoice
+                    Download Receipt
                 </button>
                 <button class="action-btn-s danger-s" id="deleteModalBtn">
                     <i data-lucide="x-circle"></i>
@@ -543,12 +543,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function printInvoice() {
-            const orderId = document.getElementById('modalOrderId').textContent.replace('#ORD-', '');
-            window.open(`print-invoice.php?id=${orderId}`, '_blank');
-        }
-    </script>
 </body>
 </html>
